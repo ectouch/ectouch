@@ -283,8 +283,7 @@ DROP TABLE IF EXISTS `ecs_touch_auth`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_auth` (
   `id` tinyint(2) NOT NULL AUTO_INCREMENT,
-  `app_id` varchar(50) NOT NULL,
-  `app_secret` varchar(50) NOT NULL,
+  `auth_config` varchar(255) NOT NULL,
   `from` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='第三方登录' AUTO_INCREMENT=11 ;
