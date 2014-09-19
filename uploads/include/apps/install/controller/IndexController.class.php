@@ -100,9 +100,9 @@ class IndexController extends Controller {
         require $config_file;
         
         $content = "<?php\n
-		define('APPNAME', ".APPNAME.");
-		define('VERSION', ".VERSION.");
-		define('RELEASE', ".RELEASE.");
+		define('APPNAME', '".APPNAME."');
+		define('VERSION', '".VERSION."');
+		define('RELEASE', '".RELEASE."');
 		define('ECTOUCH_AUTH_KEY', '".$appid."');";
         @file_put_contents($config_file, $content);
         /**
