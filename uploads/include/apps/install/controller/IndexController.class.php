@@ -16,7 +16,7 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class IndexController extends BaseController {
+class IndexController extends Controller {
 
     /**
      * 构造函数
@@ -105,9 +105,8 @@ class IndexController extends BaseController {
 		define('RELEASE', ".RELEASE.");
 		define('ECTOUCH_AUTH_KEY', '".$appid."');";
         @file_put_contents($config_file, $content);
-        
+        /**
         $shop_config = model('Base')->load_config();
-        
         $shop_country = model('RegionBase')->get_region_name($shop_config[shop_country]);
         $shop_province = model('RegionBase')->get_region_name($shop_config[shop_province]);
         $shop_city = model('RegionBase')->get_region_name($shop_config[shop_city]);
@@ -139,7 +138,7 @@ class IndexController extends BaseController {
         );
         $url = "http://ectouch.cn/api/install.html";
         http::doPost($url,$data);
-        
+        */
         @fopen($this->lockFile, 'w');
         //生成二维码
         $mobile_url = __URL__; //二维码内容
