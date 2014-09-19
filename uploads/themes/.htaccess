@@ -1,0 +1,4 @@
+<Files *.dwt>
+  Order Allow,Deny 
+  Deny from all
+</Files>

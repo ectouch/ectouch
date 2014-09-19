@@ -1,0 +1,37 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div>
+  <h1 class="f-h1 cate-h1"><a class="t-inx" href="index.php">{$lang.home}</a>{$lang.shophelp}<a class="t-no t-list" href="{:url('article/index')}">{$lang.article_cat}</a></h1>
+  <div class="search-section">
+    <form action="{:url('article/art_list')}" name="search_form" method="post" class="article_search">
+       	<div class="d-inputSear"><input autocomplete="off" placeholder="{$lang.art_no_keywords}"  name="keywords" id="requirement" class="J_SearchInput inputSear" type="text"></div>
+        <input name="id" type="hidden" value="{$cat_id}" />
+        <input name="cur_url" id="cur_url" type="hidden" value="" />
+        <button type="button" disabled="true" class="input-delete J_InputDelete"> <span></span> </button>
+      	<button type="submit"  class="search-btn">{$lang.search}</button>
+    </form>
+  </div>
+  <!-- {if $article_categories} -->
+  <div class="nav">
+    <ul>
+      <!--{foreach from=$article_categories item=cat name="article_cat"}-->
+      <li><a href="{:url('article/art_list')}&id={$cat.id}">{$cat.name|escape:html}</a></li>
+      <!--{/foreach}-->
+    </ul>
+  </div>
+  <!--{else}-->
+  <div class="q-list J_List">
+    <ol>
+      <!-- {foreach from=$artciles_list item=article name="artciles_list"} -->
+      <li> <a href="{$article.url}" style="padding-left:20px;"> <span class="num">{$smarty.foreach.artciles_list.iteration}</span>{$article.short_title}
+        <p></p>
+        </a> </li>
+      <!-- {/foreach} --> 
+      <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+    </ol>
+  </div>
+  <!-- {/if} --> 
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

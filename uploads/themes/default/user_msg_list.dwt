@@ -1,0 +1,14 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+<div class=" message_list" id="J_ItemList">
+  <div class="single_item o-detail">
+    <ul class="o-info message">
+    </ul>
+  </div>
+  <a href="javascript:;" style="text-align:center" class="get_more"></a> </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.more.js"></script> 
+<script type="text/javascript">
+get_asynclist('{:url("user/msg_list")}' , '__TPL__/images/loader.gif');
+</script> 
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body></html>

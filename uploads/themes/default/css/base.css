@@ -1,0 +1,54 @@
+/*=======================
+	初始化样式
+=============*/
+html {
+font-size:.625rem;/*10 ÷ 16 × 100% = 62.5%*/ height: 100%; color: #666; }
+body { color: #666; font: 14px/1.5 tahoma, arial, \5b8b\4f53, sans-serif; background: #f4f4f4; height: 100%; -webkit-tap-highlight-color: rgba(255,255,255,0); -webkit-user-select: none; -moz-user-focus: none; -moz-user-select: none; }
+ul, li, dl, dt, dd, p, h1, h2, h3, h4, h5, form, img, div { margin: 0; padding: 0; list-style: none; border: 0 none; }
+/* 全局公共样式的设定 */
+body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div, dl, dt, dd { margin: 0; padding: 0; border: 0; }
+li { list-style-type: none; }
+h1, h2, h3, h4, h5, h6 { font-weight: normal; }
+input, button, textarea, select { font: 100% Arial, 'Micorsoft YaHei'; }
+/* 默认全局样式超链接样式 */
+a { color: #444; text-decoration: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+input[type=submit], input[type=reset], input[type=button],input[type=text],input[type=password],button,textarea{-webkit-appearance:none; border-radius:0px;}
+input[type=radio]{vertical-align:middle}
+
+/*========================
+	公用样式
+===============*/
+/*默认样式，主要是position:fixed实现屏幕绝对定位*/
+#gotoTop { display: none; position: fixed; bottom: 0.5rem; right: 0.5rem; cursor: pointer; width: 5rem; height: 5rem; text-align: center; background: url(../images/ftop.png); background-size: 100%; opacity: 0.4; }
+#gotoTop { _position: absolute; }
+#gotoTop.hover { background: #5CB542; color: #fff; text-decoration: none; }
+.ectouchBody { margin-bottom: 4.75rem; }
+/*底部*/
+footer { height: 4rem; text-align: center; line-height: 4rem; }
+/*头部*/
+h1 { position: relative; display: block; line-height: 4rem; height: 4rem; font-size: 2rem; text-align: center; }
+h1 a { width: 2.3rem; height: 2.3rem; display: block; float: left; text-indent: -9999px; }
+h1 .d-serach { float: left; position: absolute; left: 3.9rem; right: 6px; top: 0.5rem; }
+h1 a.t-history,a.t-inx{ margin-top: 0.9rem; float: left; margin-left: 1rem; background: url(../images/t-header.png) no-repeat 0 -0.1rem; background-size: 220%; }
+h1 a.t-mune,h1 a.t-no,h1 a.t-del{
+margin-top: .9rem; float: right; margin-right: 1rem; background: url(../images/t-header.png) no-repeat -2.8rem -0.1rem; background-size: 220%; }
+h1 a.t-mune,h1 a.t-no{background:none;}
+h1 a.t-list{background: url(../images/box.png) no-repeat; background-size: 300%;}
+h1 a.t-inx{background:url(../images/index.png) no-repeat; background-size:300%;}
+/*搜索*/
+.main-search { display: none; }
+.main-search .hd { height: 44px; width: 100%; background: #ec5151; position: relative; }
+.main-search .hd { color: #fff; }
+.main-search .hd .ico_10 { background: url(../images/t-flow.png) no-repeat 0 -0.1rem; background-size: 200%; width: 2.2rem; position: absolute; left: 0; top: 50%; margin-top: -1.2rem; margin-left: 0.8rem; height: 2.2rem; display: block; padding: 0 0.2rem; text-indent: -999em; overflow: hidden; }
+.main-search .hd h2 { height: 44px; line-height: 44px; width: 100%; font-size: 18px; text-shadow: 0 1px 0 #f03030; text-align: center; color: #fff; }
+.main-search .bd { margin-top: 0.5rem; }
+.main-search .bd .search_box { width: 100%; overflow: hidden; }
+.main-search .bd .search_box .content { position: relative; height: 3rem; line-height: 3rem; width: 100%; }
+.main-search .bd .search_box .content a { position: absolute; display: block; font-size: 1.3rem; float: left; left: .8rem;
+height: 3rem; line-height: 3rem; background: #5a5a5a; color: #ffffff; text-align: center; width: 6rem; }
+.main-search .bd .search_box .content .mid_inputs { background: #fff; position: absolute; left: 7.5rem; right: 3.8rem; float: left; }
+.main-search .bd .search_box .content .mid_inputs .text,.inputSear { border: none; display: block; width: 100%; height: 3rem; padding:0 0.5rem; box-sizing:border-box; float: left; }
+.main-search .bd .search_box .content .sousuo_bd,.search-btn{ border: none; position: absolute; right: 0.8rem;
+width: 3rem; height: 3rem; display: block; background: url(../images/ss_bd.png) no-repeat center center #ebebeb; background-size: 100%; }
+.main-search .serc { padding: 0 0.8rem; margin-top: 1rem; }
+.main-search .serc a { display: block; float: left; padding: 0.5rem 0.8rem; background: #FFF; margin: 0.2rem; }

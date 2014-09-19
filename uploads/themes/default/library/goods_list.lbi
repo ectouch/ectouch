@@ -1,0 +1,36 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="is-mune">
+  <form method="GET" class="sort" name="listform">
+  <div class="is-mune-title">
+  <a class="{if $sort == 'goods_id' && $order == 'DESC'}select{/if}" href="{:url('Category/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort=goods_id&order=DESC&keywords={$keywords}#goods_list" class="">{$lang.sort_default}</a>
+  <a class="{if $sort =='sales_volume' && $order == 'DESC'}xl select{elseif $sort =='sales_volume' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('category/index')}&id={$id}&display={$display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=sales_volume&order=<!-- {if $sort == 'sales_volume' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->&keywords={$keywords}#goods_list" class="xl">{$lang.sort_sales}<i></i></a>
+  <a class="{if $sort =='click_count' && $order == 'DESC'}xl select{elseif $sort =='click_count' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('category/index')}&id={$id}&display={$display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=click_count&order=<!-- {if $sort == 'click_count' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->&keywords={$keywords}#goods_list" class="xl">{$lang.sort_popularity}<i></i></a>
+  <a class="{if $sort =='shop_price' && $order == 'DESC'}xl select{elseif $sort =='shop_price' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('Category/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort=shop_price&order=<!-- {if $sort == 'shop_price' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->&keywords={$keywords}#goods_list" class="xl">{$lang.sort_price}<i></i></a>
+  <a class="mune-sx"><i></i></a>
+</div>
+  <div class="more_wrapper">
+    <div class="more_category" id="categoryFloat"> 
+      <!--{foreach from=$category item=cat name=no}--> 
+      <a href="{$cat.url}" class="select" >{if $cat.cat_id}{$cat.name|escape:html}{else}{$cat.name|escape:html}{/if}</a> 
+      <!--{/foreach}--> 
+    </div>
+  </div>
+    <input type="hidden" name="category" value="{$category}" />
+    <input type="hidden" name="display" value="{$pager.display}" id="display" />
+    <input type="hidden" name="brand" value="{$brand_id}" />
+    <input type="hidden" name="price_min" value="{$price_min}" />
+    <input type="hidden" name="price_max" value="{$price_max}" />
+    <input type="hidden" name="filter_attr" value="{$filter_attr}" />
+    <input type="hidden" name="page" value="{$page}" />
+    <input type="hidden" name="sort" value="{$sort}" />
+    <input type="hidden" name="order" value="{$order}" />
+    <input type="hidden" name="keywords" value="{$keywords}" />
+  </form>
+</div>
+<div class="inx-tj <!-- {if C('show_order_type')==1} --> good-list<!-- {/if} -->" id="J_ItemList"  >
+<li class="single_item"></li>
+  <a href="javascript:;" class="get_more"></a> 
+</div>
+  <!-- {if $category > 0} -->
+</form>
+<!-- {/if} -->

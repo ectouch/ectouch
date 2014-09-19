@@ -1,0 +1,24 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<!-- {if $step eq "cart"} 购物车列表-->
+<!-- #BeginLibraryItem "/flow_cart.dwt" --><!-- #EndLibraryItem -->
+<!-- {/if} -->
+
+<!-- {if $step eq "label_favourable"} 购物车中的优惠活动 -->
+<!-- #BeginLibraryItem "/flow_label_favourable.dwt" --><!-- #EndLibraryItem -->
+<!-- {/if} -->
+
+<!-- {if $step eq "checkout"} 开始订单确认界面 -->
+<!-- #BeginLibraryItem "/flow_checkout.dwt" --><!-- #EndLibraryItem -->
+<!-- {/if} -->
+
+<!-- {if $step eq "done"} 订单提交成功 -->
+<!-- #BeginLibraryItem "/flow_done.dwt" --><!-- #EndLibraryItem -->
+<!-- {/if} -->
+
+<!-- {if $step eq "consignee"} 开始收货人信息填写界面 -->
+<!-- #BeginLibraryItem "/flow_consignee.dwt" --><!-- #EndLibraryItem -->
+<!-- {/if} --> 
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> 
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+</body>
+</html>

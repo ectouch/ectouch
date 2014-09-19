@@ -1,0 +1,32 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem --><body>
+<div style="background:#fff;">
+  <h1 class="f-h1 cate-h1"><a class="t-history" onClick="javascript:history.go(-1)">{$lang.back_up_page}</a>{$title}<a  class="t-mune" href="javascript:void(0)" >{$lang.search}</a></h1>
+  <div class="category-list">
+    <ul>
+    <!--{foreach from=$category item=cat name=no}-->
+      <li class="shensuo">
+        <div class="c-l-title"> <img src="{$cat.cat_image}">
+          <dl>
+            <dt>{$cat.name|escape:html}</dt>
+            <dd>
+            <!--{foreach from=$cat.cat_id item=child name=no1}-->
+            <!--{if $smarty.foreach.no1.index lt 3}-->
+            <!--{if $smarty.foreach.no1.index gt 0}-->/<!--{/if}-->
+            {$child.name|escape:html|truncate:5,false} 
+            <!--{/if}-->
+            <!--{/foreach}-->
+            </dd>
+          </dl>
+        </div>
+        <ul><!--{foreach from=$cat.cat_id item=child name=no1}-->
+          <a href="{$child.url}">{$child.name|escape:html}</a>
+          <!--{/foreach}--> 
+        </ul>
+      </li>
+      <!--{/foreach}-->
+    </ul>
+  </div>
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

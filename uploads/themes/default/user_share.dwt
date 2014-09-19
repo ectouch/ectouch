@@ -1,0 +1,78 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+<!-- {if $share.on eq 1} --> 
+<!-- {if !$goodsid || $goodsid eq 0} -->
+  <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
+    <tr align="center" class="first-tr">
+      <td>{$lang.affiliate_lever}</td>
+      <td>{$lang.affiliate_num}</td>
+      <td>{$lang.level_point}</td>
+      <td>{$lang.level_money}</td>
+    </tr>
+    <!-- {foreach from=$affdb key=level item=val name=affdb} -->
+    <tr align="center">
+      <td>{$level}</td>
+      <td>{$val.num}</td>
+      <td>{$val.point}</td>
+      <td>{$val.money}</td>
+    </tr>
+    <!-- {/foreach} -->
+  </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
+    <tr align="center" class="first-tr">
+      <td bgcolor="#ffffff">{$lang.order_number}</td>
+      <td bgcolor="#ffffff">{$lang.affiliate_money}</td>
+      <td bgcolor="#ffffff">{$lang.affiliate_point}</td>
+      <td bgcolor="#ffffff">{$lang.affiliate_mode}</td>
+      <td bgcolor="#ffffff">{$lang.affiliate_status}</td>
+    </tr>
+    <!-- {foreach from=$logdb item=val name=logdb} -->
+    <tr align="center">
+      <td bgcolor="#ffffff">{$val.order_sn}</td>
+      <td bgcolor="#ffffff">{$val.money}</td>
+      <td bgcolor="#ffffff">{$val.point}</td>
+      <td bgcolor="#ffffff"><!-- {if $val.separate_type == 1 || $val.separate_type === 0} -->{$lang.affiliate_type.$val.separate_type}<!-- {else} -->{$lang.affiliate_type.$affiliate_type}<!-- {/if} --></td>
+      <td bgcolor="#ffffff">{$lang.affiliate_stats[$val.is_separate]}</td>
+    </tr>
+    {foreachelse}
+	<tr><td colspan="5" align="center" bgcolor="#ffffff">{$lang.no_records}</td></tr>
+    <!-- {/foreach} -->
+    <!-- {if $logdb} -->
+    <tr>
+    <td colspan="5" align="right">
+        <!-- {if $page} -->
+        <a href="{$page.page_prev}">{$lang.page_prev}</a><a href="{$page.page_next}">{$lang.page_next}</a>
+        <!-- {/if} -->
+    </td>
+    </tr>
+    <!-- {/if} -->
+  </table>
+  <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
+    <tr>
+        <td >
+        	<div class="bdsharebuttonbox" data-tag="share_1" style="width:12em;margin:0 auto;">
+				<a class="bds_qzone" data-cmd="qzone" href="#"></a>
+				<a class="bds_tsina" data-cmd="tsina"></a>
+				<a class="bds_bdhome" data-cmd="bdhome"></a>
+				<a class="bds_renren" data-cmd="renren"></a>
+			</div>
+        </td>
+    </tr>
+  </table>
+</div>
+<!-- {/if} --> 
+<!-- {/if} -->
+<script>
+	window._bd_share_config = {
+		common : {
+			bdText : '{$shopdesc}',
+			bdUrl : '{$shopurl}',
+			bdPic : '{$shopurl_qr}'
+		},
+		share : [{
+			"bdSize" : 32
+		}]
+	}
+	with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->

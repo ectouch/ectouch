@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * ECTouch Open Source Project
+ * ============================================================================
+ * Copyright (c) 2012-2014 http://ectouch.cn All rights reserved.
+ * ----------------------------------------------------------------------------
+ * 文件名称：IndexModel.class.php
+ * ----------------------------------------------------------------------------
+ * 功能描述：ECTOUCH 安装模型
+ * ----------------------------------------------------------------------------
+ * Licensed ( http://www.ectouch.cn/docs/license.txt )
+ * ----------------------------------------------------------------------------
+ */
+
+/* 访问控制 */
+defined('IN_ECTOUCH') or die('Deny Access');
+
+class InstallModel extends BaseModel {
+
+    /**
+     * 导入数据库文件
+     * @param type $data
+     * @param type $sqlArray
+     * @return boolean
+     */
+    public function runSql($data, $sqlArray = array()) {
+        $model = new EcModel($data);
+        if (is_array($sqlArray))
+            foreach ($sqlArray as $sql) {
+                if (!@$model->db->query($sql)) {
+                    return false;
+                }
+            }
+        return true;
+    }
+
+    //获取字段
+    public function get_column($data, $_table = '', $_column = '') {
+        $model = new EcModel($data);
+        $sql = "describe `" . $_table . "` `" . $_column . "`";
+        $resource = $model->query($sql);
+        $result = mysql_fetch_array($resource);
+        if (is_array($result)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 筛选touch_shop_config字段
+     * @param type $data
+     * @param type $_table
+     */
+    public function filter_column($data, $_table = '') {
+
+        $model = new EcModel($data);
+        $column = array('shop_info', 'display', 'basic', 'goods', 'sms', 'shop_name', 'shop_title', 'shop_desc', 'shop_keywords', 'shop_logo', 'shop_reg_closed', 'shop_url', 'no_picture', 'stats_code', 'register_points', 'search_keywords', 'top_number', 'history_number', 'comments_number', 'bought_goods', 'article_number', 'goods_name_length', 'goods_name_length', 'page_size', 'sort_order_type', 'sort_order_method', 'show_order_type', 'attr_related_number', 'related_goods_number', 'article_page_size', 'show_goodssn', 'show_brand', 'show_goodsweight', 'show_goodsnumber', 'show_addtime', 'goodsattr_style', 'show_marketprice', 'sms_ecmoban_user', 'sms_ecmoban_password', 'sms_shop_mobile', 'sms_order_placed', 'sms_order_payed', 'sms_order_shipped', 'sms_signin','user_notice');
+        $result = $model->table($_table)->field('code')->where()->select();
+        foreach ($result as $key => $value) {
+
+            if (!in_array($value['code'], $column)) {
+                //删除touch_shop_config表
+                $model->table($_table)->where(array('code' => $value['code']))->delete();
+            }
+        }
+        return true;
+    }
+
+}

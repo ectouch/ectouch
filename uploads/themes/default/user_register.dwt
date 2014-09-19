@@ -1,0 +1,123 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+<section class="wrap">
+  <div id="leftTabBox" class="loginBox">
+    <div class="bd">
+      <ul class="o-radio">
+      	<!--{if $enabled_sms_signin eq 1} 支持手机短信功能-->
+        <nav class="register">
+          <div class="cur"><a href="javascript:void(0)">{$lang.mobile_login}</a></div>
+          <div><a href="javascript:void(0)">{$lang.emaill_login}</a></div>
+        </nav>
+        <div class="me_re">
+        <form action="{:url('user/register')}" method="post" name="formUser" onsubmit="return register2();">
+          <input type="hidden" name="flag" id="flag" value="register" />
+          <div class="table-box">
+            <dl>
+              <dd>
+                <input placeholder="{$lang.no_mobile}" class="inputBg" name="mobile" id="mobile_phone" type="text" />
+              </dd>
+            </dl>        
+            <dl>
+              <dd class="yzm">
+              <div>
+                <input placeholder="{$lang.no_code}" class="inputBg" name="mobile_code" id="mobile_code" type="text" />
+                </div>
+                <input id="zphone" name="sendsms" type="button" value="{$lang.get_code}" onClick="sendSms();" class="u-btn" />
+              </dd>
+              <dd>
+              
+              </dd>
+            </dl>
+            <dl>
+              <dd>
+                <input id="agreement" name="agreement" type="checkbox" value="1" checked="checked" style="vertical-align:middle; zoom:200%;" /><label for="agreement"> {$lang.agreement}</label>
+              </dd>
+            </dl>
+            <dl>
+              <dd>
+                <input name="act" type="hidden" value="act_register" />
+                <input name="enabled_sms" type="hidden" value="1" />
+                <input type="hidden" name="sms_code" value="{$sms_code}" id="sms_code" />
+                <input type="hidden" name="back_act" value="{$back_act}" />
+                <input name="Submit" type="submit" value="{$lang.register}" class="u-btn" />
+              </dd>
+            </dl>
+          </div>
+        </form>
+      </div>
+        <script type="text/javascript" src="__PUBLIC__/js/sms.js"></script>
+        <script type="text/javascript">
+        $(function(){
+          $(".register div a").click(function(){
+            var index = $(".register div a").index(this);
+            $(".register div").removeClass("cur");
+            $(this).parent("div").addClass("cur");
+            $(".me_re:eq("+ index +")").show().siblings("div").hide();
+          });
+        })
+        </script>
+        <!--{/if}-->
+        <div class="me_re" <!-- {if $enabled_sms_signin eq 1} style="display:none;" {/if}-->>
+        <form action="{:url('user/register')}" method="post" name="formUser" class="validforms">
+          <input type="hidden" name="flag" id="flag" value="register" />
+          <div class="table-box">
+            <dl>
+              <dd>
+                <input placeholder="{$lang.no_emaill}" class="inputBg" name="email" type="text" id="email" datatype="e" />                
+              </dd>
+            </dl>
+            <dl>
+              <dd class="lr pass">
+              	<div>
+                    <input placeholder="{$lang.no_password}" class="inputBg" name="password" id="password1" type="password" datatype="*6-16" />
+                    <input placeholder="{$lang.no_password}" class="inputBg" id="password_text" type="text" style="display:none;" />
+                    <a class="c-btn3 show click" href="javascript:;">}{$lang.need}</a>
+                </div>
+              </dd>
+            </dl>
+            <!-- 判断是否启用验证码{if $enabled_captcha} -->
+            <dl>
+              <dd class="lr yzm">
+              	<div><input placeholder="{$lang.no_code}" class="inputBg" name="captcha" id="captcha" type="text" datatype="*" /></div><img src="{:url('public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha"  onClick="this.src='{:url('public/captcha')}&t='+Math.random()" />
+              </dd>
+            </dl>
+            <!--{/if}-->
+            <dl>
+              <dd>
+                <input id="agreement" name="agreement" type="checkbox" value="1" checked="checked" style="vertical-align:middle; zoom:200%;" /><label for="agreement"> {$lang.agreement}</label>
+              </dd>
+            </dl>
+            <dl>
+              <dd>
+                <input name="act" type="hidden" value="act_register" />
+                <input name="enabled_sms" type="hidden" value="0" />
+                <input type="hidden" name="back_act" value="{$back_act}" />
+                <input name="Submit" type="submit" value="{$lang.next}" class="u-btn" />
+              </dd>
+            </dl>
+          </div>
+        </form>
+        </div>
+      </ul>
+    </div>
+  </div>
+</section>
+<script type="text/javascript">
+$(function(){
+    $(".click").click(function(){
+        if($(this).hasClass("show")){
+          var pwd = $("#password1").val();
+          $("#password1").hide();
+          $("#password_text").val(pwd).show();
+          $(this).removeClass("show").addClass("hide").html("隐藏");
+        }
+        else{
+          var pwd_text = $("#password_text").val();
+          $("#password_text").hide();
+          $("#password1").val(pwd_text).show();
+          $(this).removeClass("hide").addClass("show").html("显示");
+        }
+  });
+})
+</script>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->

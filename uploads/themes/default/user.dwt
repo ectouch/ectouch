@@ -1,0 +1,161 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+  <div class="userbg">
+    <div class="user"> <img src="{$info.headimgurl}" />
+      <dl>
+        <dt>{$info.username} | <a href="{:url('user/logout')}">{$lang.label_logout}</a></dt>
+        <dd>{$rank_name}</dd>
+        <dd>{$info.integral}</dd>
+      </dl>
+      <p><a href="{:url('user/msg_list')}">{$user_notice}<i <!-- {if $new_msg} -->class="yd"<!-- {/if} -->></i></a></p>
+    </div>
+  </div>
+  <div class="u-list">
+    <ul>
+      <li>
+        <dl>
+          <dt><a href="{:url('user/not_pay_order_list')}"><img src="__TPL__/images/u-dfk.png" width="120" height="120"></a></dt>
+          <dd><a href="{:url('user/not_pay_order_list')}">{$lang.not_pay_list}</a></dd>
+        </dl>
+      </li>
+      <li>
+        <dl>
+          <dt><a href="{:url('user/order_list')}"><img src="__TPL__/images/u-dd.png" width="120" height="120"></a></dt>
+          <dd><a href="{:url('user/order_list')}">{$lang.order_list_lnk}</a></dd>
+        </dl>
+      </li>
+      <li>
+        <dl>
+          <dt><a href="{:url('user/address_list')}"><img src="__TPL__/images/u-shdz.png" width="120" height="120"></a></dt>
+          <dd><a href="{:url('user/address_list')}">{$lang.label_address}</a></dd>
+        </dl>
+      </li>
+      <li>
+        <dl>
+          <dt><a href="{:url('user/account_detail')}"><img src="__TPL__/images/u-myzc.png" width="120" height="120"></a></dt>
+          <dd><a href="{:url('user/account_detail')}">{$lang.label_user_surplus}</a></dd>
+        </dl>
+      </li>
+      <li>
+        <dl>
+          <dt><a href="{:url('user/profile')}"><img src="__TPL__/images/u-zhzx.png" width="120" height="120"></a></dt>
+          <dd><a href="{:url('user/profile')}">{$lang.user_center}</a></dd>
+        </dl>
+      </li>
+      <li>
+        <dl>
+          <dt><a href="{:url('user/edit_password')}"><img src="__TPL__/images/u-xgmm.png" width="120" height="120"></a></dt>
+          <dd><a href="{:url('user/edit_password')}">{$lang.edit_password}</a></dd>
+        </dl>
+      </li>
+       <li>
+        <dl>
+          <dt><a href="{:url('user/service')}"><img src="__TPL__/images/u-kefu.png" width="120" height="120"></a></dt>
+          <dd><a href="{:url('user/service')}">{$lang.user_service}</a></dd>
+        </dl>
+      </li>
+      <li>
+        <dl>
+          <dt><a href="{:url('user/share')}"><img src="__TPL__/images/u-fx.png" width="120" height="120"></a></dt>
+          <dd><a href="{:url('user/share')}">{$lang.label_share}</a></dd>
+        </dl>
+      </li>
+    </ul>
+  </div>
+  <div class="gwc-tab-xq u-tab" id="gwc-tab-xq">
+    <div class="hd">
+      <ul>
+        <li><a href="javascript:void(0)">{$lang.label_collection}</a></li>
+        <li><a href="javascript:void(0)">{$lang.label_comment}</a></li>
+        <li><a href="javascript:void(0)">{$lang.user_history}</a></li>
+      </ul>
+    </div>
+
+    <div class="bd" id="gwc-tab-xq-bd"><!-- 添加id，js用到 -->
+      <div class="con"><!-- 高度自适应需添加外层 -->
+        <!--{if $goods_list}-->
+        <ul>
+        <!-- {foreach from=$goods_list item=val} -->
+        <li> <a href="{:url('goods/index', array('id'=>$this->_var[val]['goods_id']))}"><img src="{$val.goods_thumb}" width="120" height="120"></a>
+            <dl>
+              <dt><a href="{:url('goods/index', array('id'=>$this->_var[val]['goods_id']))}">{$val.goods_name}</a></dt>
+              <dd>{$val.shop_price}</dd>
+            </dl>
+            <p class="u-l-del del"><a href="{:url('user/delete_collection', array('rec_id'=>$this->_var['val']['rec_id']))}"></a></p>
+          </li>
+          <!-- {/foreach} -->
+        </ul>
+        <!--{else}-->
+          <p class="n-list">{$lang.no_data}</p>
+        <!--{/if}-->
+      </div>
+       <div class="con"><!-- 高度自适应需添加外层 -->
+       <!--{if $comment_list}-->
+        <ul>
+         <!-- {foreach from=$comment_list item=val} -->
+         <li>
+          <dl>
+            <dt><!-- {if $val.comment_type eq 0} --> {$lang.goods_comment}<!-- {else} -->{$lang.article_comment}<!-- {/if} -->：<a href="{:url('goods/index', array('id'=>$this->_var[val]['id_value']))}">{$val.cmt_name}</a> <b>{$val.formated_add_time}</b></dt>
+            <dd>{$val.content}</dd>
+            <!-- {if $val.reply_content} --><dd>{$lang.reply_comment}：{$val.reply_content}</dd><!-- {/if} -->
+          </dl>
+          <p class="u-l-del del"><a href="{:url('user/delete_comment',array('id'=>$this->_var[val][comment_id]))}"></a></p>
+          </li>
+          <!-- {/foreach} -->
+        </ul>
+        <!--{else}-->
+          <p class="n-list">{$lang.no_data}</p>
+        <!--{/if}-->
+      </div>
+      <div class="con"><!-- 高度自适应需添加外层 -->
+      <!--{if $history}-->
+        <ul>
+        <!-- {foreach from=$history item=val} -->
+          <li> <a href="{:url('goods/index', array('id'=>$this->_var[val]['goods_id']))}"><img src="{$val.goods_thumb}" width="120" height="120"></a>
+            <dl>
+              <dt><a href="{:url('goods/index', array('id'=>$this->_var[val]['goods_id']))}">{$val.goods_name}</a></dt>
+              <dd>{$val.shop_price}</dd>
+            </dl>
+          </li>
+        <!-- {/foreach} -->
+        </ul>
+        <p class="history_clear del"><a href="{:url('user/clear_history')}">{$lang.clear_history}</a></p>
+        <!--{else}-->
+        <p class="n-list">{$lang.not_history}<a href="{:url('category/index')}">{$lang.enter}</a>{$lang.scan_goods}</p>
+        <!--{/if}-->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript">
+    $(function(){
+        $(".del a").click(function(){
+            if(!confirm('您确定要删除吗？')){
+                return false;
+            }
+            var obj = $(this);
+            var url = obj.attr("href");
+            $.get(url, '', function(data){
+                if(1 == data){
+                    if(obj.parent().hasClass("history_clear")){
+                        obj.closest(".con").html("<p class=n-list>暂无浏览记录，点击<a href={:url('category/index')}>进入</a>浏览商品</p>");
+                        obj.parent().siblings("ul").remove();
+                    } 
+                    else{
+                        if(obj.closest("li").siblings("li").length == 0){
+                            obj.closest("ul").html("<p class=n-list>{$lang.no_data}</p>");
+                        }
+                        obj.closest("li").remove();
+            
+                    }
+                }
+                else{
+                    alert("删除失败");
+                }
+            });
+            return false;
+    
+    });
+    })
+</script>

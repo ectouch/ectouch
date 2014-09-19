@@ -1,0 +1,37 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript">
+	  {foreach from=$lang.profile_js item=item key=key}
+		var {$key} = "{$item}";
+	  {/foreach}
+	</script>
+<div class="o-detail">
+  <form name="formEdit" action="{:url('user/profile')}" method="post" onSubmit="return userEdit()">
+    <ul class="o-info">
+      <li><b>{$lang.email}</b>
+        <input name="email" type="text" placeholder="{$lang.no_emaill}"  value="{$profile.email}"  />
+      </li>
+      {foreach from=$extend_info_list item=field} 
+      <!-- {if $field.id eq 6} -->
+      <li><b>{$lang.passwd_question}</b>
+        <select name='sel_question'>
+          <option value='0'>{$lang.sel_question}</option>
+          {html_options options=$passwd_questions selected=$profile.passwd_question}
+        </select>
+      </li>
+      <li><b>{$lang.passwd_answer}</b>
+        <input placeholder="{$lang.passwd_answer}" name="passwd_answer" type="text" value="{$profile.passwd_answer}" />
+      </li>
+      <!-- {else} -->
+      <li><b>{$field.reg_field_name}</b>
+        <input placeholder="{$field.reg_field_name}"  name="extend_field{$field.id}" type="text" value="{$field.content}"/>
+      </li>
+      <!-- {/if} --> 
+      {/foreach}
+    </ul>
+    <input name="act" type="hidden" value="profile" />
+    <input name="submit" type="submit" value="{$lang.confirm_edit}" class="o-submit" />
+  </form>
+</div>
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->

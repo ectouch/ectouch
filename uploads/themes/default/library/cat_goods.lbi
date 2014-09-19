@@ -1,0 +1,40 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--循环分类下商品 begin-->
+<div class="blank2"></div>
+<section class="item_show_box1 box1 region">
+    <header>
+        <span>
+            {$goods_cat.name|escape:html}
+        </span>
+        <a href="{$goods_cat.url}" class="ico_04 more">
+        </a>
+    </header>
+    <div class="flex flex-f-row">
+        <!-- {foreach name=goods from=$cat_goods item=goods}-->
+        <div class="goodsItem flex_in">
+            <a href="{$goods.url}">
+                <img src="{$site_url}{$goods.thumb}" alt="{$goods.name|escape:html}" />
+            </a>
+            <div style="text-align:center">
+            <!-- {if $goods.promote_price neq ""} --> 
+            <span class="price_s"> {$goods.promote_price} </span> 
+            <!-- {else}--> 
+            <span class="price_s"> {$goods.shop_price} </span> 
+            <!--{/if}-->
+            <br>{$goods.name|escape:html|truncate:12}
+            </div>
+        </div>
+         <!--{if $smarty.foreach.goods.iteration%3 eq 0}--></div><div class="flex flex-f-row"><!--{/if}-->
+        <!-- {/foreach} -->
+    </div>
+    <div class="item_tags clearfix">
+        <!-- {if $goods_cat.cat_id} -->
+        <!-- {foreach from=$goods_cat.cat_id item=rec_cat name=f} -->
+        <A href="category.php?id={$rec_cat.id}">
+            {$rec_cat.name|escape:html}
+        </A>
+        <!--{/foreach}-->
+        <!--{/if}-->
+    </div>
+</section>
+<!--循环分类下商品end-->

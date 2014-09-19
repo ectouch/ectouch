@@ -1,0 +1,28 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<h1 class="f-h1 cate-h1"><a class="t-inx" href="index.php">{$lang.home}</a>{$lang.shophelp}<a class="t-no t-list" href="{:url('article/index')}">{$lang.article_cat}</a></h1>
+<div class="search-section">
+  <form action="{:url('article/art_list')}" name="search_form" method="post" class="article_search">
+    <div class="d-inputSear">
+      <input autocomplete="off" placeholder="{$lang.art_no_keywords}"  name="keywords" id="requirement" class="J_SearchInput inputSear" type="text">
+    </div>
+    <input name="id" type="hidden" value="{$cat_id}" />
+    <input name="cur_url" id="cur_url" type="hidden" value="" />
+    <button type="button" disabled="true" class="input-delete J_InputDelete"> <span></span> </button>
+    <button type="submit"  class="search-btn">{$lang.search}</button>
+  </form>
+</div>
+<div class="detail-content">
+  <h2>{$article.title}</h2>
+  <div>
+    <p> {$article.content} </p>
+  </div>
+</div>
+<div class="q-list J_List" id="J_ItemList">
+  <ol class="single_item">
+  </ol>
+  <a href="javascript:;" class="get_more"></a> </div>
+<script type="text/javascript">
+get_asynclist("{:url('article/asynclist')}&id={$id}&page={$page}&sort={$sort}&keywords={$keywords}" , '__TPL__/images/loader.gif');
+</script> 
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body></html>

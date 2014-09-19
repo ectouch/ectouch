@@ -1,0 +1,61 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div id="ECS_ORDERTOTAL">
+<dl>
+<dd class="dd3 c999">
+<!-- {if $smarty.session.user_id > 0 and ($config.use_integral or $config.use_bonus)} -->
+    {$lang.complete_acquisition} 
+      <!-- {if $config.use_integral} 是否使用积分-->
+      <font class="f4_b">{$total.will_get_integral}</font> {$points_name}
+      <!-- {/if} -->
+      <!-- {if $config.use_integral and $config.use_bonus} 是否同时使用积分红包-->，{$lang.with_price}  <!-- {/if} -->
+      <!-- {if $config.use_bonus} 是否使用红包-->
+       <font class="f4_b">{$total.will_get_bonus}</font>{$lang.de}{$lang.bonus}。
+      <!-- {/if} -->  <br/>  
+<!-- {/if} -->
+
+{$lang.goods_all_price}: <font class="f4_b">{$total.goods_price_formated}</font><br />
+<!-- {if $total.discount gt 0} 折扣 -->
+- {$lang.discount}: <font class="f4_b">{$total.discount_formated}</font><br />
+<!-- {/if} -->
+<!-- {if $total.tax gt 0} 税 -->
++ {$lang.tax}: <font class="f4_b">{$total.tax_formated}</font><br />
+<!-- {/if} -->
+<!-- {if $total.shipping_fee > 0} 配送费用 -->
++ {$lang.shipping_fee}: <font class="f4_b">{$total.shipping_fee_formated}</font><br />
+<!-- {/if} -->
+<!-- {if $total.shipping_insure > 0} 保价费用 -->
++ {$lang.insure_fee}: <font class="f4_b">{$total.shipping_insure_formated}</font><br />
+<!-- {/if} -->
+<!-- {if $total.pay_fee > 0} 支付费用 -->
++ {$lang.pay_fee}: <font class="f4_b">{$total.pay_fee_formated}</font><br />
+<!-- {/if} -->
+<!-- {if $total.pack_fee > 0} 包装费用-->
++ {$lang.pack_fee}: <font class="f4_b">{$total.pack_fee_formated}</font><br />
+<!-- {/if} -->
+<!-- {if $total.card_fee > 0} 贺卡费用-->
++ {$lang.card_fee}: <font class="f4_b">{$total.card_fee_formated}</font><br />
+<!-- {/if} --> 
+<!-- {if $total.surplus > 0 or $total.integral > 0 or $total.bonus > 0} 使用余额或积分或红包 -->
+  <!-- {if $total.surplus > 0} 使用余额 -->
+  - {$lang.use_surplus}: <font class="f4_b">{$total.surplus_formated}</font><br />
+  <!-- {/if} -->
+  <!-- {if $total.integral > 0} 使用积分 -->
+  - {$lang.use_integral}: <font class="f4_b">{$total.integral_formated}</font><br />
+  <!-- {/if} -->
+  <!-- {if $total.bonus > 0} 使用红包 -->
+  - {$lang.use_bonus}: <font class="f4_b">{$total.bonus_formated}</font><br />
+  <!-- {/if} -->
+<!-- {/if} 使用余额或积分或红包 -->
+
+{$lang.total_fee}: <font class="f4_b">{$total.amount_formated}</font><br />
+{if $is_group_buy}
+{$lang.notice_gb_order_amount}{/if}
+<!--{if $total.exchange_integral }消耗积分--> 
+{$lang.notice_eg_integral}<font class="f4_b">{$total.exchange_integral}</font><br />
+<!--{/if}-->
+</dd>
+</dl>
+
+
+ 
+</div>

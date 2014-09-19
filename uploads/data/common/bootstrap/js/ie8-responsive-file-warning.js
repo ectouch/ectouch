@@ -1,0 +1,1 @@
+if (window.location.protocol == 'file:') alert("为了您有更好的体验\n请使用chrome或firefox浏览器。");

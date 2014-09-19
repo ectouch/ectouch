@@ -1,0 +1,25 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 商品列表 start-->
+<!--{if $hot_goods}-->
+<li><a href="{$hot_goods.url}"><img src="{$hot_goods.goods_img}" alt="{$hot_goods.name}"></a>
+<dl>
+  <a href="{$hot_goods.url}"></a>
+  <dt><a href="{$hot_goods.url}">{$hot_goods.name}</a></dt>
+  <dd class="jj"></dd>
+  <dd class="price">{$lang.price}:<b><!--{if $hot_goods.promote_price}-->{$hot_goods.promote_price}<!--{else}-->{$hot_goods.shop_price}<!--{/if}--></b> <em>{$hot_goods.market_price}</em> 
+    <!--{if $hot_goods.promotion} --> 
+    <!-- {foreach from=$hot_goods.promotion item=promotion} --> 
+    <!--{if $promotion.type == 'group_buy'}--><i class="tg">{$lang.group_buy_act}</i> 
+    <!--{elseif $promotion.act_type == 0}--> <i class="mz"> {$lang.favourable_mz}</i> 
+    <!--{elseif $promotion.act_type == 1}--> <i class="mj"> {$lang.favourable_mj}</i> 
+    <!--{elseif $promotion.act_type == 2}--> <i class="zk"> {$lang.favourable_zk}</i> 
+    <!--{/if}--> 
+    <!--{/foreach}--> 
+    <!--{/if}--> 
+  </dd>
+  <dd class="xin {if $hot_goods.mysc!= 0} select-xin{/if}"><span><em>{$hot_goods.sc}</em>{$lang.like_num}</span> <b>{$lang.sort_sales}{$hot_goods.sales_count}{$lang.piece}</b></dd>
+</dl>
+</li>
+<!-- {/if}--> 
+<!-- 商品列表 end--> 
+

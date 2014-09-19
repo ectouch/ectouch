@@ -1,0 +1,32 @@
+<script type="text/javascript" src="__PUBLIC__/js/region.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/shopping_flow.js"></script>
+<script type="text/javascript">
+          region.isAdmin = false;
+          {foreach from=$lang.flow_js item=item key=key}
+          var {$key} = "{$item}";
+          {/foreach}
+
+          {literal}
+          onload = function() {
+            if (!document.all)
+            {
+              document.forms['theForm'].reset();
+            }
+          }
+          {/literal}
+        </script>
+<h1 class="f-h1"><a class="t-history" onClick="javascript:history.go(-1)">{$lang.back_up_page}</a>{$title}<a  class="t-mune" href="javascript:void(0)">{$lang.menu}</a></h1>
+<header class="nidx-header" id="nidx-header"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </header>
+<div class="wrap"> 
+  <!-- 如果有收货地址，循环显示用户的收获地址 --> 
+  <!-- {foreach from=$consignee_list item=consignee key=sn} -->
+  <div class="o-detail">
+    
+      <form action="{:url('flow/consignee')}" method="post" name="theForm" id="theForm" onSubmit="return checkConsignee(this)">
+      	<ul class="o-info">
+        	<!-- #BeginLibraryItem "/Library/consignee.lbi" --><!-- #EndLibraryItem -->
+        </ul>
+      </form>
+  </div>
+  <!-- {/foreach} --> 
+</div>

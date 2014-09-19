@@ -1,0 +1,174 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 商品列表 start-->
+<!--{if $goods}-->
+<a href="{$goods.url}"><img src="{$goods.goods_thumb}" alt="{$goods.name}"></a>
+<dl>
+  <a href="{$goods.url}"></a>
+  <dt><a href="{$goods.url}">{$goods.name}</a></dt>
+  <dd class="jj"></dd>
+  <dd class="price">{$lang.price}:<b><!--{if $goods.promote_price}-->{$goods.promote_price}<!--{else}-->{$goods.shop_price}<!--{/if}--></b> <em>{$goods.market_price}</em> 
+    <!--{if $goods.promotion} --> 
+    <!-- {foreach from=$goods.promotion item=promotion} --> 
+    <!--{if $promotion.type == 'group_buy'}--><i class="tg">{$lang.group_buy_act}</i> 
+    <!--{elseif $promotion.act_type == 0}--> <i class="mz"> {$lang.favourable_mz}</i> 
+    <!--{elseif $promotion.act_type == 1}--> <i class="mj"> {$lang.favourable_mj}</i> 
+    <!--{elseif $promotion.act_type == 2}--> <i class="zk"> {$lang.favourable_zk}</i> 
+    <!--{/if}--> 
+    <!--{/foreach}--> 
+    <!--{/if}--> 
+  </dd>
+  <dd class="xin {if $goods.mysc!= 0} select-xin{/if}"><span><em>{$goods.sc}</em>{$lang.like_num}</span> <b>{$lang.sort_sales}{$goods.sales_count}{$lang.piece}</b></dd>
+</dl>
+<!-- {/if}--> 
+<!-- 商品列表 end--> 
+
+<!-- 品牌 start--> 
+<!--{if $brand}-->
+<li>
+  <p class="a-img"><a href="{$brand.url}"><img src="{$brand.brand_banner}"></a><span>{$brand.brand_name}</span></p>
+</li>
+<!-- {/if}--> 
+<!-- 品牌end--> 
+
+<!-- 品牌商品 start--> 
+<!--{if $brand_goods}--> 
+<a href="{$brand_goods.url}"><img src="{$brand_goods.goods_thumb}" alt="{$brand_goods.name}"></a>
+<dl>
+  <a href="{$brand_goods.url}"></a>
+  <dt><a href="{$brand_goods.url}">{$brand_goods.goods_name}</a></dt>
+  <dd class="jj"></dd>
+  <dd class="price">{$lang.price}:<b><!--{if $brand_goods.promote_price}-->{$brand_goods.promote_price}<!--{else}-->{$brand_goods.shop_price}<!--{/if}--></b> <em>{$brand_goods.market_price}</em> 
+    <!--{if $goods.promotion} --> 
+    <!-- {foreach from=$goods.promotion item=promotion} --> 
+    <!--{if $promotion.type == 'group_buy'}--><i class="tg">{$lang.group_buy_act}</i> 
+    <!--{elseif $promotion.act_type == 0}--> <i class="mz"> {$lang.favourable_mz}</i> 
+    <!--{elseif $promotion.act_type == 1}--> <i class="mj"> {$lang.favourable_mj}</i> 
+    <!--{elseif $promotion.act_type == 2}--> <i class="zk"> {$lang.favourable_zk}</i> 
+    <!--{/if}--> 
+    <!--{/foreach}--> 
+    <!--{/if}--> 
+  </dd>
+  <dd class="xin {if $goods.mysc!= 0} select-xin{/if}"><span><em>{$brand_goods.sc}</em>{$lang.like_num}</span> <b>{$lang.sort_sales}{$brand_goods.sales_count}{$lang.piece}</b></dd>
+</dl>
+<!-- {/if}--> 
+<!-- 品牌商品end--> 
+
+<!-- 优惠活动列表 start--> 
+<!--{if $activity}-->
+<li>
+  <p class="a-img"><a href="{$activity.url}"><img src="{$activity.act_banner}"></a><span>{$activity.start_time}-{$activity.end_time}</span></p>
+  <p class="a-name">{$activity.act_name}</p>
+</li>
+<!-- {/if}--> 
+<!-- 优惠活动列表 end--> 
+
+<!-- 活动商品列表 start--> 
+<!--{if $act_goods}--> 
+<a href="{$act_goods.url}"><img src="{$act_goods.goods_thumb}" alt="{$act_goods.name}"></a>
+<dl>
+  <a href="{$act_goods.url}"></a>
+  <dt><a href="{$act_goods.url}">{$act_goods.name}</a></dt>
+  <dd class="jj"></dd>
+  <dd class="price">{$lang.price}:<b><!--{if $act_goods.promote_price}-->{$act_goods.promote_price}<!--{else}-->{$act_goods.shop_price}<!--{/if}--></b> <em>{$act_goods.market_price}</em> 
+    <!--{if $act_goods.promotion} --> 
+    <!-- {foreach from=$act_goods.promotion item=promotion} --> 
+    <!--{if $promotion.type == 'group_buy'}--><i class="tg">{$lang.group_buy_act}</i> 
+    <!--{elseif $promotion.act_type == 0}--> <i class="mz"> {$lang.favourable_mz}</i> 
+    <!--{elseif $promotion.act_type == 1}--> <i class="mj"> {$lang.favourable_mj}</i> 
+    <!--{elseif $promotion.act_type == 2}--> <i class="zk"> {$lang.favourable_zk}</i> 
+    <!--{/if}--> 
+    <!--{/foreach}--> 
+    <!--{/if}--> 
+  </dd>
+  <dd class="xin {if $act_goods.mysc!= 0} select-xin{/if}"><span><em>{$act_goods.sc}</em>{$lang.like_num}</span> <b>{$lang.sort_sales}{$act_goods.sales_count}{$lang.piece}</b></dd>
+</dl>
+<!-- {/if}--> 
+<!-- 活动商品列表 end--> 
+
+<!-- 团购 start--> 
+<!--{if $groupbuy}--> 
+<a href="{$groupbuy.url}"><img src="{$groupbuy.goods_thumb}" alt="{$groupbuy.goods_name}"></a>
+<dl>
+  <dt><a href="{$groupbuy.url}">{$groupbuy.goods_name}</a></dt>
+  <dd class="price"> {$lang.price}:<b>{$groupbuy.cur_price}</b> <em>{$groupbuy.market_price}</em><i>{$groupbuy.spare_discount}{$lang.favourable_zk}</i></dd>
+  <dd class="xin"><span><em>{$groupbuy.click_num}</em>{$lang.scan_num}</span> <b>{$lang.sort_sales}{$groupbuy.sales_count}{$lang.piece}</b></dd>
+  <dd style="display:none"> {$groupbuy.spare_price}</dd>
+</dl>
+<!-- {/if}--> 
+<!-- 团购 end--> 
+
+<!-- 积分 start--> 
+<!--{if $exchange}--> 
+<a href="{$exchange.url}"><img alt="{$exchange.goods_name}" src="{$exchange.goods_thumb}">
+<dl>
+  <dt>{$exchange.goods_name}</dt>
+  <dd class="jj">{$exchange.goods_brief}</dd>
+  <dd class="price"><b>{$exchange.exchange_integral}{$lang.exchange_integral}</b><em>{$exchange.market_price}</em></dd>
+  <dd class="xin {if $exchange.mysc != 0} select-xin{/if}"><span><em>{$exchange.sc}</em>{$lang.like_num}</span></dd>
+</dl>
+</a> 
+<!-- {/if}--> 
+<!-- 积分 end--> 
+
+<!-- 文章列表 start--> 
+<!--{if $article}-->
+<li><a style="padding-left:20px;" href="{$article.url}" ><span class="num">{$article.index}</span>{$article.short_title}
+  <p></p>
+  </a></li>
+<!-- {/if}--> 
+<!-- 文章列表end--> 
+
+<!-- 用户订单 start--> 
+<!--{if $orders}-->
+<div class="o-l-status"><b>订单编号：</b>{$orders.order_sn}</div>
+<div class="o-l-content"><span></span><a href="{:url('user/order_detail')}&order_id={$orders.order_id}">
+  <dl>
+    <dt><img src="{$orders.img}"></dt>
+    <dd><b>{$lang.order_number}：</b>{$orders.order_status}</dd>
+    <dd><b>{$lang.order_total_fee}：</b>{$orders.total_fee}</dd>
+    <dd><b>{$lang.order_addtime}：</b>{$orders.order_time}</dd>
+  </dl>
+  </a></div>
+<!-- {/if}--> 
+<!-- 用户订单end--> 
+
+<!-- 配送地址 start--> 
+<!--{if $consignee}-->
+<dl class="ectouch_table message">
+  <a href="{$consignee.url}"> <span></span>
+  <dt>{$consignee.consignee}<b>{$consignee.mobile}</b></dt>
+  <dd>{$consignee.address}</dd>
+  </a>
+</dl>
+<!-- {/if}--> 
+<!-- 配送地址end--> 
+
+<!-- 产品配件 start--> 
+<!--{if $fittings}--> 
+<a href="{$fittings.url}"><img class="B_blue" src="{$fittings.goods_thumb}">
+<dl>
+  <dt>{$fittings.goods_name}</dt>
+  <dd class="f-list-p">{$lang.fittings_price}：<font class="f1">{$fittings.fittings_price}</font></dd>
+</dl>
+</a><span class="f-list-add"><a onclick="addToCart_quick({$fittings.goods_id})" href="javascript:;">{$lang.btn_add_to_cart}</a></span> 
+<!-- {/if}--> 
+<!-- 产品配件end--> 
+
+<!-- 信息列表 start--> 
+<!--{if $msg}-->
+<ul class="o-info message">
+  <li style=" font-weight:bold"><a style="color:#1CA2E1; float:right" onclick="if (!confirm('{$lang.confirm_remove_msg}？')) return false;" href="{$msg.url}">{$lang.drop}</a>{$msg.msg_type}：{$msg.msg_title} - {$msg.msg_time}</li>
+  <li> {$msg.msg_content} </li>
+  <li> 
+    <!--{if $msg.re_msg_content}-->
+    <table>
+      <tr>
+        <td> {$lang.shopman_reply}({$msg.re_msg_time})<br/>
+          {$msg.re_msg_content} </td>
+      </tr>
+    </table>
+    <!--{/if}--> 
+  </li>
+</ul>
+<!-- {/if}--> 
+<!-- 信息列表end--> 

@@ -1,0 +1,146 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="__TPL__/js/lefttime.js"></script>
+<div>
+    <h1 class="f-h1"><a class="t-history" onClick="javascript:history.go( - 1)">{$lang.back_up_page}</a>{$lang.groupbuy_goods_info}<a  class="t-mune" href="javascript:void(0)">{$lang.menu}</a></h1>
+    <header class="nidx-header" id="nidx-header"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </header>
+    <div id="focus" class="focus goodfocus">
+        <div class="hd">
+            <ul>
+            </ul>
+        </div>
+        <div class="bd">
+            <ul id="Gallery">
+                <li><a href="{$gb_goods.goods_img}"><img alt="{$gb_goods.goods_name}" src="{$gb_goods.goods_img}" /></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="gw-con">
+        <div class="gwc-jj">
+            <h3>{$gb_goods.goods_name}</h3>
+        </div>
+        <div class="gwc-price">{$lang.gb_cur_price} {$group_buy.formated_cur_price} <span style="float:right">{$lang.sort_sales}：<b> {$group_buy.sales_count}</b></span></div>
+        <div class="gwc-xnum"></div>
+        <!-- {if $cfg.show_goodssn && 0} -->
+        <div class="gwc-xnum"> {$lang.goods_sn}<font class="price">{$gb_goods.goods_sn}</font></div>
+        <!-- {/if} --> 
+        <!-- {if $cfg.goods.brand_name && $show_brand && 0} -->
+        <div class="gwc-xnum"> {$lang.goods_brand}<font class="price">{$gb_goods.brand_name}</font></div>
+        <!-- {/if} --> 
+        <!-- {if $cfg.show_goodsweight && 0} -->
+        <div class="gwc-xnum"> {$lang.goods_weight}<font class="price">{$gb_goods.goods_weight}</font></div>
+        <!-- {/if} --> 
+        <!-- {if $group_buy.deposit > 0} 保证金额-->
+        <div class="gwc-xnum"> {$lang.gb_deposit}<font class="price">{$group_buy.formated_deposit}</font></div>
+        <!--{/if}--> 
+        <!--{if $group_buy.restrict_amount > 0} 限购数量-->
+        <div class="gwc-xnum"> {$lang.gb_restrict_amount}<font class="price">{$group_buy.restrict_amount}</font></div>
+        <!--{/if}--> 
+        <!--{if $group_buy.gift_integral > 0} 送积分-->
+        <div class="gwc-xnum"> {$lang.gb_gift_integral}<font class="price">{$group_buy.gift_integral}</font></div>
+        <!--{/if}--> 
+        <!-- {if $group_buy.status eq 0} 未开始 -->
+        <div class="gwc-xnum"> {$lang.gbs_pre_start}</div>
+        <!-- {elseif $group_buy.status eq 1} 进行中 -->
+        <div class="gwc-price"> <span><strong id="leftTime" class="price">{$lang.please_waiting}</strong></span></div>
+        <div class="gwc-xnum"> {$lang.gb_valid_goods}<font class="price">{$group_buy.valid_goods}</font></div>
+        <!-- {elseif $group_buy.status eq 2} 已结束 -->
+        <div class="gwc-xnum"> {$lang.gbs_finished}：{$lang.gb_cur_price} {$group_buy.formated_cur_price} {$lang.gb_valid_goods} {$group_buy.valid_goods}</div>
+        <!-- {elseif $group_buy.status eq 3} 团购成功 -->
+        <div class="gwc-xnum"> {$lang.gbs_succeed}
+            {$lang.gb_final_price} {$group_buy.formated_trans_price}<br />
+            {$lang.gb_final_amount} {$group_buy.trans_amount}</div>
+        <!-- {elseif $group_buy.status eq 4} 团购失败 -->
+        <div class="gwc-xnum"> {$lang.gbs_fail}</div>
+        <!-- {/if} -->
+        <div class="gwc-lnum">
+        	<ul>
+            	<li><h3>{$lang.gb_ladder_amount}</h3><h3>{$lang.gb_ladder_price}</h3></li>
+                <!-- {foreach from=$group_buy.price_ladder item=item} -->
+                <li><span>{$item.amount}</span><span>{$item.formated_price}</span></li>
+                <!-- {/foreach} -->
+            </ul>
+        </div>
+
+        <form action="{:url("groupbuy/buy")}" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
+        <input type="hidden" name="valid_goods" value="{$group_buy.valid_goods}" />
+        <input type="hidden" name="group_buy_id" value="{$group_buy.group_buy_id}" />
+            <div class="gwc-fl"> 
+                <!-- {foreach name=spec from=$specification item=spec key=spec_key} -->
+                <div class="gwc-fl-con"> <span>{$spec.name}：</span>
+                    <div class="gwc-fl-conr"> 
+                        <!-- {* 判断属性是复选还是单选 *} --> 
+                        <!-- {if $spec.attr_type eq 1} --> 
+                        <!-- {if $cfg.goodsattr_style eq 1} --> 
+                        <!-- {foreach from=$spec.values item=value key=key} -->
+                        <input type="radio" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" {if $key eq 0}checked{/if} onclick="changePrice()" />
+                               <label for="spec_value_{$value.id}">{$value.label}</label>
+                        <!-- {/foreach} -->
+                        <input type="hidden" name="spec_list" value="{$key}" />
+                        <!-- {else} -->
+                        <select name="spec_{$spec_key}" onchange="changePrice()">
+                            <!-- {foreach from=$spec.values item=value key=key} -->
+                            <option label="{$value.label}" value="{$value.id}">{$value.label} {if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if}{if $value.price neq 0}{$value.format_price}{/if}</option>
+                            <!-- {/foreach} -->
+                        </select>
+                        <input type="hidden" name="spec_list" value="{$key}" />
+                        <!-- {/if} --> 
+                        <!-- {else} --> 
+                        <!-- {foreach from=$spec.values item=value key=key} -->
+                        <input type="checkbox" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" onclick="changePrice()" />
+                        <label for="spec_value_{$value.id}">{$value.label} [{if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if} {$value.format_price|abs}]</label>
+                        <!-- {/foreach} --> 
+                        <!-- {/if} --> 
+                    </div>
+                </div>
+                <!-- {/foreach} --> 
+            </div>
+        <div class="gwc-inum"> <span>{$lang.number}：</span>
+            <div class="f-list-af" id="f-list-af"> 
+                <div class="sup" onClick="changeNum('1')" ></div>
+                <input type="text" class="txtnum" name="number" id="goods_number"  autocomplete="off" value="1" min="1" max="{$goods.goods_number}"  />
+                <div class="plus" onClick="changeNum('3')"  ></div>
+            </div>
+        </div>
+        <div class="btn-buy" id="btn-buy"> <a href="javascript:;" onClick="document.getElementById('ECS_FORMBUY').submit()">{$lang.button_buy}</a> </div>  
+        </form>
+        <div class="tg-xq">
+        	{$gb_goods.goods_desc} 
+        </div>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+<script type="text/javascript">
+var gmt_end_time = "{$group_buy.gmt_end_date|default:0}";
+{foreach from=$lang.goods_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var now_time = {$now_time};
+<!-- {literal} -->
+
+onload = function()
+{
+  try
+  {
+    onload_leftTime();
+  }
+  catch (e)
+  {}
+}
+function changeNum( type ){
+	
+	var qty = document.forms['ECS_FORMBUY'].elements['number'].value;
+	var valid = document.forms['ECS_FORMBUY'].elements['valid_goods'].value;
+    if(type == 1){qty--; }
+    if(type == 3){qty++; }
+   /* if(qty <=0 ){ qty=1; }
+	if(qty > valid){ qty--;}*/
+    if(!/^[0-9]*$/.test(qty)){ qty = document.getElementById('back_number').value; }
+    document.getElementById('goods_number').value = qty;
+  }
+<!-- {/literal} -->
+
+document.addEventListener('DOMContentLoaded', function(){Code.photoSwipe('a', '#Gallery');}, false);
+</script>
+</html>

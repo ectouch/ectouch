@@ -1,0 +1,21 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript">
+(function (d) {
+var t=d.createElement("script");t.type="text/javascript";t.async=true;t.id="tb-beacon-aplus";
+t.setAttribute("exparams","category=&userid=882918720&aplus");
+t.src=("https:"==d.location.protocol?"https://s":"http://a")+".tbcdn.cn/s/aplus_v2.js";
+d.getElementsByTagName("head")[0].appendChild(t);
+})(document);
+</script>
+  <h1 class="f-h1 cate-h1"><a class="t-inx" href="index.php">{$lang.home}</a>{$lang.article_detail}<a class="t-no t-list" href="{:url('article/index')}">{$lang.article_cat}</a></h1>
+<div class="detail-content">
+  <h2>{$article.title}</h2>
+  <div>
+    <p>
+    	{$article.content}
+    </p>
+  </div>
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

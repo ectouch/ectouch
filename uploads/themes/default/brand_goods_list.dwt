@@ -1,0 +1,32 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div>
+<div style="height:5rem"></div>
+<header class="n-header"><!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --></header>
+
+<!-- #BeginLibraryItem "/library/goods_list_brand.lbi" --><!-- #EndLibraryItem -->
+
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> 
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript">
+/*goods 点击下拉菜单列表*/
+	var headert=!1;
+	$(window).scroll(function(){
+		 headert = headert ? headert : $(".n-header").offset().top;//获取n-header的高度
+	});
+	$(".mune-sx").click(function(){
+		if($(".is-mune").hasClass("expand")){
+			$(".is-mune").removeClass("expand");
+		}else{
+			$(".is-mune").addClass("expand");
+		}
+	});
+	$(".select").click(function(){
+		if($(".is-mune").hasClass("expand")){
+			$(".is-mune").removeClass("expand");
+		}
+	});
+	get_asynclist("{:url('brand/list_asynclist')}&id={$id}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort={$sort}&order={$order}&keywords={$keywords}" , '__TPL__/images/loader.gif');
+</script>
+</body>
+</html>

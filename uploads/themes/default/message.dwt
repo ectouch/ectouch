@@ -1,0 +1,14 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<body>
+    <h1 class="f-h1"> <a class="t-history" href="javascript:history.go(-1);">{$lang.back_up_page}</a>{$lang.tips_message} <a class="t-no" href="javascript:;">{$lang.menu}</a> </h1>
+    <p class="msg-content">{$message.content}</p>
+    <!-- {if $message.url_info} --> 
+    	<div class="msg-link">
+            <!--{foreach from=$message.url_info key=info item=url}-->
+                <p class="p-link"><a href="{$url}">{$info}</a></p>
+            <!--{/foreach}--> 
+        </div>
+    <!--{/if}-->
+    <div style="width:1px; height:1px; overflow:hidden">{foreach from=$lang.p_y item=pv}{$pv}{/foreach}</div>
+</body>
+</html>

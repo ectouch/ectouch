@@ -1,0 +1,40 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="ectouchBody">
+  <h1><a href="{:url('category/all')}" class="cate-list"></a>
+    <div class="d-serach">
+      <button class="h-serach" id="get_search_box" style="color:silver; text-align:left;">{$lang.no_keywords}</button>
+    </div>
+  </h1>
+  <div id="focus" class="focus">
+    <div class="hd">
+      <ul>
+      </ul>
+    </div>
+    <div class="bd">
+      <ul>
+        <li><a href="#"><img src="__TPL__/images/m1.jpg"/></a></li>
+        <li><a href="#"><img src="__TPL__/images/m2.jpg"/></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="u-list inx-nav">
+  	<ul>
+		<!--{foreach from=$navigator item=nav}-->
+    	<li>
+        	<a href="{$nav.url}">
+                <dl>
+                    <dt><i><img src="{$nav.pic}" ></i></dt>
+                    <dd>{$nav.name}</dd>
+                </dl>
+            </a>
+        </li>
+		<!--{/foreach}-->
+    </ul>
+  </div>
+  <!-- #BeginLibraryItem "/library/recommend_hot.lbi" --><!-- #EndLibraryItem -->
+  <header class="i-header"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --></header>
+  <div style="height:4.75rem"></div>
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

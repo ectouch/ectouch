@@ -1,0 +1,27 @@
+<!--搜索弹出框-->
+<div id="main-search" class="main-search">
+ <h1 class="f-h1"> <a class="t-no" href="javascript:;" style="float:left;">{$lang.back_up_page}</a>{$lang.search} <a class="t-del" href="javascript:;">{$lang.close_window}</a> </h1>
+  <div class="bd">
+    <div class="search_box">
+      <form action="{:url('category/index')}<!-- {if $id} -->&id={$id}<!-- {/if} -->"  method="post" id="searchForm" name="searchForm">
+        <div class="content"> <a class="category_bt" type="button" href="{:url('category/all')}">{$lang.goods_category}</a>
+          <div class="mid_inputs">
+            <input class="text" type="search" name="keywords" id="keywordBox" />
+          </div>
+          <button class="sousuo_bd" type="submit" value="{$lang.search}" onclick="return check('keywordBox')">
+          <div class="icon_search"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- {if $hot_search_keywords} -->
+  <div class="serc"> <a href="javascript:;"><strong>{$lang.hot_search}：</strong>
+  	<!-- {foreach from=$hot_search_keywords item=ky} -->
+  	<a href="{:url('category/index', array('keywords'=>$this->_var[ky]))}<!-- {if $id} -->&id={$id}<!-- {/if} -->">{$ky}</a> 
+  	<!-- {/foreach} -->
+  </div>
+  <!-- {/if} -->
+</div>
+<!--搜索弹出框--> 

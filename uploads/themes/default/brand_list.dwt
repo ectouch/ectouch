@@ -1,0 +1,27 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div>
+  <div style="height:5rem"></div>
+  <header class="n-header"><!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --></header>
+  <div id="focus" class="focus">
+    <div class="hd">
+      <ul>
+      </ul>
+    </div>
+    <div class="bd">
+      <ul>
+        <li><a href="#"><img src="__TPL__/images/m1.jpg"/></a></li>
+        <li><a href="#"><img src="__TPL__/images/m2.jpg"/></a></li>
+        <li><a href="#"><img src="__TPL__/images/m1.jpg"/></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="activity" id="J_ItemList" style="opacity:1;">
+    <ul class="single_item">
+    </ul>
+    <a href="javascript:;" class="get_more"></a> </div>
+</div>
+<script type="text/javascript">
+get_asynclist("{:url('brand/asynclist')}&page={$page}&sort={$sort}&order={$order}" , '__TPL__/images/loader.gif');
+</script> 
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body></html>

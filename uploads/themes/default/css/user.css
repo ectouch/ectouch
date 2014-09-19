@@ -1,0 +1,164 @@
+/*用户页面input公共样式*/
+input{border:none;}
+input[type=checkbox],input[type=radio]{ background: #FFF; border:1px solid #999;}
+/*========================
+        user 个人中心
+================*/
+.userbg { background: url(../images/default.png) no-repeat; background-size: 100%; width: 100%; height: auto; overflow: hidden; }
+.userbg .user { padding: 2.5rem 0; padding-left:1.8rem; width: 100%; height: auto; overflow: hidden; position: relative; box-sizing: border-box; }
+.userbg .user img { display: block; width: 70px; height: 70px; /*圆角*/ border-radius: 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; -o-border-radius: 8px; border: 2px solid #FFF; float: left; }
+.userbg .user dl { display: block; float: left; margin-left: 1.2rem; color: #FFF; }
+.userbg .user dl dt { font-size: 2rem; }
+.userbg .user dl dt a { color: #fff; }
+.userbg .user dl dd { font-size: 1.4rem; color: #eee; }
+.userbg .user p { display: block; font-size: 1.3rem; color: #333; position: absolute; right: 1rem; bottom: 2rem; width: 5rem; height: 2rem; }
+.userbg .user p i { width: 1.8rem; height: 1.25rem; float: right; margin-top: 0.3rem; display: block; background: url(../images/mail.png) no-repeat; background-size: 100%; position:relative;}
+.userbg .user p i.yd:after { content: "\0020"; width: 0.5rem; height: 0.5rem; background: #F63; border-radius: 100%; color: #FFF; position: absolute; left: 1.4rem; top: -3px; }
+/*u-list*/
+.u-list { width: 100%; height: auto; overflow: hidden; background: #FFF; }
+.u-list ul { width: 100%; display: block; height: auto; border-bottom: 1px solid #eee; text-align: center; overflow: hidden; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+.u-list ul li { width: 25%; display: block; float: left; padding: 1.2rem 0.5rem; border: 1px solid #eee; color: #777; font-size: 13px; border-right: none; margin-bottom: -1px; webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+.u-list ul li dl dt img { width:3rem; height:3rem; }
+/*u-tab*/
+.u-tab { width: 100%; height: auto; overflow: hidden; background: #FFF; border-top: 1px #eee solid; margin-top: 4px; }
+.u-tab .con ul, .u-tab .con ul li { width: 100%; height: auto; height: auto; display: block; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box }
+.u-tab .con ul li { padding: 1.2rem 0; border-bottom: 1px #efefef solid; position: relative; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box }
+.u-tab .con ul li img {width: 6rem;height: 6rem;display: block;margin-right: 1rem;float: left; }
+.u-tab .con ul li dl { display: block;  border-bottom: none; }
+.u-tab .con ul li dl dt { font-size: 1.5rem; color: #555; height:4rem; overflow:hidden; display:block;}
+.u-tab .con ul li dl dt b { font-size: 1.2rem; font-weight: normal; color: #888; margin-left: 1rem; }
+.u-tab .con ul li dl dd { font-size: 1.3rem; color: #777; }
+.u-tab .con ul li dl dd b { font-weight: normal; color: #999; }
+.u-tab .con ul li p a { display: block; width: 1.8rem; height: 1.8rem; position: absolute; right: 0.5rem; bottom: 1.6rem; text-indent: -999px; background: url(../images/del.png) no-repeat; background-size: 100%; }
+.u-tab .bd .con:nth-child(3) { position: relative }
+.u-tab .bd .con:nth-child(3) ul{margin-top:1.2rem;}
+p.history_clear{margin-bottom:1rem; display:block;}
+p.history_clear a { display: block; width: 2.6rem; position: absolute; height: 1.8rem; line-height: 1.8rem; font-size: 1.3rem; right: 0.5rem; top: 0.5rem; background-size: 100%; }
+p.n-list { font-size: 1.4rem; width: 100%; text-align: center; margin-top: 6rem; height: 14rem; }
+p.n-list a { color: #F30; font-size: 1.6rem; }
+/*================
+        登陆页面table-box
+==========*/
+span.ul-msg{padding:0.8rem; padding-bottom:0; font-size:1.3rem; display:block; width:100%; box-sizing:border-box;}
+.table-box{height:auto; width:100%; overflow:hidden; padding:0 0.8rem; box-sizing:border-box;}
+.table-box dl { clear: both; font-size: 1.4rem; }
+.table-box dl dd { display: block; margin: 1.2rem auto; height: auto; overflow: hidden; }
+.table-box dl dd.lr.pass input.inputBg{ float:left; z-index:0;}
+.table-box dl dd.lr.pass div{ position:relative; width:100%; height:auto; overflow:hidden;}
+.table-box dl dd.lr.pass a{width:3.2rem;display:block; background:url(../images/see.png) center center no-repeat; background-size: 70%; text-indent:-9999px; z-index:2; position:absolute; right:0; top:50%; margin-top:-0.9rem; }
+
+.table-box dl dd.yzm{ position:relative;}
+.table-box dl dd.yzm div{ height:auto; width:100%; padding-right:8rem; box-sizing:border-box;  position:absolute;}
+.table-box dl dd.yzm img,.table-box dl dd.yzm .u-btn{height:3.2rem; width:7.3rem; float:right; font-size:1.1rem;}
+
+.table-box dl dd.lr.pass a.hide{ background:url(../images/seec.png) center center no-repeat; background-size: 70%; text-indent:-9999px;}
+.table-box dl dd img.img-yzm { height: 3.2rem; margin-left: 1rem; }
+.table-box dl dd input.inputBg { width: 100%; display: block; height: 3.2rem; padding:0 0.8rem; box-sizing: border-box; font-size: 1.4rem; }
+.table-box dl dd select.inputBg{height:2.6rem; margin-top:0.9rem; padding:2rem 0.8rem;}
+.table-box dl dd input.inputBg.yzm { width: 50%; float: left; }
+.table-box dl dd input.l-checkbox { background: #fff; vertical-align: middle; zoom: 150%; }
+.table-box dl dd input.u-btn { height: 4rem; background: #eb2532; color: #FFF; width: 100%; border-radius: 0; -webkit-border-radius: 0; -moz-border-radius: 0; }
+.table-box dl dd.reg-pwd a { display: block; float: right; font-size: 1.35rem; color: #666; }
+.table-box dl dd.reg-pwd:last-child a { margin-left: 1.5rem; }
+.table-box dl dd a.f6{margin-left:1.5rem; float:right;}
+.get-btn{padding:0 0.8rem; box-sizing:border-box;}
+.get-btn dd a{float:left; margin-right:1.2rem;}
+/*合作账号hezuo*/
+.hezuo { width: 94%; margin: 1.2rem auto; }
+.hezuo p.t { font-size: 1.4rem; }
+.hezuo p.b { margin-top: 1rem; }
+.hezuo p.b a img { width: 3.5rem; height: auto; display: block; float: left; margin-left: 0.8rem; }
+.hezuo p.b a:first-child img { margin-left: 0rem; }
+/*订单列表*/
+.order-list {font-size:1.5rem; }
+.order-list .single_item { clear: both; padding: 0.8rem; border-bottom: 1px #e3e3e3 solid; background: #FFF; }
+.order-list .o-l-status { color: #777; margin-bottom: 0.8rem; height: auto; overflow: hidden; }
+.order-list .o-l-status b { font-size: 1.3rem; color: #777 }
+.order-list .o-l-content { height: auto; overflow: hidden; margin-top: 0.8rem; position: relative; }
+.order-list .single_item .o-l-content span { width: 1rem; height: 1rem; display: block; border-top: 2px solid #ddd; border-right: 2px solid#ddd; position: absolute; right: 1rem; top: 50%; margin-top: -0.5rem; -webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); -o-transform: rotate(45deg); transform: rotate(45deg); }
+.order-list .o-l-content dl { width: 100%; display: block; }
+.order-list .o-l-content dl dt { display: block; float: left; }
+.order-list .o-l-content dl dt img { width: 6.5rem; height: auto; }
+.order-list .o-l-content dl dd { display: block; font-size: 1.3rem; color: #aaa; margin: 0.1rem 0; margin-left:0.8rem; }
+.order-list .o-l-content dl dd b { color: #777; }
+
+/*订单详情*/
+.o-detail { background: #FFF; padding: 0.8rem; border-bottom: 1px solid #e3e3e3; }
+.o-detail ul { overflow: hidden; height: auto; width: 100%; margin-top: 0.5rem; }
+.o-detail ul li { margin-bottom: 0.5rem; font-size: 1.3rem; }
+.o-detail ul li:last-child { margin: 0; }
+.o-detail ul li b { font-size: 1.38rem; }
+.o-detail.p-list ul li { clear: both; padding: 0.8rem 0; height: auto; width: 100%; overflow: hidden; border-bottom: 1px dashed #e3e3e3; }
+.o-detail.p-list ul li img { float: left; width: 7rem; height: auto; }
+.o-detail.p-list ul li dl dt { font-size: 1.5rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.8rem; }
+.o-detail.p-list ul li dl dd { color: #888; font-size: 1.4rem; margin: 0.3rem 0; margin-left:7.5rem;}
+.o-detail.p-list .o-l-btn { clear: both; width: 100%; margin-top: 0.8rem; display: -webkit-box; display: -moz-box; display: -ms-box; display: box; margin:1rem 0; margin-top:2rem;}
+.o-detail.p-list .o-l-btn p { width: 10%; margin-left: 1.5rem; height: 3rem; line-height: 3rem; color: #fff; font-size: 1.5rem; background: #eb2532; text-align: center; -webkit-box-flex: 1; -moz-box-flex: 1; -ms-box-flex: 1; box-flex: 1; }
+.o-detail.p-list .o-l-btn p.o-l-handler { margin-left: 0; background: #929292; }
+.o-detail.p-list .o-l-btn p a { color: #fff; }
+
+.o-detail ul.o-info li { margin: 0.8rem 0; }
+.o-detail ul.o-info li.btn{display: -webkit-box;
+                           display: -moz-box;
+                           display: -ms-box;
+                           display: box;}
+.o-detail ul.o-info li.btn button,.o-detail ul.o-info li.btn input[type=submit]{margin-left:1rem;-webkit-box-flex: 1;
+                                                                                -moz-box-flex: 1;
+                                                                                -ms-box-flex: 1;
+                                                                                box-flex: 1; width:100%;}
+.o-detail ul.o-info li.btn .o-submit{margin-top:0.5rem;-webkit-box-flex: 1;
+                                     -moz-box-flex: 1;
+                                     -ms-box-flex: 1;
+                                     box-flex: 1; margin-left:1rem;}
+.o-detail ul.o-info li.btn button:first-child,.o-detail ul.o-info li.btn input[type=submit]:first-child{margin-left:0;}
+.o-detail ul.o-info li b { font-size: 1.3rem; display: block; }
+.o-detail ul.o-info li b span{ font-weight:normal; color:#eb2532; margin-left:0.2rem; font-size:1.1rem;}
+.o-detail ul.o-info li input, .o-detail ul.o-info li textarea { border: 1px solid #CCC; display: block; height: 3rem; padding: 0 0.5rem; width: 100%; box-sizing: border-box; margin-top: 0.8rem; }
+.o-detail ul.o-info li textarea { height: 10rem; padding-top: 0.5rem; background:#FFF; }
+.o-detail ul.o-info li input.o-submit { height: 3.8rem; border: none; }
+.o-detail ul.o-info li select { margin-top: 0.5rem }
+.o-detail ul.o-info1 { border-bottom: 1px solid #e3e3e3; padding-bottom: 1rem; }
+.o-detail ul.o-info1 li { clear: both; margin: 0.5rem 0; }
+.o-detail ul.o-info1 li b { font-size: 1.3rem; display: block; float: left; }
+.o-detail ul.o-settle { clear: both; padding: 0.3rem 0; }
+.o-detail ul.o-settle li { text-align: right; }
+.o-detail ul.o-settle li input.txt-surplus { border: 1px solid #e3e3e3; height: 1.8rem; padding: 0 0.5rem; }
+.o-detail ul.o-settle li p.p-maxsur { margin: 0.7rem 0; display: block; }
+.o-detail ul.o-zffs li { margin: 0.5rem 0; }
+.o-submit { height: 3.8rem; background: #eb2532; color: #FFF; width: 100%; border: none; border-radius: 0; -webkit-border-radius: 0; -moz-border-radius: 0; font-size: 1.5rem; display: block; text-align: center; line-height: 3.8rem; }
+.o-detail ul.o-zffs li select { margin: 0.8rem 0; display: block; height: 2.5rem; }
+.c-btn3{ background: none repeat scroll 0 0 #eb2532; border: medium none;border-radius: 0;color: #fff;display: block;font-size: 1.5rem; height: 3.8rem;line-height: 3.8rem;text-align: center;width: 100%;}
+/*=====================
+        收货人信息
+================*/
+.address_list a { color: #444; }
+.adr-list dl { background: #FFF; border-bottom: 1px solid #e3e3e3; padding: 1rem 0.8rem; position: relative; }
+.adr-list dl dt { font-size: 1.5rem; vertical-align: middle; }
+.adr-list dl dt b { font-weight: normal; margin-left: 1rem; color: #F33; }
+.adr-list dl dd { margin-top: 0.5rem; font-size: 1.3rem; color: #777; }
+.adr-list dl span { width: 1rem; height: 1rem; display: block; border-top: 2px solid #ddd; border-right: 2px solid#ddd; position: absolute; right: 1rem; top: 50%; margin-top: -0.5rem; -webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); -o-transform: rotate(45deg); transform: rotate(45deg); }
+.adr-submit { padding: 0 0.8rem; margin-top: 1rem; }
+/*================
+        留言
+============*/
+ul.o-radio li { overflow: hidden; }
+ul.o-radio li input[type=radio] { margin: 0 0.5rem; -webkit-appearance: none; float: left; width: 1.5rem; height: 1.5rem; border-radius: 100%; display: block; border: 2px solid #ddd; }
+ul.o-radio li label { float: left; margin-right:0.5rem; }
+ul.o-radio li input[type=radio]:checked { border: 2px solid #F33; }
+
+ul.o-radio li.li-yzm input{width:50%; float:left; margin-right:1rem; vertical-align:midden;}
+ul.o-radio li.li-yzm img{margin-top:0.5rem; height:3rem;}
+
+/*================
+         我的分享and资金管理
+==============*/
+table.u-table{margin-bottom:1rem;}
+table.u-table td{padding:0.5rem 0.2rem; height:3rem; width:7rem;  background:#fff;}
+table.u-table tr.first-tr td{height:3.5rem; font-weight:bold; background:#f2f2f2;}
+/*注册页面*/
+.me_re{padding:0 0.8rem}
+.register{height:3rem; line-height:3rem; background:#ccc; display: -webkit-box;display: -moz-box;display: -ms-box;display: box; text-align:center; margin-top:1.2rem;}
+.register div{-webkit-box-flex: 1;-moz-box-flex: 1;-ms-box-flex: 1;box-flex: 1;}
+.register div a{display:block; width:100%}
+.register div.cur{background:#666; color:#FFF;}
+.register div.cur a{color:#fff;}
