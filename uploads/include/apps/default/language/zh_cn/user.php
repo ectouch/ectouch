@@ -414,7 +414,7 @@ $_LANG['remember'] = '记住本次登录。';
 $_LANG['now_landing'] = '立即登陆';
 $_LANG['free_registered'] = '免费注册';
 $_LANG['third_login'] = '使用合作账号登录';
-
+$_LANG['no_register_auth'] = '还没有注册该插件，请与后台管理员联系';
 $_LANG['msg_un_blank'] = '用户名不能为空';
 $_LANG['msg_un_length'] = '用户名最长不得超过7个汉字';
 $_LANG['msg_un_format'] = '用户名含有非法字符';
