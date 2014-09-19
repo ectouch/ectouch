@@ -1,6 +1,6 @@
 <!--搜索弹出框-->
 <div id="main-search" class="main-search">
- <h1 class="f-h1"> <a class="t-no" href="javascript:;" style="float:left;">{$lang.back_up_page}</a>{$lang.search} <a class="t-del" href="javascript:;">{$lang.close_window}</a> </h1>
+ <h1 class="f-h1">{$lang.search} <a class="t-del" href="javascript:;">{$lang.close_window}</a> </h1>
   <div class="bd">
     <div class="search_box">
       <form action="{:url('category/index')}<!-- {if $id} -->&id={$id}<!-- {/if} -->"  method="post" id="searchForm" name="searchForm">
