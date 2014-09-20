@@ -145,7 +145,7 @@ class IndexController extends Controller {
         $errorCorrectionLevel = 'L'; // 纠错级别：L、M、Q、H 
         $matrixPointSize = 7; // 点的大小：1到10
         $mobile_qr = 'data/assets/' . APP_NAME . '/' . $errorCorrectionLevel . $matrixPointSize . '.png';
-        Qrcode::png($mobile_url, ROOT_PATH . $mobile_qr, $errorCorrectionLevel, $matrixPointSize, 2);
+        QRcode::png($mobile_url, ROOT_PATH . $mobile_qr, $errorCorrectionLevel, $matrixPointSize, 2);
         //二维码路径赋值
         $this->assign('mobile_qr', $mobile_url . '/' . $mobile_qr);
         $this->display('success');
