@@ -52,7 +52,7 @@
             <div class="ipt">
               <label class="u-opt">
                 <input name="agree" type="checkbox" value="1">
-                同意《<a href="#">使用协议</a>》</label>
+                同意《<a href="http://ectouch.cn/docs/license.txt" target="_blank">使用协议</a>》</label>
             </div>
           </div>
           <div class="install-status"></div>
