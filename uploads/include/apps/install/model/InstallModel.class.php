@@ -64,9 +64,9 @@ class InstallModel extends BaseModel {
             }
         }
         //设置模板主题
-        $data['value'] = 'default';
+        $data2['value'] = 'default';
         $condition['code'] = 'template';
-        $model->table($_table)->data($data)->where($condition)->update();
+        $model->table($_table)->data2($data)->where($condition)->update();
         return true;
     }
 
