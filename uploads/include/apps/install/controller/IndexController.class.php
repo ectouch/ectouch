@@ -151,9 +151,9 @@ class IndexController extends Controller {
         $this->display('success');
         if (C('run_after_del')) {
             del_dir(BASE_PATH . 'apps/' . APP_NAME);
-            // if (is_dir('data/assets/' . APP_NAME)) {
-            //del_dir('data/assets/' . APP_NAME);
-            // }
+            if (is_dir('data/assets/' . APP_NAME)) {
+                del_dir('data/assets/' . APP_NAME);
+            }
         }
     }
 

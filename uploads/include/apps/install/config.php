@@ -8,5 +8,5 @@ return array(
     'APP_TABLES' => '',
 
     'title' => 'ECTOUCH安装向导',
-    'run_after_del' => true,
+    'run_after_del' => false,
 );
