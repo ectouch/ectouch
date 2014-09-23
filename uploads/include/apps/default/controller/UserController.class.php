@@ -1385,6 +1385,7 @@ class UserController extends CommonController {
 
                 $this->assign('uid', $user_id);
                 $this->assign('mobile', base64_encode($mobile));
+                $this->assign('title', L('reset_password'));
                 $this->display('user_reset_password.dwt');
                 exit();
             }
@@ -1417,6 +1418,7 @@ class UserController extends CommonController {
 
             $this->assign('uid', $uid);
             $this->assign('code', $code);
+            $this->assign('title', L('reset_password'));
             $this->display('user_reset_password.dwt');
         } else {
             // 验证码相关设置
@@ -1516,6 +1518,7 @@ class UserController extends CommonController {
 
             $this->assign('uid', $user_question_arr['user_id']);
             $this->assign('question', base64_encode($user_question_arr['passwd_question']));
+            $this->assign('title', L('reset_password'));
             $this->display('user_reset_password.dwt');
             exit();
         }
