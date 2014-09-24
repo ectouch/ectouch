@@ -177,7 +177,6 @@ class IndexController extends Controller {
                     .substr($charid,12, 4).$hyphen
                     .substr($charid,16, 4).$hyphen
                     .substr($charid,20,12);
-            return $guid;
         }
         return strtoupper(hash('ripemd128', $guid));
     }
