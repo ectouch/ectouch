@@ -1,13 +1,13 @@
--- --------------------------------------------------------
 --
 -- 表的结构 `ecs_touch_activity`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_activity`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_activity` (
   `act_id` int(10) NOT NULL,
   `act_banner` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `ecs_touch_activity`
@@ -20,10 +20,10 @@ INSERT INTO `ecs_touch_activity` (`act_id`, `act_banner`) VALUES
 (4, 'http://img11.360buyimg.com/cms/jfs/t145/259/2655815990/39930/9c6e8426/53d772c7N26e261e4.jpg!q35.jpg'),
 (5, 'data/attached/banner_image/ea725b8e67518d05c5cd80e5fed8d04f.jpg');
 
--- --------------------------------------------------------
 --
 -- 表的结构 `ecs_touch_ad`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_ad`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_ad` (
@@ -54,11 +54,10 @@ INSERT INTO `ecs_touch_ad` (`ad_id`, `position_id`, `media_type`, `ad_name`, `ad
 (2, 1, 0, '2', '', 'http://demo.ecmoban.com/shop/data/afficheimg/1394415508290057627.jpg', 1396339200, 1525161600, '', '', '', 0, 1),
 (3, 1, 0, '3', '', 'http://demo.ecmoban.com/shop/data/afficheimg/1394415497283455138.jpg', 1396339200, 1525161600, '', '', '', 0, 1);
 
--- --------------------------------------------------------
-
 --
 -- 表的结构 `ecs_touch_ad_position`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_ad_position`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_ad_position` (
@@ -78,11 +77,10 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_ad_position` (
 INSERT INTO `ecs_touch_ad_position` (`position_id`, `position_name`, `ad_width`, `ad_height`, `position_desc`, `position_style`) VALUES
 (1, '首页Banner广告位', 360, 168, '', '<ul>\r\n{foreach from=$ads item=ad}\r\n  <li>{$ad}</li>\r\n{/foreach}\r\n</ul>\r\n');
 
--- --------------------------------------------------------
-
 --
 -- 表的结构 `ecs_touch_article_cat`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_article_cat`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_article_cat` (
@@ -90,11 +88,10 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_article_cat` (
   `is_mobile` tinyint(2) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章扩展表';
 
--- --------------------------------------------------------
-
 --
 -- 表的结构 `ecs_touch_brand`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_brand`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_brand` (
@@ -103,13 +100,10 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_brand` (
   `brand_content` text NOT NULL COMMENT '详情'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
-
--- --------------------------------------------------------
-
 --
 -- 表的结构 `ecs_touch_category`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_category`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_category` (
@@ -122,6 +116,7 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_category` (
 --
 -- 表的结构 `ecs_touch_feedback`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_feedback`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_feedback` (
@@ -130,30 +125,6 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_feedback` (
   `msg_read` int(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
-
---
--- 转存表中的数据 `ecs_touch_feedback`
---
-
-INSERT INTO `ecs_touch_feedback` (`id`, `msg_id`, `msg_read`) VALUES
-(1, 0, 0),
-(2, 0, 0),
-(3, 0, 0),
-(4, 0, 0),
-(5, 0, 0),
-(6, 0, 0),
-(7, 0, 0),
-(8, 0, 0),
-(9, 0, 0),
-(10, 0, 0),
-(11, 0, 0),
-(12, 0, 0),
-(13, 0, 0),
-(14, 0, 0),
-(15, 0, 0),
-(16, 0, 0),
-(17, 0, 0),
-(18, 18, 0);
 
 -- --------------------------------------------------------
 
@@ -167,11 +138,10 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_goods` (
   `sales_volume` int(10) unsigned DEFAULT NULL COMMENT '销量统计'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
 --
 -- 表的结构 `ecs_touch_goods_activity`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_goods_activity`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_goods_activity` (
@@ -180,11 +150,12 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_goods_activity` (
   `sales_count` int(10) DEFAULT NULL,
   `click_num` int(10) NOT NULL DEFAULT '0',
   `cur_price` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- 表的结构 `ecs_touch_nav`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_nav`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_nav` (
@@ -217,11 +188,10 @@ INSERT INTO `ecs_touch_nav` (`id`, `ctype`, `cid`, `name`, `ifshow`, `vieworder`
 (7, '', 0, '个人中心', 1, 0, 0, 'index.php?m=default&amp;c=user', 'data/attached/nav/b0e139079e5c5d052f1f05d0f400dfa1.png', 'middle'),
 (8, '', 0, '购物车', 1, 0, 0, 'index.php?m=default&amp;c=flow&amp;a=cart', 'data/attached/nav/3355eb17b4a10ab97ac5bf4d5ceef3ef.png', 'middle');
 
--- --------------------------------------------------------
-
 --
 -- 表的结构 `ecs_touch_payment`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_payment`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_payment` (
@@ -247,11 +217,10 @@ INSERT INTO `ecs_touch_payment` (`pay_id`, `pay_code`, `pay_name`, `pay_fee`, `p
 (1, 'balance', '余额支付', '0', '&lt;p&gt;使用帐户余额支付。只有会员才能使用，通过设置信用额度，可以透支。&lt;/p&gt;', 0, 'a:0:{}', 1, 0, 1),
 (2, 'alipay_wap', '支付宝（手机版）', '0', '&lt;p&gt;支付宝（手机版）网站(www.alipay.com) 是国内先进的网上支付平台。&lt;/p&gt;', 0, 'a:4:{i:0;a:3:{s:4:"name";s:14:"alipay_account";s:4:"type";s:4:"text";s:5:"value";s:15:"pay@ecmoban.com";}i:1;a:3:{s:4:"name";s:10:"alipay_key";s:4:"type";s:4:"text";s:5:"value";s:32:"m2rgo80qokhtn14vjp2b9zjjbjfqiyce";}i:2;a:3:{s:4:"name";s:14:"alipay_partner";s:4:"type";s:4:"text";s:5:"value";s:16:"2088011125312949";}i:3;a:3:{s:4:"name";s:10:"relate_pay";s:4:"type";s:6:"select";s:5:"value";s:1:"0";}}', 1, 0, 1);
 
--- --------------------------------------------------------
-
 --
 -- 表的结构 `ecs_touch_shop_config`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_shop_config`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_shop_config` (
@@ -271,14 +240,15 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_shop_config` (
 --
 -- 转存表中的数据 `ecs_touch_shop_config`
 --
+
 INSERT INTO `ecs_touch_shop_config` SELECT * FROM `ecs_shop_config`;
 
 INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (1, 'shop_url', 'text', '', '', '', 1);
--- --------------------------------------------------------
 
 --
 -- 表的结构 `ecs_touch_user`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_auth`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_auth` (
@@ -286,17 +256,15 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_auth` (
   `auth_config` varchar(255) NOT NULL,
   `from` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='第三方登录' AUTO_INCREMENT=11 ;
-
-
--- --------------------------------------------------------
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='登录插件' AUTO_INCREMENT=11 ;
 
 --
 -- 表的结构 `ecs_touch_user_info`
 --
+
 DROP TABLE IF EXISTS `ecs_touch_user_info`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_user_info` (
   `user_id` int(10) NOT NULL,
-  `aite_id` varchar(200) NOT NULL COMMENT '第三方标志 id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户第三方登录标志信息';
+  `aite_id` varchar(200) NOT NULL COMMENT '标识'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户信息';

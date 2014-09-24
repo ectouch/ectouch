@@ -144,40 +144,8 @@ class ConfigController extends AdminController {
 
         /* 清除缓存 */
         clear_all_files();
-
-        $shop_config = model('Base')->load_config();
-
-        $shop_country = model('RegionBase')->get_region_name($shop_config[shop_country]);
-        $shop_province = model('RegionBase')->get_region_name($shop_config[shop_province]);
-        $shop_city = model('RegionBase')->get_region_name($shop_config[shop_city]);
-        $conn = mysql_connect(C('DB_HOST'), C('DB_USER'), C('DB_PWD'));
-   
-        $data = array(
-            'domain'   =>  $_SERVER['HTTP_HOST'],
-            'url'      =>  __URL__,
-            'shop_name'=>  $shop_config['shop_name'],
-            'shop_title'=> $shop_config['shop_title'],
-            'shop_desc'=>  $shop_config['shop_desc'],
-            'shop_keywords'=>($shop_config['shop_keywords']),
-            'country'  =>  $shop_country,
-            'province' =>  $shop_province,
-            'city'     =>  $shop_city,
-            'address'  =>  $shop_config['shop_address'],
-            'qq'       =>  $shop_config[qq],
-            'ww'       =>  $shop_config[ww],
-            'ym'       =>  $shop_config[ym],
-            'msn'      =>  $shop_config[msn],
-            'email'    =>  $shop_config[service_email],
-            'phone'    =>  $shop_config[service_phone],
-            'icp'      =>  $shop_config[icp_number],
-            'version'  =>  VERSION,
-            'language' =>  $shop_config[lang],
-            'php_ver'  =>  PHP_VERSION,
-            'mysql_ver'=>  mysql_get_server_info($conn),
-            'charset'  =>  EC_CHARSET,
-        );
-        $url = "http://ectouch.cn/api/record.html";
-        http::doPost($url,$data);
+        $site_info = site_info();
+        $this->cloud->data($site_info)->act('post.record');
         $this->message(L('save_success'), url('index'));
     }
 

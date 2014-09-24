@@ -24,6 +24,7 @@ class Controller {
 
     public function __construct() {
         $this->model = model('Base')->model;
+        $this->cloud = Cloud::getInstance();
         // 定义当前请求的系统常量
         define('NOW_TIME', $_SERVER ['REQUEST_TIME']);
         define('REQUEST_METHOD', $_SERVER ['REQUEST_METHOD']);

@@ -38,7 +38,6 @@ class ExchangeController extends CommonController {
     //-- 积分商城 - 商品列表
     /* ------------------------------------------------------ */
     public function index() {
-
         $this->parameter();
         $this->assign('page', $this->page);
         $this->assign('size', $this->size);

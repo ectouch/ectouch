@@ -35,15 +35,21 @@ class InstallModel extends BaseModel {
         return true;
     }
 
-    //获取字段
-    public function get_column($data, $_table = '', $_column = '') {
+    /**
+     * 获取字段
+     * @param unknown $data
+     * @param string $_table
+     * @param string $_column
+     * @return boolean
+     */
+    public function get_column($data, $_table = '', $_column = ''){
         $model = new EcModel($data);
         $sql = "describe `" . $_table . "` `" . $_column . "`";
         $resource = $model->query($sql);
         $result = mysql_fetch_array($resource);
-        if (is_array($result)) {
+        if(is_array($result)){
             return true;
-        } else {
+        }else{
             return false;
         }
     }

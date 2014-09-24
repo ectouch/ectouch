@@ -96,9 +96,9 @@ class BrandController extends CommonController {
             exit();
         }
         $asyn_last = intval(I('post.last')) + 1;
-        $size = I('post.amount');
-        $page = ($asyn_last > 0) ? ceil($asyn_last / $size) : 1;
-        $list = model('Brand')->brand_get_goods($brand_id, '', $this->sort, $this->order, $size, $page);
+        $this->size = I('post.amount');
+        $this->page = ($asyn_last > 0) ? ceil($asyn_last / $this->size) : 1;
+        $list = model('Brand')->brand_get_goods($brand_id, '', $this->sort, $this->order, $this->size, $this->page);
         foreach ($list as $key => $value) {
             $this->assign('brand_goods', $value);
             $sayList [] = array(

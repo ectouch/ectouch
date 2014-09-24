@@ -56,8 +56,8 @@ class ArticleController extends CommonController {
     public function asynclist() {
         $this->parameter();
         $asyn_last = intval(I('post.last')) + 1;
-        $size = I('post.amount');
-        $page = ($asyn_last > 0) ? ceil($asyn_last / $size) : 1;
+        $this->size = I('post.amount');
+        $this->page = ($asyn_last > 0) ? ceil($asyn_last / $this->size) : 1;
         $list = model('ArticleBase')->get_cat_articles($this->cat_id, $this->page, $this->size, $this->keywords);
         foreach ($list as $key => $value) {
             $this->assign('article', $value);

@@ -1029,55 +1029,6 @@ function get_file_suffix($file_name, $allow_type = array()) {
     }
 }
 
-/**
- * 读结果缓存文件
- *
- * @params  string  $cache_name
- *
- * @return  array   $data
- */
-function read_static_cache($cache_name) {
-    if ((DEBUG_MODE & 2) == 2) {
-        return false;
-    }
-    static $result = array();
-    if (!empty($result[$cache_name])) {
-        return $result[$cache_name];
-    }
-    $cache_file_path = ROOT_PATH . 'data/cache/static_caches/' . $cache_name . '.php';
-    if (file_exists($cache_file_path)) {
-        include_once($cache_file_path);
-        $result[$cache_name] = $data;
-        return $result[$cache_name];
-    } else {
-        return false;
-    }
-}
-
-/**
- * 写结果缓存文件
- *
- * @params  string  $cache_name
- * @params  string  $caches
- *
- * @return
- */
-function write_static_cache($cache_name, $caches) {
-    if ((DEBUG_MODE & 2) == 2) {
-        return false;
-    }
-    //增加目录状态判断 by ecmoban carson
-    $static_caches = ROOT_PATH . 'data/cache/static_caches/';
-    if (!is_dir($static_caches)) {
-        @mkdir($static_caches, 0777);
-    }
-    $cache_file_path = $static_caches . $cache_name . '.php';
-    $content = "<?php\r\n";
-    $content .= "\$data = " . var_export($caches, true) . ";\r\n";
-    $content .= "?>";
-    file_put_contents($cache_file_path, $content, LOCK_EX);
-}
-
 /* * ********************************************************
  * 公共函数库
  * ******************************************************** */

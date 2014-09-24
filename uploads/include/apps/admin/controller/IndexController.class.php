@@ -103,7 +103,6 @@ class IndexController extends AdminController
             $empower = '<a href="' . $url . '" class="text-danger">未授权</a>';
         }
         $this->assign('empower', $empower);
-        
         $this->display('welcome');
     }
     
@@ -120,7 +119,7 @@ class IndexController extends AdminController
         $mobile_url = __URL__; // 二维码内容
         $errorCorrectionLevel = 'L'; // 纠错级别：L、M、Q、H
         $matrixPointSize = 7; // 点的大小：1到10
-        $mobile_qr = 'data/assets/' . APP_NAME . '/' . $errorCorrectionLevel . $matrixPointSize . '.png';
+        $mobile_qr = 'data/cache/demo_qrcode.png';
         QRcode::png($mobile_url, ROOT_PATH . $mobile_qr, $errorCorrectionLevel, $matrixPointSize, 2);
         // 二维码路径赋值
         $this->assign('mobile_qr', $mobile_url . '/' . $mobile_qr);

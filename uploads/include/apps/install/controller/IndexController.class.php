@@ -33,8 +33,25 @@ class IndexController extends Controller {
      * 安装页面
      */
     public function index() {
-        if (!function_exists("session_start")) {
-            $error = '系统不支持session，无法进行安装！';
+        if (! function_exists("session_start")) {
+            $error = '系统不支持session，无法进行安装！<br>';
+        }
+        $dir_list = array(
+            'data/'
+        );
+        foreach($dir_list as $dir)
+        {
+            $err = 0;
+            $test_dir = ROOT_PATH.$dir;
+            if(! is_writable($test_dir)){
+                $w = '[×]写';
+                $err++;
+            }
+            if(! is_readable($test_dir)){
+                $r = '[×]读';
+                $err++;
+            }
+            $error .= $err ? $dir .'目录 '. $w .' '. $r .'<br>' : '';
         }
         $this->assign('error', $error);
         $this->display('index');
@@ -61,18 +78,17 @@ class IndexController extends Controller {
         if ($data['agree'] != 1) {
             $this->msg('请认真阅读并同意安装协议！', false);
         }
-
+        //设置表前缀
         $dbPrefix = $configDb['DB_PREFIX'];
         if (empty($dbPrefix)) {
             $dbPrefix = 'ecs_';
         }
-        //更新安装sql文件
-        if (!model('Install')->get_column($configDb, $dbPrefix . 'order_info', 'mobile_pay')) {
-            $sql = "ALTER TABLE `".$dbPrefix."order_info` ADD COLUMN `mobile_order`  int(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `discount`,ADD COLUMN `mobile_pay`  int(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `mobile_order`;";
-            $this->update_install_sql($sql);
-        }
-        $dbData = APP_PATH . APP_NAME . '/install.sql';
+        $dbData = ROOT_PATH . 'data/install.sql';
         $sqlData = Install::mysql($dbData, 'ecs_', $dbPrefix);
+        //更新安装sql文件
+        if (!model('Install')->get_column($configDb, $dbPrefix . 'order_info', 'ectouch_pay')) {
+            $sqlData[] = "ALTER TABLE `".$dbPrefix."order_info` ADD COLUMN `ectouch_order` int(1) UNSIGNED NOT NULL DEFAULT 0,ADD COLUMN `ectouch_pay` int(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `discount`;";
+        }
         if (!model('Install')->runSql($configDb, $sqlData)) {
             $this->msg('数据导入失败，请检查后手动删除数据库重新安装！', false);
         }
@@ -81,70 +97,27 @@ class IndexController extends Controller {
         $this->msg('安装成功！', true);
     }
 	
-    //更新安装sql文件
-    private function update_install_sql($growing = ''){
-        $fp = fopen(BASE_PATH . 'apps/install/install.sql', "a");
-        flock($fp, LOCK_EX);
-        fwrite($fp, "\n\r".$growing);
-        flock($fp, LOCK_UN);
-        fclose($fp);
-    }
-	
     /**
      * 安装成功
      */
     public function success() {
-
         $appid = $this->appid();
         $config_file = './data/version.php';
         require $config_file;
-        
         $content = "<?php\n
 		define('APPNAME', '".APPNAME."');
 		define('VERSION', '".VERSION."');
 		define('RELEASE', '".RELEASE."');
 		define('ECTOUCH_AUTH_KEY', '".$appid."');";
         @file_put_contents($config_file, $content);
-        /**
-        $shop_config = model('Base')->load_config();
-        $shop_country = model('RegionBase')->get_region_name($shop_config[shop_country]);
-        $shop_province = model('RegionBase')->get_region_name($shop_config[shop_province]);
-        $shop_city = model('RegionBase')->get_region_name($shop_config[shop_city]);
-        $conn = mysql_connect(C('DB_HOST'), C('DB_USER'), C('DB_PWD'));
-        $data = array(
-        	'domain'   =>  $_SERVER['HTTP_HOST'],
-        	'appid'    =>  $appid,
-        	'url'      =>  __URL__,
-        	'shop_name'=>  $shop_config['shop_name'],
-        	'shop_title'=> $shop_config['shop_title'],
-        	'shop_desc'=>  $shop_config['shop_desc'],
-        	'shop_keywords'=>($shop_config['shop_keywords']),
-        	'country'  =>  $shop_country,
-        	'province' =>  $shop_province,
-        	'city'     =>  $shop_city,
-        	'address'  =>  $shop_config['shop_address'],
-        	'qq'       =>  $shop_config[qq],
-        	'ww'       =>  $shop_config[ww],
-        	'ym'       =>  $shop_config[ym],
-        	'msn'      =>  $shop_config[msn],
-        	'email'    =>  $shop_config[service_email],
-        	'phone'    =>  $shop_config[service_phone],
-        	'icp'      =>  $shop_config[icp_number],
-        	'version'  =>  VERSION,
-        	'language' =>  $shop_config[lang],
-        	'php_ver'  =>  PHP_VERSION,
-        	'mysql_ver'=>  mysql_get_server_info($conn),
-        	'charset'  =>  EC_CHARSET,
-        );
-        $url = "http://ectouch.cn/api/install.html";
-        http::doPost($url,$data);
-        */
         @fopen($this->lockFile, 'w');
+        $site_info = site_info($appid);
+        $this->cloud->data($site_info)->act('post.install');
         //生成二维码
         $mobile_url = __URL__; //二维码内容
         $errorCorrectionLevel = 'L'; // 纠错级别：L、M、Q、H 
         $matrixPointSize = 7; // 点的大小：1到10
-        $mobile_qr = 'data/assets/' . APP_NAME . '/' . $errorCorrectionLevel . $matrixPointSize . '.png';
+        $mobile_qr = 'data/cache/demo_qrcode.png';
         QRcode::png($mobile_url, ROOT_PATH . $mobile_qr, $errorCorrectionLevel, $matrixPointSize, 2);
         //二维码路径赋值
         $this->assign('mobile_qr', $mobile_url . '/' . $mobile_qr);
@@ -195,7 +168,7 @@ class IndexController extends Controller {
     /**
      * 生成为一的appid
      */
-    public function appid(){
+    private function appid(){
         $data .= $_SERVER['REQUEST_TIME']; // 请求那一刻的时间戳
         $data .= $_SERVER['HTTP_USER_AGENT']; // 获取访问者在用什么操作系统
         $data .= $_SERVER['SERVER_ADDR']; // 服务器IP
