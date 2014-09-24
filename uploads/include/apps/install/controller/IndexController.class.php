@@ -104,15 +104,13 @@ class IndexController extends Controller {
         $appid = $this->appid();
         $config_file = './data/version.php';
         require $config_file;
-        $content = "<?php\n
-		define('APPNAME', '".APPNAME."');
-		define('VERSION', '".VERSION."');
-		define('RELEASE', '".RELEASE."');
-		define('ECTOUCH_AUTH_KEY', '".$appid."');";
+        $content = "<?php\ndefine('APPNAME', '".APPNAME."');\ndefine('VERSION', '".VERSION."');\ndefine('RELEASE', '".RELEASE."');\ndefine('ECTOUCH_AUTH_KEY', '".$appid."');";
         @file_put_contents($config_file, $content);
         @fopen($this->lockFile, 'w');
-        $site_info = site_info($appid);
-        $this->cloud->data($site_info)->act('post.install');
+        if (ECTOUCH_AUTH_KEY == '') {
+            $site_info = site_info($appid);
+            $this->cloud->data($site_info)->act('post.install');
+        }
         //生成二维码
         $mobile_url = __URL__; //二维码内容
         $errorCorrectionLevel = 'L'; // 纠错级别：L、M、Q、H 

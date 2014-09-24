@@ -61,7 +61,7 @@ class Cloud {
     /**
      * 需要发送的数据
      * @param type $data
-     * @return \Libs\System\Cloud
+     * @return Cloud
      */
     public function data($data) {
         $this->data = $data;
