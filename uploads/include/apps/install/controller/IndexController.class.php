@@ -154,7 +154,6 @@ class IndexController extends Controller {
         $content .= "    'DB_CHARSET'   => 'utf8',\n";
         $content .= "    'DB_TYPE'   => 'mysql',\n";
         $content .= ");\n";
-        $content .= '?>';
         // 写入配置
         if (@file_put_contents($config_file, $content)) {
             return true;
@@ -167,13 +166,20 @@ class IndexController extends Controller {
      * 生成为一的appid
      */
     private function appid(){
-        $data .= $_SERVER['REQUEST_TIME']; // 请求那一刻的时间戳
-        $data .= $_SERVER['HTTP_USER_AGENT']; // 获取访问者在用什么操作系统
-        $data .= $_SERVER['SERVER_ADDR']; // 服务器IP
-        $data .= $_SERVER['SERVER_PORT']; // 端口号
-        $data .= $_SERVER['REMOTE_ADDR']; // 远程IP
-        $data .= $_SERVER['REMOTE_PORT']; // 端口信息
-        return strtoupper(hash('ripemd128', time().md5($data)));
+        if (function_exists('com_create_guid')){
+            $guid = com_create_guid();
+        }else{
+            mt_srand((double)microtime()*10000);
+            $charid = strtoupper(md5(uniqid(rand(), true)));
+            $hyphen = chr(45);// "-"
+            $guid = substr($charid, 0, 8).$hyphen
+                    .substr($charid, 8, 4).$hyphen
+                    .substr($charid,12, 4).$hyphen
+                    .substr($charid,16, 4).$hyphen
+                    .substr($charid,20,12);
+            return $guid;
+        }
+        return strtoupper(hash('ripemd128', $guid));
     }
 
 }
