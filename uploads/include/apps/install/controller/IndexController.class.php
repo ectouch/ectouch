@@ -86,8 +86,8 @@ class IndexController extends Controller {
         $dbData = ROOT_PATH . 'data/install.sql';
         $sqlData = Install::mysql($dbData, 'ecs_', $dbPrefix);
         //更新安装sql文件
-        if (!model('Install')->get_column($configDb, $dbPrefix . 'order_info', 'ectouch_pay')) {
-            $sqlData[] = "ALTER TABLE `".$dbPrefix."order_info` ADD COLUMN `ectouch_order` int(1) UNSIGNED NOT NULL DEFAULT 0,ADD COLUMN `ectouch_pay` int(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `discount`;";
+        if (!model('Install')->get_column($configDb, $dbPrefix . 'order_info', 'mobile_pay')) {
+            $sqlData[] = "ALTER TABLE `".$dbPrefix."order_info` ADD COLUMN `mobile_order` int(1) UNSIGNED NOT NULL DEFAULT 0,ADD COLUMN `mobile_pay` int(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `discount`;";
         }
         if (!model('Install')->runSql($configDb, $sqlData)) {
             $this->msg('数据导入失败，请检查后手动删除数据库重新安装！', false);
