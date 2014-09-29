@@ -53,6 +53,16 @@ class IndexController extends Controller {
             }
             $error .= $err ? $dir .'目录 '. $w .' '. $r .'<br>' : '';
         }
+        //自动读取pc端配置
+        if (file_exists('../data/config.php')) {
+            require '../data/config.php';
+            $data['db_host'] = $db_host;
+            $data['db_name'] = $db_name;
+            $data['db_user'] = $db_user;
+            $data['db_pass'] = $db_pass;
+            $data['db_pre'] = $prefix;
+            $this->assign('data', $data);
+        }
         $this->assign('error', $error);
         $this->display('index');
     }
@@ -63,7 +73,7 @@ class IndexController extends Controller {
     public function importing() {
         $data = in($_POST);
         $configDb = $data['DB'];
-        $link = @mysql_connect($configDb['DB_HOST'] . ':' . $configDb['DB_PORT'], $configDb['DB_USER'], $configDb['DB_PWD']);
+        $link = @mysql_connect($configDb['DB_HOST'], $configDb['DB_USER'], $configDb['DB_PWD']);
         if (!$link) {
             $this->msg('数据库连接失败，请检查连接信息是否正确！', false);
         }

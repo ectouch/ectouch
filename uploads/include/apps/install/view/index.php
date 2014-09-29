@@ -19,32 +19,31 @@
           <div class="formitm">
             <label class="lab" >数据库主机：</label>
             <div class="ipt">
-              <input name="DB[DB_HOST]" type="text" class="u-ipt" id="DB_HOST" value="localhost" style="width:185px;" onblur="test_data()" />
-              <input name="DB[DB_PORT]" type="text" class="u-ipt" id="DB_PORT" value="3306" style="width:100px;" onblur="test_data()" />
+              <input name="DB[DB_HOST]" type="text" class="u-ipt" id="DB_HOST" value="{$data['db_host']}" style="width:185px;" onblur="test_data()" />
             </div>
           </div>
           <div class="formitm">
             <label class="lab" >数据库用户名：</label>
             <div class="ipt">
-              <input name="DB[DB_USER]" type="text" class="u-ipt" id="DB_USER" value="" />
+              <input name="DB[DB_USER]" type="text" class="u-ipt" id="DB_USER" value="{$data['db_user']}" />
             </div>
           </div>
           <div class="formitm">
             <label class="lab" >数据库密码：</label>
             <div class="ipt">
-              <input name="DB[DB_PWD]" type="text" class="u-ipt" id="DB_PWD" value="" />
+              <input name="DB[DB_PWD]" type="text" class="u-ipt" id="DB_PWD" value="{$data['db_pass']}" />
             </div>
           </div>
           <div class="formitm">
             <label class="lab" >数据库名：</label>
             <div class="ipt">
-              <input name="DB[DB_NAME]" type="text" class="u-ipt" id="DB_NAME" value="" />
+              <input name="DB[DB_NAME]" type="text" class="u-ipt" id="DB_NAME" value="{$data['db_name']}" />
             </div>
           </div>
           <div class="formitm">
             <label class="lab" >表前缀：</label>
             <div class="ipt">
-              <input name="DB[DB_PREFIX]" type="text" class="u-ipt" id="DB_PREFIX" value="ecs_" />
+              <input name="DB[DB_PREFIX]" type="text" class="u-ipt" id="DB_PREFIX" value="{$data['db_pre']}" />
             </div>
           </div>
           <div class="formitm">
