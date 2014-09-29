@@ -1,13 +1,8 @@
 {include file="pageheader"}
 
-      {loop $patch $key $p}
-      <a href="{$p['url']}">
-        <p  class="bg-danger" style="height: 26px;line-height: 26px;padding-left: 10px;">
-          {$p['title']}
-        </p></a>
-      {/loop}
-      
-<script  src="http://ectouch.cn/api/push_news.html"></script>
+<script src="http://ectouch.cn/api/notice.html"></script>
+<script src="http://ectouch.cn/api/patch.html?release=<?php echo RELEASE;?>"></script>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">{$lang['system_info']}</h3>

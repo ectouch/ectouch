@@ -9,6 +9,15 @@ function showImg(id, title){
 		lock: false
 	});
 }
+$(function(){
+	//弹出框
+	$(".fancybox").fancybox({
+		width		: '60%',
+		height		: '60%',
+		autoSize	: false,
+		closeBtn	: false
+	});
+})
 </script>
 </body>
 </html>

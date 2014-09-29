@@ -340,31 +340,31 @@ class UserController extends CommonController {
         // 订单详情
         $order = model('User')->get_order_detail($order_id, $this->user_id);
         if ($order['order_status'] == OS_UNCONFIRMED) {
-            $order['handler'] = "<a href=\"" . url('user/cancel_order', array(
+            $order['handler'] = "<a class=\"btn btn-info ect-colorf\" href=\"" . url('user/cancel_order', array(
                         'order_id' => $order['order_id']
                     )) . "\" onclick=\"if (!confirm('" . L('confirm_cancel') . "')) return false;\">" . L('cancel') . "</a>";
         } else
         if ($order['order_status'] == OS_SPLITED) {
             /* 对配送状态的处理 */
             if ($order['shipping_status'] == SS_SHIPPED) {
-                @$order['handler'] = "<a href=\"" . url('user/affirm_received', array(
+                @$order['handler'] = "<a class=\"btn btn-info ect-colorf\" href=\"" . url('user/affirm_received', array(
                             'order_id' => $order['order_id']
                         )) . "\" onclick=\"if (!confirm('" . L('confirm_received') . "')) return false;\">" . L('received') . "</a>";
             } elseif ($order['shipping_status'] == SS_RECEIVED) {
                 @$order['handler'] = '<span style="color:red">' . L('ss_received') . '</span>';
             } else {
                 if ($order['pay_status'] == PS_UNPAYED) {
-                    @$order['handler'] = "<a href=\"" . url('user/cancel_order', array(
+                    @$order['handler'] = "<a class=\"btn btn-infoect-colorf\" href=\"" . url('user/cancel_order', array(
                                 'order_id' => $order['order_id']
                             )) . "\">" . L('pay_money') . "</a>";
                 } else {
-                    @$order['handler'] = "<a href=\"" . url('user/cancel_order', array(
+                    @$order['handler'] = "<a class=\"btn btn-info ect-colorf\" href=\"" . url('user/cancel_order', array(
                                 'order_id' => $order['order_id']
                             )) . "\">" . L('view_order') . "</a>";
                 }
             }
         } else {
-            $order['handler'] = '<span>' . L('os.' . $order['order_status']) . '</span>';
+            $order['handler'] = '<span class="btn btn-success ect-colorf">' . L('os.' . $order['order_status']) . '</span>';
         }
         if ($order === false) {
             ECTouch::err()->show(L('back_home_lnk'), './');
@@ -1385,7 +1385,6 @@ class UserController extends CommonController {
 
                 $this->assign('uid', $user_id);
                 $this->assign('mobile', base64_encode($mobile));
-                $this->assign('title', L('reset_password'));
                 $this->display('user_reset_password.dwt');
                 exit();
             }
@@ -1418,7 +1417,7 @@ class UserController extends CommonController {
 
             $this->assign('uid', $uid);
             $this->assign('code', $code);
-            $this->assign('title', L('reset_password'));
+			$this->assign('title', L('reset_password'));
             $this->display('user_reset_password.dwt');
         } else {
             // 验证码相关设置
@@ -1518,7 +1517,6 @@ class UserController extends CommonController {
 
             $this->assign('uid', $user_question_arr['user_id']);
             $this->assign('question', base64_encode($user_question_arr['passwd_question']));
-            $this->assign('title', L('reset_password'));
             $this->display('user_reset_password.dwt');
             exit();
         }

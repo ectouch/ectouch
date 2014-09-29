@@ -86,7 +86,7 @@ class ActivityController extends CommonController {
         $this->parameter();
         $id = intval(I('request.id'));
         if (!$id) {
-            $url = url('acitiviy/index');
+            $url = url('activity/index');
             ecs_header("Location: $url\n");
         }
         $res = $this->model->table('favourable_activity')->field()->where("act_id = '$id'")->order('sort_order ASC')->find();

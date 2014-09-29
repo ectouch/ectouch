@@ -1,3 +1,14 @@
+/*
+Template Name: ECTouch Default
+Template URI: http://www.ectouch.cn/
+Description: 默认版.
+Version: 1.0
+Author: ECTouch Team
+Author URI: http://www.ectouch.cn/
+Logo filename: logo.gif
+Template Type: typered_0
+*/
+
 html{fomt-famiily:'宋体';}
 body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div, dl, dt, dd { margin: 0; padding: 0; border: 0; }
 body{background:#f7f7f7; color:#555; font-size:18px; margin:0 auto; max-width:640px;}
@@ -21,14 +32,14 @@ del{color:#bbb;}
 .h4-list{font-size:1.4em; padding:0.6em;}
 .star{width:7em; height:auto;}
 /*颜色版本*/
-.ect-bg{background:#5babe6 !important; color:#fff !important; height:auto; overflow:hidden;}
-.ect-color{color:#5babe6 !important;}/*蓝色*/
-.ect-colory{color:#e87e04 !important;}/*黄色*/
+.ect-bg{background:#ea4b35 !important; color:#fff !important; height:auto; overflow:hidden;}
+.ect-color{color:#ea4b35 !important;}/*红色*/
+.ect-colory{color:#ea4b35 !important;}/*黄色*/
 .ect-bg-colory{background:#e87e04 !important}/*背景黄色*/
 .ect-colorf{color:#fff !important;}/*白色*/
 .ect-bg-colorf{background:#fff;}/*背景白色*/
 .ect-color999{color:#777 !important;}/*灰色*/
-.ect-border-top{border-top:2px solid #5babe6}
+.ect-border-top{border-top:2px solid #ea4b35}
 /*过度效果*/
 .ect-transition05{-webkit-transition: 0.5s ease;-moz-transition: 0.5s ease;-o-transition: 0.5s ease;transition: 0.5s ease}
 /* 全局公共样式的设定 */
@@ -81,7 +92,7 @@ i.icon-close:after{-webkit-transform: rotate(135deg);-moz-transform: rotate(135d
 /*商品对应促销图标*/
 i.mz{background:#f1bd08;}
 i.tuan{background:#C60}
-i.mj{background:#e87e04;}
+i.mj{background:#ea4b35;}
 i.zk{background:#ea4b35;}
 i.tbqb{background:#f59c00;}
 i.pm{background: #ea4b35;}
@@ -124,7 +135,7 @@ footer.logo img{width:8em; height:auto; display:block; margin:0.8em auto;}
 .user-tab ul li>a:link,.user-tab li>a:hover{border:none; background:none; padding:0.8em 0;}
 .user-tab ul li.active a,.user-tab li.active a:hover{border:none; border-radius:0; background:none;}
 .user-tab ul li.active a:hover{color:#666}
-.user-tab ul li.active a,.user-tab ul li.active a:link{color:#5babe6;}
+.user-tab ul li.active a,.user-tab ul li.active a:link{color:#ea4b35;}
 
 .user-tab .tab-content .ect-pro-list{border:none;}
 .user-tab .tab-content .tab-pane{padding:0.6em;}
@@ -142,7 +153,7 @@ footer.logo img{width:8em; height:auto; display:block; margin:0.8em auto;}
 .ect-radio label,.ect-checkbox label{margin-bottom:0;}
 .ect-radio label i,.ect-checkbox label i{width:1.2em; height:1.2em; margin-right:0.3em; display:block; float:left; margin-top:0.1em; border-radius:100%; background:rgba(255,255,255,0); border:2px solid #bbb;}
 .ect-checkbox label i{ border-radius:4px !important;}
-.ect-radio input:checked+label i,.ect-checkbox input:checked+label i{color:#F00; background:url(../images/radio.png) center center #5babe6 no-repeat; background-size:80%; border:none;}
+.ect-radio input:checked+label i,.ect-checkbox input:checked+label i{color:#F00; background:url(../images/radio.png) center center #ea4b35 no-repeat; background-size:80%; border:none;}
 .ect-radio input:disabled+label i,.ect-checkbox input:disabled+label i{background:#fff; border:2px solid #e8e8e8;}
 .ect-radio input.disabled:disabled+label i,.ect-checkbox input.disabled:disabled+label i{background:url(../images/radio.png) center center #e8e8e8 no-repeat; border:none; background-size:80%;}
 /*下拉框样式*/
@@ -150,8 +161,8 @@ footer.logo img{width:8em; height:auto; display:block; margin:0.8em auto;}
 .form-select i.fa{display:block; display:inline-block; position:absolute; top:50%; margin-top:-0.65em; right:0.6em; z-index:1; color:#aaa;}
 select{-webkit-appearance:none; border:0; color:#555; padding-left:0; border:1px solid #e3e3e3; border-radius:5px; padding:0.2em 0.4em; padding-right:1.2em; font-size:1.1em;}
 /*按钮*/
-.btn-info{border:none; background:#5babe6; padding:0.5em 0; font-size:1.3em;}
-.btn-info:hover{background:#5babe6;}
+.btn-info{border:none; background:#ea4b35; padding:0.5em 0; font-size:1.3em;}
+.btn-info:hover{background:#ea4b35;}
 .two-btn{display: -webkit-box;display: -moz-box;display: -ms-box;display: box; }
 .two-btn .btn{-webkit-box-flex: 1;-moz-box-flex: 1;-ms-box-flex: 1;box-flex: 1; display:block; width:100%;}
 .two-btn .btn:nth-child(2){margin-left:0.6em;}
@@ -177,7 +188,7 @@ select{-webkit-appearance:none; border:0; color:#555; padding-left:0; border:1px
 .focus .hd { width: 100%; height: 0.8em; position: absolute; z-index: 1; text-align: center; bottom:0.5em;}
 .focus .hd ul { display: inline-block; height: 0.8em;}
 .focus .hd ul li { display: inline-block; width: 0.6em; height: 0.6em; text-indent:-999em; background: rgba(255, 255, 255, 0.8); margin: 0 0.3em; vertical-align: top; overflow: hidden; border-radius: 100%; -moz-border-radius: 100%; -webkit-border-radius: 100%; -o-border-radius: 100%; }
-.focus .hd ul .on { background: #5babe6; }
+.focus .hd ul .on { background: #ea4b35; }
 .focus .bd { position: relative; z-index: 0;}
 .focus .bd li { height: auto; overflow: hidden; }
 .focus .bd li a img { width: 100%; height: auto; display: block; margin: 0; padding: 0; }
@@ -278,9 +289,9 @@ transform: rotate(45deg);}
 .goods-option-con{clear:both; overflow:hidden; margin:0.2em 0; margin-bottom:1em;}
 .goods-option-con span{display: block;float: left; font-size:1.1em; padding:0.4em 0; margin-top:0.2em;}
 .goods-option-conr input[type=radio],.goods-option-conr input[type=checkbox]{display:none;}
-.goods-option-conr input:checked+label{border: 1px solid #e87e04;position: relative;color: #666;}
+.goods-option-conr input:checked+label{border: 1px solid #ea4b35;position: relative;color: #666;}
 .goods-option-con label{display: block;float: left;padding: 0.4em 0.8em;border: 1px solid #eee;margin:0 0.4em;color: #666; font-weight:normal; margin-top:0.5em;}
-.goods-option-con input:checked+label:after, .gw-con .gwc-fl .gwc-fl-con input:checked+label:before { content: "\0020"; background: #e87e04; position: absolute; height: 0.7em; width: 0.7em; right: 0px; bottom: 0px; z-index: 0; }
+.goods-option-con input:checked+label:after, .gw-con .gwc-fl .gwc-fl-con input:checked+label:before { content: "\0020"; background: #ea4b35; position: absolute; height: 0.7em; width: 0.7em; right: 0px; bottom: 0px; z-index: 0; }
 .goods-option-con input:checked+label:before {content:"\0020"; width: 0.5em; height: 0.3em; box-sizing: border-box; z-index: 10; bottom: 0.3em; position:absolute; right: 0.04em; border-bottom: 1px #fff solid; border-left: 1px #fff solid; /*旋转45度*/ -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -ms-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg); z-index:1;}
 .goods-num{overflow:hidden;}
 /*商品详情*/

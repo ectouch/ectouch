@@ -1284,7 +1284,7 @@ class FlowController extends CommonController {
                         /* 如果订单用户不为空，计算积分，并发给用户；发红包 */
                         if ($order ['user_id'] > 0) {
                             /* 取得用户信息 */
-                            $user = user_info($order ['user_id']);
+                            $user = model('Order')->user_info($order ['user_id']);
 
                             /* 计算并发放积分 */
                             $integral = model('Order')->integral_to_give($order);
@@ -1555,7 +1555,7 @@ class FlowController extends CommonController {
      */
     public function change_surplus() {
         $surplus = floatval($_GET['surplus']);
-        $user_info = user_info($_SESSION['user_id']);
+        $user_info = model('Order')->user_info($_SESSION['user_id']);
 
         if ($user_info['user_money'] + $user_info['credit_line'] < $surplus) {
             $result['error'] = L('surplus_not_enough');
@@ -1600,7 +1600,7 @@ class FlowController extends CommonController {
      */
     public function change_integral() {
         $points = floatval($_GET['points']);
-        $user_info = user_info($_SESSION['user_id']);
+        $user_info = model('Order')->user_info($_SESSION['user_id']);
 
         /* 取得订单信息 */
         $order = model('Order')->flow_order_info();

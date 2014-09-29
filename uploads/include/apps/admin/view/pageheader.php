@@ -6,7 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{$lang['cp_home']}</title>
 <link href="__PUBLIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
 <script src="__PUBLIC__/js/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/fancybox/jquery.fancybox.js?v=2.1.5"></script>
 <script src="__PUBLIC__/artDialog/jquery.artDialog.js?skin=aero"></script>
 <script src="__PUBLIC__/artDialog/plugins/iframeTools.js"></script>
 <script src="__PUBLIC__/bootstrap/js/bootstrap.min.js"></script>

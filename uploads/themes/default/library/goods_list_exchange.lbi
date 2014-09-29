@@ -1,19 +1,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<div class="is-mune">
   <form method="GET" class="sort" name="listform">
-  <div class="is-mune-title">
-  <a class="{if $sort == 'goods_id' && $order == 'DESC'}select{/if}" href="{:url('exchange/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort=goods_id&order=DESC" class="">{$lang.sort_default}</a>
-  <a class="{if $sort =='sales_volume' && $order == 'DESC'}xl select{elseif $sort =='sales_volume' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('exchange/index')}&id={$id}&display={$display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=sales_volume&order=<!-- {if $sort == 'sales_volume' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->" class="xl">{$lang.exchange_num}<i></i></a>
-  <a class="{if $sort =='click_count' && $order == 'DESC'}xl select{elseif $sort =='click_count' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('exchange/index')}&id={$id}&display={$display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=click_count&order=<!-- {if $sort == 'click_count' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->" class="xl">{$lang.sort_popularity}<i></i></a>
-  <a class="{if $sort =='exchange_integral' && $order == 'DESC'}xl select{elseif $sort =='exchange_integral' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('exchange/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort=exchange_integral&order=<!-- {if $sort == 'exchange_integral' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->" class="xl">{$lang.exchange_integral}<i></i></a>
+   <div class="ect-wrapper text-center" >
+    <div><a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('exchange/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort=goods_id&order=DESC">{$lang.sort_default}</a>
+  <a class="{if $sort =='sales_volume' && $order == 'DESC'}select ect-colory{elseif $sort =='sales_volume' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('exchange/index')}&id={$id}&display={$display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=sales_volume&order=<!-- {if $sort == 'sales_volume' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.exchange_num} <i class="glyphicon glyphicon-arrow-up"></i></a>
+  <a class="{if $sort =='click_count' && $order == 'DESC'}select ect-colory{elseif $sort =='click_count' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('exchange/index')}&id={$id}&display={$display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=click_count&order=<!-- {if $sort == 'click_count' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a>
+  <a class="{if $sort =='exchange_integral' && $order == 'DESC'}select ect-colory{elseif $sort =='exchange_integral' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('exchange/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort=exchange_integral&order=<!-- {if $sort == 'exchange_integral' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.exchange_integral} <i class="glyphicon glyphicon-arrow-up"></i></a>
   </div>
-  <div class="more_wrapper">
-    <div class="more_category" id="categoryFloat"> 
-      <!--{foreach from=$category item=cat name=no}--> 
-      <a href="{$cat.url}" class="select" >{if $cat.cat_id}{$cat.name|escape:html}{else}{$cat.name|escape:html}{/if}</a> 
-      <!--{/foreach}--> 
-    </div>
   </div>
+
     <input type="hidden" name="category" value="{$category}" />
     <input type="hidden" name="display" value="{$pager.display}" id="display" />
     <input type="hidden" name="brand" value="{$brand_id}" />
@@ -25,11 +19,13 @@
     <input type="hidden" name="order" value="{$order}" />
     <input type="hidden" name="keywords" value="{$keywords}" />
   </form>
-</div>
 <!-- <div>关键词{$keywords}总数量{$nCount}</div> -->
-<div class="inx-tj <!-- {if C('show_order_type')==1} --> good-list<!-- {/if} -->" id="J_ItemList"  >
-	<li class="single_item"></li>
-  <a href="javascript:;" class="get_more"></a>
+<div class="ect-margin-tb ect-pro-list ect-margin-bottom0 ect-border-bottom0">
+	<ul id="J_ItemList">
+    <li class="single_item"></li>
+  	<a href="javascript:;" class="get_more"></a>
+    </ul>
+  
 </div>
 <!--
   <div class="srp album flex-f-row" id="J_ItemList" style="opacity:1;"> 

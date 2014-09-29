@@ -1,23 +1,17 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
-<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
-  <tr align="center" class="first-tr">
-    <td style="width:7rem;">{$lang.process_time}</td>
-    <td style="width:4rem;">{$lang.surplus_pro_type}</td>
-    <td style="width:5rem;">{$lang.money}</td>
-    <td style="line-height:3rem;">{$lang.change_desc}</td>
-  </tr>
-  <!--{foreach from=$account_log item=item}-->
-  <tr>
-    <td align="center" style="width:7rem;">{$item.change_time}</td>
-    <td align="center" style="width:4rem;">{$item.type}</td>
-    <td align="right" style="width:5rem;">{$item.amount}</td>
-    <td style="line-height:2rem;">{$item.short_change_desc}</td>
-  </tr>
-  <!--{/foreach}-->
-  <tr>
-    <td colspan="4" align="center" bgcolor="#ffffff" style="height:4rem;"><div align="right">{$lang.current_surplus}{$surplus_amount}</div></td>
-  </tr>
-</table>
+ <div class="user-account-detail">
+  	<ul class=" ect-bg-colorf">
+     <!--{foreach from=$account_log item=item}-->
+    	<li>
+        	<p class="title"><span class="pull-left">{$item.change_time}</span> <span class="pull-right">{$item.amount}</span></p>
+            <p class="content"><span class="remark pull-left">{$item.short_change_desc}</span> <span class="pull-right text-right type">{$item.type}</span></p>
+        </li>
+<!--{/foreach}-->
+    </ul>
+    <p class="pull-right count">{$lang.current_surplus}<b class="ect-colory">{$surplus_amount}</b></p>
+  </div>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

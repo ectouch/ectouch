@@ -515,16 +515,15 @@ function urlRoute() {
     } else {
         $_REQUEST['r'] = trim($_GET['m']) . '/' . trim($_GET['c']) . '/' . trim($_GET['a']);
     }
-
     $route_arr = isset($_REQUEST['r']) ? explode("/", $_REQUEST['r']) : array();
     $app_name = empty($route_arr[0]) ? DEFAULT_APP : $route_arr[0];
     $controller_name = empty($route_arr[1]) ? DEFAULT_CONTROLLER : $route_arr[1];
     $action_name = empty($route_arr[2]) ? DEFAULT_ACTION : $route_arr[2];
     $_REQUEST['r'] = $app_name . '/' . $controller_name . '/' . $action_name;
     $controller_name = ucfirst($controller_name); // 控制器的首字母大写
-    define('APP_NAME', $app_name);
-    define('CONTROLLER_NAME', $controller_name);
-    define('ACTION_NAME', $action_name);
+    defined('APP_NAME') or define('APP_NAME', $app_name);
+    defined('CONTROLLER_NAME') or define('CONTROLLER_NAME', $controller_name);
+    defined('ACTION_NAME') or define('ACTION_NAME', $action_name);
 }
 
 /**

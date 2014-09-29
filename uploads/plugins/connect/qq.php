@@ -44,7 +44,7 @@ if (isset($set_modules) && $set_modules == TRUE) {
     $modules[$i]['website'] = 'http://open.qq.com';
 
     // 版本号
-    $modules[$i]['version'] = '2.7v';
+    $modules[$i]['version'] = '1.0';
 
     // 更新日期
     $modules[$i]['date'] = '2014-8-19';

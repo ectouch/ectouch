@@ -1,11 +1,12 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
-<div class="ectouchBody">
-  <h1><a href="{:url('category/all')}" class="cate-list"></a>
-    <div class="d-serach">
-      <button class="h-serach" id="get_search_box" style="color:silver; text-align:left;">{$lang.no_keywords}</button>
+<div class="con"> 
+  <header class="ect-header ect-margin-tb ect-margin-lr"> <a href="{:url('category/all')}" class="pull-left ect-icon ect-icon1 ect-icon-cate1"></a>
+    <div class="ect-header-div">
+      <button class="btn btn-default ect-text-left ect-btn-search" onClick="javascript:openSearch();"><i class="fa fa-search"></i>&nbsp;{$lang.no_keywords}</button>
     </div>
-  </h1>
-  <div id="focus" class="focus">
+  </header>
+  <!--banner滚动图片s-->
+  <div id="focus" class="focus ect-margin-tb">
     <div class="hd">
       <ul>
       </ul>
@@ -17,24 +18,27 @@
       </ul>
     </div>
   </div>
-  <div class="u-list inx-nav">
-  	<ul>
-		<!--{foreach from=$navigator item=nav}-->
-    	<li>
-        	<a href="{$nav.url}">
-                <dl>
-                    <dt><i><img src="{$nav.pic}" ></i></dt>
-                    <dd>{$nav.name}</dd>
-                </dl>
-            </a>
-        </li>
-		<!--{/foreach}-->
+  <!--首页快速导航-->
+  <nav class="container-fluid">
+    <ul class="row ect-row-nav">
+      <!--{foreach from=$navigator item=nav}--> 
+      <a href="{$nav.url}">
+      <li class="col-sm-3 col-xs-3"><i><img src="{$nav.pic}" ></i>
+        <p class="text-center">{$nav.name}</p>
+      </li>
+      </a> 
+      <!--{/foreach}-->
     </ul>
-  </div>
+  </nav>
   <!-- #BeginLibraryItem "/library/recommend_hot.lbi" --><!-- #EndLibraryItem -->
-  <header class="i-header"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --></header>
-  <div style="height:4.75rem"></div>
+  <footer>
+    <nav class="ect-nav"><!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --></nav>
+  </footer>
+  <div style="padding-bottom:4.2em;"></div>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
-</body>
-</html>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript">
+get_asynclist("{:url('index/ajax_goods')}&type=best" , '__TPL__/images/loader.gif');
+</script>
+</body></html>

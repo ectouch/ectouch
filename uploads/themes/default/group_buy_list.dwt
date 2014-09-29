@@ -1,45 +1,28 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="con">
+<div style="height:7.2em;"></div>
+  <header>
+    <nav class="ect-nav ect-bg icon-write">
+      <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem -->
+    </nav>
+  </header>
+ <div class="ect-wrapper text-center">
 <div>
-  <div style="height:5rem"></div>
-  <header class="n-header"><!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --></header>
-  <div class="is-mune">
-    <div class="is-mune-title"> <a class="{if $sort == 'goods_id' && $order == 'DESC'}select{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&page={$page}&sort=goods_id&order=DESC">{$lang.sort_default}</a> <a class="{if $sort == 'sales_count' && $order == 'DESC'}xl select{elseif $sort =='sales_count' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&page={$page}&sort=sales_count&order=<!-- {if $sort == 'sales_count' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.sort_sales}<i></i></a> <a class="{if $sort =='click_num' && $order == 'DESC'}xl select{elseif $sort =='click_num' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$display}&brand={$brand_id}&page={$pager.page}&sort=click_num&order=<!-- {if $sort == 'click_num' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.sort_popularity}<i></i></a> <a class="{if $sort =='cur_price' && $order == 'DESC'}xl select{elseif $sort =='cur_price' && $order == 'ASC'}zk select{else}zk{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&page={$page}&sort=cur_price&order=<!-- {if $sort == 'cur_price' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->" class="xl">{$lang.sort_price}<i></i></a> </div>
-    <div class="more_wrapper">
-      <div class="more_category" id="categoryFloat"> 
-        <!--{foreach from=$category item=cat name=no}--> 
-        <a href="{$cat.url}" class="select" >{if $cat.cat_id}{$cat.name|escape:html}{else}{$cat.name|escape:html}{/if}</a> 
-        <!--{/foreach}--> 
-      </div>
-    </div>
+    <a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&page={$page}&sort=goods_id&order=DESC">{$lang.sort_default}</a>
+    <a class="{if $sort == 'sales_count' && $order == 'DESC'}select ect-colory{elseif $sort =='sales_count' && $order == 'ASC'}ect-colory{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&page={$page}&sort=sales_count&order=<!-- {if $sort == 'sales_count' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.sort_sales} <i class="glyphicon glyphicon-arrow-up"></i></a>
+    <a class="{if $sort =='click_num' && $order == 'DESC'}select ect-colory{elseif $sort =='click_num' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$display}&brand={$brand_id}&page={$pager.page}&sort=click_num&order=<!-- {if $sort == 'click_num' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a>
+    <a class="{if $sort =='cur_price' && $order == 'DESC'}select ect-colory{elseif $sort =='cur_price' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&page={$page}&sort=cur_price&order=<!-- {if $sort == 'cur_price' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->" class="xl">{$lang.sort_price} <i class="glyphicon glyphicon-arrow-up"></i></a> </div>
   </div>
-  <div class="inx-tj">
-    <ul>
-    </ul>
-  </div>
-  <div class="inx-tj" id="J_ItemList"  >
-    <li class="single_item"></li>
-    <a href="javascript:;" class="get_more"></a> </div>
+
+<div class="ect-margin-tb ect-pro-list ect-margin-bottom0 ect-border-bottom0">
+    <ul id="J_ItemList">
+      <li class="single_item"></li>
+      <a href="javascript:;" class="get_more"></a> 
+	</ul>
 </div>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript">
-/*goods 点击下拉菜单列表*/
-	var headert=!1;
-	$(window).scroll(function(){
-		 headert = headert ? headert : $(".n-header").offset().top;//获取n-header的高度
-	});
-	$(".mune-sx").click(function(){
-		if($(".is-mune").hasClass("expand")){
-			$(".is-mune").removeClass("expand");
-		}else{
-			$(".is-mune").addClass("expand");
-		}
-	});
-	$(".select").click(function(){
-		if($(".is-mune").hasClass("expand")){
-			$(".is-mune").removeClass("expand");
-		}
-	});
 	get_asynclist("{:url('groupbuy/asynclist')}&page={$page}&sort={$sort}&order={$order}" , '__TPL__/images/loader.gif');
 </script>
 </body></html>

@@ -1,10 +1,8 @@
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<div class="inx-tj hot_goods" id="J_ItemList">
-  <div class="single_item">
-  <ul class="hot"></ul>
-  </div>
-  <a href="javascript:;" style="text-align:center" class="get_more"></a>
-</div>
-<script type="text/javascript">
-get_asynclist("{:url('index/ajax_goods')}&type=best" , '__TPL__/images/loader.gif');
-</script>
+<div class="ect-margin-tb ect-pro-list ect-margin-bottom0" style="border-bottom:none;" >
+  <ul id="J_ItemList">
+  	<li class="single_item">
+    </li>
+     <a href="javascript:;" style="text-align:center" class="get_more"></a>
+  </ul>
+ </div>
+  

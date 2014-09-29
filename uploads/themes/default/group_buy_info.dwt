@@ -1,74 +1,81 @@
-<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript" src="__TPL__/js/lefttime.js"></script>
-<div>
-    <h1 class="f-h1"><a class="t-history" onClick="javascript:history.go( - 1)">{$lang.back_up_page}</a>{$lang.groupbuy_goods_info}<a  class="t-mune" href="javascript:void(0)">{$lang.menu}</a></h1>
-    <header class="nidx-header" id="nidx-header"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </header>
-    <div id="focus" class="focus goodfocus">
-        <div class="hd">
-            <ul>
-            </ul>
-        </div>
-        <div class="bd">
-            <ul id="Gallery">
-                <li><a href="{$gb_goods.goods_img}"><img alt="{$gb_goods.goods_name}" src="{$gb_goods.goods_img}" /></a></li>
-            </ul>
-        </div>
+<div class="con">
+  <div class="ect-bg">
+    <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write ect-bg"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$lang.groupbuy_goods_info}</span> <a href="javascript:;"  onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a></header>
+    <nav class="ect-nav ect-nav-list" style="display:none;"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
+  </div>
+  
+  <!--商品图片相册-->
+  <div id="focus" class="focus goods-focus ect-padding-lr ect-margin-tb">
+    <div class="hd">
+      <ul>
+      </ul>
     </div>
-    <div class="gw-con">
-        <div class="gwc-jj">
-            <h3>{$gb_goods.goods_name}</h3>
-        </div>
-        <div class="gwc-price">{$lang.gb_cur_price} {$group_buy.formated_cur_price} <span style="float:right">{$lang.sort_sales}：<b> {$group_buy.sales_count}</b></span></div>
-        <div class="gwc-xnum"></div>
-        <!-- {if $cfg.show_goodssn && 0} -->
-        <div class="gwc-xnum"> {$lang.goods_sn}<font class="price">{$gb_goods.goods_sn}</font></div>
-        <!-- {/if} --> 
+    <div class="bd">
+      <ul id="Gallery">
+        <li><a href="{$gb_goods.goods_img}"><img alt="{$gb_goods.goods_name}" src="{$gb_goods.goods_img}" /></a></li>
+      </ul>
+    </div>
+  </div>
+  <!--商品属性介绍-->
+  <div class="goods-info ect-padding-tb">
+    <section class="ect-margin-tb ect-margin-lr">
+      <h4 class="title pull-left" style="position:static;">{$gb_goods.goods_name}</h4>
+      </section>
+    <section class="ect-margin-tb ect-margin-lr ">
+      <p><span class="pull-left">{$lang.gb_cur_price}<strong class="ect-colory">{$group_buy.formated_cur_price}</strong></span><span class="pull-right">{$lang.sort_sales}：{$group_buy.sales_count} 件</span></p>
+       <!-- {if $cfg.show_goodssn && 0} -->
+        <p> {$lang.goods_sn}<strong>{$gb_goods.goods_sn}</strong></p>
+       <!-- {/if} --> 
         <!-- {if $cfg.goods.brand_name && $show_brand && 0} -->
-        <div class="gwc-xnum"> {$lang.goods_brand}<font class="price">{$gb_goods.brand_name}</font></div>
-        <!-- {/if} --> 
-        <!-- {if $cfg.show_goodsweight && 0} -->
-        <div class="gwc-xnum"> {$lang.goods_weight}<font class="price">{$gb_goods.goods_weight}</font></div>
-        <!-- {/if} --> 
-        <!-- {if $group_buy.deposit > 0} 保证金额-->
-        <div class="gwc-xnum"> {$lang.gb_deposit}<font class="price">{$group_buy.formated_deposit}</font></div>
-        <!--{/if}--> 
-        <!--{if $group_buy.restrict_amount > 0} 限购数量-->
-        <div class="gwc-xnum"> {$lang.gb_restrict_amount}<font class="price">{$group_buy.restrict_amount}</font></div>
-        <!--{/if}--> 
-        <!--{if $group_buy.gift_integral > 0} 送积分-->
-        <div class="gwc-xnum"> {$lang.gb_gift_integral}<font class="price">{$group_buy.gift_integral}</font></div>
-        <!--{/if}--> 
-        <!-- {if $group_buy.status eq 0} 未开始 -->
-        <div class="gwc-xnum"> {$lang.gbs_pre_start}</div>
-        <!-- {elseif $group_buy.status eq 1} 进行中 -->
-        <div class="gwc-price"> <span><strong id="leftTime" class="price">{$lang.please_waiting}</strong></span></div>
-        <div class="gwc-xnum"> {$lang.gb_valid_goods}<font class="price">{$group_buy.valid_goods}</font></div>
-        <!-- {elseif $group_buy.status eq 2} 已结束 -->
-        <div class="gwc-xnum"> {$lang.gbs_finished}：{$lang.gb_cur_price} {$group_buy.formated_cur_price} {$lang.gb_valid_goods} {$group_buy.valid_goods}</div>
-        <!-- {elseif $group_buy.status eq 3} 团购成功 -->
-        <div class="gwc-xnum"> {$lang.gbs_succeed}
-            {$lang.gb_final_price} {$group_buy.formated_trans_price}<br />
-            {$lang.gb_final_amount} {$group_buy.trans_amount}</div>
-        <!-- {elseif $group_buy.status eq 4} 团购失败 -->
-        <div class="gwc-xnum"> {$lang.gbs_fail}</div>
+        <p> {$lang.goods_brand}<strong>{$gb_goods.brand_name}</strong></p>
         <!-- {/if} -->
-        <div class="gwc-lnum">
+        <!-- {if $cfg.show_goodsweight && 0} -->
+        <p> {$lang.goods_weight}<strong>{$gb_goods.goods_weight}</strong></p>
+       <!-- {/if} --> 
+        <!-- {if $group_buy.deposit > 0} 保证金额-->
+        <p> {$lang.gb_deposit}<strong>{$group_buy.formated_deposit}</strong></p>
+       <!--{/if}--> 
+       <!--{if $group_buy.restrict_amount > 0} 限购数量-->
+        <p> {$lang.gb_restrict_amount}<strong>{$group_buy.restrict_amount}</strong></p>
+   <!--{/if}--> 
+   <!--{if $group_buy.gift_integral > 0} 送积分-->
+        <p> {$lang.gb_gift_integral}<strong>{$group_buy.gift_integral}</strong></p>
+       <!--{/if}--> 
+       <!-- {if $group_buy.status eq 0} 未开始 -->
+        <p> {$lang.gbs_pre_start}</p>
+       <!-- {elseif $group_buy.status eq 1} 进行中 -->
+        <p> <strong id="leftTime" class="price">{$lang.please_waiting}</strong></p>
+        <p> {$lang.gb_valid_goods}<strong>{$group_buy.valid_goods}</strong></p>
+        <!-- {elseif $group_buy.status eq 2} 已结束 -->
+        <p> {$lang.gbs_finished}</p><p>{$lang.gb_cur_price} <strong>{$group_buy.formated_cur_price}</strong></p><p>{$lang.gb_valid_goods} <strong>{$group_buy.valid_goods}</strong></p>
+       <!-- {elseif $group_buy.status eq 3} 团购成功 -->
+        <p> {$lang.gbs_succeed}
+            {$lang.gb_final_price} <strong>{$group_buy.formated_trans_price}</strong><br />
+            {$lang.gb_final_amount} <strong>{$group_buy.trans_amount}</strong></p>
+       <!-- {elseif $group_buy.status eq 4} 团购失败 -->
+        <p> {$lang.gbs_fail}</p>
+       <!-- {/if} -->
+       <div class="good-info-table">
         	<ul>
-            	<li><h3>{$lang.gb_ladder_amount}</h3><h3>{$lang.gb_ladder_price}</h3></li>
+            	<li class="ect-diaplay-box "><h4 class="ect-box-flex">{$lang.gb_ladder_amount}</h4><h4 class="ect-box-flex">{$lang.gb_ladder_price}</h4></li>
                 <!-- {foreach from=$group_buy.price_ladder item=item} -->
-                <li><span>{$item.amount}</span><span>{$item.formated_price}</span></li>
+                <li class="ect-diaplay-box"><span class="ect-box-flex">{$item.amount}</span><span class="ect-box-flex">{$item.formated_price}</span></li>
                 <!-- {/foreach} -->
             </ul>
         </div>
-
-        <form action="{:url("groupbuy/buy")}" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
+    </section>
+      <form action="{:url("groupbuy/buy")}" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
         <input type="hidden" name="valid_goods" value="{$group_buy.valid_goods}" />
         <input type="hidden" name="group_buy_id" value="{$group_buy.group_buy_id}" />
-            <div class="gwc-fl"> 
-                <!-- {foreach name=spec from=$specification item=spec key=spec_key} -->
-                <div class="gwc-fl-con"> <span>{$spec.name}：</span>
-                    <div class="gwc-fl-conr"> 
-                        <!-- {* 判断属性是复选还是单选 *} --> 
+      <section class="ect-padding-lr ect-padding-tb goods-option">
+        <div class="goods-optionc"> 
+          <!-- {foreach name=spec from=$specification item=spec key=spec_key} -->
+          <div class="goods-option-con"> <span>{$spec.name}：</span>
+            <div class="goods-option-conr"> 
+            
+             <!-- {* 判断属性是复选还是单选 *} --> 
                         <!-- {if $spec.attr_type eq 1} --> 
                         <!-- {if $cfg.goodsattr_style eq 1} --> 
                         <!-- {foreach from=$spec.values item=value key=key} -->
@@ -90,28 +97,33 @@
                         <label for="spec_value_{$value.id}">{$value.label} [{if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if} {$value.format_price|abs}]</label>
                         <!-- {/foreach} --> 
                         <!-- {/if} --> 
-                    </div>
-                </div>
-                <!-- {/foreach} --> 
             </div>
-        <div class="gwc-inum"> <span>{$lang.number}：</span>
-            <div class="f-list-af" id="f-list-af"> 
-                <div class="sup" onClick="changeNum('1')" ></div>
-                <input type="text" class="txtnum" name="number" id="goods_number"  autocomplete="off" value="1" min="1" max="{$goods.goods_number}"  />
-                <div class="plus" onClick="changeNum('3')"  ></div>
-            </div>
+          </div>
+          <!-- {/foreach} --> 
         </div>
-        <div class="btn-buy" id="btn-buy"> <a href="javascript:;" onClick="document.getElementById('ECS_FORMBUY').submit()">{$lang.button_buy}</a> </div>  
-        </form>
-        <div class="tg-xq">
-        	{$gb_goods.goods_desc} 
+        <div class="goods-num"> <span class="pull-left">{$lang.number}：</span> 
+          <div class="input-group pull-left wrap"><span class="input-group-addon sup" onClick="changePrice('1')">-</span>
+            <input type="text" class="form-contro form-num"  name="number" id="goods_number" autocomplete="off" value="1" onFocus="back_goods_number()"  onblur="changePrice('2')"/>
+            <span class="input-group-addon plus" onClick="changePrice('3')">+</span></div>
         </div>
-    </div>
+      </section>
+      <div class="ect-padding-lr ect-padding-tb goods-submit">
+        <a href="javascript:;" class="btn btn-info ect-btn-info ect-colorf" onClick="document.getElementById('ECS_FORMBUY').submit()">{$lang.button_buy}</a> 
+      </div>
+      <div class="tab-info">{$gb_goods.goods_desc}</div>
+    </form>
+  </div>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
-<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
-</body>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript" src="/ectouch_demo/mobile/themes/default/js/lefttime.js"></script>
 <script type="text/javascript">
+$(function() {
+/*判断user-tab内容高度不够时撑开*/
+	var user_tab_height = $(".group-buy-infos");
+	var window_height = $(window).height()/3;
+	user_tab_height.css("min-height",window_height);
+});
 var gmt_end_time = "{$group_buy.gmt_end_date|default:0}";
 {foreach from=$lang.goods_js item=item key=key}
 var {$key} = "{$item}";
@@ -134,8 +146,8 @@ function changeNum( type ){
 	var valid = document.forms['ECS_FORMBUY'].elements['valid_goods'].value;
     if(type == 1){qty--; }
     if(type == 3){qty++; }
-   /* if(qty <=0 ){ qty=1; }
-	if(qty > valid){ qty--;}*/
+    if(qty <=0 ){ qty=1; }
+	if(qty > valid){ qty--;}
     if(!/^[0-9]*$/.test(qty)){ qty = document.getElementById('back_number').value; }
     document.getElementById('goods_number').value = qty;
   }
@@ -143,4 +155,4 @@ function changeNum( type ){
 
 document.addEventListener('DOMContentLoaded', function(){Code.photoSwipe('a', '#Gallery');}, false);
 </script>
-</html>
+</body></html>

@@ -1,8 +1,4 @@
 <?php
-
-/* 访问控制 */
-defined('IN_ECTOUCH') or die('Deny Access');
-
 /**
  *	微信公众平台PHP-SDK, 官方API部分
  *  @author  dodge <dodgepudding@gmail.com>
@@ -34,6 +30,7 @@ defined('IN_ECTOUCH') or die('Deny Access');
  *   		default:
  *   			$weObj->text("help info")->reply();
  *   }
+ *   
  *   //获取菜单操作:
  *   $menu = $weObj->getMenu();
  *   //设置菜单
@@ -43,7 +40,7 @@ defined('IN_ECTOUCH') or die('Deny Access');
  *   				array('type'=>'click','name'=>'最新消息','key'=>'MENU_KEY_NEWS'),
  *   				array('type'=>'view','name'=>'我要搜索','url'=>'http://www.baidu.com'),
  *   				)
-  *  		);
+ *  		);
  *   $result = $weObj->createMenu($newmenu);
  */
 class Wechat
@@ -67,16 +64,19 @@ class Wechat
 	const QR_SCENE = 0;
 	const QR_LIMIT_SCENE = 1;
 	const QRCODE_IMG_URL='https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=';
+	const SHORT_URL='/shorturl?';
 	const USER_GET_URL='/user/get?';
 	const USER_INFO_URL='/user/info?';
-	const USER_GROUPID_GET_URL = '/groups/getid?'; //Add by wang
+	const USER_UPDATEREMARK_URL='/user/info/updateremark?';	
 	const GROUP_GET_URL='/groups/get?';
+	const USER_GROUP_URL='/groups/getid?';
 	const GROUP_CREATE_URL='/groups/create?';
 	const GROUP_UPDATE_URL='/groups/update?';
 	const GROUP_MEMBER_UPDATE_URL='/groups/members/update?';
 	const CUSTOM_SEND_URL='/message/custom/send?';
 	const MEDIA_UPLOADNEWS_URL = '/media/uploadnews?';
 	const MASS_SEND_URL = '/message/mass/send?';
+	const TEMPLATE_SEND_URL = '/message/template/send?';
 	const MASS_SEND_GROUP_URL = '/message/mass/sendall?';
 	const MASS_DELETE_URL = '/message/mass/delete?';
 	const UPLOAD_MEDIA_URL = 'http://file.api.weixin.qq.com/cgi-bin';
@@ -87,6 +87,7 @@ class Wechat
 	const OAUTH_TOKEN_URL = '/access_token?';
 	const OAUTH_REFRESH_URL = '/refresh_token?';
 	const OAUTH_USERINFO_URL = 'https://api.weixin.qq.com/sns/userinfo?';
+	const OAUTH_AUTH_URL = 'https://api.weixin.qq.com/sns/auth?';
 	const PAY_DELIVERNOTIFY = 'https://api.weixin.qq.com/pay/delivernotify?';
 	const PAY_ORDERQUERY = 'https://api.weixin.qq.com/pay/orderquery?';
 	const CUSTOM_SERVICE_GET_RECORD = '/customservice/getrecord?';
@@ -104,6 +105,7 @@ class Wechat
 	private $_msg;
 	private $_funcflag = false;
 	private $_receive;
+	private $_text_filter = true;
 	public $debug =  false;
 	public $errCode = 40001;
 	public $errMsg = "no access";
@@ -226,7 +228,7 @@ class Wechat
 	{
 		return $this->_receive;
 	}
-		
+	
 	/**
 	 * 获取消息发送者
 	 */
@@ -294,7 +296,10 @@ class Wechat
 	 */
 	public function getRevPic(){
 		if (isset($this->_receive['PicUrl']))
-			return $this->_receive['PicUrl'];
+			return array(
+				'mediaid'=>$this->_receive['MediaId'],
+				'picurl'=>(string)$this->_receive['PicUrl'],    //防止picurl为空导致解析出错
+			);
 		else 
 			return false;
 	}
@@ -347,16 +352,139 @@ class Wechat
 	 */
 	public function getRevEvent(){
 		if (isset($this->_receive['Event'])){
-			return array(
-				'event'=>$this->_receive['Event'],
-				'key'=>$this->_receive['EventKey'],
-			);
-		} else 
+			$array['event'] = $this->_receive['Event'];
+		}
+		if (isset($this->_receive['EventKey'])){
+			$array['key'] = $this->_receive['EventKey'];
+		}
+		if (isset($array) && count($array) > 0) {
+			return $array;
+		} else {
 			return false;
+		}
 	}
 	
 	/**
-	 * 获取接收语言推送
+	 * 获取自定义菜单的扫码推事件信息
+	 * 
+	 * 事件类型为以下两种时则调用此方法有效
+	 * Event	 事件类型，scancode_push
+	 * Event	 事件类型，scancode_waitmsg
+	 * 
+	 * @return: array | false
+	 * array (
+	 *     'ScanType'=>'qrcode',
+	 *     'ScanResult'=>'123123'
+	 * )
+	 */
+	public function getRevScanInfo(){
+		if (isset($this->_receive['ScanCodeInfo'])){
+		    if (!is_array($this->_receive['SendPicsInfo'])) {
+		        $array=(array)$this->_receive['ScanCodeInfo'];
+		        $this->_receive['ScanCodeInfo']=$array;
+		    }else {
+		        $array=$this->_receive['ScanCodeInfo'];
+		    }
+		}
+		if (isset($array) && count($array) > 0) {
+			return $array;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * 获取自定义菜单的图片发送事件信息
+	 * 
+	 * 事件类型为以下三种时则调用此方法有效
+	 * Event	 事件类型，pic_sysphoto        弹出系统拍照发图的事件推送
+	 * Event	 事件类型，pic_photo_or_album  弹出拍照或者相册发图的事件推送
+	 * Event	 事件类型，pic_weixin          弹出微信相册发图器的事件推送
+	 * 
+	 * @return: array | false
+	 * array (
+	 *   'Count' => '2',
+	 *   'PicList' => 
+	 *   array (
+	 *     'item' => 
+	 *     array (
+	 *       0 => 
+	 *       array (
+	 *         'PicMd5Sum' => 'aaae42617cf2a14342d96005af53624c',
+	 *       ),
+	 *       1 => 
+	 *       array (
+	 *         'PicMd5Sum' => '149bd39e296860a2adc2f1bb81616ff8',
+	 *       ),
+	 *     ),
+	 *   ),
+	 * )
+	 * 
+	 */
+	public function getRevSendPicsInfo(){
+		if (isset($this->_receive['SendPicsInfo'])){
+		    if (!is_array($this->_receive['SendPicsInfo'])) {
+		        $array=(array)$this->_receive['SendPicsInfo'];
+		        if (isset($array['PicList'])){
+		            $array['PicList']=(array)$array['PicList'];
+		            $item=$array['PicList']['item'];
+		            $array['PicList']['item']=array();
+		            foreach ( $item as $key => $value ){
+		                $array['PicList']['item'][$key]=(array)$value;
+		            }
+		        }
+		        $this->_receive['SendPicsInfo']=$array;
+		    } else {
+		        $array=$this->_receive['SendPicsInfo'];
+		    }
+		}
+		if (isset($array) && count($array) > 0) {
+			return $array;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * 获取自定义菜单的地理位置选择器事件推送
+	 *
+	 * 事件类型为以下时则可以调用此方法有效
+	 * Event	 事件类型，location_select        弹出系统拍照发图的事件推送
+	 *
+	 * @return: array | false
+	 * array (
+	 *   'Location_X' => '33.731655000061',
+	 *   'Location_Y' => '113.29955200008047',
+	 *   'Scale' => '16',
+	 *   'Label' => '某某市某某区某某路',
+	 *   'Poiname' => '',
+	 * )
+	 * 
+	 */
+	public function getRevSendGeoInfo(){
+	    if (isset($this->_receive['SendLocationInfo'])){
+	        if (!is_array($this->_receive['SendLocationInfo'])) {
+	            $array=(array)$this->_receive['SendLocationInfo'];
+	            if (empty($array['Poiname'])) {
+	                $array['Poiname']="";
+	            }
+	            if (empty($array['Label'])) {
+	                $array['Label']="";
+	            }
+	            $this->_receive['SendLocationInfo']=$array;
+	        } else {
+	            $array=$this->_receive['SendLocationInfo'];
+	        }
+	    }
+	    if (isset($array) && count($array) > 0) {
+	        return $array;
+	    } else {
+	        return false;
+	    }
+	}
+	
+	/**
+	 * 获取接收语音推送
 	 */
 	public function getRevVoice(){
 		if (isset($this->_receive['MediaId'])){
@@ -385,23 +513,44 @@ class Wechat
 	 * 获取接收TICKET
 	 */
 	public function getRevTicket(){
-	if (isset($this->_receive['Ticket'])){
-		return $this->_receive['Ticket'];
-	} else
-		return false;
-    }
+		if (isset($this->_receive['Ticket'])){
+			return $this->_receive['Ticket'];
+		} else
+			return false;
+	}
 	
-    /**
-     * 获取二维码的场景值
-     */
-    public function getRevSceneId (){
-    	if (isset($this->_receive['EventKey'])){
-    		return str_replace('qrscene_','',$this->_receive['EventKey']);
-    	} else{
-    		return false;
-    	}
-    }
-    
+	/**
+	* 获取二维码的场景值
+	*/
+	public function getRevSceneId (){
+		if (isset($this->_receive['EventKey'])){
+			return str_replace('qrscene_','',$this->_receive['EventKey']);
+		} else{
+			return false;
+		}
+	}
+	
+	/**
+	* 获取模板消息ID
+	* 经过验证，这个和普通的消息MsgId不一样
+	*/
+	public function getRevTplMsgID(){
+		if (isset($this->_receive['MsgID'])){
+			return $this->_receive['MsgID'];
+		} else 
+			return false;
+	}
+	
+	/**
+	* 获取模板消息发送状态
+	*/
+	public function getRevStatus(){
+		if (isset($this->_receive['Status'])){
+			return $this->_receive['Status'];
+		} else 
+			return false;
+	}
+	
 	public static function xmlSafeStr($str)
 	{   
 		return '<![CDATA['.preg_replace("/[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]/",'',$str).']]>';   
@@ -451,6 +600,16 @@ class Wechat
 	}
 	
 	/**
+	 * 过滤文字回复\r\n换行符
+	 * @param string $text
+	 * @return string|mixed
+	 */
+	private function _auto_text_filter($text) {
+		if (!$this->_text_filter) return $text;
+		return str_replace("\r\n", "\n", $text);
+	}
+	
+	/**
 	 * 设置回复消息
 	 * Examle: $obj->text('hello')->reply();
 	 * @param string $text
@@ -462,7 +621,70 @@ class Wechat
 			'ToUserName' => $this->getRevFrom(),
 			'FromUserName'=>$this->getRevTo(),
 			'MsgType'=>self::MSGTYPE_TEXT,
-			'Content'=>$text,
+			'Content'=>$this->_auto_text_filter($text),
+			'CreateTime'=>time(),
+			'FuncFlag'=>$FuncFlag
+		);
+		$this->Message($msg);
+		return $this;
+	}
+	/**
+	 * 设置回复消息
+	 * Examle: $obj->image('media_id')->reply();
+	 * @param string $mediaid
+	 */
+	public function image($mediaid='')
+	{
+		$FuncFlag = $this->_funcflag ? 1 : 0;
+		$msg = array(
+			'ToUserName' => $this->getRevFrom(),
+			'FromUserName'=>$this->getRevTo(),
+			'MsgType'=>self::MSGTYPE_IMAGE,
+			'Image'=>array('MediaId'=>$mediaid),
+			'CreateTime'=>time(),
+			'FuncFlag'=>$FuncFlag
+		);
+		$this->Message($msg);
+		return $this;
+	}
+	
+	/**
+	 * 设置回复消息
+	 * Examle: $obj->voice('media_id')->reply();
+	 * @param string $mediaid
+	 */
+	public function voice($mediaid='')
+	{
+		$FuncFlag = $this->_funcflag ? 1 : 0;
+		$msg = array(
+			'ToUserName' => $this->getRevFrom(),
+			'FromUserName'=>$this->getRevTo(),
+			'MsgType'=>self::MSGTYPE_IMAGE,
+			'Voice'=>array('MediaId'=>$mediaid),
+			'CreateTime'=>time(),
+			'FuncFlag'=>$FuncFlag
+		);
+		$this->Message($msg);
+		return $this;
+	}
+	
+	/**
+	 * 设置回复消息
+	 * Examle: $obj->video('media_id','title','description')->reply();
+	 * @param string $mediaid
+	 */
+	public function video($mediaid='',$title,$description)
+	{
+		$FuncFlag = $this->_funcflag ? 1 : 0;
+		$msg = array(
+			'ToUserName' => $this->getRevFrom(),
+			'FromUserName'=>$this->getRevTo(),
+			'MsgType'=>self::MSGTYPE_IMAGE,
+			'Video'=>array(
+			        'MediaId'=>$mediaid,
+			        'Title'=>$mediaid,
+			        'Description'=>$mediaid,
+			),
 			'CreateTime'=>time(),
 			'FuncFlag'=>$FuncFlag
 		);
@@ -531,7 +753,7 @@ class Wechat
 	/**
 	 * 
 	 * 回复微信服务器, 此函数支持链式操作
-	 * @example $this->text('msg tips')->reply();
+	 * Example: $this->text('msg tips')->reply();
 	 * @param string $msg 要发送的信息, 默认取$this->_msg
 	 * @param bool $return 是否返回信息而不抛出到浏览器 默认:否
 	 */
@@ -547,7 +769,6 @@ class Wechat
 			echo $xmldata;
 	}
 	
-
 	/**
 	 * GET 请求
 	 * @param string $url
@@ -582,7 +803,6 @@ class Wechat
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
 		}
-		
 		curl_setopt($oCurl, CURLOPT_URL, $url);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($oCurl, CURLOPT_POST,true);
@@ -601,11 +821,16 @@ class Wechat
 	 * 通用auth验证方法，暂时仅用于菜单更新操作
 	 * @param string $appid
 	 * @param string $appsecret
+	 * @param string $token 手动指定access_token，非必要情况不建议用
 	 */
-	public function checkAuth($appid='',$appsecret=''){
+	public function checkAuth($appid='',$appsecret='',$token=''){
 		if (!$appid || !$appsecret) {
 			$appid = $this->appid;
 			$appsecret = $this->appsecret;
+		}
+		if ($token) { //手动指定token，优先使用
+		    $this->access_token=$token;
+		    return $this->access_token;
 		}
 		//TODO: get the cache access_token
 		$result = $this->http_get(self::API_URL_PREFIX.self::AUTH_URL.'appid='.$appid.'&secret='.$appsecret);
@@ -635,7 +860,7 @@ class Wechat
 		//TODO: remove cache
 		return true;
 	}
-		
+
 	/**
 	 * 微信api不支持中文转义的json结构
 	 * @param array $arr
@@ -683,38 +908,64 @@ class Wechat
 			return '[' . $json . ']'; //Return numerical JSON
 		return '{' . $json . '}'; //Return associative JSON
 	}
-	
+
 	/**
 	 * 创建菜单
 	 * @param array $data 菜单数组数据
 	 * example:
-	 {
-	 "button":[
-	 {
-	 "type":"click",
-	 "name":"今日歌曲",
-	 "key":"MENU_KEY_MUSIC"
-	 },
-	 {
-	 "type":"view",
-	 "name":"歌手简介",
-	 "url":"http://www.qq.com/"
-	 },
-	 {
-	 "name":"菜单",
-	 "sub_button":[
-	 {
-	 "type":"click",
-	 "name":"hello word",
-	 "key":"MENU_KEY_MENU"
-	 },
-	 {
-	 "type":"click",
-	 "name":"赞一下我们",
-	 "key":"MENU_KEY_GOOD"
-	 }]
-	 }]
-	 }
+     * 	array (
+     * 	    'button' => array (
+     * 	      0 => array (
+     * 	        'name' => '扫码',
+     * 	        'sub_button' => array (
+     * 	            0 => array (
+     * 	              'type' => 'scancode_waitmsg',
+     * 	              'name' => '扫码带提示',
+     * 	              'key' => 'rselfmenu_0_0',
+     * 	              'sub_button' => ''
+     * 	            ),
+     * 	            1 => array (
+     * 	              'type' => 'scancode_push',
+     * 	              'name' => '扫码推事件',
+     * 	              'key' => 'rselfmenu_0_1',
+     * 	              'sub_button' => ''
+     * 	            ),
+     * 	        ),
+     * 	      ),
+     * 	      1 => array (
+     * 	        'name' => '发图',
+     * 	        'sub_button' => array (
+     * 	            0 => array (
+     * 	              'type' => 'pic_sysphoto',
+     * 	              'name' => '系统拍照发图',
+     * 	              'key' => 'rselfmenu_1_0',
+     * 	              'sub_button' => ''
+     * 	            ),
+     * 	            1 => array (
+     * 	              'type' => 'pic_photo_or_album',
+     * 	              'name' => '拍照或者相册发图',
+     * 	              'key' => 'rselfmenu_1_1',
+     * 	              'sub_button' => ''
+     * 	            )
+     * 	        ),
+     * 	      ),
+     * 	      2 => array (
+     * 	        'type' => 'location_select',
+     * 	        'name' => '发送位置',
+     * 	        'key' => 'rselfmenu_2_0',
+     * 	        'sub_button' => ''
+     * 	      ),
+     * 	    ),
+     * 	)
+     * type可以选择为以下几种，其中5-8除了收到菜单事件以外，还会单独收到对应类型的信息。
+     * 1、click：点击推事件
+     * 2、view：跳转URL
+     * 3、scancode_push：扫码推事件
+     * 4、scancode_waitmsg：扫码推事件且弹出“消息接收中”提示框
+     * 5、pic_sysphoto：弹出系统拍照发图
+     * 6、pic_photo_or_album：弹出拍照或者相册发图
+     * 7、pic_weixin：弹出微信相册发图器
+     * 8、location_select：弹出地理位置选择器
 	 */
 	public function createMenu($data){
 		if (!$this->access_token && !$this->checkAuth()) return false;
@@ -774,13 +1025,14 @@ class Wechat
 
 	/**
 	 * 上传多媒体文件
-	 * @param string $data  数据结构array('media'=>'@'.path)
-	 * @param string $type
-	 * @return boolean|mixed
+	 * 注意：数组的键值任意，但文件名前必须加@，使用单引号以避免本地路径斜杠被转义
+	 * @param array $data {"media":'@Path\filename.jpg'}
+	 * @param type 类型：图片:image 语音:voice 视频:video 缩略图:thumb
+	 * @return boolean|array
 	 */
 	public function uploadMedia($data, $type){
 		if (!$this->access_token && !$this->checkAuth()) return false;
-		$result = $this->http_post(self::UPLOAD_MEDIA_URL.self::MEDIA_UPLOAD.'access_token='.$this->access_token.'&type='.$type, $data);
+		$result = $this->http_post(self::UPLOAD_MEDIA_URL.self::MEDIA_UPLOAD.'access_token='.$this->access_token.'&type='.$type,$data);
 		if ($result)
 		{
 			$json = json_decode($result,true);
@@ -904,7 +1156,7 @@ class Wechat
 	 * @param int $scene_id 自定义追踪id
 	 * @param int $type 0:临时二维码；1:永久二维码(此时expire参数无效)
 	 * @param int $expire 临时二维码有效期，最大为1800秒
-	 * @return array('ticket'=>'qrcode字串','expire_seconds'=>1800)
+	 * @return array('ticket'=>'qrcode字串','expire_seconds'=>1800,'url'=>'二维码图片解析后的地址')
 	 */
 	public function getQRCode($scene_id,$type=0,$expire=1800){
 		if (!$this->access_token && !$this->checkAuth()) return false;
@@ -940,6 +1192,31 @@ class Wechat
 	}
 	
 	/**
+	 * 长链接转短链接接口
+	 * @param string $long_url 传入要转换的长url
+	 * @return boolean|string url 成功则返回转换后的短url
+	 */
+	public function getShortUrl($long_url){
+	    if (!$this->access_token && !$this->checkAuth()) return false;
+	    $data = array(
+            'action'=>'long2short',
+            'long_url'=>$long_url
+	    );
+	    $result = $this->http_post(self::API_URL_PREFIX.self::SHORT_URL.'access_token='.$this->access_token,self::json_encode($data));
+	    if ($result)
+	    {
+	        $json = json_decode($result,true);
+	        if (!$json || !empty($json['errcode'])) {
+	            $this->errCode = $json['errcode'];
+	            $this->errMsg = $json['errmsg'];
+	            return false;
+	        }
+	        return $json['short_url'];
+	    }
+	    return false;
+	}
+
+	/**
 	 * 批量获取关注用户列表
 	 * @param unknown $next_openid
 	 */
@@ -962,7 +1239,8 @@ class Wechat
 	/**
 	 * 获取关注者详细信息
 	 * @param string $openid
-	 * @return array
+	 * @return array {subscribe,openid,nickname,sex,city,province,country,language,headimgurl,subscribe_time,[unionid]}
+	 * 注意：unionid字段 只有在用户将公众号绑定到微信开放平台账号后，才会出现。建议调用前用isset()检测一下
 	 */
 	public function getUserInfo($openid){
 		if (!$this->access_token && !$this->checkAuth()) return false;
@@ -979,23 +1257,29 @@ class Wechat
 		}
 		return false;
 	}
-	
+
 	/**
-	 * 获取用户所在分组ID 
-	 * @param array $data 结构array('openid'=>$openid)
-	 * @return boolean|mixed
+	 * 设置用户备注名
+	 * @param string $openid
+	 * @param string $remark 备注名
+	 * @return boolean|array
 	 */
-	public function getUserGroupId($data) {
+	public function updateUserRemark($openid,$remark){
 	    if (!$this->access_token && !$this->checkAuth()) return false;
-	    $result = $this->http_post(self::API_URL_PREFIX . self::USER_GROUPID_GET_URL . 'access_token=' . $this->access_token, self::json_encode($data));
-	    if ($result) {
-	        $json = json_decode($result, true);
-	        if (isset($json['errcode'])) {
-	            $this->errCode = $json['errcode'];
-	            $this->errMsg = $json['errmsg'];
-	            return false;
-	        }
-	        return $json;
+	    $data = array(
+			'openid'=>$openid,
+			'remark'=>$remark
+	    );
+	    $result = $this->http_post(self::API_URL_PREFIX.self::USER_UPDATEREMARK_URL.'access_token='.$this->access_token,$data);
+	    if ($result)
+	    {
+	        $json = json_decode($result,true);
+			if (!$json || !empty($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			}
+			return $json;
 	    }
 	    return false;
 	}
@@ -1020,6 +1304,30 @@ class Wechat
 		return false;
 	}
 	
+	/**
+	 * 获取用户所在分组
+	 * @param string $openid
+	 * @return boolean|int 成功则返回用户分组id
+	 */
+	public function getUserGroup($openid){
+	    if (!$this->access_token && !$this->checkAuth()) return false;
+	    $data = array(
+	            'openid'=>$openid
+	    );
+	    $result = $this->http_post(self::API_URL_PREFIX.self::USER_GROUP_URL.'access_token='.$this->access_token,self::json_encode($data));
+	    if ($result)
+	    {
+	        $json = json_decode($result,true);
+	        if (!$json || !empty($json['errcode'])) {
+	            $this->errCode = $json['errcode'];
+	            $this->errMsg = $json['errmsg'];
+	            return false;
+	        } else 
+                if (isset($json['groupid'])) return $json['groupid'];
+	    }
+	    return false;
+	}
+    
 	/**
 	 * 新增自定分组
 	 * @param string $name 分组名称
@@ -1125,7 +1433,7 @@ class Wechat
 		return self::OAUTH_PREFIX.self::OAUTH_AUTHORIZE_URL.'appid='.$this->appid.'&redirect_uri='.urlencode($callback).'&response_type=code&scope='.$scope.'&state='.$state.'#wechat_redirect';
 	}
 	
-	/*
+	/**
 	 * 通过code获取Access Token
 	 * @return array {access_token,expires_in,refresh_token,openid,scope}
 	 */
@@ -1172,7 +1480,8 @@ class Wechat
 	 * 获取授权后的用户资料
 	 * @param string $access_token
 	 * @param string $openid
-	 * @return array {openid,nickname,sex,province,city,country,headimgurl,privilege}
+	 * @return array {openid,nickname,sex,province,city,country,headimgurl,privilege,[unionid]}
+	 * 注意：unionid字段 只有在用户将公众号绑定到微信开放平台账号后，才会出现。建议调用前用isset()检测一下
 	 */
 	public function getOauthUserinfo($access_token,$openid){
 		$result = $this->http_get(self::OAUTH_USERINFO_URL.'access_token='.$access_token.'&openid='.$openid);
@@ -1188,7 +1497,27 @@ class Wechat
 		}
 		return false;
 	}
-	
+
+	/**
+	 * 检验授权凭证是否有效
+	 * @param string $access_token
+	 * @param string $openid
+	 * @return boolean 是否有效
+	 */
+	public function getOauthAuth($access_token,$openid){
+	    $result = $this->http_get(self::OAUTH_AUTH_URL.'access_token='.$access_token.'&openid='.$openid);
+	    if ($result)
+	    {
+	        $json = json_decode($result,true);
+	        if (!$json || !empty($json['errcode'])) {
+	            $this->errCode = $json['errcode'];
+	            $this->errMsg = $json['errmsg'];
+	            return false;
+	        } else
+	          if ($json['errcode']==0) return true;
+	    }
+	    return false;
+	}
 	
 	/**
 	 * 获取签名
@@ -1226,6 +1555,32 @@ class Wechat
 		}
 		return $str;
 	}
+	
+	/**
+	 * 生成原生支付url
+	 * @param number $productid 商品编号，最长为32字节
+	 * @return string
+	 */
+	public function createNativeUrl($productid){
+		    $nativeObj["appid"] = $this->appid;
+		    $nativeObj["appkey"] = $this->paysignkey;
+		    $nativeObj["productid"] = urlencode($productid);
+		    $nativeObj["timestamp"] = time();
+		    $nativeObj["noncestr"] = $this->generateNonceStr();
+		    $nativeObj["sign"] = $this->getSignature($nativeObj);
+		    unset($nativeObj["appkey"]);
+		    $bizString = "";
+		    foreach($nativeObj as $key => $value)
+		    {
+			if(strlen($bizString) == 0)
+				$bizString .= $key . "=" . $value;
+			else
+				$bizString .= "&" . $key . "=" . $value;
+		    }
+		    return "weixin://wxpay/bizpayurl?".$bizString;
+		    //weixin://wxpay/bizpayurl?sign=XXXXX&appid=XXXXXX&productid=XXXXXX&timestamp=XXXXXX&noncestr=XXXXXX
+	}
+
 	
 	/**
 	 * 生成订单package字符串
@@ -1337,7 +1692,7 @@ class Wechat
 		return false;
 	}
 	
-	/*
+	/**
 	 * 查询订单信息
 	 * @param string $out_trade_no 订单号
 	 * @return boolean|array
@@ -1366,10 +1721,11 @@ class Wechat
 			return $json["order_info"];
 		}
 		return false;
-	}	
+	}
 	
 	/**
 	 * 获取收货地址JS的签名
+	 * @tutorial 参考weixin.js脚本的WeixinJS.editAddress方法调用
 	 * @param string $appId
 	 * @param string $url
 	 * @param int $timeStamp
@@ -1392,6 +1748,50 @@ class Wechat
 				'accesstoken'=>$user_token
 		);
 		return $this->getSignature($arrdata);
+	}
+	
+	/**
+	 * 发送模板消息
+	 * @param array $data 消息结构
+	 * ｛
+			"touser":"OPENID",
+			"template_id":"ngqIpbwh8bUfcSsECmogfXcV14J0tQlEpBO27izEYtY",
+			"url":"http://weixin.qq.com/download",
+			"topcolor":"#FF0000",
+			"data":{
+				"参数名1": {
+					"value":"参数",
+					"color":"#173177"	 //参数颜色
+					},
+				"Date":{
+					"value":"06月07日 19时24分",
+					"color":"#173177"
+					},
+				"CardNumber":{
+					"value":"0426",
+					"color":"#173177"
+					},
+				"Type":{
+					"value":"消费",
+					"color":"#173177"
+					}
+			}
+		}
+	 * @return boolean|array
+	 */
+	public function sendTemplateMessage($data){
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$result = $this->http_post(self::API_URL_PREFIX.self::TEMPLATE_SEND_URL.'access_token='.$this->access_token,self::json_encode($data));
+		if($result){
+			$json = json_decode($result,true);
+			if (!$json || !empty($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			}
+			return $json;
+		}
+		return false;
 	}
 	
 	/**
@@ -1437,8 +1837,8 @@ class Wechat
 	
 	/**
 	 * 获取多客服客服基本信息
-	 * @param 
-	 * @return array
+	 * 
+	 * @return boolean|array
 	 */
 	public function getCustomServiceKFlist(){
 		if (!$this->access_token && !$this->checkAuth()) return false;
@@ -1458,18 +1858,18 @@ class Wechat
 	
 	/**
 	 * 获取多客服在线客服接待信息
-	 * @param 
-	 * @return array {
-    "kf_online_list": [
-        {
-            "kf_account": "test1@test", //客服账号@微信别名
-            "status": 1,				//客服在线状态 1：pc在线，2：手机在线,若pc和手机同时在线则为 1+2=3
-            "kf_id": "1001",			//客服工号
-            "auto_accept": 0,			//客服设置的最大自动接入数
-            "accepted_case": 1 			//客服当前正在接待的会话数
-        }
-    ]
-}
+	 * 
+	 * @return boolean|array {
+	 "kf_online_list": [
+	 {
+	 "kf_account": "test1@test",	//客服账号@微信别名
+	 "status": 1,			//客服在线状态 1：pc在线，2：手机在线,若pc和手机同时在线则为 1+2=3
+	 "kf_id": "1001",		//客服工号
+	 "auto_accept": 0,		//客服设置的最大自动接入数
+	 "accepted_case": 1		//客服当前正在接待的会话数
+	 }
+	 ]
+	 }
 	 */
 	public function getCustomServiceOnlineKFlist(){
 		if (!$this->access_token && !$this->checkAuth()) return false;
@@ -1486,5 +1886,4 @@ class Wechat
 		}
 		return false;
 	}
-
 }

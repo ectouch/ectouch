@@ -1765,14 +1765,8 @@ function user_uc_call($func, $params = null) {
     $integrate_code = C('integrate_code');
     if (isset($integrate_code) && C('integrate_code') == 'ucenter') {
         restore_error_handler();
-        if (!function_exists($func)) {
-            include_once(ROOT_PATH . 'includes/lib_uc.php');
-        }
-
         $res = call_user_func_array($func, $params);
-
         set_error_handler('exception_handler');
-
         return $res;
     } else {
         return;

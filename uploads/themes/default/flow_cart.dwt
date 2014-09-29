@@ -1,114 +1,95 @@
-<div>
-  <h1 class="f-h1"><a class="t-history" onClick="javascript:history.go(-1)">{$lang.back_up_page}</a>{$title}<a class="t-mune" href="javascript:void(0)">{$lang.menu}</a></h1>
-  <header class="nidx-header" id="nidx-header"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </header>
+<div class="con">
+  <div class="ect-bg">
+    <header class="ect-header ect-margin-tb ect-margin-lr text-center ect-bg icon-write"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$title}</span> <a href="javascript:;" onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a></header>
+    <nav class="ect-nav ect-nav-list" style="display:none;">
+     <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> 
+    </nav>
+  </div>
   <!-- {if $goods_list } -->
-  <div class="z-price"> {$lang.total}<b id="total_number" >{$total.total_number}</b>{$lang.total_number}，{$lang.goods_price}：<strong  id="goods_subtotal" >{$total.goods_price}</strong></div>
-  <div class="inx-tj flow-list">
+  <p class="flow-price ect-padding-lr ect-padding-tb"> {$lang.total}<b id="total_number">{$total.total_number}</b>{$lang.total_number}，{$lang.goods_price}：<b class="ect-colory" id="goods_subtotal">{$total.goods_price}</b> </p>
+  <section class="ect-pro-list flow-pic ect-border-bottom0">
     <ul>
       <!-- {foreach from=$goods_list item=goods key=k} -->
-      <li> <a href="{:url('goods/index',array('id'=>$this->_var['goods']['goods_id']))}"> <img src="{$goods.goods_thumb}" title="{$goods.goods_name|escape:html}" />
-        <dl>
-          <dt> {$goods.goods_name} 
-            <!-- {if $goods.parent_id gt 0} 配件 --> 
-            <span style="color:#FF0000">（{$lang.accessories}）</span> 
-            <!-- {/if} --> 
-            <!-- {if $goods.is_gift gt 0} 赠品 --> 
-            <span style="color:#FF0000">（{$lang.largess}）</span> 
-            <!-- {/if} --> 
-          </dt>
-          <dd class="f-list-m"> 
-            <!-- {if $show_goods_attribute eq 1} 显示商品属性 -->
-            <p> {$goods.goods_attr|nl2br} </p>
-            <!-- {/if} --> 
-          </dd>
-          <dd class="f-list-p">{$goods.goods_price}</dd>
-        </dl>
-        </a>
-        <div class="f-list-af" id="f-list-af"> 
-          <!-- {if $goods.goods_id gt 0 && $goods.is_gift eq 0 && $goods.parent_id eq 0} 普通商品可修改数量 -->
-          <div class="sup" onClick="change_goods_number('1',{$goods.rec_id})" ></div>
-          <input type="hidden" id="back_number{$goods.rec_id}" value="{$goods.goods_number}" />
-          <input type="text" class="txtnum" name="{$goods.rec_id}" id="goods_number{$goods.rec_id}" autocomplete="off" value="{$goods.goods_number}" onFocus="back_goods_number({$goods.rec_id})"  onblur="change_goods_number('2',{$goods.rec_id})" />
-          <div class="plus" onClick="change_goods_number('3',{$goods.rec_id})"></div>
-          <!-- {else} -->
-          <input type="text" class="txtnum" readonly value="{$goods.goods_number}"/>
-          <!-- {/if} --> 
-          
+      <li>
+        <div class="ect-clear-over"> <a href="{:url('goods/index',array('id'=>$this->_var['goods']['goods_id']))}"><img src="{$goods.goods_thumb}" title="{$goods.goods_name|escape:html}"></a>
+          <dl>
+            <dt>
+              <h4 class="title"><a href="{:url('goods/index',array('id'=>$this->_var['goods']['goods_id']))}">{$goods.goods_name} 
+                <!-- {if $goods.parent_id gt 0} 配件 --> 
+                <span style="color:#FF0000">（{$lang.accessories}）</span> 
+                <!-- {/if} --> 
+                <!-- {if $goods.is_gift gt 0} 赠品 --> 
+                <span style="color:#FF0000">（{$lang.largess}）</span> 
+                <!-- {/if} --> 
+                </a></h4>
+            </dt>
+            <dd class="ect-color999"> 
+              <!-- {if $show_goods_attribute eq 1} 显示商品属性 -->
+              <p>{$goods.goods_attr|nl2br}</p>
+              <!-- {/if} -->
+              <p><strong class="ect-colory">{$goods.goods_price}</strong></p>
+            </dd>
+          </dl>
         </div>
-        <span class="f-list-del"><a href="javascript:if (confirm('{$lang.drop_goods_confirm}')) location.href='{:url('flow/drop_goods',array('id'=>$this->_var['goods']['rec_id']))}';">{$lang.drop}</a></span> </li>
+        <div class="ect-margin-tb ect-margin-bottom0 ect-clear-over flow-num-del"> 
+        <!-- {if $goods.goods_id gt 0 && $goods.is_gift eq 0 && $goods.parent_id eq 0} 普通商品可修改数量 -->
+          <div class="input-group pull-left wrap"> <span class="input-group-addon" onClick="change_goods_number('1',{$goods.rec_id})" >-</span>
+            <input type="hidden" id="back_number{$goods.rec_id}" value="{$goods.goods_number}" />
+            <input type="text" class="form-num form-contro"  name="{$goods.rec_id}" id="goods_number{$goods.rec_id}" autocomplete="off" value="{$goods.goods_number}" onFocus="back_goods_number({$goods.rec_id})"  onblur="change_goods_number('2',{$goods.rec_id})" />
+            <span class="input-group-addon" onClick="change_goods_number('3',{$goods.rec_id})">+</span> </div>
+         
+         <!-- {else} -->
+          	<input type="text" class="txtnum" readonly value="{$goods.goods_number}"/>
+          <!-- {/if} --> 
+           <div class="pull-right flow-del text-center"> <a href="javascript:if (confirm('{$lang.drop_goods_confirm}')) location.href='{:url('flow/drop_goods',array('id'=>$this->_var['goods']['rec_id']))}';">{$lang.drop}</a> </div>
+        </div>
+      </li>
       <!-- {/foreach} -->
     </ul>
-  </div>
-  <!-- {if $favourable_list} --><div class="flow-yhhd" onClick="location.href='{:url('flow/label_favourable')}'">{$lang.show_favourable}</div> <!-- {/if} -->
+    <!-- {if $favourable_list} -->
+    <p class="bg-warning text-center ect-padding-tb" onClick="location.href='{:url('flow/label_favourable')}'">{$lang.show_favourable}</p>
+    <!-- {/if} -->
+  </section>
   <!-- {if $fittings_list} -->
-  	<div class="jiesuan"><a href="{:url('flow/goods_fittings')}" class="first-child">{$lang.goods_fittings}</a><a href="{:url('flow/checkout')}">{$lang.check_out}</a></div>
+     <div class="two-btn flow-jiesuan ect-padding-tb ect-padding-lr text-center">
+   		<a class="btn btn-info" type="button" href="{:url('flow/goods_fittings')}">{$lang.goods_fittings}</a>
+        <a class="btn btn-info ect-bg-colory" type="button"  href="{:url('flow/checkout')}">{$lang.check_out}</a>
+	</div>
   <!-- {else} -->
-  	<div class="jiesuan"><a href="{:url('flow/checkout')}">{$lang.check_out}</a></div>
+  	<div class="flow-jiesuan ect-padding-lr ect-padding-tb">
+  	<a href="{:url('flow/checkout')}" type="button" class="btn btn-info ect-btn-info">{$lang.check_out}</a>
+  </div>
   <!-- {/if} -->
-  
   <!-- {if $linked_goods} 关联商品-->
-  <div class="inx-tj flow-list"><strong class="flow-title">{$lang.releate_goods}：</strong>
+  <section class="ect-pro-list flow-rel-pro flow-pic">
+    <h4 class="ect-margin-lr ect-margin-tb"><strong>{$lang.releate_goods}：</strong></h4>
     <ul>
       <!--{foreach from=$linked_goods item=releated_goods_data}-->
-      <li> <a href="{$releated_goods_data.url}"><img src="{$releated_goods_data.goods_thumb}" alt="{$releated_goods_data.goods_name}" class="B_blue" />
-        <dl>
-          <dt>{$releated_goods_data.short_name}</dt>
-          <dd class="f-list-p"> 
-            <!-- {if $releated_goods_data.promote_price neq 0} --> 
-            {$lang.promote_price}<font class="f1">{$releated_goods_data.formated_promote_price}</font> 
-            <!-- {else} --> 
-            {$lang.shop_price}<font class="f1">{$releated_goods_data.shop_price}</font> 
-            <!-- {/if} --> 
-          </dd>
-        </dl>
-        </a> 
-        <!-- {/foreach} -->
+      <li>
+        <div class="ect-clear-over"> <a href="{$releated_goods_data.url}"><img src="{$releated_goods_data.goods_thumb}" alt="{$releated_goods_data.goods_name}" /></a>
+          <dl>
+            <dt>
+              <h4 class="title"><a href="{$releated_goods_data.url}">{$releated_goods_data.short_name}</a></h4>
+            </dt>
+            <dd class="ect-color999">
+              <p> 
+                <!-- {if $releated_goods_data.promote_price neq 0} --> 
+                {$lang.promote_price}<strong class="ect-colory">{$releated_goods_data.formated_promote_price}</strong> 
+                <!-- {else} --> 
+                {$lang.shop_price}<strong class="ect-colory">{$releated_goods_data.shop_price}</strong> 
+                <!-- {/if} --> 
+              </p>
+            </dd>
+          </dl>
+        </div>
+      </li>
+      <!-- {/foreach} -->
     </ul>
-  </div>
+  </section>
   <!-- {/if} --> 
   <!--{else}-->
-  <div class="flow-gwc"> <img src="__TPL__/images/gwc.png" width="310"> <span>{$lang.empty_shopping}</span> <a href="{:url('category/all')}">{$lang.go_shopping}</a></div>
+  <div class="flow-no-pro"> <img src="__TPL__/images/gwc.png">
+    <p class="text-center">{$lang.empty_shopping}</p>
+    <a type="button" href="{:url('category/all')}" class="btn btn-info ect-btn-info">{$lang.go_shopping}</a> </div>
   <!-- {/if} --> 
 </div>
-<script>
-function back_goods_number(id){
- var goods_number = document.getElementById('goods_number'+id).value;
-  document.getElementById('back_number'+id).value = goods_number;
-}
-function change_goods_number(type, id)
-{
-  var goods_number = document.getElementById('goods_number'+id).value;
-  if(type != 2){  back_goods_number(id) }
-  if(type == 1){  goods_number--;  }
-  if(type == 3){  goods_number++;  }
-  if(goods_number <=0 ){ goods_number=1; }
-  if(!/^[0-9]*$/.test(goods_number)){ goods_number = document.getElementById('back_number'+id).value; }
-  document.getElementById('goods_number'+id).value = goods_number;
-	$.post('{:url("flow/ajax_update_cart")}', {
-		rec_id : id,goods_number : goods_number
-	}, function(data) {
-		change_goods_number_response(data,id);
-	}, 'json');  
-} 
-// 处理返回信息并显示
-function change_goods_number_response(result,id)
-{
-	
-	if (result.error == 0){
-		var rec_id = result.rec_id;
-		$("#goods_number_"+rec_id).val(result.goods_number);
-		document.getElementById('total_number').innerHTML = result.total_number;//更新数量
-		document.getElementById('goods_subtotal').innerHTML = result.total_desc;//更新小计
-		if (document.getElementById('ECS_CARTINFO')){
-			//更新购物车数量
-			document.getElementById('ECS_CARTINFO').innerHTML = result.cart_info;
-		}
-	}else if (result.message != ''){
-		alert(result.message);
-		var goods_number = document.getElementById('back_number'+id).value;
- 		document.getElementById('goods_number'+id).value = goods_number;
-	}                
-}
-
-</script>
-</body></html>

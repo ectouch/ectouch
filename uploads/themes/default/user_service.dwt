@@ -1,28 +1,38 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
-<div class="o-detail">
-  <form action="{:url('user/service')}" method="post" enctype="multipart/form-data" name="formMsg" onSubmit="return submitMsg()">
-    <ul class="o-info o-radio">
+<form action="{:url('user/service')}" method="post" enctype="multipart/form-data" name="formMsg" onSubmit="return submitMsg()">
+  <section class="ect-bg-colorf user-service flow-consignee">
+    <ul>
+      <li class="ect-radio">
+        <input name="msg_type" type="radio" id="msg-type0" checked="checked">
+        <label for="msg-type0">{$lang.type[0]}<i></i></label>
+        &nbsp;
+        <input name="msg_type" type="radio" id="msg-type1" value="">
+        <label for="msg-type1">{$lang.type[1]}<i></i></label>
+        &nbsp;
+        <input name="msg_type" type="radio" id="msg-type2" value="">
+        <label for="msg-type2">{$lang.type[2]}<i></i></label>
+        &nbsp;
+        <input name="msg_type" type="radio" id="msg-type3" value="">
+        <label for="msg-type3">{$lang.type[3]}<i></i></label>
+        &nbsp;
+        <input name="msg_type" type="radio" id="msg-type4" value="">
+        <label for="msg-type4">{$lang.type[4]}<i></i></label>
+        &nbsp; </li>
       <li>
-        <input name="msg_type" type="radio" value="0" id="msg-type0" checked="checked" />
-        <label for="msg-type0">{$lang.type[0]}</label>
-        <input type="radio" name="msg_type" id="msg-type1" value="1" />
-        <label for="msg-type1">{$lang.type[1]}</label>
-        <input type="radio" name="msg_type" id="msg-type2" value="2" />
-        <label for="msg-type2">{$lang.type[2]}</label>
-        <input type="radio" name="msg_type" id="msg-type3" value="3" />
-        <label for="msg-type3">{$lang.type[3]}</label>
-        <input type="radio" name="msg_type" id="msg-type4" value="4" />
-        <label for="msg-type4"> {$lang.type[4]}</label>
+        <div class="input-text"><b>{$lang.message_title}：</b><span>
+          <input name="msg_title" type="text" placeholder="{$lang.message_title}">
+          </span></div>
       </li>
       <li>
-        <input name="msg_title" type="text" placeholder="{$lang.message_title}" class="inputBg_touch" />
+        <div class="input-text"><b>{$lang.message_content}：</b>
+          <textarea name="msg_content" placeholder="{$lang.message_content}" cols="50" rows="4" wrap="virtual"></textarea>
+        </div>
       </li>
-      <li>
-        <textarea name="msg_content" placeholder="{$lang.message_content}" cols="50" rows="4" wrap="virtual" ></textarea></li>
     </ul>
-    <input type="submit" value="{$lang.submit}" class="o-submit" />
-  </form>
+  </section>
+  <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center">
+    <input type="submit" value="{$lang.submit}" class="btn btn-info" />
+  </div>
+</form>
 </div>
-</div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
-<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->

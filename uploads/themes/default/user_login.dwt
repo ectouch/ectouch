@@ -1,54 +1,41 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
-<!--#登录界面 start-->
-<section class="wrap">
-  <div id="leftTabBox" class="loginBox">
-    <div class="bd">
+ <form name="formLogin" action="{:url('user/login')}" method="post" class="validforms">
+ <div class="flow-consignee ect-bg-colorf">
+     <section>
       <ul>
-        <div class="table-box">
-          <form name="formLogin" action="{:url('user/login')}" method="post" class="validforms">
-            <dl>
-              <dd>
-                <input placeholder="{$lang.username}/{$lang.mobile}/{$lang.email}" name="username" type="text"  class="inputBg" id="username" datatype="*" />
-              </dd>
-            </dl>
-            <dl>
-              <dd>
-                <input placeholder="{$lang.label_password}"  name="password" type="password" class="inputBg" datatype="*6-16" />
-              </dd>
-            </dl>
-            <!-- 判断是否启用验证码{if $enabled_captcha} -->
-            <dl>
-              <dd>
-                <input placeholder="{$lang.comment_captcha}"  name="captcha" type="text" class="inputBg yzm" datatype="*" /><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm" onClick="this.src='{:url('Public/captcha')}&t='+Math.random()" />
-              </dd>
-            </dl>
-          <!--{/if}-->
-            <dl>
-              <dd>
-                <input type="checkbox" value="1" name="remember" id="remember" class="l-checkbox" /><label for="remember"> {$lang.remember}</label>
-              </dd>
-            </dl>
-            <dl>
-              <dd>
-                <input type="hidden" name="back_act" value="{$back_act}" />
-                <input type="submit" name="submit"  value="{$lang.now_landing}" class="u-btn" />
-              </dd>
-            </dl>
-          </form>
-          <dl>
-            <dd class="reg-pwd"><a href="{:url('user/register')}" class="reg-pwd">{$lang.free_registered}</a>  <a href="{:url('user/get_password_phone')}" class="reg-pwd" style="margin-right:0;">{$lang.forgot_password}</a></dd>
-          </dl>
-          <div class="hezuo">
-            <p class="t">{$lang.third_login}</p>
-            <p class="b">
-             <a href="{:url('user/third_login',array('type'=>'qq'))}"><img src="__TPL__/images/quicklogin/qq.png"></a>
-             <a href="{:url('user/third_login',array('type'=>'sina'))}"><img src="__TPL__/images/quicklogin/weibo.png"></a>
-            </p>
-          </div>
-        </div>
+   		<li>
+    		<div class="input-text"><b>{$lang.username}：</b><span><input placeholder="{$lang.username}/{$lang.mobile}/{$lang.email}" name="username" type="text"  class="inputBg" id="username" datatype="*" ></span></div>
+        </li>
+        <li>
+    		<div class="input-text"><b>{$lang.label_password}：</b><span><input placeholder="{$lang.label_password}"  name="password" type="password" class="inputBg" datatype="*6-16" /></span></div>
+        </li>
+        <!-- 判断是否启用验证码{if $enabled_captcha} -->
+       <li>
+          <div class="input-text code"><b>{$lang.comment_captcha}</b><span>
+             <input name="captcha" type="text" placeholder="{$lang.comment_captcha">
+             </span><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm" onClick="this.src='{:url('Public/captcha')}&t='+Math.random()" /></div>
+            </li>
+            <!--{/if}-->
       </ul>
-    </div>
+    </section>
   </div>
-</section>
-</div>
+  <p class="ect-checkbox ect-padding-tb ect-margin-tb ect-margin-bottom0 ect-padding-lr">
+     <input type="checkbox" value="1" name="remember" id="remember" class="l-checkbox" />
+     <label for="remember">{$lang.remember}<i></i></label>
+  </p>
+   <input type="hidden" name="back_act" value="{$back_act}" />
+  <div class="ect-padding-lr ect-padding-tb"> <input type="submit" class="btn btn-info ect-btn-info ect-colorf" value="{$lang.now_landing}" /></div>
+  </form>
+  <p class="ect-padding-lr ect-margin-tb text-right ect-margin-bottom0" style="clear:both"><a href="{:url('user/get_password_phone')}">{$lang.forgot_password}</a>  <a href="{:url('user/register')}">{$lang.free_registered}</a></p>
+  <div class="ect-padding-lr ect-margin-tb user-hezuo">
+  	{$lang.third_login}
+  	<p>
+    	<a href="{:url('user/third_login',array('type'=>'qq'))}"><img src="__TPL__/images/qq.png"></a>
+        <a href="{:url('user/third_login',array('type'=>'sina'))}"><img src="__TPL__/images/weibo.png"></a>
+    </p>
+  </div>
+  </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

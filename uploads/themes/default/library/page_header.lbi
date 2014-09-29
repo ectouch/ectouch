@@ -1,28 +1,15 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 {if $auto_redirect}
 <meta http-equiv="refresh" content="3;URL={$message.back_url}" />
 {/if}
 <title>{$page_title} 触屏版</title>
-<link rel="stylesheet" type="text/css" href="__TPL__/css/base.css">
-<link rel="stylesheet" type="text/css" href="__TPL__/css/ectouch.css">
-<link rel="stylesheet" type="text/css" href="__TPL__/css/photoswipe.css">
-<link rel="stylesheet" type="text/css" href="__TPL__/css/user.css">
-<script type="text/javascript" src="__PUBLIC__/js/jquery.min.js" ></script> 
-<script type="text/javascript" src="__PUBLIC__/js/jquery.json.js" ></script> 
-<script type="text/javascript" src="__PUBLIC__/js/common.js"></script> 
-<script type="text/javascript" src="__PUBLIC__/js/jquery.more.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/utils.js" ></script>
-<script type="text/javascript" src="__TPL__/js/TouchSlide.1.1.js"></script>
-<script type="text/javascript" src="__TPL__/js/simple-inheritance.min.js"></script>
-<script type="text/javascript" src="__TPL__/js/code-photoswipe-1.0.11.min.js"></script>
-<script type="text/javascript" src="__TPL__/js/ectouch.js"></script>
-</head>
-
-<body>
+<link rel="stylesheet" href="__PUBLIC__/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="__PUBLIC__/bootstrap/css/font-awesome.min.css">
+<link rel="stylesheet" href="__TPL__/css/ectouch.css">
+<link rel="stylesheet" href="__TPL__/css/photoswipe.css">
+</head><body>

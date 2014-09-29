@@ -1,175 +1,158 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
-<div class="o-detail">
-  <ul>
-    <li> <b>{$lang.order_status}：</b>{$order.order_status} {$order.pay_status} {$order.shipping_time} </li>
-    <li> <b>{$lang.order_number}：</b>{$order.order_sn} </li>
-    <li> <b>{$lang.order_money}：</b>{$order.formated_total_fee} </li>
-    <li> <b>{$lang.order_addtime}：</b>{$order.formated_add_time} </li>
+<section class="user-order-detail" style="border-top:none;">
+  <div class="user-order">
+    <p>{$lang.order_status}：<span>{$order.order_status} {$order.pay_status} {$order.shipping_status}</span></p>
+    <p>{$lang.order_number}：<span>{$order.order_sn}</span></p>
+    <p>{$lang.order_money}：<span>{$order.formated_total_fee}</span></p>
+    <p>{$lang.order_addtime}：<span>{$order.formated_add_time}</span></p>
     <!--{if $order.to_buyer}-->
-    <li> {$lang.detail_to_buyer}：{$order.to_buyer} </li>
-    <!-- {/if} --> 
-    <!--{if $virtual_card}-->
-    <li>{$lang.virtual_card_info}：<br>
+    <p> {$lang.detail_to_buyer}：{$order.to_buyer} </p>
+    <!-- {/if} -->
+    
+    <p>{$lang.virtual_card_info}：<br>
       <!--{foreach from=$virtual_card item=vgoods}--> 
       <!--{foreach from=$vgoods.info item=card}-->
-      <hr style="border:none;border-top:1px #CCCCCC dashed; margin:5px 0" />
-      <!--{if $card.card_sn}-->{$lang.card_sn}:<span style="color:red;">{$card.card_sn}</span><br>
-      <!--{/if}--> 
-      <!--{if $card.card_password}-->{$lang.card_password}:<span style="color:red;">{$card.card_password}</span><br>
-      <!--{/if}--> 
-      <!--{if $card.end_date}-->{$lang.end_date}:{$card.end_date}<br>
-      <!--{/if}--> 
-      <!--{/foreach}--> 
-      <!--{/foreach}--> 
-    </li>
+    <hr style="border:none;border-top:1px #CCCCCC dashed; margin:5px 0" />
+    <!--{if $card.card_sn}-->{$lang.card_sn}:<span style="color:red;">{$card.card_sn}</span><br>
     <!--{/if}--> 
+    <!--{if $card.card_password}-->{$lang.card_password}:<span style="color:red;">{$card.card_password}</span><br>
+    <!--{/if}--> 
+    <!--{if $card.end_date}-->{$lang.end_date}:{$card.end_date}<br>
+    <!--{/if}--> 
+    <!--{/foreach}--> 
+    <!--{/foreach}-->
+    </p>
+    
     <!-- {if $order.invoice_no}-->
-    <li> <a href="{:url('user/order_tracking', array('order_id'=>$this->_var['order']['order_id']))}" class="c-btn3">{$lang.order_tracking}</a> </li>
-    <!--{/if}-->
-  </ul>
-</div>
-<div class="o-detail p-list">
-  <ul>
-    <!-- {foreach from=$goods_list item=goods} --> 
-   
-    <li>
-        <dl><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}" target="_blank">
-        <img src="{$goods.goods_thumb}" width="60" height="60" /></a>
-        <dt>{$goods.goods_name}</dt>
-        <dd>{$lang.shop_price}{$goods.goods_price} {$lang.number_to}：{$goods.goods_number}</dd>
-        <dd>{$lang.ws_subtotal}：{$goods.subtotal}</dd>
+    <p> <a href="{:url('user/order_tracking', array('order_id'=>$this->_var['order']['order_id']))}" type="button" class="btn btn-info ect-btn-info ect-colorf">{$lang.order_tracking}</a> </p>
+    <!--{/if}--> 
+  </div>
+  <div class="ect-pro-list">
+    <ul>
+      <!-- {foreach from=$goods_list item=goods} -->
+      <li><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}" target="_blank"><img src="{$goods.goods_thumb}"></a>
+        <dl>
+          <dt>
+            <h4 class="title"><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}">{$goods.goods_name}</a></h4>
+          </dt>
+          <dd class="dd-price"><b>{$lang.shop_price}{$goods.goods_price} {$lang.number_to}：{$goods.goods_number}</b></dd>
+          <dd class="dd-price"><b >{$lang.ws_subtotal}：<span class="ect-colory">{$goods.subtotal}</span></b></dd>
         </dl>
-    </li>
-    <!-- {/foreach} -->
-    <div class="o-l-btn">
-            <p class="o-l-handler">{$order.handler}</p>
-            <p class="o-l-tracking"><!-- {if $order.shipping_id} --><a href="{:url('order_tracking', array('order_id'=>$this->_var['order']['order_id']))}">{$lang.order_tracking}</a><!-- {/if} --></p>
-        </div>
-  </ul>
-  <ul class="o-info o-info1">
-    <li><b>{$lang.consignee_name}：</b> {$order.consignee}</li>
-    <li><b>{$lang.mobile}：</b> {$order.mobile}</li>
+      </li>
+      <!-- {/foreach} -->
+    </ul>
+  </div>
+</section>
+<div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center"> {$order.handler} 
+  <!-- {if $order.shipping_id} --><a class="btn btn-info ect-bg-colory" type="button" href="{:url('order_tracking', array('order_id'=>$this->_var['order']['order_id']))}">{$lang.order_tracking}</a><!-- {/if} --> 
+</div>
+<section class="order-detail-info ect-margin-tb" style="margin-bottom:0;">
+  <ul>
+    <li>{$lang.consignee_name}：<b>{$order.consignee}</b></li>
+    <li>{$lang.mobile}：<b>{$order.mobile}</b></li>
     <!-- {if $order.exist_real_goods} -->
-    <li><b>{$lang.detailed_address}：</b> {$order.address} </li>
-    <!-- {/if}-->
+    <li>{$lang.detailed_address}：<b>{$order.address}</b></li>
+    <!-- {/if}--> 
     <!-- {if $order.exist_real_goods} -->
-    <li><b>{$lang.deliver_goods_time}：</b> {$order.best_time}</li>
+    <li>{$lang.deliver_goods_time}：<b>{$order.best_time}</b></li>
     <!--{/if}-->
-  </ul>
-  <ul class="o-settle">
-    <li>
-    <b>{$lang.goods_all_price}</b><!-- {if $order.extension_code eq "group_buy"} -->{$lang.gb_deposit}<!-- {/if} -->: {$order.formated_goods_amount} 
-
-      - {$lang.discount}: {$order.formated_discount} 
-
-      <!-- {if $order.tax gt 0} --> 
-      + {$lang.tax}: {$order.formated_tax} 
+    <li class="text-right">
+      <p class="ect-margin-tb">{$lang.goods_all_price}：<b class="ect-colory"> 
+        <!-- {if $order.extension_code eq "group_buy"} -->{$lang.gb_deposit}<!-- {/if} -->{$order.formated_goods_amount}</b>
+         - {$lang.discount}：<b class="ect-colory">{$order.formated_discount} </b><br>
+      	 <!-- {if $order.tax gt 0} --> 
+      + {$lang.tax}:<b class="ect-colory">{$order.formated_tax}</b><br>
       <!-- {/if} --> 
       <!-- {if $order.shipping_fee > 0} --> 
-      + {$lang.shipping_fee}: {$order.formated_shipping_fee} 
+      + {$lang.shipping_fee}:<b class="ect-colory">{$order.formated_shipping_fee}</b><br>
       <!-- {/if} --> 
       <!-- {if $order.insure_fee > 0} --> 
-      + {$lang.insure_fee}: {$order.formated_insure_fee} 
+      + {$lang.insure_fee}:<b class="ect-colory">{$order.formated_insure_fee}</b><br>
       <!-- {/if} --> 
       <!-- {if $order.pay_fee > 0} --> 
-      + {$lang.pay_fee}: {$order.formated_pay_fee} 
+      + {$lang.pay_fee}:<b class="ect-colory">{$order.formated_pay_fee}</b><br>
       <!-- {/if} --> 
       <!-- {if $order.pack_fee > 0} --> 
-      + {$lang.pack_fee}: {$order.formated_pack_fee} 
+      + {$lang.pack_fee}:<b class="ect-colory">{$order.formated_pack_fee}</b><br>
       <!-- {/if} --> 
       <!-- {if $order.card_fee > 0} --> 
-      + {$lang.card_fee}: {$order.formated_card_fee} 
-      <!-- {/if} -->
-      </li>
-      <li>
-      <!-- {if $order.money_paid > 0} --> 
-      - {$lang.order_money_paid}: {$order.formated_money_paid} 
+      + {$lang.card_fee}:<b class="ect-colory">{$order.formated_card_fee}</b>
+      <!-- {/if} --> 
+      </p>
+      <p class="ect-margin-tb">
+      	 <!-- {if $order.money_paid > 0} --> 
+      - {$lang.order_money_paid}: <b class="ect-colory">{$order.formated_money_paid}</b><br>
       <!-- {/if} --> 
       <!-- {if $order.surplus > 0} --> 
-      - {$lang.use_surplus}: {$order.formated_surplus} 
+      - {$lang.use_surplus}: <b class="ect-colory">{$order.formated_surplus}</b><br>
       <!-- {/if} --> 
       <!-- {if $order.integral_money > 0} --> 
-      - {$lang.use_integral}: {$order.formated_integral_money} 
+      - {$lang.use_integral}: <b class="ect-colory">{$order.formated_integral_money}</b><br>
       <!-- {/if} --> 
       <!-- {if $order.bonus > 0} --> 
-      - {$lang.use_bonus}: {$order.formated_bonus} 
-      <!-- {/if} -->
-      </li>
-      <li>
-      {$lang.order_amount}: {$order.formated_order_amount} 
-      <!-- {if $order.extension_code eq "group_buy"} --> 
-      {$lang.notice_gb_order_amount}<!-- {/if} --> 
-   	  </li>
-   	  <!-- {if $allow_edit_surplus} 如果可以编辑使用余额数 -->
-      <li>
-          <form action="{:url('user/edit_surplus')}" method="post" name="formFee" id="formFee">
-            {$lang.use_more_surplus}：
-            <input name="surplus" class="txt-surplus" type="text" size="8" value="0" />
-            <p class="p-maxsur">{$max_surplus}</p>
-            <input type="submit" name="Submit" class="o-submit" value="{$lang.button_submit}{$lang.use_surplus}" />
-            
-            <input type="hidden" name="order_id" value="{$smarty.get.order_id}" />
-          </form>
-      </li>
-    <!--{/if}-->
+      - {$lang.use_bonus}: <b class="ect-colory">{$order.formated_bonus}</b><br>
+      <!-- {/if} --> 
+      </p>
+      <p class="ect-margin-tb">{$lang.order_amount}：<b class="ect-colory">{$order.formated_order_amount}</b><br><!-- {if $order.extension_code eq "group_buy"} --> 
+      {$lang.notice_gb_order_amount}<!-- {/if} --> </p>
+    </li>
+   
   </ul>
-</div>
-
-<div class="o-detail">
-	<ul class="o-zffs">
-    	<li>{$lang.select_payment}: {$order.pay_name}。</li>
-        <li>{$lang.order_amount}: <strong>{$order.formated_order_amount}</strong></li>
-        {if $order.order_amount gt 0}
-        <li>{$order.pay_online}</li>
-        {/if}
-        <!--{if $payment_list}-->  
-         <li>  
-         <form name="payment" method="post" action="{:url('user/edit_payment')}">
-              {$lang.change_payment}:
-              <select name="pay_id">
-                <!--{foreach from=$payment_list item=payment}-->
-                <option value="{$payment.pay_id}"> {$payment.pay_name}({$lang.pay_fee}:{$payment.format_pay_fee}) </option>
-                <!--{/foreach}-->
-              </select>
-              <input type="hidden" name="order_id" value="{$order.order_id}" />
-              <input type="submit" name="Submit" class="o-submit" value="{$lang.button_submit}" />
-            </form>
-            <li>
-         <!--{/if}-->
-    </ul>
-
+</section>
+ <!-- {if $allow_edit_surplus} 如果可以编辑使用余额数 -->
+    <form action="{:url('user/edit_surplus')}" method="post" name="formFee" id="formFee">
+    <section class="order-detail-info ect-margin-tb" style="border-top:none; margin-top:0;">
+        <ul><li> <b class="pull-left"> {$lang.use_more_surplus}：</b><span><input name="surplus" class="ect-padding-lr" type="text" size="8" value="0" /></span>
+         <p class="ect-margin-tb">{$max_surplus}</p>
+         </li></ul>
+         </section>
+          <section class="ect-padding-lr ect-padding-tb ect-margin-tb ect-margin-bottom0">
+         <input type="submit" name="Submit" class="btn btn-info ect-btn-info ect-colorf" value="{$lang.button_submit}{$lang.use_surplus}" />
+         <input type="hidden" name="order_id" value="{$smarty.get.order_id}" />
+         </section>
+    </form>
+    <!--{/if}-->
+<section class="order-detail-info ect-margin-tb  ect-margin-bottom0">
   <ul>
-    <!-- {if $order.shipping_id > 0} -->
-    <li>{$lang.shipping}：{$order.shipping_name}</li>
-    <!-- {/if} -->  
-    <li>{$lang.payment}：{$order.pay_name}</li>
+    <li>{$lang.select_payment}：<b>{$order.pay_name}</b></li>
+    <li>{$lang.order_amount}：<b class="ect-colory">{$order.formated_order_amount}</b></li>
+  </ul>
+</section> {if $order.order_amount gt 0}
+<section class="ect-padding-lr ect-padding-tb ect-margin-tb ect-margin-bottom0">{$order.pay_online}</section>{/if} 
+<section class="order-detail-info ect-margin-tb ect-margin-bottom0 user-bottom0">
+  <ul>
+   <!-- {if $order.shipping_id > 0} -->
+    <li>{$lang.shipping}：<b>{$order.shipping_name}</b></li>
+    <!-- {/if} -->
+    <li>{$lang.payment}：<b>{$order.pay_name}</b></li>
     <!--{if $order.insure_fee > 0}--> 
     <!--{/if}--> 
     <!-- {if $order.pack_name} 是否使用包装 -->
-    <li>{$lang.use_pack}：{$order.pack_name}</li>
+    <li>{$lang.use_pack}：<b>{$order.pack_name}</b></li>
     <!-- {/if} 是否使用包装 --> 
     <!-- {if $order.card_name} 是否使用贺卡 -->
-    <li>{$lang.use_card}：{$order.card_name}</li>
+    <li>{$lang.use_card}：<b>{$order.card_name}</b></li>
     <!-- {/if} --> 
     <!-- {if $order.card_message} 是否使用贺卡 -->
-    <li>{$lang.bless_note}：{$order.card_message}</li>
+    <li>{$lang.bless_note}：<b>{$order.card_message}</b></li>
     <!-- {/if} 是否使用贺卡 --> 
     <!-- {if $order.surplus > 0} 是否使用余额 --> 
     <!-- {/if} --> 
     <!-- {if $order.integral > 0} 是否使用积分 -->
-    <li>{$lang.use_integral}：{$order.integral}</li>
+    <li>{$lang.use_integral}：<b>{$order.integral}</b></li>
     <!-- {/if} 是否使用积分 --> 
     <!-- {if $order.bonus > 0} 是否使用红包 --> 
     <!-- {/if} --> 
     <!-- {if $order.inv_payee && $order.inv_content} 是否开发票 -->
-    <li>{$lang.invoice_title}：{$order.inv_payee} {$lang.invoice_content}：{$order.inv_content}</li>
+    <li>{$lang.invoice_title}：<b>{$order.inv_payee}</b></li>
+    <li>{$lang.invoice_content}：<b>{$order.inv_content}</b></li>
     <!-- {/if} --> 
     <!-- {if $order.postscript} 是否有订单附言 -->
-    <li>{$lang.order_postscript}：{$order.postscript}</li>
+    <li>{$lang.order_postscript}：<b>{$order.postscript}</b></li>
     <!-- {/if} -->
-    <li>{$lang.booking_process}：{$order.how_oos_name}</li>
+    <li>{$lang.booking_process}：<b>{$order.how_oos_name}</b></li>
   </ul>
+</section>
+<footer class="logo"><img src="__TPL__/images/logo.png" width="176" height="60"></footer>
 </div>
-</div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
-<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->

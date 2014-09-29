@@ -1,17 +1,16 @@
-<style type="text/css">
-/* 本例子css */
-.pay_bottom { display: inline-block; min-width: 60px; height: 40px; padding: 0 15px; border: 0; background: #f40; text-align: center; text-decoration: none; line-height: 40px; color: #fff; font-size: 14px; font-weight: 700; -webkit-border-radius: 2px; background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #f50), color-stop(1, #f40)); text-shadow: 0 -1px 1px #ca3511; -webkit-box-shadow: 0 -1px 0 #bf3210 inset; }
-</style>
-<div>
-<h1 class="f-h1"><a class="t-history" onClick="javascript:history.go(-1)">{$lang.back_up_page}</a>{$title}<a class="t-mune" href="javascript:void(0)">{$lang.menu}</a></h1>
-<header class="nidx-header" id="nidx-header"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </header>
-<div class="done">
-  <h6><img src="__TPL__/images/sucess.png" width="125" height="125">{$lang.remember_order_number}: <font style="color:red">{$order.order_sn}</font></h6>
-  <p><!--{if $order.shipping_name}-->{$lang.select_shipping}: <strong>{$order.shipping_name}</strong><!--{/if}--></p>
-  <p>{$lang.order_amount}: <strong>{$total.amount_formated}</strong></p>
-<!--{if $vgoods.info}-->
-  <div style="text-align:center;overflow:hidden;border:1px solid #E2C822; background:#FFF9D7;padding:10px 50px 30px;"> 
-    {foreach from=$virtual_card item=vgoods}
+
+<div class="con">
+  <div class="ect-bg">
+  <header class="ect-header ect-margin-tb ect-margin-lr text-center ect-bg icon-write"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$title}</span> <a href="javascript:;" onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune"></a></header>
+  <nav class="ect-nav ect-nav-list" style="display:none;"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
+</div>
+  <section class="ect-bg-colorf ect-padding-lr flow-done">
+  		<i class="glyphicon glyphicon-ok"></i>
+        <p class="ect-margin-tb">{$lang.remember_order_number}：<b class="ect-color">{$order.order_sn}</b></p>
+        <p class="ect-margin-tb"><!--{if $order.shipping_name}-->{$lang.select_shipping}:<b>{$order.shipping_name}</b><!--{/if}--></p>
+        <p class="ect-margin-tb">{$lang.order_amount}: <b>{$total.amount_formated}</b></p>
+        <div class="alert alert-warning" role="alert">
+ 			 <!--{foreach from=$virtual_card item=vgoods}-->
     <h3 style="color:#2359B1; font-size:12px;">{$vgoods.goods_name}</h3>
     <!--{foreach from=$vgoods.info item=card}-->
     <ul style="list-style:none;padding:0;margin:0;clear:both">
@@ -27,9 +26,10 @@
     </ul>
     <!--{/foreach}--> 
     <!--{/foreach}--> 
-  </div>
- <!-- {/if}-->
-  <p style="text-align:center; margin-bottom:20px;">{$pay_online}</p>
-  <p style="text-align:center; margin-bottom:20px;">{$order_submit_back}</p>
-  <h6 style="text-align:center;line-height:20px;"><a href="{:url('user/order_detail',array('order_id'=>$this->_var['order']['order_id']))}" >{$lang.change_payment}</a></h6>
+		</div>
+           <p class="ect-margin-tb text-center">{$order_submit_back}</p>
+  </section>
+  <section class="ect-padding-lr ect-padding-tb ect-margin-tb">
+  	<a type="button" class="btn btn-info ect-btn-info ect-colorf">{$lang.change_payment}</a>
+  </section>
 </div>

@@ -1,7 +1,11 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
-<div>
-<div style="height:5rem"></div>
-<header class="n-header"><!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --></header>
+<div class="con">
+<div style="height:7.2em;"></div>
+  <header>
+    <nav class="ect-nav ect-bg icon-write">
+      <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem -->
+    </nav>
+  </header>
 <!-- #BeginLibraryItem "/library/goods_list_act.lbi" --><!-- #EndLibraryItem -->
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->

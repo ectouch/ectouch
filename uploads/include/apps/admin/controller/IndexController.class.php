@@ -80,28 +80,9 @@ class IndexController extends AdminController
         $this->assign('ecs_release', RELEASE);
         $this->assign('ecs_charset', strtoupper(EC_CHARSET));
         $this->assign('install_date', local_date(C('date_format'), C('install_date')));
-        // 获取最新补丁
-        $url = 'http://ectouch.cn/api/push_patch.html';
-        $data = array(
-            'time' => RELEASE
-        );
-        $result = Http::doPost($url, $data);
-        $result = json_decode($result, true);
-        $this->assign('patch', $result);
         // 检测是否授权
-        $url = 'http://ectouch.cn/api/check_empower.html';
-        $data = array(
-            'appid' => ECTOUCH_AUTH_KEY
-        );
-        $result = Http::doPost($url, $data);
-        $result = json_decode($result, true);
-        if ($result['msg'] == '') {
-            $empower = '<span class="text-success">已授权</span>';
-           
-        } else {
-            $url = url('empower');
-            $empower = '<a href="' . $url . '" class="text-danger">未授权</a>';
-        }
+        $data = array('appid' => ECTOUCH_AUTH_KEY);
+        $empower = $this->cloud->data($data)->act('get.license');
         $this->assign('empower', $empower);
         $this->display('welcome');
     }

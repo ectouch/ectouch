@@ -1,33 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>{$page_title} 触屏版</title>
-<link rel="stylesheet" type="text/css" href="__TPL__/css/base.css">
-<link rel="stylesheet" type="text/css" href="__TPL__/css/ectouch.css">
-<link rel="stylesheet" type="text/css" href="__TPL__/css/user.css">
-<script src="__PUBLIC__/js/jquery.min.js" type="text/javascript"></script>
-<script src="__PUBLIC__/js/validform.js" type="text/javascript"></script>
-<script src="__PUBLIC__/js/common.js" type="text/javascript"></script>
-<script src="__PUBLIC__/js/utils.js" type="text/javascript"></script>
-<script src="__PUBLIC__/js/user.js" type="text/javascript"></script>
-<script src="__TPL__/js/TouchSlide.1.1.js" type="text/javascript"></script>
-<script src="__TPL__/js/ectouch.js" type="text/javascript"></script>
+<link rel="stylesheet" href="__PUBLIC__/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="__PUBLIC__/bootstrap/css/font-awesome.min.css">
+<link rel="stylesheet" href="__TPL__/css/ectouch.css">
+<link rel="stylesheet" href="__TPL__/css/user.css">
+<link rel="stylesheet" href="__TPL__/css/photoswipe.css">
 </head>
 
 <body>
-<div>
-<h1 class="f-h1"> <a class="t-history" onclick="javascript:history.go(-1)">{$lang.back_up_page}</a>{$title}<a class="t-mune" href="javascript:;">{$lang.menu}</a> </h1>
-<header class="nidx-header">
-  <ul>
-    <li class="li1"><a href="{:url('index/index')}"><i></i>{$lang.home}</a></li>
-    <li class="li2"><a href="javascript:;"><i></i>{$lang.search}</a></li>
-    <li class="li3"><a href="{:url('category/all')}"><i></i>{$lang.category}</a></li>
-    <li class="li4"><a href="{:url('flow/cart')}"><i></i>{$lang.shopping_cart}</a></li>
-    <li class="li5"><a href="{:url('user/index')}"><i></i>{$lang.user_center}</a></li>
-</ul>
-</header>
+<div class="con">
+<div class="ect-bg">
+  <header class="ect-header ect-margin-tb ect-margin-lr text-center ect-bg icon-write"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$title}</span> <a href="javascript:;" onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune"></a></header>
+  <nav class="ect-nav ect-nav-list" style="display:none;">
+    <ul class="ect-diaplay-box text-center">
+      <li class="ect-box-flex"><a href="{:url('index/index')}"><i class="ect-icon ect-icon-home"></i>{$lang.home}</a></li>
+      <li class="ect-box-flex"><a href="{:url('category/all')}"><i class="ect-icon ect-icon-cate"></i>{$lang.category}</a></li>
+      <li class="ect-box-flex"><a href="javascript:openSearch();"><i class="ect-icon ect-icon-search"></i>{$lang.search}</a></li>
+      <li class="ect-box-flex"><a href="{:url('flow/cart')}"><i class="ect-icon ect-icon-flow"></i>{$lang.shopping_cart}</a></li>
+      <li class="ect-box-flex"><a href="{:url('user/index')}"><i class="ect-icon ect-icon-user"></i>{$lang.user_center}</a></li>
+    </ul>
+  </nav>
+</div>

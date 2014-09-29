@@ -1,17 +1,18 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
-<div class="order-list" id="J_ItemList">
-  <div class="single_item">
-    <div class="o-l-status"></div>
-    <div class="o-l-content"></div>
-  </div>
-  <a href="javascript:;" style="text-align:center" class="get_more"></a> </div>
+<div class="ect-pro-list user-order" style="border-bottom:none;">
+    <ul id="J_ItemList">
+       <li class="single_item"></li>
+       <a href="javascript:;" style="text-align:center" class="get_more"></a>
+    </ul>
 </div>
-<script type="text/javascript" src="__PUBLIC__/js/jquery.more.js"></script> 
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<footer class="logo"><img src="__TPL__/images/logo.png" width="176" height="60"></footer>
 <script type="text/javascript">
 {foreach from=$lang.merge_order_js item=item key=key}
     var {$key} = "{$item}";
 {/foreach}
 get_asynclist('index.php?m=default&c=user&a=async_order_list&pay={$pay}' , '__TPL__/images/loader.gif');
 </script> 
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
 </body></html>
