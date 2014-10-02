@@ -41,13 +41,13 @@ if (isset($set_modules) && $set_modules == TRUE) {
     $modules[$i]['email'] = 'zhulin@ecmoban.com';
 
     // 申请网址
-    $modules[$i]['website'] = 'http://open.qq.com';
+    $modules[$i]['website'] = 'http://open.weibo.com';
 
     // 版本号
     $modules[$i]['version'] = '1.0';
 
     // 更新日期
-    $modules[$i]['date'] = '2014-8-19';
+    $modules[$i]['date'] = '2014-10-03';
 
     /* 配置信息 */
     $modules[$i]['config'] = array(
