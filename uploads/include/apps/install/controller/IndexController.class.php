@@ -73,7 +73,14 @@ class IndexController extends Controller {
     public function importing() {
         $data = in($_POST);
         $configDb = $data['DB'];
-        $link = @mysql_connect($configDb['DB_HOST'], $configDb['DB_USER'], $configDb['DB_PWD']);
+        if(strpos($configDb['DB_HOST'], ':') !== false){
+            $db_host = explode(':', $configDb['DB_HOST']);
+            $configDb['DB_HOST'] = $db_host[0];
+            $configDb['DB_PORT'] = $db_host[1];
+        }else{
+            $configDb['DB_PORT'] = '3306';
+        }
+        $link = @mysql_connect($configDb['DB_HOST'].':'.$configDb['DB_PORT'], $configDb['DB_USER'], $configDb['DB_PWD']);
         if (!$link) {
             $this->msg('数据库连接失败，请检查连接信息是否正确！', false);
         }
