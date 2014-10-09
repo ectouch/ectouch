@@ -32,7 +32,7 @@ class ArticlecatController extends AdminController {
     }
 
     /**
-     * 编辑品牌
+     * 编辑文章
      */
     public function edit() {
         $id = I('cat_id');
@@ -41,7 +41,14 @@ class ArticlecatController extends AdminController {
             //更新数据库
             $data['is_mobile'] = $info['is_mobile'];
             $condition['cat_id'] = $id;
-            $this->model->table('touch_article_cat')->data($data)->where($condition)->update();
+            //增加判断
+            $touch_result = $this->model->table('touch_article_cat')->where('cat_id=' . $id)->find();
+            if (empty($touch_result)) {
+                $data['cat_id'] = $id;
+                $this->model->table('touch_article_cat')->data($data)->insert();
+            } else {
+                 $this->model->table('touch_article_cat')->data($data)->where($condition)->update();
+            }
             clear_cache_files();
             $this->message(L('catedit_succed'), url('index'));
         }
