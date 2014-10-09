@@ -44,7 +44,7 @@ class ucenter extends integrate
     /**
      * 构造函数
      *
-     * @param unknown $cfg 
+     * @param unknown $cfg            
      */
     function __construct($cfg)
     {
@@ -90,12 +90,12 @@ class ucenter extends integrate
      * 用户登录函数
      *
      * @access public
-     * @param string $username 
-     * @param string $password 
+     * @param string $username            
+     * @param string $password            
      *
      * @return void
      */
-    function login($username, $password)
+    function login($username, $password, $remember = null)
     {
         list ($uid, $uname, $pwd, $email, $repeat) = uc_call("uc_user_login", array(
             $username,
@@ -105,16 +105,19 @@ class ucenter extends integrate
         
         if ($uid > 0) {
             // 检查用户是否存在,不存在直接放入用户表
-            $result = $this->db->getRow("SELECT user_id,ec_salt FROM " . $GLOBALS['ecs']->table("users") . " WHERE user_name='$username'");
+            $result = model('Base')->model->query("SELECT user_id,ec_salt FROM " . model('Base')->model->pre . "users WHERE user_name='$username'");
+            $result = reset($result);
             $name_exist = $result['user_id'];
             if (empty($result['ec_salt'])) {
-                $user_exist = $this->db->getOne("SELECT user_id FROM " . $GLOBALS['ecs']->table("users") . " WHERE user_name='$username' AND password = '" . MD5($password) . "'");
+                $user_exist = model('Base')->model->query("SELECT user_id FROM " . model('Base')->model->pre . "users WHERE user_name='$username' AND password = '" . MD5($password) . "'");
+                $user_exist = $this->getOne($user_exist);
                 if (! empty($user_exist)) {
                     $ec_salt = rand(1, 9999);
-                    $this->db->query('UPDATE ' . $GLOBALS['ecs']->table("users") . "SET `password`='" . MD5(MD5($password) . $ec_salt) . "',`ec_salt`='" . $ec_salt . "' WHERE user_id = '" . $uid . "'");
+                    model('Base')->model->query("UPDATE " . model('Base')->model->pre . "users SET `password`='" . MD5(MD5($password) . $ec_salt) . "',`ec_salt`='" . $ec_salt . "' WHERE user_id = '" . $uid . "'");
                 }
             } else {
-                $user_exist = $this->db->getOne("SELECT user_id FROM " . $GLOBALS['ecs']->table("users") . " WHERE user_name='$username' AND password = '" . MD5(MD5($password) . $result['ec_salt']) . "'");
+                $user_exist = model('Base')->model->query("SELECT user_id FROM " . model('Base')->model->pre . "users  WHERE user_name='$username' AND password = '" . MD5(MD5($password) . $result['ec_salt']) . "'");
+                $user_exist = $this->getOne($user_exist);
             }
             
             if (empty($user_exist)) {
@@ -124,12 +127,12 @@ class ucenter extends integrate
                     $password = $this->compile_password(array(
                         'password' => $password
                     ));
-                    $this->db->query('INSERT INTO ' . $GLOBALS['ecs']->table("users") . "(`user_id`, `email`, `user_name`, `password`, `reg_time`, `last_login`, `last_ip`) VALUES ('$uid', '$email', '$uname', '$password', '$reg_date', '$reg_date', '$ip')");
+                    model('Base')->model->query("INSERT INTO " . model('Base')->model->pre . "users (`user_id`, `email`, `user_name`, `password`, `reg_time`, `last_login`, `last_ip`) VALUES ('$uid', '$email', '$uname', '$password', '$reg_date', '$reg_date', '$ip')");
                 } else {
                     if (empty($result['ec_salt'])) {
                         $result['ec_salt'] = 0;
                     }
-                    $this->db->query('UPDATE ' . $GLOBALS['ecs']->table("users") . "SET `password`='" . MD5(MD5($password) . $result['ec_salt']) . "',`ec_salt`='" . $result['ec_salt'] . "' WHERE user_id = '" . $uid . "'");
+                    model('Base')->model->query("UPDATE " . model('Base')->model->pre . "users SET `password`='" . MD5(MD5($password) . $result['ec_salt']) . "',`ec_salt`='" . $result['ec_salt'] . "' WHERE user_id = '" . $uid . "'");
                 }
             }
             $this->set_session($uname);
@@ -153,7 +156,7 @@ class ucenter extends integrate
      * 用户退出
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -168,7 +171,7 @@ class ucenter extends integrate
     }
     
     /* 添加用户 */
-    function add_user($username, $password, $email)
+    function add_user($username, $password, $email, $gender = -1, $bday = 0, $reg_date = 0, $md5password = '')
     {
         /* 检测用户名 */
         if ($this->check_user($username)) {
@@ -210,7 +213,7 @@ class ucenter extends integrate
             $password = $this->compile_password(array(
                 'password' => $password
             ));
-            $this->db->query('INSERT INTO ' . $GLOBALS['ecs']->table("users") . "(`user_id`, `email`, `user_name`, `password`, `reg_time`, `last_login`, `last_ip`) VALUES ('$uid', '$email', '$username', '$password', '$reg_date', '$reg_date', '$ip')");
+            model('Base')->model->query("INSERT INTO " . model('Base')->model->pre . "users (`user_id`, `email`, `user_name`, `password`, `reg_time`, `last_login`, `last_ip`) VALUES ('$uid', '$email', '$username', '$password', '$reg_date', '$reg_date', '$ip')");
             return true;
         }
     }
@@ -220,8 +223,8 @@ class ucenter extends integrate
      *
      * @access public
      * @param string $username
-     * 用户名
-     * 
+     *            用户名
+     *            
      * @return int
      */
     function check_user($username, $password = null)
@@ -241,8 +244,8 @@ class ucenter extends integrate
      *
      * @access public
      * @param string $email
-     * 邮箱
-     * 
+     *            邮箱
+     *            
      * @return blob
      */
     function check_email($email)
@@ -280,40 +283,51 @@ class ucenter extends integrate
         }
         $set_str = substr($set_str, 0, - 1);
         if (! empty($set_str)) {
-            $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET $set_str  WHERE user_name = '$cfg[username]'";
-            $GLOBALS['db']->query($sql);
+            $sql = "UPDATE " . model('Base')->model->pre . "users SET $set_str  WHERE user_name = '$cfg[username]'";
+            model('Base')->model->query($sql);
             $flag = true;
         }
         
-        if (! empty($cfg['email'])) {
-            $ucresult = uc_call("uc_user_edit", array(
-                $cfg['username'],
-                '',
-                '',
-                $cfg['email'],
-                1
-            ));
-            if ($ucresult > 0) {
-                $flag = true;
-            } elseif ($ucresult == - 4) {
-                // echo 'Email 格式有误';
-                $this->error = ERR_INVALID_EMAIL;
-                
-                return false;
-            } elseif ($ucresult == - 5) {
-                // echo 'Email 不允许注册';
-                $this->error = ERR_INVALID_EMAIL;
-                
-                return false;
-            } elseif ($ucresult == - 6) {
-                // echo '该 Email 已经被注册';
+        // 判断 email 是否进行修改
+        $data = uc_call("uc_get_user", $username);
+        list ($uid, $username, $email) = $data;
+        if ($cfg['email'] != $email) {
+            if ($this->check_email($cfg['email'])) {
                 $this->error = ERR_EMAIL_EXISTS;
-                
                 return false;
-            } elseif ($ucresult < 0) {
-                return false;
+            } else {
+                if (! empty($cfg['email'])) {
+                    $ucresult = uc_call("uc_user_edit", array(
+                        $cfg['username'],
+                        '',
+                        '',
+                        $cfg['email'],
+                        1
+                    ));
+                    if ($ucresult > 0) {
+                        $flag = true;
+                    } elseif ($ucresult == - 4) {
+                        // echo 'Email 格式有误';
+                        $this->error = ERR_INVALID_EMAIL;
+                        
+                        return false;
+                    } elseif ($ucresult == - 5) {
+                        // echo 'Email 不允许注册';
+                        $this->error = ERR_INVALID_EMAIL;
+                        
+                        return false;
+                    } elseif ($ucresult == - 6) {
+                        // echo '该 Email 已经被注册';
+                        $this->error = ERR_EMAIL_EXISTS;
+                        
+                        return false;
+                    } elseif ($ucresult < 0) {
+                        return false;
+                    }
+                }
             }
         }
+        
         if (! empty($cfg['old_password']) && ! empty($cfg['password']) && $forget_pwd == 0) {
             $ucresult = uc_call("uc_user_edit", array(
                 $real_username,
@@ -347,7 +361,7 @@ class ucenter extends integrate
      * 获取指定用户的信息
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -356,8 +370,9 @@ class ucenter extends integrate
     function get_profile_by_name($username)
     {
         // $username = addslashes($username);
-        $sql = "SELECT user_id, user_name, email, sex, reg_time FROM " . $GLOBALS['ecs']->table('users') . " WHERE user_name='$username'";
-        $row = $this->db->getRow($sql);
+        $sql = "SELECT user_id, user_name, email, sex, reg_time FROM " . model('Base')->model->pre . "users WHERE user_name='$username'";
+        $row = model('Base')->model->query($sql);
+        $row = reset($row);
         return $row;
     }
 
@@ -365,7 +380,7 @@ class ucenter extends integrate
      * 检查cookie是正确，返回用户名
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -380,7 +395,7 @@ class ucenter extends integrate
      * 根据登录状态设置cookie
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -405,13 +420,13 @@ class ucenter extends integrate
      * 设置cookie
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
      * @return void
      */
-    function set_cookie($username = '')
+    function set_cookie($username = '', $remember = null)
     {
         if (empty($username)) {
             /* 摧毁cookie */
@@ -423,8 +438,9 @@ class ucenter extends integrate
             $time = time() + 3600 * 24 * 30;
             
             setcookie("ECS[username]", stripslashes($username), $time, $this->cookie_path, $this->cookie_domain);
-            $sql = "SELECT user_id, password FROM " . $GLOBALS['ecs']->table('users') . " WHERE user_name='$username' LIMIT 1";
-            $row = $GLOBALS['db']->getRow($sql);
+            $sql = "SELECT user_id, password FROM " . model('Base')->model->pre . "users WHERE user_name='$username' LIMIT 1";
+            $row = model('Base')->model->query($sql);
+            $row = reset($row);
             if ($row) {
                 setcookie("ECS[user_id]", $row['user_id'], $time, $this->cookie_path, $this->cookie_domain);
                 setcookie("ECS[password]", $row['password'], $time, $this->cookie_path, $this->cookie_domain);
@@ -436,7 +452,7 @@ class ucenter extends integrate
      * 设置指定用户SESSION
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -445,10 +461,11 @@ class ucenter extends integrate
     function set_session($username = '')
     {
         if (empty($username)) {
-            $GLOBALS['sess']->destroy_session();
+            ECTouch::sess()->destroy_session();
         } else {
-            $sql = "SELECT user_id, password, email FROM " . $GLOBALS['ecs']->table('users') . " WHERE user_name='$username' LIMIT 1";
-            $row = $GLOBALS['db']->getRow($sql);
+            $sql = "SELECT user_id, password, email FROM " . model('Base')->model->pre . "users WHERE user_name='$username' LIMIT 1";
+            $row = model('Base')->model->query($sql);
+            $row = reset($row);
             
             if ($row) {
                 $_SESSION['user_id'] = $row['user_id'];
@@ -462,7 +479,7 @@ class ucenter extends integrate
      * 获取指定用户的信息
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -470,9 +487,9 @@ class ucenter extends integrate
      */
     function get_profile_by_id($id)
     {
-        $sql = "SELECT user_id, user_name, email, sex, birthday, reg_time FROM " . $GLOBALS['ecs']->table('users') . " WHERE user_id='$id'";
-        $row = $this->db->getRow($sql);
-        
+        $sql = "SELECT user_id, user_name, email, sex, birthday, reg_time FROM " . model('Base')->model->pre . "users  WHERE user_id='$id'";
+        $row = model('Base')->model->query($sql);
+        $row = reset($row);
         return $row;
     }
 
@@ -485,7 +502,7 @@ class ucenter extends integrate
      * 删除用户
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -503,42 +520,49 @@ class ucenter extends integrate
         }
         
         /* 如果需要同步或是ecshop插件执行这部分代码 */
-        $sql = "SELECT user_id FROM " . $GLOBALS['ecs']->table('users') . " WHERE ";
+        $sql = "SELECT user_id FROM " . model('Base')->model->pre . "users  WHERE ";
         $sql .= (is_array($post_id)) ? db_create_in($post_id, 'user_name') : "user_name='" . $post_id . "' LIMIT 1";
-        $col = $GLOBALS['db']->getCol($sql);
+        $array = model('Base')->model->query($sql);
+        foreach ($array as $key => $val) {
+            $col[] = $val[0];
+        }
         
         if ($col) {
-            $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET parent_id = 0 WHERE " . db_create_in($col, 'parent_id'); // 将删除用户的下级的parent_id 改为0
-            $GLOBALS['db']->query($sql);
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('users') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户
-            $GLOBALS['db']->query($sql);
+            $sql = "UPDATE " . model('Base')->model->pre . "users SET parent_id = 0 WHERE " . db_create_in($col, 'parent_id'); // 将删除用户的下级的parent_id 改为0
+            model('Base')->model->query($sql);
+            $sql = "DELETE FROM " . model('Base')->model->pre . "users WHERE " . db_create_in($col, 'user_id'); // 删除用户
+            model('Base')->model->query($sql);
             /* 删除用户订单 */
-            $sql = "SELECT order_id FROM " . $GLOBALS['ecs']->table('order_info') . " WHERE " . db_create_in($col, 'user_id');
-            $GLOBALS['db']->query($sql);
-            $col_order_id = $GLOBALS['db']->getCol($sql);
-            if ($col_order_id) {
-                $sql = "DELETE FROM " . $GLOBALS['ecs']->table('order_info') . " WHERE " . db_create_in($col_order_id, 'order_id');
-                $GLOBALS['db']->query($sql);
-                $sql = "DELETE FROM " . $GLOBALS['ecs']->table('order_goods') . " WHERE " . db_create_in($col_order_id, 'order_id');
-                $GLOBALS['db']->query($sql);
+            $sql = "SELECT order_id FROM " . model('Base')->model->pre . "order_info  WHERE " . db_create_in($col, 'user_id');
+            model('Base')->model->query($sql);
+            $array = model('Base')->model->query($sql);
+            foreach ($array as $key => $val) {
+                $col_order_id[] = $val[0];
             }
             
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('booking_goods') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户
-            $GLOBALS['db']->query($sql);
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('collect_goods') . " WHERE " . db_create_in($col, 'user_id'); // 删除会员收藏商品
-            $GLOBALS['db']->query($sql);
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('feedback') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户留言
-            $GLOBALS['db']->query($sql);
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('user_address') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户地址
-            $GLOBALS['db']->query($sql);
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('user_bonus') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户红包
-            $GLOBALS['db']->query($sql);
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('user_account') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户帐号金额
-            $GLOBALS['db']->query($sql);
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('tag') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户标记
-            $GLOBALS['db']->query($sql);
-            $sql = "DELETE FROM " . $GLOBALS['ecs']->table('account_log') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户日志
-            $GLOBALS['db']->query($sql);
+            if ($col_order_id) {
+                $sql = "DELETE FROM " . model('Base')->model->pre . "order_info  WHERE " . db_create_in($col_order_id, 'order_id');
+                model('Base')->model->query($sql);
+                $sql = "DELETE FROM " . model('Base')->model->pre . "order_goods  WHERE " . db_create_in($col_order_id, 'order_id');
+                model('Base')->model->query($sql);
+            }
+            
+            $sql = "DELETE FROM " . model('Base')->model->pre . "booking_goods  WHERE " . db_create_in($col, 'user_id'); // 删除用户
+            model('Base')->model->query($sql);
+            $sql = "DELETE FROM " . model('Base')->model->pre . "collect_goods  WHERE " . db_create_in($col, 'user_id'); // 删除会员收藏商品
+            model('Base')->model->query($sql);
+            $sql = "DELETE FROM " . model('Base')->model->pre . "feedback WHERE " . db_create_in($col, 'user_id'); // 删除用户留言
+            model('Base')->model->query($sql);
+            $sql = "DELETE FROM " . model('Base')->model->pre . "user_address WHERE " . db_create_in($col, 'user_id'); // 删除用户地址
+            model('Base')->model->query($sql);
+            $sql = "DELETE FROM " . model('Base')->model->pre . "user_bonus WHERE " . db_create_in($col, 'user_id'); // 删除用户红包
+            model('Base')->model->query($sql);
+            $sql = "DELETE FROM " . model('Base')->model->pre . "user_account WHERE " . db_create_in($col, 'user_id'); // 删除用户帐号金额
+            model('Base')->model->query($sql);
+            $sql = "DELETE FROM " . model('Base')->model->pre . "tag WHERE " . db_create_in($col, 'user_id'); // 删除用户标记
+            model('Base')->model->query($sql);
+            $sql = "DELETE FROM " . model('Base')->model->pre . "account_log  WHERE " . db_create_in($col, 'user_id'); // 删除用户日志
+            model('Base')->model->query($sql);
         }
         
         if (isset($this->ecshop) && $this->ecshop) {
@@ -546,21 +570,21 @@ class ucenter extends integrate
             return;
         }
         
-        $sql = "DELETE FROM " . $GLOBALS['ecs']->table('users') . " WHERE ";
+        $sql = "DELETE FROM " . model('Base')->model->pre . "users  WHERE ";
         if (is_array($post_id)) {
             $sql .= db_create_in($post_id, 'user_name');
         } else {
             $sql .= "user_name='" . $post_id . "' LIMIT 1";
         }
         
-        $this->db->query($sql);
+        model('Base')->model->query($sql);
     }
 
     /**
      * 获取论坛有效积分及单位
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -569,6 +593,18 @@ class ucenter extends integrate
     function get_points_name()
     {
         return 'ucenter';
+    }
+
+    /**
+     * 返回getOne的数据
+     *
+     * @param unknown $array            
+     * @return mixed
+     */
+    function getOne($array)
+    {
+        $array = reset($array);
+        return $array[0];
     }
 }
 
