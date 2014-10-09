@@ -15,6 +15,6 @@
 
 /* 访问控制 */
 define('IN_ECTOUCH', true);
-define('CONTROLLER_NAME', 'Respond');
+define('CONTROLLER_NAME', isset($_GET['c']) ? ucfirst($_GET['c']) : 'Respond');
 /* 加载核心文件 */
 require ('include/EcTouch.php');
