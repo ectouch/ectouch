@@ -43,6 +43,11 @@
         <input type="hidden" name="flag" id="flag" value="register" />
         <div class="flow-consignee ect-bg-colorf">
           <ul>
+          <li>
+              <div class="input-text"><b>{$lang.label_username}：</b><span>
+                <input placeholder="{$lang.no_username}" name="username" type="text" id="username" datatype="*3-15" errormsg="{$lang.msg_mast_length}" />
+                </span></div>
+            </li>
             <li>
               <div class="input-text"><b>{$lang.email}：</b><span>
                 <input placeholder="{$lang.no_emaill}" name="email" type="text" id="email" datatype="e" />
