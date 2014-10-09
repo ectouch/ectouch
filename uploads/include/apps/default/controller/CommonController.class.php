@@ -30,8 +30,11 @@ class CommonController extends BaseController
         parent::__construct();
         $this->ecshop_init();
         // 微信oauth处理
-        if(method_exists('WechatController', 'do_oauth')){
-            call_user_func(array('WechatController', 'do_oauth'));
+        if (method_exists('WechatController', 'do_oauth')) {
+            call_user_func(array(
+                'WechatController',
+                'do_oauth'
+            ));
         }
         /* 语言包 */
         $this->assign('lang', L());
@@ -102,7 +105,7 @@ class CommonController extends BaseController
             if (self::$user->get_cookie()) {
                 // 如果会员已经登录并且还没有获得会员的帐户余额、积分以及优惠券
                 if ($_SESSION['user_id'] > 0 && ! isset($_SESSION['user_money'])) {
-                    model('User')->update_user_info();
+                    model('Users')->update_user_info();
                 }
             } else {
                 $_SESSION['user_id'] = 0;
@@ -135,7 +138,7 @@ class CommonController extends BaseController
             if ($row) {
                 $_SESSION['user_id'] = $row['user_id'];
                 $_SESSION['user_name'] = $row['user_name'];
-                model('User')->update_user_info();
+                model('Users')->update_user_info();
             } else {
                 // 没有找到这个记录
                 $time = time() - 3600;
@@ -152,6 +155,12 @@ class CommonController extends BaseController
         }
         // 模板替换
         defined('__TPL__') or define('__TPL__', __ROOT__ . '/themes/' . C('template'));
+        $stylename = C('stylename');
+        if (! empty($stylename)) {
+            $this->assign('ectouch_css_path', __ROOT__ . '/themes/' . C('template') . '/css/ectouch_' . C('stylename') . '.css');
+        } else {
+            $this->assign('ectouch_css_path', __ROOT__ . '/themes/' . C('template') . '/css/ectouch.css');
+        }
     }
 }
 
