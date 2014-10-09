@@ -65,7 +65,7 @@ class PaymentController extends AdminController {
     public function install() {
         if (IS_POST) {
             // 数据过滤
-            $data = I('data');
+            $data = I('post.data');
             $cfg_value = I('cfg_value');
             $cfg_name = I('cfg_name');
             $cfg_type = I('cfg_type');
