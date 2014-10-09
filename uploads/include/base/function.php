@@ -1704,7 +1704,7 @@ function formated_weight($weight) {
 function uc_call($func, $params = null) {
     restore_error_handler();
     if (!function_exists($func)) {
-        include_once(ROOT_PATH . 'uc_client/client.php');
+        include_once(ADDONS_PATH . 'uc_client/client.php');
     }
 
     $res = call_user_func_array($func, $params);
