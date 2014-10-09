@@ -412,9 +412,6 @@ function get_charset_list() {
  * @return  void
  */
 function make_json_response($content = '', $error = "0", $message = '', $append = array()) {
-    include_once(ROOT_PATH . 'includes/cls_json.php');
-
-    $json = new JSON;
 
     $res = array('error' => $error, 'message' => $message, 'content' => $content);
 
@@ -424,7 +421,7 @@ function make_json_response($content = '', $error = "0", $message = '', $append 
         }
     }
 
-    $val = $json->encode($res);
+    $val = json_encode($res);
 
     exit($val);
 }
