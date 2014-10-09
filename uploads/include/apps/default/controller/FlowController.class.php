@@ -188,7 +188,7 @@ class FlowController extends CommonController {
         // 查询：系统启用了库存，检查输入的商品数量是否有效
         // 查询
         $arrGoods = $this->model->table('goods')->field('goods_name,goods_number,extension_code')->where('goods_id =' . $goods->goods_id)->find();
-        $goodsnmber = model('User')->get_goods_number($goods->goods_id);
+        $goodsnmber = model('Users')->get_goods_number($goods->goods_id);
         $goodsnmber+=$goods->number;
         if (intval(C('use_storage')) > 0 && $arrGoods ['extension_code'] != 'package_buy') {
             if ($arrGoods ['goods_number'] < $goodsnmber) {
@@ -406,7 +406,7 @@ class FlowController extends CommonController {
             ecs_header("Location: " . url('flow/consignee_list') . "\n");
         }
         // 获取配送地址
-        $consignee_list = model('User')->get_consignee_list($_SESSION ['user_id']);
+        $consignee_list = model('Users')->get_consignee_list($_SESSION ['user_id']);
         $this->assign('consignee_list', $consignee_list);
         //获取默认配送地址
         $address_id = $this->model->table('users')->field('address_id')->where("user_id = '" . $_SESSION['user_id'] . "' ")->getOne();
@@ -441,7 +441,7 @@ class FlowController extends CommonController {
         }
 
         //计算订单的费用
-        $total = model('User')->order_fee($order, $cart_goods, $consignee);
+        $total = model('Users')->order_fee($order, $cart_goods, $consignee);
 
         $this->assign('total', $total);
         $this->assign('shopping_money', sprintf(L('shopping_money'), $total ['formated_goods_price']));
@@ -679,8 +679,8 @@ class FlowController extends CommonController {
                     }
                 }
                 if ($user->login($username, $password, isset($remember))) {
-                    model('User')->update_user_info(); // 更新用户信息
-                    model('User')->recalculate_price(); // 重新计算购物车中的商品价格
+                    model('Users')->update_user_info(); // 更新用户信息
+                    model('Users')->recalculate_price(); // 重新计算购物车中的商品价格
 
                     /* 检查购物车中是否有商品 没有商品则跳转到首页 */
                     $count = $this->model->table('cart')->field('count(*)')->where("session_id = '" . SESS_ID . "'")->getOne();
@@ -703,7 +703,7 @@ class FlowController extends CommonController {
                     }
                 }
 
-                if (model('User')->register(trim($username), trim($password), trim($email))) {
+                if (model('Users')->register(trim($username), trim($password), trim($email))) {
                     /* 用户注册成功 */
                     ecs_header("Location: " . url('flow/consignee') . "\n");
                 } else {
@@ -747,7 +747,7 @@ class FlowController extends CommonController {
             if ($_SESSION ['user_id'] > 0) {
                 $addressId = I('get.id');
                 if ($addressId > 0) {
-                    $consignee_list[] = model('User')->get_consignee_list($_SESSION ['user_id'], $addressId);
+                    $consignee_list[] = model('Users')->get_consignee_list($_SESSION ['user_id'], $addressId);
                 } else {
                     $consignee_list [] = array(
                         'country' => C('shop_country')
@@ -805,7 +805,7 @@ class FlowController extends CommonController {
             if ($_SESSION ['user_id'] > 0) {
                 /* 如果用户已经登录，则保存收货人信息 */
                 $consignee ['user_id'] = $_SESSION ['user_id'];
-                model('User')->save_consignee($consignee, true);
+                model('Users')->save_consignee($consignee, true);
             }
 
             /* 保存到session */
@@ -912,7 +912,7 @@ class FlowController extends CommonController {
             $shipping_info = model('Shipping')->shipping_area_info($order ['shipping_id'], $regions);
 
             /* 计算订单的费用 */
-            $total = model('User')->order_fee($order, $cart_goods, $consignee);
+            $total = model('Users')->order_fee($order, $cart_goods, $consignee);
             $this->assign('total', $total);
 
             /* 取得可以得到的积分和红包 */
@@ -1092,7 +1092,7 @@ class FlowController extends CommonController {
             }
         }
         /* 订单中的总额 */
-        $total = model('User')->order_fee($order, $cart_goods, $consignee);
+        $total = model('Users')->order_fee($order, $cart_goods, $consignee);
         $order ['bonus'] = $total ['bonus'];
         $order ['goods_amount'] = $total ['goods_price'];
         $order ['discount'] = $total ['discount'];
@@ -1182,7 +1182,7 @@ class FlowController extends CommonController {
         $affiliate = unserialize(C('affiliate'));
         if (isset($affiliate ['on']) && $affiliate ['on'] == 1 && $affiliate ['config'] ['separate_by'] == 1) {
             // 推荐订单分成
-            $parent_id = model('User')->get_affiliate();
+            $parent_id = model('Users')->get_affiliate();
             if ($user_id == $parent_id) {
                 $parent_id = 0;
             }
@@ -1276,7 +1276,7 @@ class FlowController extends CommonController {
                     $count = $this->model->table('order_goods')->field('COUNT(*)')->where("order_id = '$order[order_id]' " . " AND is_real = 1")->getOne();
                     if ($count <= 0) {
                         /* 修改订单状态 */
-                        model('User')->update_order($order ['order_id'], array(
+                        model('Users')->update_order($order ['order_id'], array(
                             'shipping_status' => SS_SHIPPED,
                             'shipping_time' => gmtime()
                         ));
@@ -1413,7 +1413,7 @@ class FlowController extends CommonController {
             $_SESSION['flow_order'] = $order;
 
             /* 计算订单的费用 */
-            $total = model('User')->order_fee($order, $cart_goods, $consignee);
+            $total = model('Users')->order_fee($order, $cart_goods, $consignee);
             $this->assign('total', $total);
 
             /* 取得可以得到的积分和红包 */
@@ -1482,7 +1482,7 @@ class FlowController extends CommonController {
             $_SESSION['flow_order'] = $order;
 
             /* 计算订单的费用 */
-            $total = model('User')->order_fee($order, $cart_goods, $consignee);
+            $total = model('Users')->order_fee($order, $cart_goods, $consignee);
             $this->assign('total', $total);
 
             /* 取得可以得到的积分和红包 */
@@ -1531,7 +1531,7 @@ class FlowController extends CommonController {
             $_SESSION['flow_order'] = $order;
 
             /* 计算订单的费用 */
-            $total = model('User')->order_fee($order, $cart_goods, $consignee);
+            $total = model('Users')->order_fee($order, $cart_goods, $consignee);
             $this->assign('total', $total);
 
             /* 取得可以得到的积分和红包 */
@@ -1580,7 +1580,7 @@ class FlowController extends CommonController {
                 $order['surplus'] = $surplus;
 
                 /* 计算订单的费用 */
-                $total = model('User')->order_fee($order, $cart_goods, $consignee);
+                $total = model('Users')->order_fee($order, $cart_goods, $consignee);
                 $this->assign('total', $total);
 
                 /* 团购标志 */
@@ -1628,7 +1628,7 @@ class FlowController extends CommonController {
                 $result['error'] = L('no_goods_in_cart');
             } else {
                 /* 计算订单的费用 */
-                $total = model('User')->order_fee($order, $cart_goods, $consignee);
+                $total = model('Users')->order_fee($order, $cart_goods, $consignee);
                 $this->assign('total', $total);
                 $this->assign('config', C('CFG'));
 
@@ -1679,7 +1679,7 @@ class FlowController extends CommonController {
             }
 
             /* 计算订单的费用 */
-            $total = model('User')->order_fee($order, $cart_goods, $consignee);
+            $total = model('Users')->order_fee($order, $cart_goods, $consignee);
             $this->assign('total', $total);
 
             /* 团购标志 */
@@ -1735,7 +1735,7 @@ class FlowController extends CommonController {
             }
 
             /* 计算订单的费用 */
-            $total = model('User')->order_fee($order, $cart_goods, $consignee);
+            $total = model('Users')->order_fee($order, $cart_goods, $consignee);
             $this->assign('total', $total);
 
             /* 团购标志 */
@@ -1866,12 +1866,12 @@ class FlowController extends CommonController {
             }
 
             /* 计算订单的费用 */
-            $total = model('User')->order_fee($order, $cart_goods, $consignee);
+            $total = model('Users')->order_fee($order, $cart_goods, $consignee);
 
             if ($total['goods_price'] < $bonus['min_goods_amount']) {
                 $order['bonus_id'] = '';
                 /* 重新计算订单 */
-                $total = model('User')->order_fee($order, $cart_goods, $consignee);
+                $total = model('Users')->order_fee($order, $cart_goods, $consignee);
                 $result['error'] = sprintf(L('bonus_min_amount_error'), price_format($bonus['min_goods_amount'], false));
             }
 
@@ -1939,7 +1939,7 @@ class FlowController extends CommonController {
     public function select_address() {
         $result = array('error' => '', 'content' => '', 'need_insure' => 0, 'address' => 1);
         $address_id = intval($_REQUEST['address']);
-        if (model('user')->save_consignee_default($address_id)) {
+        if (model('Users')->save_consignee_default($address_id)) {
             die(json_encode($result));
         } else {
             $result['error'] = '选择错误';
@@ -2052,7 +2052,7 @@ class FlowController extends CommonController {
             $start = $_POST ['last'];
             $limit = $_POST ['amount'];
             // 获得用户所有的收货人信息
-            $consignee_list = model('User')->get_consignee_list($_SESSION['user_id'], 0, $limit, $start);
+            $consignee_list = model('Users')->get_consignee_list($_SESSION['user_id'], 0, $limit, $start);
             if ($consignee_list) {
                 foreach ($consignee_list as $k => $v) {
                     $address = '';
@@ -2093,7 +2093,7 @@ class FlowController extends CommonController {
     public function drop_consignee() {
         autoload('lib_transaction');
         $consignee_id = intval($_GET['id']);
-        if (model('User')->drop_consignee($consignee_id)) {
+        if (model('Users')->drop_consignee($consignee_id)) {
             ecs_header("Location: " . url('flow/consignee_list') . "\n");
             exit;
         } else {

@@ -156,7 +156,7 @@ class UserController extends CommonController {
                 'other' => isset($other) ? $other : array()
             );
 
-            if (model('User')->edit_profile($profile)) {
+            if (model('Users')->edit_profile($profile)) {
                 show_message(L('edit_profile_success'), L('profile_lnk'), url('profile'), 'info');
             } else {
                 if (self::$user->error == ERR_EMAIL_EXISTS) {
@@ -169,7 +169,7 @@ class UserController extends CommonController {
             exit();
         }
         // 用户资料
-        $user_info = model('User')->get_profile($this->user_id);
+        $user_info = model('Users')->get_profile($this->user_id);
         // 取出注册扩展字段
         $where = 'type < 2 and display = 1';
         $extend_info_list = $this->model->table('reg_fields')
@@ -284,7 +284,7 @@ class UserController extends CommonController {
             $limit = $_POST['amount'];
             $pay = isset($_GET['pay']) ? intval($_GET['pay']) : 0;
 
-            $order_list = model('User')->get_user_orders($this->user_id, $pay, $limit, $start);
+            $order_list = model('Users')->get_user_orders($this->user_id, $pay, $limit, $start);
             foreach ($order_list as $key => $order) {
                 $this->assign('orders', $order);
                 $sayList[] = array(
@@ -338,7 +338,7 @@ class UserController extends CommonController {
         $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
 
         // 订单详情
-        $order = model('User')->get_order_detail($order_id, $this->user_id);
+        $order = model('Users')->get_order_detail($order_id, $this->user_id);
         if ($order['order_status'] == OS_UNCONFIRMED) {
             $order['handler'] = "<a class=\"btn btn-info ect-colorf\" href=\"" . url('user/cancel_order', array(
                         'order_id' => $order['order_id']
@@ -425,7 +425,7 @@ class UserController extends CommonController {
      */
     public function affirm_received() {
         $order_id = I('get.order_id', 0, 'intval');
-        if (model('User')->affirm_received($order_id, $this->user_id)) {
+        if (model('Users')->affirm_received($order_id, $this->user_id)) {
             ecs_header("Location: " . url('order_list') . "\n");
             exit();
         } else {
@@ -532,7 +532,7 @@ class UserController extends CommonController {
             $order['pay_time'] = gmtime();
         }
         $order = addslashes_deep($order);
-        model('User')->update_order($order_id, $order);
+        model('Users')->update_order($order_id, $order);
 
         // 更新用户余额
         $change_desc = sprintf(L('pay_order_by_surplus'), $order['order_sn']);
@@ -620,7 +620,7 @@ class UserController extends CommonController {
     public function cancel_order() {
         $order_id = I('get.order_id', 0, 'intval');
 
-        if (model('User')->cancel_order($order_id, $this->user_id)) {
+        if (model('Users')->cancel_order($order_id, $this->user_id)) {
             $url = url('order_list');
             ecs_header("Location: $url\n");
             exit();
@@ -637,7 +637,7 @@ class UserController extends CommonController {
             $start = $_POST['last'];
             $limit = $_POST['amount'];
             // 获得用户所有的收货人信息
-            $consignee_list = model('User')->get_consignee_list($this->user_id, 0, $limit, $start);
+            $consignee_list = model('Users')->get_consignee_list($this->user_id, 0, $limit, $start);
             if ($consignee_list) {
                 foreach ($consignee_list as $k => $v) {
                     $address = '';
@@ -683,7 +683,7 @@ class UserController extends CommonController {
                 'mobile' => I('post.mobile')
             );
 
-            if (model('User')->update_address($address)) {
+            if (model('Users')->update_address($address)) {
                 show_message(L('edit_address_success'), L('address_list_lnk'), url('address_list'));
             }
             exit();
@@ -722,7 +722,7 @@ class UserController extends CommonController {
                 'mobile' => I('post.mobile')
             );
 
-            if (model('User')->update_address($address)) {
+            if (model('Users')->update_address($address)) {
                 show_message(L('edit_address_success'), L('address_list_lnk'), url('address_list'));
             }
             exit();
@@ -731,7 +731,7 @@ class UserController extends CommonController {
         $id = isset($_GET['id']) ? intval($_GET['id']) : '';
 
         // 获得用户对应收货人信息
-        $consignee = model('User')->get_consignee_list($_SESSION['user_id'], $id);
+        $consignee = model('Users')->get_consignee_list($_SESSION['user_id'], $id);
 
         $province_list = model('RegionBase')->get_regions(1, 1);
         $city_list = model('RegionBase')->get_regions(2, $consignee['province']);
@@ -755,7 +755,7 @@ class UserController extends CommonController {
     public function del_address_list() {
         $id = intval($_GET['id']);
 
-        if (model('User')->drop_consignee($id)) {
+        if (model('Users')->drop_consignee($id)) {
             $url = url('address_list');
             ecs_header("Location: $url\n");
             exit();
@@ -1130,8 +1130,8 @@ class UserController extends CommonController {
             }
 
             if (self::$user->login($username, $password, isset($_POST['remember']))) {
-                model('User')->update_user_info();
-                model('User')->recalculate_price();
+                model('Users')->update_user_info();
+                model('Users')->recalculate_price();
 
                 $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
                 $this->redirect($jump_url);
@@ -1178,7 +1178,8 @@ class UserController extends CommonController {
             // 邮箱注册处理
             if (0 == $enabled_sms) {
                 // 数据处理
-                $username = $email = isset($_POST['email']) ? in($_POST['email']) : '';
+                $username = isset($_POST['username']) ? in($_POST['username']) : '';
+                $email = isset($_POST['email']) ? in($_POST['email']) : '';
                 $password = isset($_POST['password']) ? in($_POST['password']) : '';
                 $other = array();
 
@@ -1243,7 +1244,7 @@ class UserController extends CommonController {
                 ECTouch::err()->show(L('sign_up'), url('register'));
             }
 
-            if (model('User')->register($username, $password, $email, $other) !== false) {
+            if (model('Users')->register($username, $password, $email, $other) !== false) {
                 // 判断是否需要自动发送注册邮件
                 if (C('member_email_validate') && C('send_verify_email')) {
                     model('User')->send_regiter_hash($_SESSION['user_id']);
@@ -1320,26 +1321,26 @@ class UserController extends CommonController {
                     // 处理数据
                     $info['aite_id'] = $type . '_' . $openid; // 添加登录标示
                     $info['user_name'] = str_replace("'", "", empty($user['name']) ? $user['nickname'] : $user['name']);
-                    if (model('User')->get_one_user($info['aite_id'])) {
+                    if (model('Users')->get_one_user($info['aite_id'])) {
                         // 已有记录
                         self::$user->set_session($info['user_name']);
                         self::$user->set_cookie($info['user_name']);
-                        model('User')->update_user_info();
-                        model('User')->recalculate_price();
+                        model('Users')->update_user_info();
+                        model('Users')->recalculate_price();
                         $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
                         $this->redirect($jump_url);
                     }
                     // 无记录
-                    if (model('User')->check_user_name($info['user_name'])) { // 重名处理
+                    if (model('Users')->check_user_name($info['user_name'])) { // 重名处理
                         $info['user_name'] = $user['user_name'] . '_' . $type . (rand(10000, 99999));
                     }
                     $info['email'] = empty($user['email']) ? get_pinyin($info['user_name']) . '@'.get_top_domain() : $user['email'];
                     // 插入数据库
-                    model('User')->third_reg($info);
+                    model('Users')->third_reg($info);
                     self::$user->set_session($info['user_name']);
                     self::$user->set_cookie($info['user_name']);
-                    model('User')->update_user_info();
-                    model('User')->recalculate_price();
+                    model('Users')->update_user_info();
+                    model('Users')->recalculate_price();
                     $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
                     $this->redirect($jump_url);
                 }
@@ -1583,7 +1584,7 @@ class UserController extends CommonController {
         if (isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0) {
             $this->assign('title', L('edit_password'));
             //判断登录方式
-            if(model('User')->is_third_user($_SESSION['user_id'])){
+            if(model('Users')->is_third_user($_SESSION['user_id'])){
                 $this->assign('is_third', 1);
             }
             $this->display('user_edit_password.dwt');

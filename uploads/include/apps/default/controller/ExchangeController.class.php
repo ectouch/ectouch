@@ -136,7 +136,7 @@ class ExchangeController extends CommonController {
             show_message(L('eg_error_status'), array(L('back_up_page')), array($back_act), 'error');
         }
 
-        $user_info = model('User')->get_user_info($_SESSION['user_id']);
+        $user_info = model('Users')->get_user_info($_SESSION['user_id']);
         $user_points = $user_info['pay_points']; // 用户的积分总数
         if ($goods['exchange_integral'] > $user_points) {
             show_message(L('eg_error_integral'), array(L('back_up_page')), array($back_act), 'error');

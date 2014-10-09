@@ -109,8 +109,8 @@ function insert_ads($arr) {
     if (!empty($arr['num']) && $arr['num'] != 1) {
         $sql = 'SELECT a.ad_id, a.position_id, a.media_type, a.ad_link, a.ad_code, a.ad_name, p.ad_width, ' .
                 'p.ad_height, p.position_style, RAND() AS rnd ' .
-                'FROM ' . ECTouch::ecs()->table('ad') . ' AS a ' .
-                'LEFT JOIN ' . ECTouch::ecs()->table('ad_position') . ' AS p ON a.position_id = p.position_id ' .
+                'FROM ' . ECTouch::ecs()->table('touch_ad') . ' AS a ' .
+                'LEFT JOIN ' . ECTouch::ecs()->table('touch_ad_position') . ' AS p ON a.position_id = p.position_id ' .
                 "WHERE enabled = 1 AND start_time <= '" . $time . "' AND end_time >= '" . $time . "' " .
                 "AND a.position_id = '" . $arr['id'] . "' " .
                 'ORDER BY rnd LIMIT ' . $arr['num'];
@@ -119,8 +119,8 @@ function insert_ads($arr) {
         if ($static_res[$arr['id']] === NULL) {
             $sql = 'SELECT a.ad_id, a.position_id, a.media_type, a.ad_link, a.ad_code, a.ad_name, p.ad_width, ' .
                     'p.ad_height, p.position_style, RAND() AS rnd ' .
-                    'FROM ' . ECTouch::ecs()->table('ad') . ' AS a ' .
-                    'LEFT JOIN ' . ECTouch::ecs()->table('ad_position') . ' AS p ON a.position_id = p.position_id ' .
+                    'FROM ' . ECTouch::ecs()->table('touch_ad') . ' AS a ' .
+                    'LEFT JOIN ' . ECTouch::ecs()->table('touch_ad_position') . ' AS p ON a.position_id = p.position_id ' .
                     "WHERE enabled = 1 AND a.position_id = '" . $arr['id'] .
                     "' AND start_time <= '" . $time . "' AND end_time >= '" . $time . "' " .
                     'ORDER BY rnd LIMIT 1';
@@ -191,7 +191,7 @@ function insert_member_info() {
     ECTouch::view()->caching = false;
 
     if ($_SESSION['user_id'] > 0) {
-        ECTouch::view()->assign('user_info', model('User')->get_user_info());
+        ECTouch::view()->assign('user_info', model('Users')->get_user_info());
     } else {
         if (!empty($_COOKIE['ECS']['username'])) {
             ECTouch::view()->assign('ecs_username', stripslashes($_COOKIE['ECS']['username']));
