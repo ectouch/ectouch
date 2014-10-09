@@ -198,7 +198,7 @@ class FlowModel extends BaseModel {
      *        	优惠活动b
      * @return int 相等返回0，小于返回-1，大于返回1
      */
-    function cmp_favourable($a, $b) {
+    static function cmp_favourable($a, $b) {
         if ($a ['available'] == $b ['available']) {
             if ($a ['sort_order'] == $b ['sort_order']) {
                 return 0;
