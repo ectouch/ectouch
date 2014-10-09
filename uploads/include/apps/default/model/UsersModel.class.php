@@ -16,7 +16,7 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class UserModel extends BaseModel {
+class UsersModel extends BaseModel {
 
     protected $table = 'users';
 
@@ -131,7 +131,7 @@ class UserModel extends BaseModel {
         }
 
         /* 检查是否和管理员重名 */
-        if (model('User')->admin_registered($username)) {
+        if (model('Users')->admin_registered($username)) {
             ECTouch::err()->add(sprintf(L('username_exist'), $username));
             return false;
         }
@@ -172,7 +172,7 @@ class UserModel extends BaseModel {
             $affiliate = unserialize(C('affiliate'));
             if (isset($affiliate['on']) && $affiliate['on'] == 1) {
                 // 推荐开关开启
-                $up_uid = model('User')->get_affiliate();
+                $up_uid = model('Users')->get_affiliate();
                 empty($affiliate) && $affiliate = array();
                 $affiliate['config']['level_register_all'] = intval($affiliate['config']['level_register_all']);
                 $affiliate['config']['level_register_up'] = intval($affiliate['config']['level_register_up']);
@@ -211,8 +211,8 @@ class UserModel extends BaseModel {
             }
             $condition['user_id'] = $_SESSION['user_id'];
             $this->update($condition, $update_data);
-            model('User')->update_user_info();      // 更新用户信息
-            model('User')->recalculate_price();     // 重新计算购物车中的商品价格
+            model('Users')->update_user_info();      // 更新用户信息
+            model('Users')->recalculate_price();     // 重新计算购物车中的商品价格
 
             return true;
         }
@@ -229,7 +229,7 @@ class UserModel extends BaseModel {
     function send_regiter_hash($user_id) {
         /* 设置验证邮件模板所需要的内容信息 */
         $template = model('Base')->get_mail_template('register_validate');
-        $hash = model('User')->register_hash('encode', $user_id);
+        $hash = model('Users')->register_hash('encode', $user_id);
         $validate_email = __HOST__ . url('user/validate_email', array('hash' => $hash)); //ECTouch::ecs()->url() . 'user.php?act=validate_email&hash=' . $hash;
 
         $sql = "SELECT user_name, email FROM " . $this->pre . "users WHERE user_id = '$user_id'";
@@ -673,7 +673,7 @@ class UserModel extends BaseModel {
                 'integral_money' => 0,
                 'surplus' => 0
             );
-            model('User')->update_order($order['order_id'], $arr);
+            model('Users')->update_order($order['order_id'], $arr);
 
             return true;
         } else {
