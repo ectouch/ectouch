@@ -1,3 +1,14 @@
+/*
+Template Name: ECTouch Default
+Template URI: http://www.ectouch.cn/
+Description: 默认模板.
+Version: 1.0
+Author: ECTouch Team
+Author URI: http://www.ectouch.cn/
+Logo filename: logo.gif
+Template Type: type_0
+*/
+
 html{fomt-famiily:'宋体';}
 body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div, dl, dt, dd { margin: 0; padding: 0; border: 0; }
 body{background:#f7f7f7; color:#555; font-size:18px; margin:0 auto; max-width:640px;}

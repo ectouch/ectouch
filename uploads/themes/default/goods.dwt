@@ -16,7 +16,7 @@
         <!--{if $pictures}--> 
         <!-- {foreach from=$pictures item=picture name=no}--> 
         <!-- {if $smarty.foreach.no.iteration > 1}  -->
-        <li><a href="{$picture.img_url}"><img src="{$goods.original_img}" alt="{$picture.img_desc}" /></a></li>
+        <li><a href="{$picture.img_url}"><img src="{$picture.img_url}" alt="{$picture.img_desc}" /></a></li>
         <!-- {/if}--> 
         <!--{/foreach}--> 
         <!--{/if}-->

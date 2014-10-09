@@ -12,10 +12,7 @@
       </ul>
     </div>
     <div class="bd">
-      <ul>
-        <li><a href="#"><img src="__TPL__/images/m1.jpg"/></a></li>
-        <li><a href="#"><img src="__TPL__/images/m2.jpg"/></a></li>
-      </ul>
+      {insert name='ads' id=1 num=3}
     </div>
   </div>
   <!--首页快速导航-->
