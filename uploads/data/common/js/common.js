@@ -108,11 +108,13 @@ function collect(goodsId) {
  */
 function collectResponse(result) {
     if (result.error == 0) {
-        if ($('#sc').hasClass("select") > 0) {
-            $('#sc').removeClass("select")
+        if ($('#ECS_COLLECT').hasClass("ect-colory") > 0) {
+            $('#ECS_COLLECT').removeClass("ect-colory")
+			$('#ECS_COLLECT i').addClass("fa-heart-o").removeClass("fa-heart");
         } else {
-            $('#sc').addClass("select")
-        }
+            $('#ECS_COLLECT').addClass("ect-colory")
+			$('#ECS_COLLECT i').addClass("fa-heart").removeClass("fa-heart-o");	
+		}
     }
     if (result.error == 2) {
         var returnVal = window.confirm("未登录不能使用收藏功能 \n是否登录");
