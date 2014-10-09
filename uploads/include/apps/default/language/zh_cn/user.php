@@ -383,8 +383,10 @@ $_LANG['get_password_by_mail'] = '邮件找回';
 $_LANG['get_password_by_mobile'] = '短信找回';
 $_LANG['back_retry_answer'] = '返回重试';
 $_LANG['no_mobile'] = '请输入手机号码';
+$_LANG['no_username'] = '请输入用户名';
 $_LANG['no_emaill'] = '请输入电子邮箱';
 $_LANG['no_code'] = '请输入验证码';
+$_LANG['code'] = '验证码';
 $_LANG['no_password'] = '请输入登录密码';
 $_LANG['get_code'] = '获取验证码';
 
@@ -416,6 +418,7 @@ $_LANG['free_registered'] = '免费注册';
 $_LANG['third_login'] = '使用合作账号登录';
 $_LANG['no_register_auth'] = '还没有注册该插件，请与后台管理员联系';
 $_LANG['msg_un_blank'] = '用户名不能为空';
+$_LANG['msg_mast_length'] = '用户名必须为3-15个字符';
 $_LANG['msg_un_length'] = '用户名最长不得超过7个汉字';
 $_LANG['msg_un_format'] = '用户名含有非法字符';
 $_LANG['msg_un_registered'] = '用户名已经存在,请重新输入';
@@ -454,7 +457,7 @@ $_LANG['register_success'] = '用户名 %s 注册成功';
 
 $_LANG['passwd_question'] = '密码提示问题';
 $_LANG['sel_question'] = '请选择密码提示问题';
-$_LANG['passwd_answer'] = '密码问题答案';
+$_LANG['passwd_answer'] = '问题答案';
 $_LANG['passwd_balnk'] = '密码中不能包含空格';
 
 /* 用户中心默认页面 */
