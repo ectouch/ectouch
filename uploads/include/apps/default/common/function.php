@@ -1219,7 +1219,7 @@ function return_url($code = '', $type = 0)
 {
     $data = serialize(array('code'=> $code, 'type'=> $type));
     $base64 = base64_encode($data);
-    return __URL__ . '/respond.php?data=' . $base64;
+    return __URL__ . '/respond.php?code=' . $base64;
 }
 
 /* * ********************************************************
