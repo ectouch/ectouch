@@ -14,15 +14,20 @@
         </tr>
         <tr>
           <td>{$lang['ad_width']}</td>
-          <td><div class="col-md-3">
-              <input type='text' name='data[ad_width]' maxlength="10"  class="form-control input-sm" />{$lang['px']}
-            </div></td>
+          <td>
+            <div class="col-md-3">
+              <input type='text' name='data[ad_width]' maxlength="10"  class="form-control input-sm" />
+            </div>
+            <span>{$lang['px']}</span>
+            </td>
         </tr>
         <tr>
           <td>{$lang['ad_height']}</td>
-          <td><div class="col-md-3">
-              <input type='text' name='data[ad_height]' maxlength="10"  class="form-control input-sm" />{$lang['px']}
+          <td>
+            <div class="col-md-3">
+              <input type='text' name='data[ad_height]' maxlength="10"  class="form-control input-sm" />
             </div>
+            <span>{$lang['px']}</span>
           </td>
         </tr>
         <tr>

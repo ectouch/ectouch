@@ -189,8 +189,16 @@
   </div>
 </div>
 <script type="text/javascript">
-$('#start_time').datetimepicker();
-$('#end_time').datetimepicker();
+$('#start_time').datetimepicker({
+  lang:'ch',
+  format:'Y-m-d',
+  timepicker:false
+});
+$('#end_time').datetimepicker({
+  lang:'ch',
+  format:'Y-m-d',
+  timepicker:false
+});
 </script>
 
 {include file="pagefooter"}

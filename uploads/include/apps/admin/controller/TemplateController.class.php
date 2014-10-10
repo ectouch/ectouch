@@ -57,10 +57,10 @@ class TemplateController extends AdminController
         $tpl_fg = I('get.tpl_fg', 0);
         $data['value'] = $tpl_name;
         $condition['code'] = 'template';
-        $this->model->table('shop_config')->data($data)->where($condition)->update();
+        $this->model->table('touch_shop_config')->data($data)->where($condition)->update();
         $data['value'] = $tpl_fg;
         $condition['code'] = 'stylename';
-        $this->model->table('shop_config')->data($data)->where($condition)->update();
+        $this->model->table('touch_shop_config')->data($data)->where($condition)->update();
         
         clear_all_files(); //清除模板编译文件
         

@@ -139,14 +139,14 @@ function insert_ads($arr) {
         switch ($row['media_type']) {
             case 0: // 图片广告
                 $src = (strpos($row['ad_code'], 'http://') === false && strpos($row['ad_code'], 'https://') === false) ?
-                        DATA_DIR . "/afficheimg/$row[ad_code]" : $row['ad_code'];
-                $ads[] = "<a href='affiche.php?ad_id=$row[ad_id]&amp;uri=" . urlencode($row["ad_link"]) . "'
+                        __URL__ . "/$row[ad_code]" : $row['ad_code'];
+                $ads[] = "<a href='".url('default/affiche/index', array('ad_id'=>$row['ad_id'], 'uri'=>urlencode($row["ad_link"]) ))."' 
                 target='_blank'><img src='$src' width='" . $row['ad_width'] . "' height='$row[ad_height]'
                 border='0' /></a>";
                 break;
             case 1: // Flash
                 $src = (strpos($row['ad_code'], 'http://') === false && strpos($row['ad_code'], 'https://') === false) ?
-                        DATA_DIR . "/afficheimg/$row[ad_code]" : $row['ad_code'];
+                        __URL__ . "/$row[ad_code]" : $row['ad_code'];
                 $ads[] = "<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" " .
                         "codebase=\"http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0\"  " .
                         "width='$row[ad_width]' height='$row[ad_height]'>
@@ -162,7 +162,7 @@ function insert_ads($arr) {
                 $ads[] = $row['ad_code'];
                 break;
             case 3: // TEXT
-                $ads[] = "<a href='affiche.php?ad_id=$row[ad_id]&amp;uri=" . urlencode($row["ad_link"]) . "'
+                $ads[] = "<a href='".url('default/affiche/index', array('ad_id'=>$row['ad_id'], 'uri'=>urlencode($row["ad_link"]) ))."'
                 target='_blank'>" . htmlspecialchars($row['ad_code']) . '</a>';
                 break;
         }

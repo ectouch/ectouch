@@ -104,11 +104,18 @@ class AdvertController extends AdminController {
      */
     public function del() {
         $id = I('id');
-        //删除广告位
-        $condition['position_id'] = $id;
-        $this->model->table('touch_ad_position')->where($condition)->delete();
-        clear_all_files();
-        $this->message(L('drop_succeed'), url('index'));
+        //检查广告位下是否存在广告
+        $count = $this->model->table('touch_ad')->where('position_id = ' . $id)->count();
+        if($count > 0){
+            $this->message('广告位下存在广告列表，不能删除广告位！',NULL,'error');
+        }else{
+            //删除广告位
+            $condition['position_id'] = $id;
+            $this->model->table('touch_ad_position')->where($condition)->delete();
+            clear_all_files();
+            $this->message(L('drop_succeed'), url('index'));
+        }
+
     }
 
 
@@ -295,6 +302,14 @@ class AdvertController extends AdminController {
                 case '0':
                     /* 上传广告图片 */
                     if ($_FILES['ad_img']['name']) {
+                        //得到原先的图片路径 删除
+                        $img = $this->get_ad_code($data['ad_id']);
+                        //排除远程图片
+                        if (strpos($img, 'http://') === false && strpos($img, 'https://') === false){
+                            $filename = __URL__.$img;
+                            @unlink($filename);
+                        }
+
                         /* ad_img广告图片 */
                         $result = $this->ectouchUpload('ad_img', 'ad_img');
                         if ($result['error'] > 0) {
@@ -365,11 +380,12 @@ class AdvertController extends AdminController {
         $result['start_time'] = date('Y-m-d',$result['start_time']);
         $result['end_time'] = date('Y-m-d',$result['end_time']);
 
+
         if ($result['media_type'] == '0')
         {
             if (strpos($result['ad_code'], 'http://') === false && strpos($result['ad_code'], 'https://') === false)
             {
-                $src = '../data/attached/ad_img/'. $result['ad_code'];
+                $src = __URL__.'/'. $result['ad_code'];
                 $this->assign('ad_img', $src);
             }
             else
@@ -382,7 +398,7 @@ class AdvertController extends AdminController {
         {
             if (strpos($result['ad_code'], 'http://') === false && strpos($result['ad_code'], 'https://') === false)
             {
-                $src = '../data/attached/ad_img/'. $result['ad_code'];
+                $src = __URL__.'/'. $result['ad_code'];
                 $this->assign('flash_url', $src);
             }
             else
@@ -407,13 +423,27 @@ class AdvertController extends AdminController {
      * 删除广告
      */
     public function ad_del() {
-        $id = I('id');
+        $id = I('get.id');
         //删除广告
         $condition['ad_id'] = $id;
+
+        //得到广告的图片路径 删除
+        $img = $this->get_ad_code($id);
+        //排除远程图片
+        if (strpos($img, 'http://') === false && strpos($img, 'https://') === false){
+            $filename = __URL__.$img;
+            @unlink($filename);
+        }
+
         $this->model->table('touch_ad')->where($condition)->delete();
         clear_all_files();
         $this->message(L('drop_ad_succeed'), url('index'));
     }
+
+
+/*================================================*/
+//  FUNCTION
+/*================================================*/
 
     /**
      * 返回广告位列表
@@ -472,8 +502,16 @@ class AdvertController extends AdminController {
      * @return [type]     [description]
      */
     private function get_orders($id){
-        $arr = $this->model->table('touch_ad')->where('ad_id =' .$id)->field('click_count')->find();
-        return $arr['click_count'];
+
+        $orders = $this->model->table('touch_ad as t, ' . $this->model->pre . 'order_info as o')->where('o.from_ad = '.$id)->count();
+        return $orders;
+    }
+    /**
+     * 广告图片ad_code
+     */
+    private function get_ad_code($id){
+        $arr = $this->model->table('touch_ad')->where('ad_id = '.$id)->field('ad_code')->find();
+        return $arr['ad_code'];
     }
 
 }
