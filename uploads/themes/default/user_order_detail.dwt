@@ -8,7 +8,7 @@
     <!--{if $order.to_buyer}-->
     <p> {$lang.detail_to_buyer}：{$order.to_buyer} </p>
     <!-- {/if} -->
-    
+    <!--{if $virtual_card}-->
     <p>{$lang.virtual_card_info}：<br>
       <!--{foreach from=$virtual_card item=vgoods}--> 
       <!--{foreach from=$vgoods.info item=card}-->
@@ -22,7 +22,7 @@
     <!--{/foreach}--> 
     <!--{/foreach}-->
     </p>
-    
+    <!-- {/if} -->
     <!-- {if $order.invoice_no}-->
     <p> <a href="{:url('user/order_tracking', array('order_id'=>$this->_var['order']['order_id']))}" type="button" class="btn btn-info ect-btn-info ect-colorf">{$lang.order_tracking}</a> </p>
     <!--{/if}--> 
