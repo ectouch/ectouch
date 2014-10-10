@@ -24,7 +24,7 @@ class PaymentModel extends BaseModel {
      */
     function get_payment($code) {
         $sql = 'SELECT * FROM ' . $this->pre .
-                "payment WHERE pay_code = '$code' AND enabled = '1'";
+                "touch_payment WHERE pay_code = '$code' AND enabled = '1'";
         $payment = $this->row($sql);
 
         if ($payment) {

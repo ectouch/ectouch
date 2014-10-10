@@ -364,7 +364,7 @@ class IndexController extends AdminController
     /**
      * 站点授权
      */
-    public function empower()
+    public function license()
     {
         if (IS_POST) {
             $license = I('license');
@@ -379,16 +379,15 @@ class IndexController extends AdminController
             if ($msg !== true) {
                 $this->message($msg, NULL, 'error');
             }
-            $url = 'http://ectouch.cn/api/add_empower.html?license='.$license.'&appid='.ECTOUCH_AUTH_KEY;
-            $result = Http::doGet($url);
-            $result = json_decode($result,true);
-            if ($result['msg'] == '') {
-                $this->message('授权成功', NULL, 'success');
-            } else {
-                
+            $data = array('license'=>$license, 'appid' => ECTOUCH_AUTH_KEY);
+            $result = $this->cloud->data($data)->act('post.dolicense');
+            if ($result['error'] > 0) {
                 $this->message($result['msg'], NULL, 'error');
+            } else {
+                $this->message('授权成功', NULL, 'success');
             }
         } else {
+            $this->assign('ur_here', L('empower'));
             $this->display();
         }
     }

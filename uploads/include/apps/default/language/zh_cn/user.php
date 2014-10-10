@@ -509,6 +509,7 @@ $_LANG['confirm_drop_tag'] = '您确认要删除此标签吗？';
 /* user_passport.dwt js语言文件 */
 $_LANG['passport_js']['username_empty'] = '- 用户名不能为空。';
 $_LANG['passport_js']['username_shorter'] = '- 用户名长度不能少于 3 个字符。';
+$_LANG['passport_js']['username_longer'] = '- 用户名长度不能超过15个字符。';
 $_LANG['passport_js']['username_invalid'] = '- 用户名只能是由字母数字以及下划线组成。';
 $_LANG['passport_js']['password_empty'] = '- 登录密码不能为空。';
 $_LANG['passport_js']['password_shorter'] = '- 登录密码不能少于 6 个字符。';

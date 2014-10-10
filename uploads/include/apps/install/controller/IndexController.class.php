@@ -86,7 +86,7 @@ class IndexController extends Controller {
         }
         $mysqlInfo = mysql_get_server_info($link);
         if ($mysqlInfo < '5.1.0') {
-            $this->msg('mysql版本低于5.1，无法继续安装！', false);
+            $this->msg('MySql版本低于5.1，无法继续安装！', false);
         }
         $status = @mysql_select_db($configDb['DB_NAME'], $link);
         if (!$status) {
@@ -106,6 +106,7 @@ class IndexController extends Controller {
         if (!model('Install')->get_column($configDb, $dbPrefix . 'order_info', 'mobile_pay')) {
             $sqlData[] = "ALTER TABLE `".$dbPrefix."order_info` ADD COLUMN `mobile_order` int(1) UNSIGNED NOT NULL DEFAULT 0,ADD COLUMN `mobile_pay` int(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `discount`;";
         }
+        $sqlData[] = "UPDATE `".$dbPrefix."touch_shop_config` SET `value` = '".str_replace('/mobile', '', __URL__)."' where `code`='shop_url';";
         if (!model('Install')->runSql($configDb, $sqlData)) {
             $this->msg('数据导入失败，请检查后手动删除数据库重新安装！', false);
         }
