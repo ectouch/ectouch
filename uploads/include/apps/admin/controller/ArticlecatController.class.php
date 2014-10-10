@@ -49,7 +49,7 @@ class ArticlecatController extends AdminController {
             } else {
                  $this->model->table('touch_article_cat')->data($data)->where($condition)->update();
             }
-            clear_cache_files();
+            clear_all_files();
             $this->message(L('catedit_succed'), url('index'));
         }
 
