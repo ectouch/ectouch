@@ -76,7 +76,7 @@
         </p>
 		<!-- {/if} -->
       <p class="ect-padding-tb">
-        <input type="submit" class="btn btn-info ect-btn-info" value="{$comment_type}"/>
+        <input type="submit" class="btn btn-info ect-btn-info" value="{$lang.submit_comment}"/>
       </p>
     </div>
   </form>
