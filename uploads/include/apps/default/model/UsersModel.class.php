@@ -1654,7 +1654,18 @@ class UsersModel extends BaseModel {
     function update_order($order_id, $order) {
         $this->table = 'order_info';
         $condition['order_id'] = $order_id;
-        return $this->update($condition, $order);
+        
+        $res = $this->query('DESC ' . $this->pre . $this->table);
+        
+        while ($row = mysql_fetch_row($res)) {
+            $field_names[] = $row[0];
+        }
+        foreach ($field_names as $value) {
+            if (array_key_exists($value, $order) == true) {
+                $order_info[$value] = $order[$value];
+            }
+        }
+        return $this->update($condition, $order_info);
     }
 
     /**

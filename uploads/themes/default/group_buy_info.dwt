@@ -67,7 +67,7 @@
         </div>
     </section>
       <form action="{:url("groupbuy/buy")}" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
-        <input type="hidden" name="valid_goods" value="{$group_buy.valid_goods}" />
+        <input type="hidden" name="valid_goods" value="{$group_buy.restrict_amount}" />
         <input type="hidden" name="group_buy_id" value="{$group_buy.group_buy_id}" />
       <section class="ect-padding-lr ect-padding-tb goods-option">
         <div class="goods-optionc"> 
@@ -79,12 +79,12 @@
                         <!-- {if $spec.attr_type eq 1} --> 
                         <!-- {if $cfg.goodsattr_style eq 1} --> 
                         <!-- {foreach from=$spec.values item=value key=key} -->
-                        <input type="radio" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" {if $key eq 0}checked{/if} onclick="changePrice()" />
+                        <input type="radio" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" {if $key eq 0}checked{/if}/>
                                <label for="spec_value_{$value.id}">{$value.label}</label>
                         <!-- {/foreach} -->
                         <input type="hidden" name="spec_list" value="{$key}" />
                         <!-- {else} -->
-                        <select name="spec_{$spec_key}" onchange="changePrice()">
+                        <select name="spec_{$spec_key}" >
                             <!-- {foreach from=$spec.values item=value key=key} -->
                             <option label="{$value.label}" value="{$value.id}">{$value.label} {if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if}{if $value.price neq 0}{$value.format_price}{/if}</option>
                             <!-- {/foreach} -->
@@ -93,7 +93,7 @@
                         <!-- {/if} --> 
                         <!-- {else} --> 
                         <!-- {foreach from=$spec.values item=value key=key} -->
-                        <input type="checkbox" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" onclick="changePrice()" />
+                        <input type="checkbox" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}"  />
                         <label for="spec_value_{$value.id}">{$value.label} [{if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if} {$value.format_price|abs}]</label>
                         <!-- {/foreach} --> 
                         <!-- {/if} --> 
@@ -102,9 +102,9 @@
           <!-- {/foreach} --> 
         </div>
         <div class="goods-num"> <span class="pull-left">{$lang.number}：</span> 
-          <div class="input-group pull-left wrap"><span class="input-group-addon sup" onClick="changePrice('1')">-</span>
-            <input type="text" class="form-contro form-num"  name="number" id="goods_number" autocomplete="off" value="1" onFocus="back_goods_number()"  onblur="changePrice('2')"/>
-            <span class="input-group-addon plus" onClick="changePrice('3')">+</span></div>
+          <div class="input-group pull-left wrap"><span class="input-group-addon sup" onClick="changeNum('1')">-</span>
+            <input type="text" class="form-contro form-num"  name="number" id="goods_number" autocomplete="off" value="1" />
+            <span class="input-group-addon plus" onClick="changeNum('3')">+</span></div>
         </div>
       </section>
       <div class="ect-padding-lr ect-padding-tb goods-submit">
@@ -116,7 +116,6 @@
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
-<script type="text/javascript" src="/ectouch_demo/mobile/themes/default/js/lefttime.js"></script>
 <script type="text/javascript">
 $(function() {
 /*判断user-tab内容高度不够时撑开*/
@@ -141,7 +140,6 @@ onload = function()
   {}
 }
 function changeNum( type ){
-	
 	var qty = document.forms['ECS_FORMBUY'].elements['number'].value;
 	var valid = document.forms['ECS_FORMBUY'].elements['valid_goods'].value;
     if(type == 1){qty--; }

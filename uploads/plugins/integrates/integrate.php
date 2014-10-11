@@ -55,22 +55,23 @@ class integrate
     public $field_passwd_question = '';
     /* 是否需要同步数据到商城 */
     public $need_sync = true;
+
     public $error = 0;
-    
+
     private $db;
-    
+
     /**
      * 会员数据整合插件类的构造函数
      *
      * @access public
      * @param string $db_host
-     * 数据库主机
+     *            数据库主机
      * @param string $db_name
-     * 数据库名
+     *            数据库名
      * @param string $db_user
-     * 数据库用户名
+     *            数据库用户名
      * @param string $db_pass
-     * 数据库密码
+     *            数据库密码
      * @return void
      */
     function __construct($cfg)
@@ -85,9 +86,10 @@ class integrate
         $quiet = empty($cfg['quiet']) ? 0 : 1;
         
         /* 初始化数据库 */
+        $db_config = C('DB');
         if (empty($cfg['db_host'])) {
-            $this->db_name = ECTouch::ecs()->db_name;
-            $this->prefix = ECTouch::ecs()->prefix;
+            $this->db_name = $db_config['DB_NAME'];
+            $this->prefix = $db_config['DB_PREFIX'];
             $this->db = & ECTouch::db();
         } else {
             if (empty($cfg['is_latin1'])) {
@@ -96,20 +98,14 @@ class integrate
                 $this->db = new cls_mysql($cfg['db_host'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_name'], 'latin1', NULL, $quiet);
             }
         }
-        
-        if (! is_resource($this->db->link_id)) {
-            $this->error = 1; // 数据库地址帐号
-        } else {
-            $this->error = $this->db->errno();
-        }
     }
 
     /**
      * 用户登录函数
      *
      * @access public
-     * @param string $username 
-     * @param string $password 
+     * @param string $username            
+     * @param string $password            
      *
      * @return void
      */
@@ -131,7 +127,7 @@ class integrate
     /**
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -148,7 +144,7 @@ class integrate
      * 添加一个新用户
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -222,7 +218,7 @@ class integrate
      * 编辑用户信息($password, $email, $gender, $bday)
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -294,7 +290,7 @@ class integrate
      * 删除用户
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -365,7 +361,7 @@ class integrate
      * 获取指定用户的信息
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -386,7 +382,7 @@ class integrate
      * 获取指定用户的信息
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -405,7 +401,7 @@ class integrate
      * 根据登录状态设置cookie
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -432,8 +428,8 @@ class integrate
      *
      * @access public
      * @param string $username
-     * 用户名
-     * 
+     *            用户名
+     *            
      * @return int
      */
     function check_user($username, $password = null)
@@ -459,8 +455,8 @@ class integrate
      *
      * @access public
      * @param string $email
-     * 用户邮箱
-     * 
+     *            用户邮箱
+     *            
      * @return boolean
      */
     function check_email($email)
@@ -480,7 +476,7 @@ class integrate
      * 检查cookie是正确，返回用户名
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -496,7 +492,7 @@ class integrate
      * 设置cookie
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -528,7 +524,7 @@ class integrate
      * 设置指定用户SESSION
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -556,8 +552,8 @@ class integrate
      *
      * @access private
      * @param string $str
-     * 表名
-     * 
+     *            表名
+     *            
      * @return void
      */
     function table($str)
@@ -570,8 +566,8 @@ class integrate
      *
      * @access public
      * @param array $cfg
-     * 包含参数为 $password, $md5password, $salt, $type
-     * 
+     *            包含参数为 $password, $md5password, $salt, $type
+     *            
      * @return void
      */
     function compile_password($cfg)
@@ -582,7 +578,7 @@ class integrate
         if (empty($cfg['type'])) {
             $cfg['type'] = PWD_MD5;
         }
-
+        
         switch ($cfg['type']) {
             case PWD_MD5:
                 if (! empty($cfg['ec_salt'])) {
@@ -614,7 +610,7 @@ class integrate
      * 会员同步
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -678,7 +674,7 @@ class integrate
      * 获取论坛有效积分及单位
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -694,7 +690,7 @@ class integrate
      * 获取用户积分
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -718,7 +714,7 @@ class integrate
      * 设置用户积分
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *
@@ -753,7 +749,7 @@ class integrate
      * 检查有无重名用户，有则返回重名用户
      *
      * @access public
-     * @param 
+     * @param            
      *
      *
      *

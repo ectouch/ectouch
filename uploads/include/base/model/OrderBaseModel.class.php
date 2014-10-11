@@ -214,7 +214,8 @@ class OrderBaseModel extends BaseModel {
         $sql = "SELECT card_sn, card_password, end_date, crc32 FROM " . $this->pre . "virtual_card WHERE goods_id= '$goods[goods_id]' AND order_sn = '$order_sn' ";
 
         $cards = array();
-        while ($row = $this->row($sql)) {
+        $array = $this->query($sql);
+        foreach ($array as $key=>$row){
             /* 卡号和密码解密 */
             if ($row['crc32'] == 0 || $row['crc32'] == crc32(AUTH_KEY)) {
                 $row['card_sn'] = decrypt($row['card_sn']);
@@ -226,7 +227,7 @@ class OrderBaseModel extends BaseModel {
                 $row['card_sn'] = '***';
                 $row['card_password'] = '***';
             }
-
+            
             $cards[] = array('card_sn' => $row['card_sn'], 'card_password' => $row['card_password'], 'end_date' => date(C('date_format'), $row['end_date']));
         }
 

@@ -580,17 +580,17 @@ $_LANG['email_checked'] = '邮件已经被确认！';
 $_LANG['hash_wrong'] = '验证串错误！请核对验证串或输入email地址重新发送验证串！';
 $_LANG['email_canceled'] = '邮件已经被退定！';
 $_LANG['goods_click_count'] = '商品点击数';
-$_LANG['p_y']['link_start'] = '<a href="http://www.ecshop.com" target="_blank" style=" font-family:Verdana; font-size:11px;">';
-$_LANG['p_y']['link_p'] = 'Powe';
-$_LANG['p_y']['link_r'] = 'red&nbsp;';
-$_LANG['p_y']['link_b'] = 'by&nbsp;';
-$_LANG['p_y']['main_start'] = '<strong><span style="color: #3366FF">';
-$_LANG['p_y']['main_e'] = 'E';
-$_LANG['p_y']['main_c'] = 'CSho';
-$_LANG['p_y']['main_p'] = 'p</span>&nbsp;';
-$_LANG['p_y']['v_s'] = '<span style="color: #FF9966">';
-$_LANG['p_y']['v'] = VERSION;
-$_LANG['p_y']['link_end'] = '</span></strong></a>&nbsp;';
+$_LANG['p_y']['link_start'] = '';
+$_LANG['p_y']['link_p'] = '';
+$_LANG['p_y']['link_r'] = '';
+$_LANG['p_y']['link_b'] = '';
+$_LANG['p_y']['main_start'] = '';
+$_LANG['p_y']['main_e'] = '';
+$_LANG['p_y']['main_c'] = '';
+$_LANG['p_y']['main_p'] = '';
+$_LANG['p_y']['v_s'] = '';
+$_LANG['p_y']['v'] = '';
+$_LANG['p_y']['link_end'] = '';
 
 /* 虚拟卡 */
 $_LANG['card_sn'] = '卡片序号';

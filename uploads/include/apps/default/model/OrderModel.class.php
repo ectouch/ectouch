@@ -233,7 +233,7 @@ class OrderModel extends BaseModel {
         /* 查询按订单发的红包 */
         $sql = "SELECT type_id, type_money, IFNULL(FLOOR('$amount' / min_amount), 1) AS number " .
                 "FROM " . $this->pre .
-                "order_info WHERE send_type = '" . SEND_BY_ORDER . "' " .
+                "bonus_type WHERE send_type = '" . SEND_BY_ORDER . "' " .
                 "AND send_start_date <= '$order_time' " .
                 "AND send_end_date >= '$order_time' ";
         $list = array_merge($list, $this->query($sql));

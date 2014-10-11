@@ -102,7 +102,7 @@
       <a href="{:url('user/clear_history')}" class="history_clear del"><i class="glyphicon glyphicon-trash"></i> {$lang.clear_history}</a></span>
       <ul>
         <!-- {foreach from=$history item=val} -->
-        <li><a href="{:url('goods/index', array('id'=>$this->_var[val]['goods_id']))}"><img src="images/idx-pic.jpg"></a>
+        <li><a href="{:url('goods/index', array('id'=>$this->_var[val]['goods_id']))}"><img src="{$val.goods_thumb}"></a>
           <dl>
             <dt>
               <h4 class="title"><a href="{:url('goods/index', array('id'=>$this->_var[val]['goods_id']))}">{$val.goods_name}</a></h4>

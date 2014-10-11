@@ -446,7 +446,7 @@ $_LANG['username_exist'] = '用户名 %s 已经存在';
 $_LANG['username_not_allow'] = '用户名 %s 不允许注册';
 $_LANG['confirm_register'] = '确认注册';
 
-$_LANG['agreement'] = "我已看过并接受《<a href=\"index.php?m=default&c=article&a=info&aid=7\" style=\"color:blue\" target=\"_blank\">用户协议</a>》";
+$_LANG['agreement'] = "我已看过并接受《<a href=\"".url('article/info', array('aid'=>6))."\" style=\"color:blue\" target=\"_blank\">用户协议</a>》";
 
 $_LANG['email_empty'] = 'email为空';
 $_LANG['email_invalid'] = '%s 不是合法的email地址';
@@ -484,6 +484,7 @@ $_LANG['need_not'] = '不显示';
 $_LANG['horizontal'] = '横排';
 $_LANG['verticle'] = '竖排';
 $_LANG['generate'] = '生成代码';
+$_LANG['sys_notice'] = '消息';
 $_LANG['label_goods_num'] = '显示商品数量：';
 $_LANG['label_rows_num'] = '排列显示条目数：';
 $_LANG['label_arrange'] = '选择商品排列方式：';

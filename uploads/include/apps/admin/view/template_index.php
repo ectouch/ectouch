@@ -36,8 +36,8 @@
       <tr>
         <td valign="top" style="padding:5px;">
         {loop $template_style[$template[code]] $key $style}
-        {if count($template_style[$curr_template[code]]) > 1}
-         <img src="__URL__/themes/{$template[code]}/images/type{$style}_0.gif"  border="0" style="cursor:pointer; float:left; margin:0 2px;" onMouseOver="javascript:onSOver('{$template[code]}', '{$style}', this);" onMouseOut="onSOut('{$template[code]}', this, '');" onclick="javascript:setupTemplateFG('{$template[code]}', '{$style}', this);">
+        {if count($template_style[$template[code]]) > 1}
+        <img src="__URL__/themes/{$template[code]}/images/type{$style}_0.gif"  border="0" style="cursor:pointer; float:left; margin:0 2px;" onMouseOver="javascript:onSOver('{$template[code]}', '{$style}', this);" onMouseOut="onSOut('{$template[code]}', this, '');" onclick="javascript:setupTemplateFG('{$template[code]}', '{$style}', this);">
          {/if}
         {/loop}
         </td>

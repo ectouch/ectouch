@@ -50,9 +50,8 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_ad` (
 --
 
 INSERT INTO `ecs_touch_ad` (`ad_id`, `position_id`, `media_type`, `ad_name`, `ad_link`, `ad_code`, `start_time`, `end_time`, `link_man`, `link_email`, `link_phone`, `click_count`, `enabled`) VALUES
-(1, 1, 0, '1', '', 'http://demo.ecmoban.com/shop/data/afficheimg/1394415487832396515.jpg', 1396339200, 1525161600, '', '', '', 0, 1),
-(2, 1, 0, '2', '', 'http://demo.ecmoban.com/shop/data/afficheimg/1394415508290057627.jpg', 1396339200, 1525161600, '', '', '', 0, 1),
-(3, 1, 0, '3', '', 'http://demo.ecmoban.com/shop/data/afficheimg/1394415497283455138.jpg', 1396339200, 1525161600, '', '', '', 0, 1);
+(1, 1, 0, '1', '', 'http://ectouch.cn/data/assets/images/ectouch_ad1.jpg', 1396339200, 1525161600, '', '', '', 0, 1),
+(2, 1, 0, '2', '', 'http://ectouch.cn/data/assets/images/ectouch_ad2.jpg', 1396339200, 1525161600, '', '', '', 0, 1),
 
 --
 -- 表的结构 `ecs_touch_ad_position`
@@ -85,7 +84,7 @@ DROP TABLE IF EXISTS `ecs_touch_article_cat`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_article_cat` (
   `cat_id` smallint(8) NOT NULL,
-  `is_mobile` tinyint(2) NOT NULL
+  `is_mobile` tinyint(2) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章扩展表';
 
 --
