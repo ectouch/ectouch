@@ -15,6 +15,7 @@
       {insert name='ads' id=1 num=3}
     </div>
   </div>
+  <div style="text-align: center;padding: 5px 0 18px;"><img src="__PUBLIC__/images/ectouch_logo.png" style="width:68%" /></div>
   <!--首页快速导航-->
   <nav class="container-fluid">
     <ul class="row ect-row-nav">
