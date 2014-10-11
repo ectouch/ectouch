@@ -1213,11 +1213,12 @@ function send_pwd_email($uid, $user_name, $email, $code) {
 /**
  * 取得返回信息地址
  * @param   string  $code   支付方式代码
- * @param   string  $type   通知类型 0 同步，1 异步
+ * @param   string  $params  必须有type值, $params = array('type'=>0), 0 同步，1 异步
  */
-function return_url($code = '', $type = 0)
+function return_url($code = '', $params = array())
 {
-    $data = serialize(array('code'=> $code, 'type'=> $type));
+    $params['code'] = $code; 
+    $data = serialize($params);
     $base64 = base64_encode($data);
     return __URL__ . '/respond.php?code=' . $base64;
 }

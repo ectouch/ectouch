@@ -76,7 +76,7 @@ class InstallModel extends BaseModel {
 		
 		
         //设置手机版默认图片
-        $data3['store_dir'] = '../mobile/data/common/images/';
+        $data3['store_dir'] = './data/common/images/';
         $condition3['code'] = 'no_picture';
         $model->table($_table)->data($data3)->where($condition3)->update();
         return true;

@@ -35,7 +35,6 @@ class ActivityModel extends BaseModel {
             $arr[$row['act_id']]['url'] = url('activity/goods_list', array('id' => $row['act_id']));
             $arr[$row['act_id']]['act_name'] = $row['act_name'];
             $arr[$row['act_id']]['act_id'] = $row['act_id'];
-            $act_banner = strtolower(substr($row['act_banner'], 0, '4')) == 'http' ? $row['act_banner'] : ($row['act_banner'] ? $base_url . 'data/actlogo/' . $row['brand_logo'] : '');
             $arr[$row['act_id']]['act_banner'] = get_banner_path($row['act_banner']);
         }
         return $arr;

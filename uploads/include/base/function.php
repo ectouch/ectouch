@@ -1747,8 +1747,8 @@ function get_image_path($goods_id, $image = '', $thumb = false, $call = 'goods',
  * @return type
  */
 function get_banner_path($img) {
-    $url = empty($img) ? str_replace('./', '../', C('no_picture')) : $img;
-    $base_url = substr(__URL__, -1) == '/' ? __URL__ : __URL__ . '/';
+    $url = empty($img) ? C('no_picture') : $img;
+    $base_url = substr(__ROOT__, -1) == '/' ? __ROOT__ : __ROOT__ . '/';
     $url = strtolower(substr($url, 0, '4')) == 'http' ? $url : $base_url . $url;
     return $url;
 }
