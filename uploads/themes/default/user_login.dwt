@@ -12,7 +12,7 @@
         <!-- 判断是否启用验证码{if $enabled_captcha} -->
        <li>
           <div class="input-text code"><b>{$lang.comment_captcha}</b><span>
-             <input name="captcha" type="text" placeholder="{$lang.comment_captcha">
+             <input name="captcha" type="text" placeholder="{$lang.comment_captcha}">
              </span><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm" onClick="this.src='{:url('Public/captcha')}&t='+Math.random()" /></div>
             </li>
             <!--{/if}-->

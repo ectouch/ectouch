@@ -8,7 +8,7 @@
     <dd>{$rank_name}</dd>
     <dd>{$info.integral}</dd>
   </dl>
-  <span class="pull-right"><a href="{:url('user/msg_list')}" class="ect-colorf">{$user_notice}&nbsp;<i class="fa fa-envelope-o <!-- {if $new_msg} -->fa-envelope-o-sl<!-- {/if} -->"></i></a></span></div>
+  <span class="pull-right"><a href="{:url('user/msg_list')}" class="ect-colorf">{$sys_notice}&nbsp;<i class="fa fa-envelope-o <!-- {if $new_msg} -->fa-envelope-o-sl<!-- {/if} -->"></i></a></span></div>
 <section class="container-fluid user-nav">
   <ul class="row ect-row-nav text-center">
     <a href="{:url('user/not_pay_order_list')}">
