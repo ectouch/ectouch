@@ -444,7 +444,7 @@ class FlowModel extends BaseModel {
                 continue;
             }
 
-            $sql = "SELECT `goods_id`, `goods_attr_id`, `extension_code` FROM" . $this->pre .
+            $sql = "SELECT `goods_id`, `goods_attr_id`, `extension_code` FROM " . $this->pre .
                     "cart WHERE rec_id='$key' AND session_id='" . SESS_ID . "'";
             $goods = $this->row($sql);
 
