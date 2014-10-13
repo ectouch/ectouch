@@ -53,7 +53,7 @@ class CategoryBaseModel extends BaseModel {
                 if ($row['is_show']) {
                     $cat_arr[$row['cat_id']]['id'] = $row['cat_id'];
                     $cat_arr[$row['cat_id']]['name'] = $row['cat_name'];
-                    $cat_arr[$row['cat_id']]['cat_image'] = empty($row['cat_image']) ? __PUBLIC__ . '/' . C('no_picture') : $row['cat_image'];
+                    $cat_arr[$row['cat_id']]['cat_image'] = empty($row['cat_image']) ? C('no_picture') : $row['cat_image'];
                     $cat_arr[$row['cat_id']]['url'] = build_uri('category/index', array('id' => $row['cat_id']));
 
                     if (isset($row['cat_id']) != NULL) {
