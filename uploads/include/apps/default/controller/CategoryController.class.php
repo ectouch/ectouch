@@ -290,9 +290,11 @@ class CategoryController extends CommonController {
      */
     private function category_get_goods() {
         $display = $GLOBALS['display'];
-        $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 AND ($this->children OR " . model('Goods')->get_extension_goods($this->children) . ')';
+        $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 ";
         if ($this->keywords != '') {
             $where .= " AND (( 1 " . $this->keywords . " ) " . $this->tag_where . " ) ";
+        }else{
+            $where.=" AND ($this->children OR " . model('Goods')->get_extension_goods($this->children) . ') ';
         }
         if ($this->brand > 0) {
             $where .= "AND g.brand_id=$this->brand ";
