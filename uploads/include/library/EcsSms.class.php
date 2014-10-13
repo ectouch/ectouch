@@ -31,13 +31,15 @@ class EcsSms {
             foreach ($contents as $key => $val) {
                 $post_data = "account=" . $this->sms_name . "&password=" . md5($this->sms_password) . "&mobile=" . $val['phones'] . "&content=" . rawurlencode($val['content']); //密码可以使用明文密码或使用32位MD5加密
 
-                $get = $this->Post($post_data, $sms_url);
+                //$get = $this->Post($post_data, $sms_url);
+                $get = Http::doPost($sms_url, $post_data);
                 $gets = $this->xml_to_array($get);
                 sleep(1);
             }
         } else {
             $post_data = "account=" . $this->sms_name . "&password=" . md5($this->sms_password) . "&mobile=" . $contents[0]['phones'] . "&content=" . rawurlencode($contents[0]['content']); //密码可以使用明文密码或使用32位MD5加密
-            $get = $this->Post($post_data, $sms_url);
+            //$get = $this->Post($post_data, $sms_url);
+            $get = Http::doPost($sms_url, $post_data);
             $gets = $this->xml_to_array($get);
         }
 
