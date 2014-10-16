@@ -71,6 +71,7 @@
             </div></td>
         </tr>
       </table>
+      <input type="hidden" value="middle" name="data[type]" />
       <input type="hidden" name="id" value="{$info['id']}" />
     </form>
   </div>

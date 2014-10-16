@@ -59,6 +59,7 @@
         <tr>
           <td></td>
           <td><div class="col-md-4">
+              <input type="hidden" value="middle" name="data[type]" />
               <input type="submit" value="{$lang['button_submit']}" class="btn btn-primary" />
               <input type="reset" value="{$lang['button_reset']}" class="btn btn-default" />
             </div></td>
