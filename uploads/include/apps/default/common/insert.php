@@ -70,6 +70,17 @@ function insert_history() {
 }
 
 /**
+ * 调用购物车商品数目
+ */
+function insert_cart_info_number() {
+    $sql = 'SELECT SUM(goods_number) AS number FROM ' . ECTouch::ecs()->table('cart') .
+    " WHERE session_id = '" . SESS_ID . "' AND rec_type = '" . CART_GENERAL_GOODS . "'";
+    $res = ECTouch::db()->GetRow($sql);
+    $number = $res['number'];
+    return intval($number);
+}
+
+/**
  * 调用购物车信息
  *
  * @access  public
@@ -177,7 +188,7 @@ function insert_ads($arr) {
 
     ECTouch::view()->caching = $need_cache;
 
-    return $val;
+    return html_entity_decode($val);
 }
 
 /**

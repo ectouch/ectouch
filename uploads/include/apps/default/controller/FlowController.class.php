@@ -225,7 +225,7 @@ class FlowController extends CommonController {
         $cart_confirm = C('cart_confirm');
         $result ['confirm_type'] = !empty($cart_confirm) ? C('cart_confirm') : 2;
         // 返回购物车商品总数量
-        $result ['cart_number'] = model('Flow')->insert_cart_info_number();
+        $result ['cart_number'] = insert_cart_info_number();
         die(json_encode($result));
     }
 
