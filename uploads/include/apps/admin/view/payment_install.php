@@ -89,6 +89,7 @@
       			<input type="hidden"  name="data[pay_code]" value="{$pay['pay_code']}" />
       			<input type="hidden"  name="data[is_cod]" value="{$pay['is_cod']}" />
       			<input type="hidden"  name="data[is_online]" value="{$pay['is_online']}" />
+      			<input type="hidden"  name="data[pay_desc]" value="{$pay['pay_desc']}" />
               	<input type="submit" value="{$lang['button_submit']}" class="btn btn-primary" />
               	<input type="reset" value="{$lang['button_reset']}" class="btn btn-default" />
             </div></td>
