@@ -80,9 +80,7 @@ class BaseController extends Controller {
         //创建错误处理对象
         self::$err = new EcsError('message.dwt');
         //载入系统参数
-        $load_config = model('Base')->load_config();
-        C('CFG', $load_config);
-        C('URL_HTTP_HOST', $load_config['shop_url']);
+        C('CFG', model('Base')->load_config());
     }
 
     //载入函数、语言文件
@@ -94,10 +92,6 @@ class BaseController extends Controller {
             require(APP_PATH . C('_APP_NAME') . '/language/' . C('LANG') . '/' . strtolower(CONTROLLER_NAME) . '.php');
         }
         L($_LANG); //语言包赋值
-        //加载模块函数
-        if (file_exists(APP_PATH . C('_APP_NAME') . '/common/function.php')) {
-            require(APP_PATH . C('_APP_NAME') . '/common/function.php');
-        }
         if (file_exists(APP_PATH . C('_APP_NAME') . '/common/insert.php')) {
             require(APP_PATH . C('_APP_NAME') . '/common/insert.php');
         }
