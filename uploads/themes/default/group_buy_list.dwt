@@ -8,10 +8,10 @@
   </header>
  <div class="ect-wrapper text-center">
 <div>
-    <a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&page={$page}&sort=goods_id&order=DESC">{$lang.sort_default}</a>
-    <a class="{if $sort == 'sales_count' && $order == 'DESC'}select ect-colory{elseif $sort =='sales_count' && $order == 'ASC'}ect-colory{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&page={$page}&sort=sales_count&order=<!-- {if $sort == 'sales_count' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.sort_sales} <i class="glyphicon glyphicon-arrow-up"></i></a>
-    <a class="{if $sort =='click_num' && $order == 'DESC'}select ect-colory{elseif $sort =='click_num' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$display}&brand={$brand_id}&page={$pager.page}&sort=click_num&order=<!-- {if $sort == 'click_num' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a>
-    <a class="{if $sort =='cur_price' && $order == 'DESC'}select ect-colory{elseif $sort =='cur_price' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('groupbuy/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&page={$page}&sort=cur_price&order=<!-- {if $sort == 'cur_price' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->" class="xl">{$lang.sort_price} <i class="glyphicon glyphicon-arrow-up"></i></a> </div>
+    <a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('groupbuy/index', array('id'=>$this->_var['id'],'page'=>$this->_var['page'],'sort'=>'goods_id','order'=>'DESC'))}">{$lang.sort_default}</a>
+    <a class="{if $sort == 'sales_count' && $order == 'DESC'}select ect-colory{elseif $sort =='sales_count' && $order == 'ASC'}ect-colory{/if}" href="{:url('groupbuy/index', array('id'=>$this->_var['id'],'page'=>$this->_var['page'],'sort'=>'sales_count', 'order'=> ($this->_var['sort']=='sales_count' && $this->_var['order']=='ASC')?'DESC':'ASC'))}">{$lang.sort_sales} <i class="glyphicon glyphicon-arrow-up"></i></a>
+    <a class="{if $sort =='click_num' && $order == 'DESC'}select ect-colory{elseif $sort =='click_num' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('groupbuy/index', array('id'=>$this->_var['id'],'page'=>$this->_var['page'],'sort'=>'click_num', 'order'=> ($this->_var['sort']=='click_num' && $this->_var['order']=='ASC')?'DESC':'ASC'))}">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a>
+    <a class="{if $sort =='cur_price' && $order == 'DESC'}select ect-colory{elseif $sort =='cur_price' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('groupbuy/index', array('id'=>$this->_var['id'],'page'=>$this->_var['page'],'sort'=>'cur_price', 'order'=> ($this->_var['sort']=='cur_price' && $this->_var['order']=='ASC')?'DESC':'ASC'))}" class="xl">{$lang.sort_price} <i class="glyphicon glyphicon-arrow-up"></i></a> </div>
   </div>
 
 <div class="ect-margin-tb ect-pro-list ect-margin-bottom0 ect-border-bottom0">
@@ -23,6 +23,6 @@
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript">
-	get_asynclist("{:url('groupbuy/asynclist')}&page={$page}&sort={$sort}&order={$order}" , '__TPL__/images/loader.gif');
+	get_asynclist("{:url('groupbuy/asynclist', array('page'=>$this->_var['page'], 'sort'=>$this->_var['sort'], 'order'=>$this->_var['order']))}" , '__TPL__/images/loader.gif');
 </script>
 </body></html>

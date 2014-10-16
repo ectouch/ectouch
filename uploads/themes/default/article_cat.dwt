@@ -18,7 +18,7 @@
   <div>
     <ul>
       <!--{foreach from=$article_categories item=cat name="article_cat"}-->
-      <li><a href="{:url('article/art_list')}&id={$cat.id}">{$cat.name|escape:html}</a></li>
+      <li><a href="{:url('article/art_list', array('id'=>$this->_var['cat']['id']))}">{$cat.name|escape:html}</a></li>
       <!--{/foreach}-->
     </ul>
   </div>
@@ -34,7 +34,7 @@
   </div>
   <!-- {/if} --> 
   </div>
-    <footer class="logo"><img src="__TPL__/images/logo.png" width="176" height="60"></footer>
+    <footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
 </body></html>

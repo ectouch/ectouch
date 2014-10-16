@@ -27,13 +27,16 @@
     <p> <a href="{:url('user/order_tracking', array('order_id'=>$this->_var['order']['order_id']))}" type="button" class="btn btn-info ect-btn-info ect-colorf">{$lang.order_tracking}</a> </p>
     <!--{/if}--> 
   </div>
+  {if $order.order_amount gt 0}
+	<section class="ect-padding-lr ect-padding-tb ect-margin-tb ect-margin-bottom0">{$order.pay_online}</section>
+  {/if}
   <div class="ect-pro-list">
     <ul>
       <!-- {foreach from=$goods_list item=goods} -->
       <li><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}" target="_blank"><img src="{$goods.goods_thumb}"></a>
         <dl>
           <dt>
-            <h4 class="title"><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}">{$goods.goods_name}</a></h4>
+            <h4 class="title"><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}">{$goods.goods_name}{$goods.goods_attr}</a></h4>
           </dt>
           <dd class="dd-price"><b>{$lang.shop_price}{$goods.goods_price} {$lang.number_to}：{$goods.goods_number}</b></dd>
           <dd class="dd-price"><b >{$lang.ws_subtotal}：<span class="ect-colory">{$goods.subtotal}</span></b></dd>
@@ -117,8 +120,7 @@
     <li>{$lang.select_payment}：<b>{$order.pay_name}</b></li>
     <li>{$lang.order_amount}：<b class="ect-colory">{$order.formated_order_amount}</b></li>
   </ul>
-</section> {if $order.order_amount gt 0}
-<section class="ect-padding-lr ect-padding-tb ect-margin-tb ect-margin-bottom0">{$order.pay_online}</section>{/if} 
+</section>  
 <section class="order-detail-info ect-margin-tb ect-margin-bottom0 user-bottom0">
   <ul>
    <!-- {if $order.shipping_id > 0} -->
@@ -153,6 +155,6 @@
     <li>{$lang.booking_process}：<b>{$order.how_oos_name}</b></li>
   </ul>
 </section>
-<footer class="logo"><img src="__TPL__/images/logo.png" width="176" height="60"></footer>
+<footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->

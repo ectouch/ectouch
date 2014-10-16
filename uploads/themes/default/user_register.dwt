@@ -63,7 +63,7 @@
             <li>
               <div class="input-text code"><b>{$lang.code}：</b><span>
                 <input placeholder="{$lang.no_code}"  name="captcha" id="captcha" type="text" datatype="*" />
-                </span><img class="pull-right" src="{:url('public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha"  onClick="this.src='{:url('public/captcha')}&t='+Math.random()" /></div>
+                </span><img class="pull-right" src="{:url('public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha"  onClick="this.src='{:url('public/captcha', array('t'=>'Math.random()'))}'" /></div>
             </li>
              <!--{/if}-->
           </ul>

@@ -1,9 +1,9 @@
 <div class="ect-wrapper text-center">
  <form method="GET" class="sort" name="listform">
-    <div> <a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('Category/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort=goods_id&order=DESC&keywords={$keywords}#goods_list">{$lang.sort_default}</a>
-    <a class="{if $sort =='sales_volume' && $order == 'DESC'}ect-colory select{elseif $sort =='sales_volume' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index')}&id={$id}&display={$display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=sales_volume&order=<!-- {if $sort == 'sales_volume' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->&keywords={$keywords}#goods_list">{$lang.sort_sales} <i class="glyphicon glyphicon-arrow-up"></i></a>
-    <a class="{if $sort =='click_count' && $order == 'DESC'}ect-colory select{elseif $sort =='click_count' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index')}&id={$id}&display={$display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=click_count&order=<!-- {if $sort == 'click_count' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->&keywords={$keywords}#goods_list">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a>
-    <a class="{if $sort =='shop_price' && $order == 'DESC'}ect-colory select{elseif $sort =='shop_price' && $order == 'ASC'}ect-colory{/if}" href="{:url('Category/index')}&id={$id}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$page}&sort=shop_price&order=<!-- {if $sort == 'shop_price' && $order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->&keywords={$keywords}#goods_list">{$lang.sort_price}<i class="glyphicon glyphicon-arrow-up"></i></a>
+    <div> <a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'goods_id', 'order'=> 'DESC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_default}</a>
+    <a class="{if $sort =='sales_volume' && $order == 'DESC'}ect-colory select{elseif $sort =='sales_volume' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'sales_volume', 'order'=> ($this->_var['sort']=='sales_volume' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_sales} <i class="glyphicon glyphicon-arrow-up"></i></a>
+    <a class="{if $sort =='click_count' && $order == 'DESC'}ect-colory select{elseif $sort =='click_count' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'click_count', 'order'=> ($this->_var['sort']=='click_count' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a>
+    <a class="{if $sort =='shop_price' && $order == 'DESC'}ect-colory select{elseif $sort =='shop_price' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'shop_price', 'order'=> ($this->_var['sort']=='shop_price' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_price}<i class="glyphicon glyphicon-arrow-up"></i></a>
     <a class="category-list"><i class="ect-icon ect-icon2 ect-icon-cate3"></i>筛选</a> </div>
     <div class="category-list-show">
     	<!--{foreach from=$category item=cat name=no}--> 
@@ -11,7 +11,7 @@
         <!--{/foreach}-->
         <a href="{:url('category/all')}" class="col-md-3 col-xs-3 ect-colory"><span>更多</span></a>
     </div>
-     <input type="hidden" name="category" value="{$category}" />
+    <input type="hidden" name="category" value="{$category}" />
     <input type="hidden" name="display" value="{$pager.display}" id="display" />
     <input type="hidden" name="brand" value="{$brand_id}" />
     <input type="hidden" name="price_min" value="{$price_min}" />
@@ -29,7 +29,7 @@
       <a href="javascript:;" class="get_more"></a> 
 	</ul>
 </div>
-<footer class="logo"><img src="__TPL__/images/logo.png" width="176" height="60"></footer>
+<footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
  <!-- {if $category > 0} -->
 </form>
 <!-- {/if} -->

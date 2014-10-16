@@ -483,47 +483,7 @@ function del_dir($dir) {
  * 路由解析
  */
 function urlRoute() {
-    $rewrite = C('REWRITE');
-    if (!empty($rewrite) && C('URL_REWRITE_ON')) {
-        if (($pos = strpos($_SERVER['REQUEST_URI'], '?')) !== false) {
-            parse_str(substr($_SERVER['REQUEST_URI'], $pos + 1), $_GET);
-        }
-        foreach ($rewrite as $rule => $mapper) {
-            $rule = ltrim($rule, "./\\");
-            if (false === stripos($rule, 'http://')) {
-                $rule = $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER["SCRIPT_NAME"]), '/\\') . '/' . $rule;
-            }
-            $rule = '/' . str_ireplace(array('\\\\', 'http://', '-', '/', '<', '>', '.'), array('', '', '\-', '\/', '(?<', ">[a-z0-9_%\/\-]+)", '\.'), $rule) . '/i';
-
-            if (preg_match($rule, $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $matches)) {
-                foreach ($matches as $matchkey => $matchval) {
-                    if (('m' === $matchkey)) {
-                        $mapper = str_ireplace('<m>', $matchval, $mapper);
-                    } else if ('c' === $matchkey) {
-                        $mapper = str_ireplace('<c>', $matchval, $mapper);
-                    } else if ('a' === $matchkey) {
-                        $mapper = str_ireplace('<a>', $matchval, $mapper);
-                    } else {
-                        if (!is_int($matchkey))
-                            $_GET[$matchkey] = $matchval;
-                    }
-                }
-                $_REQUEST['r'] = $mapper;
-                break;
-            }
-        }
-    } else {
-        $_REQUEST['r'] = trim($_GET['m']) . '/' . trim($_GET['c']) . '/' . trim($_GET['a']);
-    }
-    $route_arr = isset($_REQUEST['r']) ? explode("/", $_REQUEST['r']) : array();
-    $app_name = empty($route_arr[0]) ? DEFAULT_APP : $route_arr[0];
-    $controller_name = empty($route_arr[1]) ? DEFAULT_CONTROLLER : $route_arr[1];
-    $action_name = empty($route_arr[2]) ? DEFAULT_ACTION : $route_arr[2];
-    $_REQUEST['r'] = $app_name . '/' . $controller_name . '/' . $action_name;
-    $controller_name = ucfirst($controller_name); // 控制器的首字母大写
-    defined('APP_NAME') or define('APP_NAME', $app_name);
-    defined('CONTROLLER_NAME') or define('CONTROLLER_NAME', $controller_name);
-    defined('ACTION_NAME') or define('ACTION_NAME', $action_name);
+    Dispatcher::dispatch(); // URL调度
 }
 
 /**
@@ -533,55 +493,182 @@ function urlRoute() {
  * @return Ambigous <string, mixed>|string
  */
 function url($route = 'index/index', $params = array()) {
-    $route = (count(explode('/', $route)) < 2) ? C('_APP_NAME') . '/' . strtolower(CONTROLLER_NAME) . '/' . $route : $route;
-    $route = (count(explode('/', $route)) < 3) ? C('_APP_NAME') . '/' . $route : $route;
-    $routes = explode('/', $route);
-    $route = 'm=' . $routes[0] . '&c=' . $routes[1] . '&a=' . $routes[2];
-    $param_str = empty($params) ? '' : '&' . http_build_query($params);
-    $url = $_SERVER["SCRIPT_NAME"] . '?' . $route . $param_str;
+	return U($route, $params);
+}
 
-    static $rewrite = array();
-    if (empty($rewrite))
-        $rewrite = C('REWRITE');
-    $config = C('APP');
-    if (!empty($rewrite) && C('URL_REWRITE_ON')) {
-        static $urlArray = array();
-        if (!isset($urlArray[$url])) {
-            $route = $routes[0] . '/' . $routes[1] . '/' . $routes[2];
-            foreach ($rewrite as $rule => $mapper) {
-                $mapper = '/' . str_ireplace(array('/', '<m>', '<c>', '<a>'), array('\/', '(?<m>\w+)', '(?<c>\w+)', '(?<a>\w+)'), $mapper) . '/i';
-                if (preg_match($mapper, $route, $matches)) {
-                    list($app, $controller, $action) = explode('/', $route);
-                    $urlArray[$url] = str_ireplace(array('<m>', '<c>', '<a>'), array($app, $controller, $action), $rule);
-                    if (!empty($params)) {
-                        $_args = array();
-                        foreach ($params as $argkey => $arg) {
-                            $count = 0;
-                            $urlArray[$url] = str_ireplace('<' . $argkey . '>', $arg, $urlArray[$url], $count);
-                            if (!$count)
-                                $_args[$argkey] = $arg;
-                        }
-                        // 处理多出来的参数
-                        if (!empty($_args)) {
-                            $urlArray[$url] = preg_replace('/<\w+>/', '', $urlArray[$url]) . '?' . http_build_query($_args);
-                        }
-                    }
-                    // 自动加上域名
-                    if (false === stripos($urlArray[$url], 'http://')) {
-                        $urlArray[$url] = 'http://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER["SCRIPT_NAME"]), "./\\") . '/' . ltrim($urlArray[$url], "./\\");
-                    }
-                    // 参数个数匹配则返回
-                    $rule = str_ireplace(array('<m>', '<c>', '<a>'), '', $rule);
-                    if (count($params) == preg_match_all('/<\w+>/is', $rule, $_match)) {
-                        return $urlArray[$url];
+ /**
+ * URL组装 支持不同URL模式
+ * @param string $url URL表达式，格式：'[模块/控制器/操作#锚点@域名]?参数1=值1&参数2=值2...'
+ * @param string|array $vars 传入的参数，支持数组和字符串
+ * @param string|boolean $suffix 伪静态后缀，默认为true表示获取配置值
+ * @param boolean $domain 是否显示域名
+ * @return string
+ */
+function U($url='',$vars='',$suffix=true,$domain=false) {
+    // 解析URL
+    $info   =  parse_url($url);
+    $url    =  !empty($info['path'])?$info['path']:ACTION_NAME;
+    if(isset($info['fragment'])) { // 解析锚点
+        $anchor =   $info['fragment'];
+        if(false !== strpos($anchor,'?')) { // 解析参数
+            list($anchor,$info['query']) = explode('?',$anchor,2);
+        }        
+        if(false !== strpos($anchor,'@')) { // 解析域名
+            list($anchor,$host)    =   explode('@',$anchor, 2);
+        }
+    }elseif(false !== strpos($url,'@')) { // 解析域名
+        list($url,$host)    =   explode('@',$info['path'], 2);
+    }
+    // 解析子域名
+    if(isset($host)) {
+        $domain = $host.(strpos($host,'.')?'':strstr($_SERVER['HTTP_HOST'],'.'));
+    }elseif($domain===true){
+        $domain = $_SERVER['HTTP_HOST'];
+    }
+
+    // 解析参数
+    if(is_string($vars)) { // aaa=1&bbb=2 转换成数组
+        parse_str($vars,$vars);
+    }elseif(!is_array($vars)){
+        $vars = array();
+    }
+    if(isset($info['query'])) { // 解析地址里面参数 合并到vars
+        parse_str($info['query'],$params);
+        $vars = array_merge($params,$vars);
+    }
+    
+    // URL组装
+    $depr       =   C('URL_PATHINFO_DEPR');
+    $urlCase    =   C('URL_CASE_INSENSITIVE');
+    if($url) {
+        if(0=== strpos($url,'/')) {// 定义路由
+            $route      =   true;
+            $url        =   substr($url,1);
+            if('/' != $depr) {
+                $url    =   str_replace('/',$depr,$url);
+            }
+        }else{
+            if('/' != $depr) { // 安全替换
+                $url    =   str_replace('/',$depr,$url);
+            }
+            // 解析模块、控制器和操作
+            $url        =   trim($url,$depr);
+            $path       =   explode($depr,$url);
+            $var        =   array();
+            $varModule      =   C('VAR_MODULE');
+            $varController  =   C('VAR_CONTROLLER');
+            $varAction      =   C('VAR_ACTION');
+            $var[$varAction]       =   !empty($path)?array_pop($path):ACTION_NAME;
+            $var[$varController]   =   !empty($path)?array_pop($path):CONTROLLER_NAME;
+            if($maps = C('URL_ACTION_MAP')) {
+                if(isset($maps[strtolower($var[$varController])])) {
+                    $maps = $maps[strtolower($var[$varController])];
+                    if($action = array_search(strtolower($var[$varAction]),$maps)){
+                        $var[$varAction] = $action;
                     }
                 }
             }
-            return isset($urlArray[$url]) ? $urlArray[$url] : $url;
+            if($maps = C('URL_CONTROLLER_MAP')) {
+                if($controller = array_search(strtolower($var[$varController]),$maps)){
+                    $var[$varController] = $controller;
+                }
+            }
+            if($urlCase) {
+                $var[$varController] = parse_name($var[$varController]);
+            }
+            $module =   '';
+            
+            if(!empty($path)) {
+                $var[$varModule] = implode($depr,$path);
+            }else{
+                if(C('MULTI_MODULE')) {
+                    if(APP_NAME != C('DEFAULT_APP')){
+                        $var[$varModule] = APP_NAME;
+                    }
+                }
+            }
+            if($maps = C('URL_MODULE_MAP')) {
+                if($_module = array_search(strtolower($var[$varModule]),$maps)){
+                    $var[$varModule] = $_module;
+                }
+            }
+            if(isset($var[$varModule])){
+                $module =   $var[$varModule];
+                unset($var[$varModule]);
+            }
         }
-        return $urlArray[$url];
+    }
+
+    if(C('URL_MODEL') == 0) { // 普通模式URL转换
+        $url        =   __APP__.'?'.C('VAR_MODULE')."={$module}&".http_build_query(array_reverse($var), '', '&');
+        if($urlCase){
+            $url    =   strtolower($url);
+        }        
+        if(!empty($vars)) {
+            $vars   =   http_build_query($vars, '', '&');
+            $url   .=   '&'.$vars;
+        }
+    }else{ // PATHINFO模式或者兼容URL模式
+        if(isset($route)) {
+            $url    =   __APP__.'/'.rtrim($url,$depr);
+        }else{
+            $module =   (defined('BIND_MODULE') && BIND_MODULE==$module )? '' : $module;
+            $url    =   __APP__.'/'.($module?$module.$depr:'').implode($depr,array_reverse($var));
+        }
+        if($urlCase){
+            $url    =   strtolower($url);
+        }
+        if(!empty($vars)) { // 添加参数
+            foreach ($vars as $var => $val){
+                if('' !== trim($val))   $url .= $depr . $var . $depr . urlencode($val);
+            }                
+        }
+        if($suffix) {
+            $suffix   =  $suffix===true ? C('URL_HTML_SUFFIX'):$suffix;
+            if($pos = strpos($suffix, '|')){
+                $suffix = substr($suffix, 0, $pos);
+            }
+            if($suffix && '/' != substr($url,-1)){
+                $url  .=  '.'.ltrim($suffix,'.');
+            }
+        }
+    }
+    if(isset($anchor)){
+        $url  .= '#'.$anchor;
+    }
+    if($domain) {
+        $url   =  (is_ssl()?'https://':'http://').$domain.$url;
     }
     return $url;
+}
+
+/**
+ * 字符串命名风格转换
+ * type 0 将Java风格转换为C的风格 1 将C风格转换为Java的风格
+ * @param string $name 字符串
+ * @param integer $type 转换类型
+ * @return string
+ */
+function parse_name($name, $type=0) {
+    if ($type) {
+        //return ucfirst(preg_replace_callback('/_([a-zA-Z])/', function($match){return strtoupper($match[1]);}, $name));
+        return ucfirst(preg_replace_callback('/_([a-zA-Z])/', create_function('$match', 'return strtoupper($match[1]);'), $name));
+    } else {
+        return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
+    }
+}
+
+/**
+ * 判断是否SSL协议
+ * @return boolean
+ */
+function is_ssl() {
+    if(isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))){
+        return true;
+    }elseif(isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'] )) {
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -609,59 +696,52 @@ function autoload($className) {
 }
 
 /**
- * 应用配置
- * @param unknown $app
- * @return Ambigous <multitype:, NULL>
+ * 加载动态扩展文件
+ * @var string $path 文件路径
+ * @return void
  */
-function appConfig($app) {
-    static $appConfig = array();
-    if (!isset($appConfig[$app])) {
-        if (is_file(APP_PATH . $app . '/config.php')) {
-            $appConfig[$app] = require (APP_PATH . $app . '/config.php');
-        } else {
-            $appConfig[$app] = array();
+function load_ext_file($path) {
+    // 加载自定义外部文件
+    if($files = C('LOAD_EXT_FILE')) {
+        $files      =  explode(',',$files);
+        foreach ($files as $file){
+            $file   = $path.'common/'.$file.'.php';
+            if(is_file($file)) include $file;
         }
     }
-    return $appConfig[$app];
+    // 加载自定义的动态配置文件
+    if($configs = C('LOAD_EXT_CONFIG')) {
+        if(is_string($configs)) $configs =  explode(',',$configs);
+        foreach ($configs as $key=>$config){
+            $file   = $path.'conf/'.$config.'.php';
+            if(is_file($file)) {
+                is_numeric($key)?C(load_config($file)):C($key,load_config($file));
+            }
+        }
+    }
 }
 
 /**
- * 读取或设置配置
- * @param string $name
- * @param string $value
- * @return multitype:|multitype:multitype: unknown |Ambigous <multitype:, unknown>|NULL|Ambigous <string, multitype:>
+ * 加载配置文件 支持格式转换 仅支持一级配置
+ * @param string $file 配置文件名
+ * @param string $parse 配置解析方法 有些格式需要用户自己解析
+ * @return array
  */
-function C($name = NULL, $value = NULL) {
-    static $config = array();
-    $argsNum = func_num_args();
-    if (0 == $argsNum) {
-        return $config;
-    } else if (1 == $argsNum) {
-        if (is_array($name)) {
-            foreach ($name as $k => $v) {
-                if (is_array($v)) {
-                    isset($config[$k]) or $config[$k] = array();
-                    $config[$k] = array_merge($config[$k], $v);
-                } else {
-                    $config[$k] = $v;
-                }
+function load_config($file,$parse=CONF_PARSE){
+    $ext  = pathinfo($file,PATHINFO_EXTENSION);
+    switch($ext){
+        case 'php':
+            return include $file;
+        case 'xml': 
+            return (array)simplexml_load_file($file);
+        case 'json':
+            return json_decode(file_get_contents($file), true);
+        default:
+            if(function_exists($parse)){
+                return $parse($file);
+            }else{
+                E('Nonsupport:'.$ext);
             }
-            return $config;
-        } else if (isset($config[$name])) {
-            return $config[$name];
-        } else if (isset($config['APP'][$name])) {
-            return $config['APP'][$name];
-        } else if (isset($config['DB'][$name])) {
-            return $config['DB'][$name];
-        } else if (isset($config['TPL'][$name])) {
-            return $config['TPL'][$name];
-        } else if (isset($config['CFG'][$name])) {
-            return $config['CFG'][$name];
-        } else {
-            return NULL;
-        }
-    } else {
-        return $config[$name] = is_array($value) ? array_merge($config[$name], $value) : $value;
     }
 }
 
@@ -763,13 +843,13 @@ function get_top_domain($url = '')
 }
 
 /**
- * 获取和设置配置参数 支持批量定义 by thinkphp 暂时弃用
+ * 获取和设置配置参数 支持批量定义
  * @param string|array $name 配置变量
  * @param mixed $value 配置值
  * @param mixed $default 默认值
  * @return mixed
  */
-function conf($name = null, $value = null, $default = null) {
+function C($name=null, $value=null, $default=null) {
     static $_config = array();
     // 无参数时获取所有
     if (empty($name)) {
@@ -779,23 +859,44 @@ function conf($name = null, $value = null, $default = null) {
     if (is_string($name)) {
         if (!strpos($name, '.')) {
             $name = strtoupper($name);
-            if (is_null($value))
-                return isset($_config[$name]) ? $_config[$name] : $default;
-            $_config[$name] = $value;
-            return;
+			if (is_null($value)){
+				if(isset($_config[$name])){
+					return $_config[$name];
+				} else if (isset($_config['APP'][$name])) {
+					return $_config['APP'][$name];
+				} else if (isset($_config['DB'][$name])) {
+					return $_config['DB'][$name];
+				} else if (isset($_config['TPL'][$name])) {
+					return $_config['TPL'][$name];
+				} else if (isset($_config['CFG'][$name])) {
+					return $_config['CFG'][$name];
+				} else if (isset($_config['SESSION'][$name])) {
+					return $_config['SESSION'][$name];
+				} else if (isset($_config['COOKIE'][$name])) {
+					return $_config['COOKIE'][$name];
+				}else{
+					return $default;
+				}
+			}
+			if(is_array($value) && isset($_config[$name])){
+				$_config[$name] = array_merge($_config[$name], $value);
+			}else{
+				$_config[$name] = $value;
+			}
+            return null;
         }
-        // 二维数组设置和获取支持
+		// 二维数组设置和获取支持
         $name = explode('.', $name);
         $name[0] = strtoupper($name[0]);
         if (is_null($value))
             return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
-        $_config[$name[0]][$name[1]] = $value;
-        return;
+		$_config[$name[0]][$name[1]] = is_array($value) ? array_merge($_config[$name[0]][$name[1]], $value) : $value;
+        return null;
     }
     // 批量设置
-    if (is_array($name)) {
-        $_config = array_merge($_config, array_change_key_case($name, CASE_UPPER));
-        return;
+    if (is_array($name)){
+        $_config = array_merge($_config, array_change_key_case($name,CASE_UPPER));
+        return null;
     }
     return null; // 避免非法参数
 }
@@ -1433,9 +1534,6 @@ function halt($error)
             $e['message'] = $error;
             $e['file'] = $trace[0]['file'];
             $e['line'] = $trace[0]['line'];
-            ob_start();
-            debug_print_backtrace();
-            $e['trace'] = ob_get_clean();
         } else {
             $e = $error;
         }

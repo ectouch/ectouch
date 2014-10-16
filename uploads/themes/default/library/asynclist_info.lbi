@@ -122,13 +122,13 @@
 <!-- 文章列表end--> 
 
 <!-- 用户订单 start--> 
-<!--{if $orders}--><a href="{:url('user/order_detail')}&order_id={$orders.order_id}"><img src="{$orders.img}" class="pull-left" />
+<!--{if $orders}--><a href="{:url('user/order_detail', array('order_id'=>$this->_var['orders']['order_id']))}"><img src="{$orders.img}" class="pull-left" />
           <dl>
             <dt>
               <h4 class="title">{$lang.order_number}：{$orders.order_sn}</h4>
             </dt>
            <dd>{$lang.order_status}：{$orders.order_status}</dd>
-           <dd>{$lang.order_total_fee}：<span class="ect-color">{$orders.order_status}</span></dd>
+           <dd>{$lang.order_total_fee}：<span class="ect-color">{$orders.total_fee}</span></dd>
            <dd>{$lang.order_addtime}：{$orders.order_time}</dd>
           </dl>
            <i class="pull-right fa fa-angle-right"></i> 
