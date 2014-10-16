@@ -295,7 +295,7 @@ transform: rotate(45deg);}
 .goods-option-con input:checked+label:before {content:"\0020"; width: 0.5em; height: 0.3em; box-sizing: border-box; z-index: 10; bottom: 0.3em; position:absolute; right: 0.04em; border-bottom: 1px #fff solid; border-left: 1px #fff solid; /*旋转45度*/ -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -ms-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg); z-index:1;}
 .goods-num{overflow:hidden;}
 /*商品详情*/
-.goods-info .tab-info *{width:100%}
+.goods-info .tab-info *{width:100%;height:auto}
 /*评论*/
 .goods-info .tab-msg ul.msg li{border-bottom:1px dotted #e3e3e3; padding:0.4em 0;}
 .goods-info .tab-msg ul.msg li:last-child{border-bottom:1px solid #e3e3e3;}
