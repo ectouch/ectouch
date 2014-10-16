@@ -95,6 +95,7 @@ class ConfigController extends AdminController {
                         $info = get_template_info(C('template'));
                         $info['logo'] = empty($info['logo']) ? 'logo.png' : $info['logo'];
                         $file_name = str_replace('{$template}', C('template'), $file_var_list[$code]['store_dir']) . $info['logo'];
+                        
                     } elseif ($code == 'watermark') {
                         $name = explode('.', $file['name']);
                         $ext = array_pop($name);
@@ -115,7 +116,7 @@ class ConfigController extends AdminController {
 
                     /* 判断是否上传成功 */
                     if (move_upload_file($file['tmp_name'], $file_name)) {
-                        $data2['value'] = $file_name;
+                        $data2['value'] = __ROOT__ . str_replace(array('./', '../'), '/', $file_name);
                         $this->model->table('touch_shop_config')->data($data2)->where("code = '$code'")->update();
                     } else {
                         $this->message(sprintf(L('msg_upload_failed'), $file['name'], $file_var_list[$code]['store_dir']), NULL, 'error');

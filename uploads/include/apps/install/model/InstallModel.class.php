@@ -73,9 +73,11 @@ class InstallModel extends BaseModel {
         $data2['value'] = 'default';
         $condition['code'] = 'template';
         $model->table($_table)->data($data2)->where($condition)->update();
-		
-		
-        //设置手机版默认图片
+		//设置logo目录
+        $data3['store_dir'] = './themes/{$template}/images/';
+        $condition3['code'] = 'shop_logo';
+        $model->table($_table)->data($data3)->where($condition3)->update();
+        //设置默认图片目录
         $data3['store_dir'] = './data/common/images/';
         $condition3['code'] = 'no_picture';
         $model->table($_table)->data($data3)->where($condition3)->update();

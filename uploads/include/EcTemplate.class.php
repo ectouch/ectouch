@@ -27,7 +27,7 @@ class EcTemplate {
      * @param unknown $config
      */
     public function __construct($config = array()) {
-        $this->config = array_merge(EcConfig::get('TPL'), (array) $config); //参数配置	
+        $this->config = array_merge(C('TPL'), (array) $config); //参数配置	
         $this->assign('EcTemplate', $this);
         $this->_replace = array(
             'str' => array('search' => array(),

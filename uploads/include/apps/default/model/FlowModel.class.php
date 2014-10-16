@@ -358,17 +358,6 @@ class FlowModel extends BaseModel {
         return integral_of_value($val);
     }
 
-    /**
-     * 调用购物车商品数目
-     */
-    function insert_cart_info_number() {
-        $sql = 'SELECT SUM(goods_number) AS number FROM ' . $this->pre .
-                "cart WHERE session_id = '" . SESS_ID . "' AND rec_type = '" . CART_GENERAL_GOODS . "'";
-        $res = $this->row($sql);
-        $number = $res['number'];
-        return intval($number);
-    }
-
     // 增加销量统计
     function add_touch_goods($flow_type, $extension_code) {
         /* 统计时间段 */
@@ -389,7 +378,6 @@ class FlowModel extends BaseModel {
         $sql = 'select goods_id from ' . $this->pre . 'cart where  session_id = "' . SESS_ID . '" AND rec_type = "' . $flow_type . '"';
         $arrGoodsid = $this->query($sql);
         foreach ($arrGoodsid as $goodsid) {
-            if (C('stock_dec_time') == 1) {
                 /* 查询该商品销量 */
                 $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' .
                         'as count FROM ' . $this->pre . 'order_info AS o, ' .
@@ -406,7 +394,6 @@ class FlowModel extends BaseModel {
                     $sql = 'update ' . $this->pre . 'touch_goods AS a set a.sales_volume = ' . $sales_count . " WHERE goods_id=" . $goodsid['goods_id'];
                     $this->query($sql);
                 }
-            }
             if ($flow_type == CART_GROUP_BUY_GOODS) {
                 /* 查询该商品销量 */
                 $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' .

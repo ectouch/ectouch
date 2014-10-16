@@ -131,12 +131,17 @@ class BaseModel extends Model {
             if (empty($arr['integrate_code'])) {
                 $arr['integrate_code'] = 'ecshop'; // 默认的会员整合插件为 ecshop
             }
+			
             write_static_cache('touch_shop_config', $arr);
         } else {
             $arr = $data;
         }
-
-        return $arr;
+        $config = array();
+        foreach ($arr AS $key=>$vo) {
+            $config[strtoupper($key)] = $vo;
+        }
+        
+        return $config;
     }
 
     /**

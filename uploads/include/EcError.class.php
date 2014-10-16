@@ -102,7 +102,7 @@ class EcError extends Exception {
      * @param unknown $message
      */
     static public function write($message) {
-        $log_path = EcConfig::get('LOG_PATH');
+        $log_path = C('LOG_PATH');
         //检查日志记录目录是否存在
         if (!is_dir($log_path)) {
             //创建日志记录目录
@@ -120,11 +120,11 @@ class EcError extends Exception {
      */
     protected function showError() {
         //如果开启了日志记录，则写入日志
-        if (EcConfig::get('LOG_ON')) {
+        if (C('LOG_ON')) {
             self::write($this->message);
         }
 
-        $error_url = EcConfig::get('ERROR_URL');
+        $error_url = C('ERROR_URL');
         //错误页面重定向
         if ($error_url != '') {
             echo '<script language="javascript">
@@ -174,7 +174,7 @@ h1{ font-size: 16px; line-height: 24px; }
 <p class="face">:(</p>
 <h1>' . $this->message . '</h1>';
 //开启调试模式之后，显示详细信息
-if (($this->errorCode > 0) && ($this->errorCode != 404) && EcConfig::get('DEBUG')) {
+if (($this->errorCode > 0) && ($this->errorCode != 404) && C('DEBUG')) {
     echo '
     <div class="content">
 	<div class="info">
@@ -184,7 +184,6 @@ if (($this->errorCode > 0) && ($this->errorCode != 404) && EcConfig::get('DEBUG'
 		</div>
 		<div class="text">
                     <p>错误级别: ' . $this->errorLevel . '</p>
-                    <p>Trace信息: <br>' . $this->trace . '</p>
 		</div>
 	</div>
     </div>';
@@ -192,7 +191,7 @@ if (($this->errorCode > 0) && ($this->errorCode != 404) && EcConfig::get('DEBUG'
 echo '
 </div>
 <div class="copyright">
-<p><a title="官方网站" href="http://www.ectouch.cn">ECTouch</a><sup>'.VERSION.'</sup></p>
+<p><a title="官方网站" href="http://www.ectouch.cn">ECTouch</a><sup>'.VERSION.'_'.RELEASE.'</sup></p>
 <p style="text-align:right">[ 商创网络科技 专注移动电商 ]</p>
 </div>
 </body>

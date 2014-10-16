@@ -30,7 +30,7 @@ class EcModel {
      * @param unknown $config
      */
     public function __construct($config = array()) {
-        $this->config = array_merge(EcConfig::get('DB'), $config); //参数配置	
+        $this->config = array_merge(C('DB'), $config); //参数配置	
         $this->options['field'] = '*'; //默认查询字段
         $this->pre = $this->config['DB_PREFIX']; //数据表前缀
         $this->connect();

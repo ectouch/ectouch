@@ -25,18 +25,18 @@ defined('DEFAULT_APP') or define('DEFAULT_APP', 'default');
 defined('DEFAULT_CONTROLLER') or define('DEFAULT_CONTROLLER', 'Index');
 defined('DEFAULT_ACTION') or define('DEFAULT_ACTION', 'index');
 
-/* 加载默认配置 */
-require (BASE_PATH . 'EcConfig.class.php');
-/* 加载默认配置 */
-require (BASE_PATH . 'Common.php');
-/* 加载常规配置 */
+/* 系统函数 */
+require(BASE_PATH . 'Common.php');
+/* 默认配置 */
 C(load_file(BASE_PATH . 'Convention.php'));
+/* 数据库配置 */
+C('DB', load_file(ROOT_PATH . 'data/config.php'));
 /* 设置时区 */
-date_default_timezone_set(EcConfig::get('TIMEZONE'));
-/* 合并配置 */
-EcConfig::set('APP', array_merge(EcConfig::get('APP'), C('APP')));
+date_default_timezone_set(C('TIMEZONE'));
 /* 调试配置 */
-defined('DEBUG') or define('DEBUG', EcConfig::get('DEBUG'));
+defined('DEBUG') or define('DEBUG', C('DEBUG'));
+/* 版本信息 */
+load_file(ROOT_PATH . 'data/version.php');
 /* 错误和异常处理 */
 register_shutdown_function('fatalError');
 
@@ -44,34 +44,30 @@ register_shutdown_function('fatalError');
 if (DEBUG) {
     ini_set("display_errors", 1);
     error_reporting(E_ALL ^ E_NOTICE); // 除了notice提示，其他类型的错误都报告
+	debug(); // system 运行时间，占用内存开始计算
 } else {
     ini_set("display_errors", 0);
     error_reporting(0); // 把错误报告，全部屏蔽
 }
 
+/* 自动注册类文件 */
+spl_autoload_register('autoload');
 /* 网址路由解析 */
 urlRoute();
-/* 设置APP_NAME */
-C('_APP_NAME', APP_NAME);
-/* 加载APP配置 */
-C(appConfig(APP_NAME));
 
 try {
-    if (! file_exists(ROOT_PATH . 'data/install.lock') && APP_NAME !== 'install') {
-        header("Location: " . url('install/index/index'));
-        exit();
-    }
     /* 常规URL */
     defined('__HOST__') or define('__HOST__', get_domain());
     defined('__ROOT__') or define('__ROOT__', rtrim(dirname($_SERVER["SCRIPT_NAME"]), '\\/'));
     defined('__URL__') or define('__URL__', __HOST__ . __ROOT__);
-    defined('__ADDONS__') or define('__ADDONS__', __ROOT__ . '/plugins');
+	defined('__ADDONS__') or define('__ADDONS__', __ROOT__ . '/plugins');
     defined('__PUBLIC__') or define('__PUBLIC__', __ROOT__ . '/data/common');
     defined('__ASSETS__') or define('__ASSETS__', __ROOT__ . '/data/assets/' . APP_NAME);
-    /* system 运行时间，占用内存开始计算 */
-    debug();
-    /* 自动注册类文件 */
-    spl_autoload_register('autoload');
+    /* 安装检测 */
+    if (! file_exists(ROOT_PATH . 'data/install.lock') && APP_NAME !== 'install') {
+        header("Location: " . url('install/index/index'));
+        exit();
+    }
     /* 控制器和方法 */
     $controller = CONTROLLER_NAME . 'Controller';
     $action = ACTION_NAME;
