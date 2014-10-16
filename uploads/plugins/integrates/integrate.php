@@ -90,7 +90,11 @@ class integrate
         if (empty($cfg['db_host'])) {
             $this->db_name = $db_config['DB_NAME'];
             $this->prefix = $db_config['DB_PREFIX'];
-            $this->db = & ECTouch::db();
+            if (class_exists('ECTouch')){
+                $this->db = & ECTouch::db();
+            }else{
+                $this->db = $GLOBALS['db'];
+            }
         } else {
             if (empty($cfg['is_latin1'])) {
                 $this->db = new cls_mysql($cfg['db_host'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_name'], $this->charset, NULL, $quiet);
