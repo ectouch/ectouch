@@ -12,6 +12,7 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
+define('IN_ECTOUCH',true);
 define('UC_CLIENT_VERSION', '1.6.0'); // note UCenter 版本标识
 define('UC_CLIENT_RELEASE', '20110501');
 
@@ -37,15 +38,17 @@ define('EC_CHARSET', 'utf-8');
 
 define('ROOT_PATH', realpath(dirname(__FILE__) . '/../') . '/');
 define('BASE_PATH', ROOT_PATH . 'include/');
-/* 加载默认配置 */
-require (BASE_PATH . 'EcConfig.class.php');
-/* 加载默认配置 */
-require (BASE_PATH . 'Common.php');
-/* 加载常规配置 */
+
+/* 加载常用函数 */
+require(BASE_PATH . 'Common.php');
+/* 默认配置 */
 C(load_file(BASE_PATH . 'Convention.php'));
+/* 数据库配置 */
+C('DB', load_file(ROOT_PATH . 'data/config.php'));
 /* 设置时区 */
-date_default_timezone_set(EcConfig::get('TIMEZONE'));
-require (ROOT_PATH . 'include/base/function.php');
+date_default_timezone_set(C('TIMEZONE'));
+/* 项目函数 */
+load_file(ROOT_PATH . 'include/base/function.php');
 /* 初始化数据库类 */
 require (ROOT_PATH . 'include/EcModel.class.php');
 $db = new EcModel(C('DB'));
