@@ -577,7 +577,6 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
                 $var[$varController] = parse_name($var[$varController]);
             }
             $module =   '';
-            
             if(!empty($path)) {
                 $var[$varModule] = implode($depr,$path);
             }else{
@@ -600,7 +599,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
     }
 
     if(C('URL_MODEL') == 0) { // 普通模式URL转换
-        $url        =   __APP__.'?'.C('VAR_MODULE')."={$module}&".http_build_query(array_reverse($var), '', '&');
+        $url        =   __APP__.'?'.$varModule."={$module}&".http_build_query(array_reverse($var), '', '&');
         if($urlCase){
             $url    =   strtolower($url);
         }        
@@ -651,8 +650,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
  */
 function parse_name($name, $type=0) {
     if ($type) {
-        //return ucfirst(preg_replace_callback('/_([a-zA-Z])/', function($match){return strtoupper($match[1]);}, $name));
-        return ucfirst(preg_replace_callback('/_([a-zA-Z])/', create_function('$match', 'return strtoupper($match[1]);'), $name));
+        return ucfirst(preg_replace("/_([a-zA-Z])/e", "strtoupper('\\1')", $name));
     } else {
         return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
     }
@@ -669,6 +667,35 @@ function is_ssl() {
         return true;
     }
     return false;
+}
+
+/**
+ * URL重定向
+ * @param string $url 重定向的URL地址
+ * @param integer $time 重定向的等待时间（秒）
+ * @param string $msg 重定向前的提示信息
+ * @return void
+ */
+function redirect($url, $time=0, $msg='') {
+    //多行URL地址支持
+    $url = str_replace(array("\n", "\r"), '', $url);
+    if (empty($msg))
+        $msg    = "系统将在{$time}秒之后自动跳转到{$url}！";
+    if (!headers_sent()) {
+        // redirect
+        if (0 === $time) {
+            header('Location: ' . $url);
+        } else {
+            header("refresh:{$time};url={$url}");
+            echo($msg);
+        }
+        exit();
+    } else {
+        $str    = "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
+        if ($time != 0)
+            $str .= $msg;
+        exit($str);
+    }
 }
 
 /**

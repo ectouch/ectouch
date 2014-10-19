@@ -57,12 +57,11 @@ return array(
 		'URL_MODEL' => 0, // URL访问模式,可选参数0、1、2、3,代表以下四种模式：0 (普通模式); 1 (PATHINFO 模式); 2 (REWRITE  模式); 3 (兼容模式)  默认为PATHINFO 模式
 		'URL_PATHINFO_DEPR' => '/',	// PATHINFO模式下，各参数之间的分割符号
 		'URL_REQUEST_URI' =>  'REQUEST_URI', // 获取当前页面地址的系统变量 默认为REQUEST_URI
-
 		/* 系统变量名称设置 */
 		'VAR_MODULE' => 'm', // 默认模块获取变量
 		'VAR_CONTROLLER' => 'c', // 默认控制器获取变量
 		'VAR_ACTION' => 'a', // 默认操作获取变量
-		'VAR_PATHINFO' =>  's',    // 兼容模式PATHINFO获取变量例如 ?s=/module/action/id/1 后面的参数取决于URL_PATHINFO_DEPR
+		'VAR_PATHINFO' =>  'r',    // 兼容模式PATHINFO获取变量例如 ?s=/module/action/id/1 后面的参数取决于URL_PATHINFO_DEPR
 		'URL_PATHINFO_FETCH' =>  'ORIG_PATH_INFO,REDIRECT_PATH_INFO,REDIRECT_URL', // 用于兼容判断PATH_INFO 参数的SERVER替代变量列表
 		'URL_PARAMS_BIND' =>  true, // URL变量绑定到Action方法参数
 		'URL_PARAMS_BIND_TYPE'  =>  0, // URL变量绑定的类型 0 按变量名绑定 1 按变量顺序绑定
