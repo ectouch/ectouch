@@ -9,12 +9,89 @@ defined('IN_ECTOUCH') or die('Deny Access');
  * @access  public
  * @return  string
  */
-function get_page_title() {
-    /* 初始化“页面标题” */
+function get_page_title($cat = 0, $str = '') {
+	/* 初始化“页面标题”和“当前位置” */
     $page_title = C('shop_title') . ' - ' . 'Powered by ECTouch.cn';
+    $ur_here = '<a href="'.__APP__.'">' . L('home') . '</a>';
+	/* 控制器名称 */
+	$controller_name = strtolower(CONTROLLER_NAME);
+	/* 处理有分类的 */
+	if (in_array($controller_name, array('category', 'goods', 'article', 'brand'))) {
+		/* 商品分类或商品 */
+		if ('category' == $controller_name || 'goods' == $controller_name || 'brand' == $controller_name) {
+			if ($cat > 0) {
+				$cat_arr = model('Category')->get_parent_cats($cat);
+				$key     = 'cid';
+				$type    = 'category/index';
+			} else {
+				$cat_arr = array();
+			}
+		} elseif ('article' == $controller_name) { /* 文章分类或文章 */
+			if ($cat > 0) {
+				$cat_arr = model('Article')->get_article_parent_cats($cat);
+				$key  = 'acid';
+				$type = 'article/index';
+			} else {
+				$cat_arr = array();
+			}
+		}
+		/* 循环分类 */
+		if (!empty($cat_arr)) {
+			krsort($cat_arr);
+			foreach ($cat_arr AS $val) {
+				$page_title = htmlspecialchars($val['cat_name']) . '_' . $page_title;
+				$args       = array($key => $val['cat_id']);
+				$ur_here   .= ' <code>&gt;</code> <a href="' . url($type, $args) . '">' . htmlspecialchars($val['cat_name']) . '</a>';
+			}
+		}
+	} else { /* 处理无分类的 */
+		/* 团购 */
+		if ('groupbuy' == $controller_name)
+		{
+			$page_title = L('group_buy_goods') . '_' . $page_title;
+			$args       = array('gbid' => '0');
+			$ur_here   .= ' <code>&gt;</code> <a href="' . url('groupbuy/index', $args) . '">' . L('group_buy_goods') . '</a>';
+		}
+		/* 拍卖 */
+		elseif ('auction' == $controller_name)
+		{
+			$page_title = L('auction') . '_' . $page_title;
+			$args       = array('auid' => '0');
+			$ur_here   .= ' <code>&gt;</code> <a href="' . url('auction/index', $args) . '">' . L('auction') . '</a>';
+		}
+		/* 夺宝 */
+		elseif ('snatch' == $controller_name)
+		{
+			$page_title = L('snatch') . '_' . $page_title;
+			$args       = array('id' => '0');
+			$ur_here   .= ' <code> &gt; </code><a href="' . url('snatch/index', $args) . '">' . L('snatch') . '</a>';
+		}
+		/* 批发 */
+		elseif ('wholesale' == $controller_name)
+		{
+			$page_title = L('wholesale') . '_' . $page_title;
+			$args       = array('wsid' => '0');
+			$ur_here   .= ' <code>&gt;</code> <a href="' . url('wholesale/index', $args) . '">' . L('wholesale') . '</a>';
+		}
+		/* 积分兑换 */
+		elseif ('exchange' == $controller_name)
+		{
+			$page_title = L('exchange') . '_' . $page_title;
+			$args       = array('wsid' => '0');
+			$ur_here   .= ' <code>&gt;</code> <a href="' . url('exchange/index', $args) . '">' . L('exchange') . '</a>';
+		}
+		/* 其他的在这里补充 */
+	}
+
+	/* 处理最后一部分 */
+    if (!empty($str))
+    {
+        $page_title  = $str . '_' . $page_title;
+        $ur_here    .= ' <code>&gt;</code> ' . $str;
+    }
 
     /* 返回值 */
-    return $page_title;
+    return array('title' => $page_title, 'ur_here' => $ur_here);
 }
 
 /**

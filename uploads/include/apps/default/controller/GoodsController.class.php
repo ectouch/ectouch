@@ -125,6 +125,10 @@ class GoodsController extends CommonController {
         $this->assign('promotion', model('GoodsBase')->get_promotion_info($this->goods_id));
         $this->assign('promotion_info', model('GoodsBase')->get_promotion_info());
         $this->assign('title', L('goods_detail'));
+        /* 页面标题 */
+        $page_info = get_page_title($goods['cat_id'], $goods['goods_name']);
+        $this->assign('ur_here', $page_info['ur_here']);
+        $this->assign('page_title', $page_info['title']);
         $this->display('goods.dwt');
     }
 

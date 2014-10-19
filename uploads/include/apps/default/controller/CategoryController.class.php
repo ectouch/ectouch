@@ -57,6 +57,12 @@ class CategoryController extends CommonController {
         // 获取分类
         $this->assign('category', model('CategoryBase')->get_top_category());
         $this->assign('nCount', model('Category')->category_get_count($this->children, $this->brand, $this->ext, $this->keywords));
+
+        /* 页面标题 */
+        $page_info = get_page_title($this->cat_id);
+        $this->assign('ur_here', $page_info['ur_here']);
+        $this->assign('page_title', $page_info['title']);
+
         $this->display('category.dwt');
     }
 
@@ -271,12 +277,17 @@ class CategoryController extends CommonController {
         if (!ECTouch::view()->is_cached('category_all.dwt', $cache_id)) {
             // 获得请求的分类 ID
             if ($cat_id > 0) {
-                $category = get_child_tree($cat_id);
+                $category = model('CategoryBase')->get_child_tree($cat_id);
             } else {
                 $category = model('CategoryBase')->get_categories_tree();
             }
             $this->assign('title', L('catalog'));
             $this->assign('category', $category);
+
+            /* 页面标题 */
+            $page_info = get_page_title($cat_id);
+            $this->assign('ur_here', $page_info['ur_here']);
+            $this->assign('page_title', ($cat_id > 0)? $page_info['title']:L('catalog').'_'.$page_info['title']);
         }
         $this->display('category_all.dwt', $cache_id);
     }
