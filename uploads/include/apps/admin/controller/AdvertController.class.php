@@ -169,7 +169,7 @@ class AdvertController extends AdminController {
         /* 模板赋值 */
         $this->assign('list', $ad_list);
         $this->assign('ur_here', L('ad_list'));
-        $this->assign('action_link', array('text' => L('ad_add'), 'href' => url('ad_add&id='.$position_id)));
+        $this->assign('action_link', array('text' => L('ad_add'), 'href' => url('ad_add', array('id'=>$position_id))));
         $this->display();
 
     }
@@ -263,7 +263,7 @@ class AdvertController extends AdminController {
             }
 
             $this->model->table('touch_ad')->data($data2)->insert();
-            $this->message(L('adadd_succed'), url('ad_list&id='.$data['position_id']));
+            $this->message(L('adadd_succed'), url('ad_list', array('id'=>$data['position_id'])));
         }
 
         $result['position_id'] = I('id'); //上级广告位id
@@ -274,7 +274,7 @@ class AdvertController extends AdminController {
         $this->assign('info', $result);
         $this->assign('posi_arr', $this->get_posit_name_str()); //广告位名称：首页banner[200*100]
         $this->assign('ur_here', L('ad_add'));
-        $this->assign('action_link', array('text' => L('ad_list'), 'href' => url('ad_list&id='.$result['position_id'])));
+        $this->assign('action_link', array('text' => L('ad_list'), 'href' => url('ad_list', array('id'=>$result['position_id']))));
         $this->display();
     }
 
@@ -372,7 +372,7 @@ class AdvertController extends AdminController {
 
             // print_r($data2);
             $this->model->table('touch_ad')->data($data2)->where('ad_id=' . $data['ad_id'])->update();
-            $this->message(sprintf(L('adedit_succed'), $data['ad_name']), url('ad_list&id='.$data['position_id']));
+            $this->message(sprintf(L('adedit_succed'), $data['ad_name']), url('ad_list', array('id'=>$data['position_id'])));
         }
         /* 查询表信息 */
         $result = $this->model->table('touch_ad')->where('ad_id=' . $id)->find();
@@ -415,7 +415,7 @@ class AdvertController extends AdminController {
         $this->assign('info', $result);
         $this->assign('posi_arr', $this->get_posit_name_str()); //广告位名称：首页banner[200*100]
         $this->assign('ur_here', L('ad_edit'));
-        $this->assign('action_link', array('text' => L('ad_list'), 'href' => url('ad_list&id='.$result['position_id'])));
+        $this->assign('action_link', array('text' => L('ad_list'), 'href' => url('ad_list', array('id'=>$result['position_id']))));
         $this->display();
     }
 
