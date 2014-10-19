@@ -1,1 +1,4 @@
-Deny from all
+<Files *.php>
+  Order Allow,Deny 
+  Deny from all
+</Files>

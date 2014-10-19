@@ -497,10 +497,6 @@ class integrate
      *
      * @access public
      * @param            
-     *
-     *
-     *
-     *
      * @return void
      */
     function set_cookie($username = '', $remember = null)
@@ -529,10 +525,6 @@ class integrate
      *
      * @access public
      * @param            
-     *
-     *
-     *
-     *
      * @return void
      */
     function set_session($username = '')
