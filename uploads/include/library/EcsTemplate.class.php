@@ -571,7 +571,11 @@ class EcsTemplate {
                 $p = '$this->_var[\'' . $_var_name . '\']';
             }
             foreach ($t AS $val) {
-                $p.= '[\'' . $val . '\']';
+				if($_var_name == 'cfg'){
+					$p.= '[\'' . strtoupper($val) . '\']';
+				}else{
+					$p.= '[\'' . $val . '\']';
+				}
             }
         }
 
