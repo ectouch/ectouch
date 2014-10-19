@@ -39,7 +39,8 @@ class CommonController extends BaseController
         /* 语言包 */
         $this->assign('lang', L());
         /* 页面标题 */
-        self::$view->assign('page_title', get_page_title());
+        $page_info = get_page_title();
+        self::$view->assign('page_title', $page_info['title']);
         /* 模板赋值 */
         assign_template();
     }
