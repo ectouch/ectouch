@@ -517,7 +517,7 @@ class UserController extends CommonController
                     $order['city'],
                     $order['district']
                 );
-                $shipping = shipping_area_info($order['shipping_id'], $regions);
+                $shipping = model('Shipping')->shipping_area_info($order['shipping_id'], $regions);
                 if ($shipping['support_cod'] == '1') {
                     $cod_fee = $shipping['pay_fee'];
                 }
