@@ -19,7 +19,7 @@
           <div class="formitm">
             <label class="lab" >数据库主机：</label>
             <div class="ipt">
-              <input name="DB[DB_HOST]" type="text" class="u-ipt" id="DB_HOST" value="{$data['db_host']}" style="width:185px;" onblur="test_data()" />
+              <input name="DB[DB_HOST]" type="text" class="u-ipt" id="DB_HOST" value="{$data['db_host']}" style="width:185px;" />
             </div>
           </div>
           <div class="formitm">
