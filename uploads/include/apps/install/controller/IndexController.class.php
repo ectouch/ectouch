@@ -84,9 +84,9 @@ class IndexController extends Controller {
         if (!$link) {
             $this->msg('数据库连接失败，请检查连接信息是否正确！', false);
         }
-        $mysqlInfo = mysql_get_server_info($link);
-        if ($mysqlInfo < '5.1.0') {
-            $this->msg('MySql版本低于5.1，无法继续安装！', false);
+        $mysqlInfo = @mysql_get_server_info($link);
+        if ($mysqlInfo < '5.0') {
+            $this->msg('MySql版本低于5.0，无法继续安装！', false);
         }
         $status = @mysql_select_db($configDb['DB_NAME'], $link);
         if (!$status) {
