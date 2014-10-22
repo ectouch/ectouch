@@ -31,10 +31,7 @@ class CommonController extends BaseController
         $this->ecshop_init();
         // 微信oauth处理
         if (method_exists('WechatController', 'do_oauth')) {
-            call_user_func(array(
-                'WechatController',
-                'do_oauth'
-            ));
+            call_user_func(array('WechatController', 'do_oauth'));
         }
         /* 语言包 */
         $this->assign('lang', L());
@@ -77,9 +74,11 @@ class CommonController extends BaseController
         
         $shop_closed = C('shop_closed');
         if (! empty($shop_closed)) {
-            exit(C('close_comment'));
+            $close_comment = C('close_comment');
+            $close_comment = empty($close_comment) ? 'closed.':$close_comment;
+            exit($close_comment);
         }
-        
+        //NULL
         // 初始化session
         self::$sess = new EcsSession(self::$db, self::$ecs->table('sessions'), self::$ecs->table('sessions_data'), 'ecsid');
         define('SESS_ID', self::$sess->get_session_id());
