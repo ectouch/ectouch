@@ -76,15 +76,14 @@ $(function() {
 	$('#form').Validform({
 		ajaxPost: true,
 		postonce: true,
-		tiptype: function(msg, o, cssctl) {
-			$('.install-status').text(msg);
-		},
 		callback: function(data) {
-			if (data.status == "y") {
+			if(data.status == '200' && data.statusText == 'OK'){
+				$('.install-status').html('请核对数据库信息，调试信息可在浏览器控制台查看');
+			} else if (data.status == "n") {
+				$('.install-status').html(data.info);
+			} else if (data.status == "y"){
 				window.location.href = '<?php echo url('install/index/success');?>';
-				$('.login-status').html('安装成功，正在为您跳转！');
-			} else {
-				$('.login-status').html(data.info);
+				$('.install-status').html('安装成功，正在为您跳转！');
 			}
 		}
 	});
