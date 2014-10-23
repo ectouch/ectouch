@@ -25,20 +25,42 @@
 </div>
 <div id="admin_menubar">
   <dl>
-    <dt class="menu_title">全局设置</dt>
+    <dt class="menu_title">基本设置</dt>
     <dd>
       <ul>
         <li><a href="{url('config/index')}" target="mainFrame">商店设置</a></li>
-        <li><a href="{url('navigator/index')}" target="mainFrame">菜单管理</a></li>
-        <li><a href="{url('category/index')}" target="mainFrame">分类图标</a></li>
-        <li><a href="{url('brand/index')}" target="mainFrame">品牌管理</a></li>
+        <li><a href="{url('category/index')}" target="mainFrame">商品分类</a></li>
+        <li><a href="{url('articlecat/index')}" target="mainFrame">文章分类</a></li>
+       <li><a href="{url('brand/index')}" target="mainFrame">品牌管理</a></li>
+      </ul>
+    </dd>
+  </dl>
+  <dl>
+    <dt class="menu_title">模板插件</dt>
+    <dd>
+      <ul>
+        <li><a href="{url('template/index')}" target="mainFrame">模板设置</a></li>
         <li><a href="{url('payment/index')}" target="mainFrame">支付方式</a></li>
-        <li><a href="{url('advert/index')}" target="mainFrame">广告管理</a></li>
+        <li><a href="{url('authorization/index')}" target="mainFrame">快捷登录</a></li>
+      </ul>
+    </dd>
+  </dl>
+  <dl>
+    <dt class="menu_title">广告促销</dt>
+    <dd>
+      <ul>
         <li><a href="{url('favourable/index')}" target="mainFrame">优惠活动</a></li>
         <li><a href="{url('groupbuy/index')}" target="mainFrame">团购活动</a></li>
-        <li><a href="{url('articlecat/index')}" target="mainFrame">文章分类</a></li>
-        <li><a href="{url('authorization/index')}" target="mainFrame">授权管理</a></li>
-        <li><a href="{url('template/index')}" target="mainFrame">模板设置</a></li>
+        <li><a href="{url('advert/index')}" target="mainFrame">广告管理</a></li>
+      </ul>
+    </dd>
+  </dl>
+  <dl>
+    <dt class="menu_title">其他设置</dt>
+    <dd>
+      <ul>
+        <li><a href="{url('navigator/index')}" target="mainFrame">菜单管理</a></li>
+        <!--<li><a href="{url('upgrade/index')}" target="mainFrame">在线升级</a></li>-->
       </ul>
     </dd>
   </dl>
