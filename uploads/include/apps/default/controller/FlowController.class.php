@@ -1249,7 +1249,7 @@ class FlowController extends CommonController {
             $this->assign('goods_list', $cart_goods);
             $this->assign('shop_name', C('shop_name'));
             $this->assign('send_date', date(C('time_format')));
-            $content = $this->fetch('str:' . $tpl ['template_content']);
+            $content = ECTouch::$view->fetch('str:' . $tpl ['template_content']);
             send_mail(C('shop_name'), C('service_email'), $tpl ['template_subject'], $content, $tpl ['is_html']);
         }
 
