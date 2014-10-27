@@ -166,7 +166,7 @@ function get_client_ip($type = 0, $adv = false) {
 }
 
 /**
- * 截取字符串，字节格式化 把字节数格式为 B K M G T 描述的大小
+ * 截取字符串，字节格式化
  * @param unknown $str
  * @param unknown $length
  * @param number $start
@@ -477,6 +477,15 @@ function del_dir($dir) {
         closedir($handle);
         @rmdir($dir);
     }
+}
+
+/**
+ * 获取文件扩展名
+ * @param unknown $file
+ * @return mixed
+ */
+function get_extension($file){
+    return end(explode('.', $file));
 }
 
 /**
