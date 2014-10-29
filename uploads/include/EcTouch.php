@@ -42,11 +42,11 @@ register_shutdown_function('fatalError');
 
 /* 错误等级 */
 if (DEBUG) {
-    ini_set("display_errors", 1);
+    @ini_set("display_errors", 1);
     error_reporting(E_ALL ^ E_NOTICE); // 除了notice提示，其他类型的错误都报告
 	debug(); // system 运行时间，占用内存开始计算
 } else {
-    ini_set("display_errors", 0);
+    @ini_set("display_errors", 0);
     error_reporting(0); // 把错误报告，全部屏蔽
 }
 
