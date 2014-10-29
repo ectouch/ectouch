@@ -1,5 +1,5 @@
 <?php
-define('APPNAME', 'ECTOUCH');
-define('VERSION', '1.0Beta2');
-define('RELEASE', '20141019');
+define('APPNAME', 'ECTouch');
+define('VERSION', '1.0Beta3');
+define('RELEASE', '20141028');
 define('ECTOUCH_AUTH_KEY', '');
