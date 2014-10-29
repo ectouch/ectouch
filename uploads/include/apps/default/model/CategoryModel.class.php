@@ -181,5 +181,56 @@ class CategoryModel extends BaseModel {
         }
         return $cats;
     }
+    
+    /**
+     * 取得最近的上级分类的grade值
+     *
+     * @access  public
+     * @param   int     $cat_id    //当前的cat_id
+     *
+     * @return int
+     */
+    function get_parent_grade($cat_id)
+    {
+        static $res = NULL;
+    
+        if ($res === NULL)
+        {
+            $data = read_static_cache('cat_parent_grade');
+            if ($data === false)
+            {
+                $sql = "SELECT parent_id, cat_id, grade ".
+                    " FROM " . $this->pre . 'category';
+                $res = ECTOUCH::db()->getAll($sql);
+                write_static_cache('cat_parent_grade', $res);
+            }
+            else
+            {
+                $res = $data;
+            }
+        }
+    
+        if (!$res)
+        {
+            return 0;
+        }
+    
+        $parent_arr = array();
+        $grade_arr = array();
+    
+        foreach ($res as $val)
+        {
+            $parent_arr[$val['cat_id']] = $val['parent_id'];
+            $grade_arr[$val['cat_id']] = $val['grade'];
+        }
+    
+        while ($parent_arr[$cat_id] >0 && $grade_arr[$cat_id] == 0)
+        {
+            $cat_id = $parent_arr[$cat_id];
+        }
+    
+        return $grade_arr[$cat_id];
+    
+    }
 
 }
