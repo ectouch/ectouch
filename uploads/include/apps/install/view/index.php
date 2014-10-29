@@ -76,6 +76,7 @@ $(function() {
 	$('#form').Validform({
 		ajaxPost: true,
 		postonce: true,
+		tiptype: function(){},
 		callback: function(data) {
 			if(data.status == '200' && data.statusText == 'OK'){
 				$('.install-status').html('请核对数据库信息，调试信息可在浏览器控制台查看');
