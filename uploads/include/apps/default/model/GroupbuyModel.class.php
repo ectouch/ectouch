@@ -42,8 +42,8 @@ class GroupbuyModel extends BaseModel {
             $group_buy = array_merge($group_buy, $ext_info);
 
             /* 格式化时间 */
-            $group_buy['formated_start_date'] = local_date($this->_CFG['time_format'], $group_buy['start_date']);
-            $group_buy['formated_end_date'] = local_date($this->_CFG['time_format'], $group_buy['end_date']);
+            $group_buy['formated_start_date'] = local_date(C('time_format'), $group_buy['start_date']);
+            $group_buy['formated_end_date'] = local_date(C('time_format'), $group_buy['end_date']);
 
             /* 格式化保证金 */
             $group_buy['formated_deposit'] = price_format($group_buy['deposit'], false);
