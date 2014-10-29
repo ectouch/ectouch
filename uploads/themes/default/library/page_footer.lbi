@@ -32,6 +32,8 @@
 			effect : "left",
 			autoPlay : true, // 自动播放
 			autoPage : true, // 自动分页
+			delayTime: 200, // 毫秒；切换效果持续时间（执行一次效果用多少毫秒）
+			interTime: 2500, // 毫秒；自动运行间隔（隔多少毫秒后执行下一个效果）
 			switchLoad : "_src" // 切换加载，真实图片路径为"_src"
 		});
 	/*弹出评论层并隐藏其他层*/
