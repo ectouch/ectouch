@@ -185,9 +185,16 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
     $pager['page_count'] = $page_count;
     $pager['display'] = $display_type;
 
+    /* 分页样式 */
+    $page_style = C('page_style');
+    $pager['styleid'] = isset($page_style) ? intval($page_style) : 0;
+
+    $page_prev = ($page > 1) ? $page - 1 : 1;
+    $page_next = ($page < $page_count) ? $page + 1 : $page_count;
+    
     switch ($app) {
-        case 'category':
-            $uri_args = array('cid' => $cat, 'bid' => $brand, 'price_min' => $price_min, 'price_max' => $price_max, 'filter_attr' => $filter_attr, 'sort' => $sort, 'order' => $order, 'display' => $display_type);
+        case 'category/index':
+            $uri_args = array('id' => $cat, 'bid' => $brand, 'price_min' => $price_min, 'price_max' => $price_max, 'filter_attr' => $filter_attr, 'sort' => $sort, 'order' => $order, 'display' => $display_type, 'keywords'=>$keywords);
             break;
         case 'article_cat':
             $uri_args = array('acid' => $cat, 'sort' => $sort, 'order' => $order);
@@ -202,12 +209,6 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
             $uri_args = array('cid' => $cat, 'integral_min' => $price_min, 'integral_max' => $price_max, 'sort' => $sort, 'order' => $order, 'display' => $display_type);
             break;
     }
-    /* 分页样式 */
-    $page_style = C('page_style');
-    $pager['styleid'] = isset($page_style) ? intval($page_style) : 0;
-
-    $page_prev = ($page > 1) ? $page - 1 : 1;
-    $page_next = ($page < $page_count) ? $page + 1 : $page_count;
     if ($pager['styleid'] == 0) {
         if (!empty($url_format)) {
             $pager['page_first'] = $url_format . 1;
@@ -215,10 +216,10 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
             $pager['page_next'] = $url_format . $page_next;
             $pager['page_last'] = $url_format . $page_count;
         } else {
-            $pager['page_first'] = build_uri($app, $uri_args, '', 1, $keywords);
-            $pager['page_prev'] = build_uri($app, $uri_args, '', $page_prev, $keywords);
-            $pager['page_next'] = build_uri($app, $uri_args, '', $page_next, $keywords);
-            $pager['page_last'] = build_uri($app, $uri_args, '', $page_count, $keywords);
+            $pager['page_first'] = build_uri($app, array_merge($uri_args, array('page'=>1) ));
+            $pager['page_prev'] = build_uri($app, array_merge($uri_args,array('page'=>$page_prev)));   
+            $pager['page_next'] = build_uri($app,array_merge($uri_args,array('page'=>$page_next)));     
+            $pager['page_last'] = build_uri($app, array_merge($uri_args , array('page'=>$page_count )));
         }
         $pager['array'] = array();
 
@@ -257,14 +258,14 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
                 $pager['page_number'][$i] = $url_format . $i;
             }
         } else {
-            $pager['page_first'] = ($page - $_offset > 1 && $_pagenum < $page_count) ? build_uri($app, $uri_args, '', 1, $keywords) : '';
-            $pager['page_prev'] = ($page > 1) ? build_uri($app, $uri_args, '', $page_prev, $keywords) : '';
-            $pager['page_next'] = ($page < $page_count) ? build_uri($app, $uri_args, '', $page_next, $keywords) : '';
-            $pager['page_last'] = ($_to < $page_count) ? build_uri($app, $uri_args, '', $page_count, $keywords) : '';
+            $pager['page_first'] = ($page - $_offset > 1 && $_pagenum < $page_count) ? build_uri($app, array_merge($uri_args , array('page'=>1))) : '';
+            $pager['page_prev'] = ($page > 1) ? build_uri($app, array_merge($uri_args , array('page'=>$page_prev))) : '';
+            $pager['page_next'] = ($page < $page_count) ? build_uri($app, array_merge( $uri_args ,array('page'=>$page_next))) : '';
+            $pager['page_last'] = ($_to < $page_count) ? build_uri($app, array_merge( $uri_args ,array('page'=>$page_count))) : '';
             $pager['page_kbd'] = ($_pagenum < $page_count) ? true : false;
             $pager['page_number'] = array();
             for ($i = $_from; $i <= $_to; ++$i) {
-                $pager['page_number'][$i] = build_uri($app, $uri_args, '', $i, $keywords);
+                $pager['page_number'][$i] = build_uri($app, array_merge($uri_args , array('page'=> $i)));
             }
         }
     }
@@ -276,7 +277,7 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
             $pager['search'][$key] = $row;
         }
     }
-
+  
     ECTouch::view()->assign('pager', $pager);
 }
 
@@ -1454,6 +1455,29 @@ function exchange_points($uid, $fromcredits, $tocredits, $toappid, $netamount) {
         return false;
     } else {
         return true;
+    }
+}
+
+/**
+ * 微信提醒
+ *
+ * @param  $type 提醒类型
+ * @param  $title 提醒标题
+ * @param  $msg 提醒内容
+ * @param  $url 页面链接 base64_decode(urldecode($url));
+ *
+ */
+function send_wechat_message($type = '', $titile = '', $msg = '', $url = ''){
+    /* 如果需要，微信通知 wanglu */
+    if(!empty($type)){
+        $remind_title = $this->model->table('wechat_setting')->field('title')->where('status = 1 and keywords = "'.$type.'"')->getOne();
+        $remind_title = $title ? $title : $remind_title;
+        $openid = $this->model->table('wechat_user')->field('openid')->where('ect_uid = '.$_SESSION['user_id'])->getOne();
+        if(!empty($remind_title) && !empty($openid)){
+            $url = base64_decode(urldecode($url));
+            $dourl = __HOST__ . url('api/index', array('openid'=>$openid, 'title'=>$remind_title, 'msg'=>$msg, 'url'=>$url));
+            Http::doGet($dourl);
+        }
     }
 }
 
