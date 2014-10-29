@@ -26,7 +26,7 @@ class IndexController extends CommonController {
         $navigator = model('Common')->get_navigator();
         $this->assign('navigator', $navigator['middle']);
         $this->assign('best_goods', model('Index')->goods_list('best',3));
-        $this->assign('new_goods', model('Index')->goods_list('goods',3));
+        $this->assign('new_goods', model('Index')->goods_list('new',3));
         $this->assign('hot_goods', model('Index')->goods_list('hot',3));
         $this->display('index.dwt');
     }
