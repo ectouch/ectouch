@@ -383,7 +383,7 @@ class FlowModel extends BaseModel {
                         'as count FROM ' . $this->pre . 'order_info AS o, ' .
                         $this->pre . 'order_goods AS g ' .
                         "WHERE o.order_id = g.order_id " .
-                        "AND o.extension_code = '$extension_code'  AND g.goods_id = '" . $goodsid['goods_id'] . "'" . $ext;
+                        "AND o.extension_code = '$extension_code'  AND g.goods_id = '" . $goodsid['goods_id'] . "' AND o.pay_status = '2' " . $ext;
                 $res = $this->row($sql);
                 $sales_count = $res['count'];
                 if ($flow_type == CART_GENERAL_GOODS) {
@@ -400,10 +400,10 @@ class FlowModel extends BaseModel {
                         'as count FROM ' . $this->pre . 'order_info AS o LEFT JOIN ' .
                         $this->pre . 'order_goods AS g  ON o.order_id = g.order_id ' .
                         'LEFT JOIN ' . $this->pre . 'goods_activity as ga ON ga.goods_id = g.goods_id ' .
-                        "WHERE o.extension_code = '$extension_code'  AND g.goods_id = '" . $goodsid['goods_id'] . "'" . $ext;
+                        "WHERE o.extension_code = '$extension_code'  AND o.pay_status = 2  AND g.goods_id = '" . $goodsid['goods_id'] . "'" . $ext;
                 $res = $this->row($sql);
                 $nCount = $this->query('select COUNT(*) from ' . $this->pre .
-                        'touch_goods_activity tga LEFT JOIN ' . $this->pre . 'goods_activity ga ON tga.act_id =ga.act_id  where  ga.goods_id = "' . $goodsid['goods_id'] . '"');
+                        'touch_goods_activity tga LEFT JOIN ' . $this->pre . 'goods_activity ga ON tga.act_id =ga.act_id  where  ga.goods_id = "' . $goodsid['goods_id'] . '" ');
                 $sql = 'SELECT act_id FROM ' . $this->pre . 'goods_activity WHERE goods_id = "' . $goodsid['goods_id'] . '" ';
                 $act_id = $this->row($sql);
                 if ($nCount[0]['COUNT(*)'] == 0) {
