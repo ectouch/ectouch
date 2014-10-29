@@ -538,7 +538,8 @@ class UserController extends CommonController
         // 更新用户余额
         $change_desc = sprintf(L('pay_order_by_surplus'), $order['order_sn']);
         model('ClipsBase')->log_account_change($user['user_id'], (- 1) * $surplus, 0, 0, 0, $change_desc);
-        
+        // 销量
+        $this->update_touch_goods($order_id);
         // 跳转
         $url = url('order_detail', array(
             'order_id' => $order_id
@@ -1694,6 +1695,58 @@ class UserController extends CommonController
         if (isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0 && in_array($this->action, $deny)) {
             $this->redirect(url('index/index'));
             exit();
+        }
+    }
+    
+    /**
+     * 更新商品销量
+     */
+    private function update_touch_goods($order){
+        $sql = 'select pay_status from ' . $this->model->pre . 'order_info where  order_id = "' . $order . '"';
+        $pay_status = $this->model->query($sql);
+        $pay_status = $pay_status[0];
+        if ($pay_status == 2){
+            /* 统计时间段 */
+            $period = C('top10_time');
+            //近一个月（30天）
+            if ($period == 1) { // 一年
+                $ext = " AND o.add_time > '" . local_strtotime('-1 years') . "'";
+            } elseif ($period == 2) { // 半年
+                $ext = " AND o.add_time > '" . local_strtotime('-6 months') . "'";
+            } elseif ($period == 3) { // 三个月
+                $ext = " AND o.add_time > '" . local_strtotime('-3 months') . "'";
+            } elseif ($period == 4) { // 一个月
+                $ext = " AND o.add_time > '" . local_strtotime('-1 months') . "'";
+            } else {
+                $ext = '';
+            }
+            $sql = 'select goods_id from ' . $this->model->pre . 'order_info where  order_id = "' . $order . '"';
+            $arrGoodsid = $this->model->query($sql);
+    
+            $sql = 'select extension_code from ' . $this->model->pre . 'order_info where  order_id = "' . $order . '"';
+            $extension_code = $this->model->query($sql);
+    
+            if ($extension_code == ''){
+                foreach ($arrGoodsid as $key=>$val){
+                    /* 查询该商品销量 */
+                    $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' .
+                        'as count FROM ' . $this->pre . 'order_info AS o, ' .
+                        $this->pre . 'order_goods AS g ' .
+                        "WHERE o.order_id = g.order_id " .
+                        "  AND g.goods_id = '" . $val['goods_id'] . "' AND o.pay_status = '2' " . $ext;
+                    $res = $this->model->query($sql);
+                    $sales_count = $res[0]['count'];
+    
+                    $nCount = $this->query('select COUNT(*) from ' . $this->model->pre . 'touch_goods where  goods_id = "' . $val['goods_id'] . '"');
+                    if ($nCount[0]['COUNT(*)'] == 0) {
+                        $this->model->query("INSERT INTO " . $this->model->pre . "touch_goods (`goods_id` ,`sales_volume` ) VALUES ( '" . $val['goods_id'] . "' , '0')");
+                    }
+                    $sql = 'update ' . $this->model->pre . 'touch_goods AS a set a.sales_volume = ' . $sales_count . " WHERE goods_id=" . $val['goods_id'];
+                    $this->model->query($sql);
+    
+                }
+            }
+             
         }
     }
 }
