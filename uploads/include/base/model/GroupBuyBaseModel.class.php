@@ -96,6 +96,15 @@ class GroupBuyBaseModel extends BaseModel {
         $group_buy['click_num'] = $group_buy['click_num'];
         $group_buy['sales_count'] = $group_buy['sales_count'] ? $group_buy['sales_count'] : 0;
 
+        $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' .
+            'as count FROM ' . $this->model->pre . 'order_info AS o LEFT JOIN ' .
+            $this->model->pre . 'order_goods AS g  ON o.order_id = g.order_id ' .
+            'LEFT JOIN ' . $this->model->pre . 'goods_activity as ga ON ga.goods_id = g.goods_id ' .
+            "WHERE o.extension_code = 'group_buy'  AND g.goods_id = '" . $group_buy['goods_id'] . "'";
+        
+        $nCount = $this->query($sql);
+        $group_buy['sales_count']  = $nCount[0]['count'];
+        
         return $group_buy;
     }
 
