@@ -60,7 +60,7 @@
     <dd>
       <ul>
         <li><a href="{url('navigator/index')}" target="mainFrame">菜单管理</a></li>
-        <!--<li><a href="{url('upgrade/index')}" target="mainFrame">在线升级</a></li>-->
+        <li><a href="{url('upgrade/index')}" target="mainFrame">在线升级</a></li>
       </ul>
     </dd>
   </dl>
