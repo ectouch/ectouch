@@ -16,6 +16,7 @@ $_LANG['wechat_type'] = '公众号类型';
 $_LANG['wechat_add_time'] = '添加时间';
 $_LANG['wechat_status'] = '状态';
 $_LANG['wechat_manage'] = '功能管理';
+$_LANG['wechat_type0'] = '未认证的公众号';
 $_LANG['wechat_type1'] = '订阅号';
 $_LANG['wechat_type2'] = '服务号';
 $_LANG['wechat_type3'] = '认证服务号';
