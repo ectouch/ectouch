@@ -188,7 +188,7 @@ $_LANG['cfg_desc']['cart_confirm'] = '允许您设置用户点击“加入购物
 $_LANG['cfg_desc']['use_how_oos'] = '使用缺货处理时前台订单确认页面允许用户选择缺货时处理方法。';
 $_LANG['cfg_desc']['send_service_email'] = '网店信息中的客服邮件地址不为空时，该选项有效。';
 $_LANG['cfg_desc']['send_mail_on'] = '启用该选项登录后台时，会自动发送邮件队列中尚未发送的邮件';
-$_LANG['cfg_desc']['sms_shop_mobile'] = '请先注册手机短信服务再填写手机号码 <a href="http://cloud.ectouch.cn/index.php?m=sms" target="_blank">点此注册手机短信服务</a>';
+$_LANG['cfg_desc']['sms_shop_mobile'] = '请先注册手机短信服务再填写手机号码 <a href="http://www.ecmoban.com/goods-475.html" target="_blank">点此注册手机短信服务</a>';
 $_LANG['cfg_desc']['send_verify_email'] = '“是否开启会员邮件验证”设为开启时才可使用此功能';
 
 $_LANG['cfg_range']['cart_confirm'][1] = '提示用户，点击“确定”进购物车';
