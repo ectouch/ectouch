@@ -35,7 +35,7 @@ class Cloud {
     private $token = NULL;
 
     //服务器地址
-    const serverHot = 'http://ectouch.cn/api';
+    const serverHot = 'http://www.ectouch.cn/api';
 
     /**
      * 连接云平台系统
