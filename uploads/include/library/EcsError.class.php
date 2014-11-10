@@ -95,6 +95,7 @@ class EcsError {
 			$view = ECTouch::view();
             if (isset($view)) {
                 assign_template();
+                ECTouch::view()->assign('title', L('tips_message'));
                 ECTouch::view()->assign('auto_redirect', true);
                 ECTouch::view()->assign('message', $message);
                 ECTouch::view()->display($this->_template);
