@@ -83,9 +83,40 @@ INSERT INTO `ecs_touch_ad_position` (`position_id`, `position_name`, `ad_width`,
 DROP TABLE IF EXISTS `ecs_touch_article_cat`;
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_article_cat` (
-  `cat_id` smallint(8) NOT NULL,
-  `is_mobile` tinyint(2) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章扩展表';
+  `cat_id` smallint(5) NOT NULL AUTO_INCREMENT,
+  `cat_name` varchar(255) NOT NULL DEFAULT '',
+  `keywords` varchar(255) NOT NULL DEFAULT '',
+  `cat_desc` varchar(255) NOT NULL DEFAULT '',
+  `sort_order` tinyint(3) unsigned NOT NULL DEFAULT '50',
+  `parent_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`cat_id`),
+  KEY `sort_order` (`sort_order`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+
+--
+-- 表的结构 `ecs_touch_article`
+--
+
+DROP TABLE IF EXISTS `ecs_touch_article`;
+
+CREATE TABLE IF NOT EXISTS `ecs_touch_article` (
+  `article_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `cat_id` smallint(5) NOT NULL DEFAULT '0',
+  `title` varchar(150) NOT NULL DEFAULT '',
+  `content` longtext NOT NULL,
+  `author` varchar(30) NOT NULL DEFAULT '',
+  `author_email` varchar(60) NOT NULL DEFAULT '',
+  `keywords` varchar(255) NOT NULL DEFAULT '',
+  `is_open` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `add_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `file_url` varchar(255) NOT NULL DEFAULT '',
+  `open_type` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `link` varchar(255) NOT NULL DEFAULT '',
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`article_id`),
+  KEY `cat_id` (`cat_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=51 ;
 
 --
 -- 表的结构 `ecs_touch_brand`
@@ -178,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_nav` (
 --
 
 INSERT INTO `ecs_touch_nav` (`id`, `ctype`, `cid`, `name`, `ifshow`, `vieworder`, `opennew`, `url`, `pic`, `type`) VALUES
-(1, '', 0, '全部分类', 1, 0, 0, 'index.php?c=category&amp;a=all', 'data/attached/nav/c78d6a6b9b1ef0f58760c1c26fcd1ed3.png', 'middle'),
+(1, '', 0, '全部分类', 1, 0, 0, 'index.php?c=category&amp;a=top_all', 'data/attached/nav/c78d6a6b9b1ef0f58760c1c26fcd1ed3.png', 'middle'),
 (2, '', 0, '我的订单', 1, 0, 0, 'index.php?m=default&amp;c=user&amp;a=order_list', 'data/attached/nav/fa2f3f5df8dfa7ca5740515d47d2381d.png', 'middle'),
 (3, '', 0, '最新团购', 1, 0, 0, 'index.php?m=default&amp;c=groupbuy', 'data/attached/nav/0c71ca825682cad7222266a7e7cd052a.png', 'middle'),
 (4, '', 0, '促销活动', 1, 0, 0, 'index.php?m=default&amp;c=activity', 'data/attached/nav/ca0a1b9798403546b2b3b9ccdc7a3fcc.png', 'middle'),
@@ -243,6 +274,16 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_shop_config` (
 INSERT INTO `ecs_touch_shop_config` SELECT * FROM `ecs_shop_config`;
 
 INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (1, 'shop_url', 'text', '', '', '', 1);
+
+-- ----------------------------
+-- 增加短信接口配置项
+-- ----------------------------
+DELETE FROM ecs_touch_shop_config where code = 'sms_ecmoban_user';
+DELETE FROM ecs_touch_shop_config where code = 'sms_ecmoban_password';
+DELETE FROM ecs_touch_shop_config where code = 'sms_signin';
+INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_ecmoban_user', 'text', '', '', '', 0);
+INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_ecmoban_password', 'password', '', '', '', 0);
+INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_signin', 'select', '1,0', '', '0', 1);
 
 --
 -- 表的结构 `ecs_touch_user`
