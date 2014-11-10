@@ -70,25 +70,50 @@ function getSelectedAttributes(formBuy) {
 function addToCartResponse(result) {
     if (result.error > 0) {
         // 如果需要缺货登记，跳转
-        /*
-         if (result.error == 2)
-         {
-         if (confirm(result.message))
-         {
-         location.href = 'user.php?act=add_booking&id=' + result.goods_id + '&spec=' + result.product_spec;
-         }
-         }
-         // 没选规格，弹出属性选择框
-         else */if (result.error == 6) {
+        if (result.error == 2)
+        {
+            if (confirm(result.message))
+            {
+                location.href = 'index.php?c=user&a=add_booking&id=' + result.goods_id + '&spec=' + result.product_spec;
+            }
+        }
+        // 没选规格，弹出属性选择框
+        else if (result.error == 6) {
             openSpeDiv(result.message, result.goods_id, result.parent);
         } else {
             alert(result.message);
         }
     } else {
-        //显示购物车数量
-        document.getElementById('carId').innerHTML = result.cart_number;
-        document.getElementById('globalId').innerHTML = result.cart_number;
-        showDiv();
+        var cartInfo = document.getElementById('ECS_CARTINFO');
+        var cart_url = 'index.php?c=flow&a=cart';
+        if (cartInfo)
+        {
+            cartInfo.innerHTML = result.content;
+        }
+
+        if (result.one_step_buy == '1')
+        {
+            location.href = cart_url;
+        }
+        else
+        {
+            switch (result.confirm_type)
+            {
+                case '1' :
+                    if (confirm(result.message))
+                        location.href = cart_url;
+                    break;
+                case '2' :
+                    if (!confirm(result.message))
+                        location.href = cart_url;
+                    break;
+                case '3' :
+                    location.href = cart_url;
+                    break;
+                default :
+                    break;
+            }
+        }
     }
 }
 
@@ -110,11 +135,11 @@ function collectResponse(result) {
     if (result.error == 0) {
         if ($('#ECS_COLLECT').hasClass("ect-colory") > 0) {
             $('#ECS_COLLECT').removeClass("ect-colory")
-			$('#ECS_COLLECT i').addClass("fa-heart-o").removeClass("fa-heart");
+            $('#ECS_COLLECT i').addClass("fa-heart-o").removeClass("fa-heart");
         } else {
             $('#ECS_COLLECT').addClass("ect-colory")
-			$('#ECS_COLLECT i').addClass("fa-heart").removeClass("fa-heart-o");	
-		}
+            $('#ECS_COLLECT i').addClass("fa-heart").removeClass("fa-heart-o");
+        }
     }
     if (result.error == 2) {
         var returnVal = window.confirm("未登录不能使用收藏功能 \n是否登录");
@@ -143,15 +168,16 @@ function signInResponse(result) {
 /* *
  * 评论的翻页函数
  */
-function gotoPage(page, id, type) {
-    $.get('index.php?m=default&c=comment&a=gotopage', {
+function gotoPage(page, id, type, rank) {
+    $.get('index.php?m=default&c=comment&a=index&act=gotopage', {
         page: page,
         id: id,
-        type: type
+        type: type,
+        rank: rank
+
     }, function(data) {
         gotoPageResponse(data);
     }, 'json');
-    //Ajax.call('comment.php?act=gotopage', 'page=' + page + '&id=' + id + '&type=' + type, gotoPageResponse, 'GET', 'JSON');
 }
 
 function gotoPageResponse(result) {
@@ -797,7 +823,7 @@ function openSpeDiv(message, goods_id, parent) {
     var i = 0;
     var sel_obj = document.getElementsByTagName('select');
     while (sel_obj[i]) {
-        sel_obj[i].style.visibility = "hidden";
+        //sel_obj[i].style.visibility = "hidden";
         i++;
     }
 
