@@ -30,8 +30,16 @@
       <ul>
         <li><a href="{url('config/index')}" target="mainFrame">商店设置</a></li>
         <li><a href="{url('category/index')}" target="mainFrame">商品分类</a></li>
+        <li><a href="{url('brand/index')}" target="mainFrame">品牌管理</a></li>
+      </ul>
+    </dd>
+  </dl>
+  <dl>
+    <dt class="menu_title">文章管理</dt>
+    <dd>
+      <ul>
         <li><a href="{url('articlecat/index')}" target="mainFrame">文章分类</a></li>
-       <li><a href="{url('brand/index')}" target="mainFrame">品牌管理</a></li>
+        <li><a href="{url('article/index')}" target="mainFrame">文章列表</a></li>
       </ul>
     </dd>
   </dl>
