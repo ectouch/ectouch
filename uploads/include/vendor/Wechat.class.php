@@ -7,6 +7,7 @@
  *  usage:
  *   $options = array(
  *			'token'=>'tokenaccesskey', //填写你设定的key
+ *			'encodingaeskey'=>'encodingaeskey', //填写加密用的EncodingAESKey
  *			'appid'=>'wxdk1234567890', //填写高级调用功能的app id
  *			'appsecret'=>'xxxxxxxxxxxxxxxxxxx', //填写高级调用功能的密钥
  *			'partnerid'=>'88888888', //财付通商户身份标识
@@ -92,9 +93,12 @@ class Wechat
 	const PAY_ORDERQUERY = 'https://api.weixin.qq.com/pay/orderquery?';
 	const CUSTOM_SERVICE_GET_RECORD = '/customservice/getrecord?';
 	const CUSTOM_SERVICE_GET_KFLIST = '/customservice/getkflist?';
-	const CUSTOM_SERVICE_GET_ONLINEKFLIST = '/customservice/getkflist?';
+	const CUSTOM_SERVICE_GET_ONLINEKFLIST = '/customservice/getonlinekflist?';
+	const SEMANTIC_API_URL= 'https://api.weixin.qq.com/semantic/semproxy/search?';
 	
 	private $token;
+	private $encodingAesKey;
+	private $encrypt_type;
 	private $appid;
 	private $appsecret;
 	private $access_token;
@@ -102,6 +106,7 @@ class Wechat
 	private $partnerid;
 	private $partnerkey;
 	private $paysignkey;
+	private $postxml;
 	private $_msg;
 	private $_funcflag = false;
 	private $_receive;
@@ -114,6 +119,7 @@ class Wechat
 	public function __construct($options)
 	{
 		$this->token = isset($options['token'])?$options['token']:'';
+		$this->encodingAesKey = isset($options['encodingaeskey'])?$options['encodingaeskey']:'';
 		$this->appid = isset($options['appid'])?$options['appid']:'';
 		$this->appsecret = isset($options['appsecret'])?$options['appsecret']:'';
 		$this->partnerid = isset($options['partnerid'])?$options['partnerid']:'';
@@ -126,14 +132,15 @@ class Wechat
 	/**
 	 * For weixin server validation 
 	 */	
-	private function checkSignature()
+	private function checkSignature($str='')
 	{
         $signature = isset($_GET["signature"])?$_GET["signature"]:'';
+	    $signature = isset($_GET["msg_signature"])?$_GET["msg_signature"]:$signature; //如果存在加密验证则用加密验证段
         $timestamp = isset($_GET["timestamp"])?$_GET["timestamp"]:'';
         $nonce = isset($_GET["nonce"])?$_GET["nonce"]:'';
         		
 		$token = $this->token;
-		$tmpArr = array($token, $timestamp, $nonce);
+		$tmpArr = array($token, $timestamp, $nonce,$str);
 		sort($tmpArr, SORT_STRING);
 		$tmpStr = implode( $tmpArr );
 		$tmpStr = sha1( $tmpStr );
@@ -151,29 +158,51 @@ class Wechat
 	 */
 	public function valid($return=false)
     {
-        $echoStr = isset($_GET["echostr"]) ? $_GET["echostr"]: '';
-        if ($return) {
-        		if ($echoStr) {
-        			if ($this->checkSignature()) 
-        				return $echoStr;
-        			else
-        				return false;
-        		} else 
-        			return $this->checkSignature();
-        } else {
-	        	if ($echoStr) {
-	        		if ($this->checkSignature())
-	        			die($echoStr);
-	        		else 
-	        			die('no access');
-	        	}  else {
-	        		if ($this->checkSignature())
-	        			return true;
-	        		else
-	        			die('no access');
-	        	}
+        $encryptStr="";
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $postStr = file_get_contents("php://input");
+            $array = (array)simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $this->encrypt_type = isset($_GET["encrypt_type"]) ? $_GET["encrypt_type"]: '';
+            if ($this->encrypt_type == 'aes') { //aes加密
+                $this->log($postStr);
+            	$encryptStr = $array['Encrypt'];
+            	$pc = new Prpcrypt($this->encodingAesKey);
+            	$array = $pc->decrypt($encryptStr,$this->appid);
+            	if (!isset($array[0]) || ($array[0] != 0)) {
+            	    if (!$return) {
+            	        die('decrypt error!');
+            	    } else {
+            	        return false;
+            	    }
+            	}
+            	$this->postxml = $array[1];
+            	if (!$this->appid)
+            	    $this->appid = $array[2];//为了没有appid的订阅号。
+            } else {
+                $this->postxml = $postStr;
+            }
+        } elseif (isset($_GET["echostr"])) {
+        	$echoStr = $_GET["echostr"];
+        	if ($return) {
+        		if ($this->checkSignature())
+        			return $echoStr;
+        		else
+        			return false;
+        	} else {
+        		if ($this->checkSignature())
+        			die($echoStr);
+        		else
+        			die('no access');
+        	}
         }
-        return false;
+
+        if (!$this->checkSignature($encryptStr)) {
+        	if ($return)
+        		return false;
+        	else 
+        		die('no access');
+        }
+        return true;
     }
     
 	/**
@@ -213,7 +242,8 @@ class Wechat
 	public function getRev()
 	{
 		if ($this->_receive) return $this;
-		$postStr = file_get_contents("php://input");
+		$postStr = !empty($this->postxml)?$this->postxml:file_get_contents("php://input");
+		//兼顾使用明文又不想调用valid()方法的情况
 		$this->log($postStr);
 		if (!empty($postStr)) {
 			$this->_receive = (array)simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -404,19 +434,11 @@ class Wechat
 	 * @return: array | false
 	 * array (
 	 *   'Count' => '2',
-	 *   'PicList' => 
-	 *   array (
-	 *     'item' => 
-	 *     array (
-	 *       0 => 
-	 *       array (
-	 *         'PicMd5Sum' => 'aaae42617cf2a14342d96005af53624c',
-	 *       ),
-	 *       1 => 
-	 *       array (
-	 *         'PicMd5Sum' => '149bd39e296860a2adc2f1bb81616ff8',
-	 *       ),
-	 *     ),
+	 *   'PicList' =>array (
+	 *         'item' =>array (
+	 *             0 =>array ('PicMd5Sum' => 'aaae42617cf2a14342d96005af53624c'),
+	 *             1 =>array ('PicMd5Sum' => '149bd39e296860a2adc2f1bb81616ff8'),
+	 *         ),
 	 *   ),
 	 * )
 	 * 
@@ -611,7 +633,7 @@ class Wechat
 	
 	/**
 	 * 设置回复消息
-	 * Examle: $obj->text('hello')->reply();
+	 * Example: $obj->text('hello')->reply();
 	 * @param string $text
 	 */
 	public function text($text='')
@@ -630,7 +652,7 @@ class Wechat
 	}
 	/**
 	 * 设置回复消息
-	 * Examle: $obj->image('media_id')->reply();
+	 * Example: $obj->image('media_id')->reply();
 	 * @param string $mediaid
 	 */
 	public function image($mediaid='')
@@ -650,7 +672,7 @@ class Wechat
 	
 	/**
 	 * 设置回复消息
-	 * Examle: $obj->voice('media_id')->reply();
+	 * Example: $obj->voice('media_id')->reply();
 	 * @param string $mediaid
 	 */
 	public function voice($mediaid='')
@@ -659,7 +681,7 @@ class Wechat
 		$msg = array(
 			'ToUserName' => $this->getRevFrom(),
 			'FromUserName'=>$this->getRevTo(),
-			'MsgType'=>self::MSGTYPE_IMAGE,
+			'MsgType'=>self::MSGTYPE_VOICE,
 			'Voice'=>array('MediaId'=>$mediaid),
 			'CreateTime'=>time(),
 			'FuncFlag'=>$FuncFlag
@@ -670,20 +692,20 @@ class Wechat
 	
 	/**
 	 * 设置回复消息
-	 * Examle: $obj->video('media_id','title','description')->reply();
+	 * Example: $obj->video('media_id','title','description')->reply();
 	 * @param string $mediaid
 	 */
-	public function video($mediaid='',$title,$description)
+	public function video($mediaid='',$title='',$description='')
 	{
 		$FuncFlag = $this->_funcflag ? 1 : 0;
 		$msg = array(
 			'ToUserName' => $this->getRevFrom(),
 			'FromUserName'=>$this->getRevTo(),
-			'MsgType'=>self::MSGTYPE_IMAGE,
+			'MsgType'=>self::MSGTYPE_VIDEO,
 			'Video'=>array(
 			        'MediaId'=>$mediaid,
-			        'Title'=>$mediaid,
-			        'Description'=>$mediaid,
+			        'Title'=>$title,
+			        'Description'=>$description
 			),
 			'CreateTime'=>time(),
 			'FuncFlag'=>$FuncFlag
@@ -763,10 +785,43 @@ class Wechat
 			$msg = $this->_msg;
 		$xmldata=  $this->xml_encode($msg);
 		$this->log($xmldata);
+		if ($this->encrypt_type == 'aes') { //如果来源消息为加密方式
+		    $pc = new Prpcrypt($this->encodingAesKey);
+		    $array = $pc->encrypt($xmldata, $this->appid);
+		    $ret = $array[0];
+		    if ($ret != 0) {
+		        $this->log('encrypt err!');
+		        return false;
+		    }
+		    $timestamp = time();
+		    $nonce = rand(77,999)*rand(605,888)*rand(11,99);
+		    $encrypt = $array[1];
+		    $tmpArr = array($this->token, $timestamp, $nonce,$encrypt);//比普通公众平台多了一个加密的密文
+		    sort($tmpArr, SORT_STRING);
+		    $signature = implode($tmpArr);
+		    $signature = sha1($signature);
+		    $xmldata = $this->generate($encrypt, $signature, $timestamp, $nonce);
+		    $this->log($xmldata);
+		}
 		if ($return)
 			return $xmldata;
 		else
 			echo $xmldata;
+	}
+
+    /**
+     * xml格式加密，仅请求为加密方式时再用
+     */
+	private function generate($encrypt, $signature, $timestamp, $nonce)
+	{
+	    //格式化加密信息
+	    $format = "<xml>
+<Encrypt><![CDATA[%s]]></Encrypt>
+<MsgSignature><![CDATA[%s]]></MsgSignature>
+<TimeStamp>%s</TimeStamp>
+<Nonce><![CDATA[%s]]></Nonce>
+</xml>";
+	    return sprintf($format, $encrypt, $signature, $timestamp, $nonce);
 	}
 	
 	/**
@@ -778,6 +833,7 @@ class Wechat
 		if(stripos($url,"https://")!==FALSE){
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, FALSE);
+			curl_setopt($oCurl, CURLOPT_SSLVERSION, 1); //CURL_SSLVERSION_TLSv1
 		}
 		curl_setopt($oCurl, CURLOPT_URL, $url);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1 );
@@ -795,18 +851,29 @@ class Wechat
 	 * POST 请求
 	 * @param string $url
 	 * @param array $param
+	 * @param boolean $post_file 是否文件上传
 	 * @return string content
 	 */
-	private function http_post($url,$param){
+	private function http_post($url,$param,$post_file=false){
 		$oCurl = curl_init();
 		if(stripos($url,"https://")!==FALSE){
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
+			curl_setopt($oCurl, CURLOPT_SSLVERSION, 1); //CURL_SSLVERSION_TLSv1
+		}
+		if (is_string($param) || $post_file) {
+			$strPOST = $param;
+		} else {
+			$aPOST = array();
+			foreach($param as $key=>$val){
+				$aPOST[] = $key."=".urlencode($val);
+			}
+			$strPOST =  join("&", $aPOST);
 		}
 		curl_setopt($oCurl, CURLOPT_URL, $url);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($oCurl, CURLOPT_POST,true);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS,$param);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS,$strPOST);
 		$sContent = curl_exec($oCurl);
 		$aStatus = curl_getinfo($oCurl);
 		curl_close($oCurl);
@@ -922,13 +989,11 @@ class Wechat
      * 	              'type' => 'scancode_waitmsg',
      * 	              'name' => '扫码带提示',
      * 	              'key' => 'rselfmenu_0_0',
-     * 	              'sub_button' => ''
      * 	            ),
      * 	            1 => array (
      * 	              'type' => 'scancode_push',
      * 	              'name' => '扫码推事件',
      * 	              'key' => 'rselfmenu_0_1',
-     * 	              'sub_button' => ''
      * 	            ),
      * 	        ),
      * 	      ),
@@ -939,21 +1004,18 @@ class Wechat
      * 	              'type' => 'pic_sysphoto',
      * 	              'name' => '系统拍照发图',
      * 	              'key' => 'rselfmenu_1_0',
-     * 	              'sub_button' => ''
      * 	            ),
      * 	            1 => array (
      * 	              'type' => 'pic_photo_or_album',
      * 	              'name' => '拍照或者相册发图',
      * 	              'key' => 'rselfmenu_1_1',
-     * 	              'sub_button' => ''
      * 	            )
      * 	        ),
      * 	      ),
      * 	      2 => array (
      * 	        'type' => 'location_select',
      * 	        'name' => '发送位置',
-     * 	        'key' => 'rselfmenu_2_0',
-     * 	        'sub_button' => ''
+     * 	        'key' => 'rselfmenu_2_0'
      * 	      ),
      * 	    ),
      * 	)
@@ -1032,7 +1094,7 @@ class Wechat
 	 */
 	public function uploadMedia($data, $type){
 		if (!$this->access_token && !$this->checkAuth()) return false;
-		$result = $this->http_post(self::UPLOAD_MEDIA_URL.self::MEDIA_UPLOAD.'access_token='.$this->access_token.'&type='.$type,$data);
+		$result = $this->http_post(self::UPLOAD_MEDIA_URL.self::MEDIA_UPLOAD.'access_token='.$this->access_token.'&type='.$type,$data,true);
 		if ($result)
 		{
 			$json = json_decode($result,true);
@@ -1062,7 +1124,7 @@ class Wechat
 				$this->errMsg = $json['errmsg'];
 				return false;
 			}
-			return $json;
+			return $result;
 		}
 		return false;
 	}
@@ -1270,7 +1332,7 @@ class Wechat
 			'openid'=>$openid,
 			'remark'=>$remark
 	    );
-	    $result = $this->http_post(self::API_URL_PREFIX.self::USER_UPDATEREMARK_URL.'access_token='.$this->access_token,$data);
+	    $result = $this->http_post(self::API_URL_PREFIX.self::USER_UPDATEREMARK_URL.'access_token='.$this->access_token,self::json_encode($data));
 	    if ($result)
 	    {
 	        $json = json_decode($result,true);
@@ -1817,7 +1879,7 @@ class Wechat
 
 	/**
 	 * 转发多客服消息
-	 * Examle: $obj->transfer_customer_service($customer_account)->reply();
+	 * Example: $obj->transfer_customer_service($customer_account)->reply();
 	 * @param string $customer_account 转发到指定客服帐号：test1@test
 	 */
 	public function transfer_customer_service($customer_account = '')
@@ -1828,7 +1890,7 @@ class Wechat
 			'CreateTime'=>time(),
 			'MsgType'=>'transfer_customer_service',
 		);
-		if (!$customer_account) {
+		if (!empty($customer_account)) {
 			$msg['TransInfo'] = array('KfAccount'=>$customer_account);
 		}
 		$this->Message($msg);
@@ -1886,4 +1948,254 @@ class Wechat
 		}
 		return false;
 	}
+	
+	/**
+	 * 语义理解接口
+	 * @param String $uid      用户唯一id（非开发者id），用户区分公众号下的不同用户（建议填入用户openid）
+	 * @param String $query    输入文本串
+	 * @param String $category 需要使用的服务类型，多个用“，”隔开，不能为空
+	 * @param Float $latitude  纬度坐标，与经度同时传入；与城市二选一传入
+	 * @param Float $longitude 经度坐标，与纬度同时传入；与城市二选一传入
+	 * @param String $city     城市名称，与经纬度二选一传入
+	 * @param String $region   区域名称，在城市存在的情况下可省略；与经纬度二选一传入
+	 * @return boolean|array
+	 */
+	public function querySemantic($uid,$query,$category,$latitude=0,$longitude=0,$city="",$region=""){
+	    if (!$this->access_token && !$this->checkAuth()) return false;
+	    $data=array(
+	            'query' => $query,
+	            'category' => $category,
+	            'appid' => $this->appid,
+	            'uid' => ''
+	    );
+	    //地理坐标或城市名称二选一
+	    if ($latitude) {
+	        $data['latitude'] = $latitude;
+	        $data['longitude'] = $longitude;
+	    } elseif ($city) {
+	        $data['city'] = $city;
+	    } elseif ($region) {
+	        $data['region'] = $region;
+	    }
+	    $result = $this->http_post(self::SEMANTIC_API_URL.'access_token='.$this->access_token,self::json_encode($data));
+	    if ($result)
+	    {
+	        $json = json_decode($result,true);
+	        if (!$json || !empty($json['errcode'])) {
+	            $this->errCode = $json['errcode'];
+	            $this->errMsg = $json['errmsg'];
+	            return false;
+	        }
+	        return $json;
+	    }
+	    return false;
+	}
+}
+
+
+
+/**
+ * PKCS7Encoder class
+ *
+ * 提供基于PKCS7算法的加解密接口.
+ */
+class PKCS7Encoder
+{
+    public static $block_size = 32;
+
+    /**
+     * 对需要加密的明文进行填充补位
+     * @param $text 需要进行填充补位操作的明文
+     * @return 补齐明文字符串
+     */
+    function encode($text)
+    {
+        $block_size = PKCS7Encoder::$block_size;
+        $text_length = strlen($text);
+        //计算需要填充的位数
+        $amount_to_pad = PKCS7Encoder::$block_size - ($text_length % PKCS7Encoder::$block_size);
+        if ($amount_to_pad == 0) {
+            $amount_to_pad = PKCS7Encoder::block_size;
+        }
+        //获得补位所用的字符
+        $pad_chr = chr($amount_to_pad);
+        $tmp = "";
+        for ($index = 0; $index < $amount_to_pad; $index++) {
+            $tmp .= $pad_chr;
+        }
+        return $text . $tmp;
+    }
+
+    /**
+     * 对解密后的明文进行补位删除
+     * @param decrypted 解密后的明文
+     * @return 删除填充补位后的明文
+     */
+    function decode($text)
+    {
+
+        $pad = ord(substr($text, -1));
+        if ($pad < 1 || $pad > PKCS7Encoder::$block_size) {
+            $pad = 0;
+        }
+        return substr($text, 0, (strlen($text) - $pad));
+    }
+
+}
+
+/**
+ * Prpcrypt class
+ *
+ * 提供接收和推送给公众平台消息的加解密接口.
+ */
+class Prpcrypt
+{
+    public $key;
+
+    function Prpcrypt($k)
+    {
+        $this->key = base64_decode($k . "=");
+    }
+
+    /**
+     * 对明文进行加密
+     * @param string $text 需要加密的明文
+     * @return string 加密后的密文
+     */
+    public function encrypt($text, $appid)
+    {
+
+        try {
+            //获得16位随机字符串，填充到明文之前
+            $random = $this->getRandomStr();//"aaaabbbbccccdddd"; 
+            $text = $random . pack("N", strlen($text)) . $text . $appid;
+            // 网络字节序
+            $size = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+            $module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+            $iv = substr($this->key, 0, 16);
+            //使用自定义的填充方式对明文进行补位填充
+            $pkc_encoder = new PKCS7Encoder;
+            $text = $pkc_encoder->encode($text);
+            mcrypt_generic_init($module, $this->key, $iv);
+            //加密
+            $encrypted = mcrypt_generic($module, $text);
+            mcrypt_generic_deinit($module);
+            mcrypt_module_close($module);
+
+            //			print(base64_encode($encrypted));
+            //使用BASE64对加密后的字符串进行编码
+            return array(ErrorCode::$OK, base64_encode($encrypted));
+        } catch (Exception $e) {
+            //print $e;
+            return array(ErrorCode::$EncryptAESError, null);
+        }
+    }
+
+    /**
+     * 对密文进行解密
+     * @param string $encrypted 需要解密的密文
+     * @return string 解密得到的明文
+     */
+    public function decrypt($encrypted, $appid)
+    {
+
+        try {
+            //使用BASE64对需要解密的字符串进行解码
+            $ciphertext_dec = base64_decode($encrypted);
+            $module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+            $iv = substr($this->key, 0, 16);
+            mcrypt_generic_init($module, $this->key, $iv);
+            //解密
+            $decrypted = mdecrypt_generic($module, $ciphertext_dec);
+            mcrypt_generic_deinit($module);
+            mcrypt_module_close($module);
+        } catch (Exception $e) {
+            return array(ErrorCode::$DecryptAESError, null);
+        }
+
+
+        try {
+            //去除补位字符
+            $pkc_encoder = new PKCS7Encoder;
+            $result = $pkc_encoder->decode($decrypted);
+            //去除16位随机字符串,网络字节序和AppId
+            if (strlen($result) < 16)
+                return "";
+            $content = substr($result, 16, strlen($result));
+            $len_list = unpack("N", substr($content, 0, 4));
+            $xml_len = $len_list[1];
+            $xml_content = substr($content, 4, $xml_len);
+            $from_appid = substr($content, $xml_len + 4);
+            if (!$appid)
+                $appid = $from_appid;
+            //如果传入的appid是空的，则认为是订阅号，使用数据中提取出来的appid
+        } catch (Exception $e) {
+            //print $e;
+            return array(ErrorCode::$IllegalBuffer, null);
+        }
+        if ($from_appid != $appid)
+            return array(ErrorCode::$ValidateAppidError, null);
+        //不注释上边两行，避免传入appid是错误的情况
+        return array(0, $xml_content, $from_appid); //增加appid，为了解决后面加密回复消息的时候没有appid的订阅号会无法回复
+
+    }
+
+
+    /**
+     * 随机生成16位字符串
+     * @return string 生成的字符串
+     */
+    function getRandomStr()
+    {
+
+        $str = "";
+        $str_pol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+        $max = strlen($str_pol) - 1;
+        for ($i = 0; $i < 16; $i++) {
+            $str .= $str_pol[mt_rand(0, $max)];
+        }
+        return $str;
+    }
+
+}
+
+/**
+ * error code
+ * 仅用作类内部使用，不用于官方API接口的errCode码
+ */
+class ErrorCode
+{
+    public static $OK = 0;
+    public static $ValidateSignatureError = 40001;
+    public static $ParseXmlError = 40002;
+    public static $ComputeSignatureError = 40003;
+    public static $IllegalAesKey = 40004;
+    public static $ValidateAppidError = 40005;
+    public static $EncryptAESError = 40006;
+    public static $DecryptAESError = 40007;
+    public static $IllegalBuffer = 40008;
+    public static $EncodeBase64Error = 40009;
+    public static $DecodeBase64Error = 40010;
+    public static $GenReturnXmlError = 40011;
+    public static $errCode=array(
+            '0' => '处理成功',
+            '40001' => '校验签名失败',
+            '40002' => '解析xml失败',
+            '40003' => '计算签名失败',
+            '40004' => '不合法的AESKey',
+            '40005' => '校验AppID失败',
+            '40006' => 'AES加密失败',
+            '40007' => 'AES解密失败',
+            '40008' => '公众平台发送的xml不合法',
+            '40009' => 'Base64编码失败',
+            '40010' => 'Base64解码失败',
+            '40011' => '公众帐号生成回包xml失败'
+    );
+    public static function getErrText($err) {
+        if (isset(self::$errCode[$err])) {
+            return self::$errCode[$err];
+        }else {
+            return false;
+        };
+    }
 }
