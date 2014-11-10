@@ -127,10 +127,11 @@ class AdvertController extends AdminController {
         $position_id = I('id','0');
 
         $keywords = I('keywords', '');
+        $condition = 'position_id = '.$position_id;
         //搜索
         if (!empty($keywords)) {
             $filter['keywords'] = $keywords;
-            $condition = 'ad_name like "%' . $keywords . '%" and position_id = '.$position_id.' ';
+            $condition .= ' and ad_name like "%' . $keywords . '%" ';
             $this->assign('keywords', $keywords);
         }
         //分页
