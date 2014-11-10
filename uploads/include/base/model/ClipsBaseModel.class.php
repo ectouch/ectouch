@@ -222,7 +222,7 @@ class ClipsBaseModel extends BaseModel {
                 if (empty($vo['dispose_note'])) {
                     $vo['dispose_note'] = 'N/A';
                 }
-                $booking[] = array('rec_id' => $row['rec_id'],
+                $booking[] = array('rec_id' => $vo['rec_id'],
                     'goods_name' => $vo['goods_name'],
                     'goods_number' => $vo['goods_number'],
                     'booking_time' => local_date(C('date_format'), $vo['booking_time']),
