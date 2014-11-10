@@ -2377,3 +2377,11 @@ function get_editable_libs($curr_template, $curr_page_libs) {
 
     return $edit_libs;
 }
+
+/**
+ * 默认返回 model('Base')->model  用来直接使用ecModel的方法
+ * @param string $model
+ */
+function M($model='Base'){
+    return model($model)->model;
+}
