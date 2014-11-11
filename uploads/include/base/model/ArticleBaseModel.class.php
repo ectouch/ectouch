@@ -12,13 +12,12 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
 class ArticleBaseModel extends BaseModel {
 
-    protected $table = 'article';
+    protected $table = 'touch_article';
 
     /**
      * 获得文章分类下的文章列表
@@ -42,7 +41,7 @@ class ArticleBaseModel extends BaseModel {
             $condition .= ' AND title like \'%' . $requirement . '%\'';
         }
         $limit = ($page - 1) * $size . ',' . $size;
-        $list = $this->select($condition, 'article_id, title, author, add_time, file_url, open_type', 'article_type DESC, article_id DESC', $limit);
+        $list = $this->select($condition, 'article_id, title, author, add_time, file_url, open_type', ' article_id DESC', $limit);
 
         $i = 1;
         $arr = array();
@@ -54,7 +53,7 @@ class ArticleBaseModel extends BaseModel {
                 $arr[$article_id]['title'] = $vo['title'];
                 $arr[$article_id]['short_title'] = C('article_title_length') > 0 ? sub_str($vo['title'], C('article_title_length')) : $vo['title'];
                 $arr[$article_id]['author'] = empty($vo['author']) || $vo['author'] == '_SHOPHELP' ? C('shop_name') : $vo['author'];
-                $arr[$article_id]['url'] = $vo['open_type'] != 1 ? build_uri('article/info', array('aid' => $article_id )) : trim($vo['file_url']);
+                $arr[$article_id]['url'] = $vo['open_type'] != 1 ? build_uri('article/info', array('aid' => $article_id)) : trim($vo['file_url']);
                 $arr[$article_id]['add_time'] = date(C('date_format'), $vo['add_time']);
                 $i++;
             }
@@ -110,7 +109,7 @@ class ArticleBaseModel extends BaseModel {
         if ($res === NULL) {
             $data = read_static_cache('art_cat_pid_releate');
             if ($data === false) {
-                $sql = "SELECT c.*, COUNT(s.cat_id) AS has_children, COUNT(a.article_id) AS aricle_num , tc.is_mobile " . ' FROM ' . $this->pre . "article_cat AS c" . " LEFT JOIN " . $this->pre . "article_cat AS s ON s.parent_id=c.cat_id" . " LEFT JOIN " . $this->pre . "article AS a ON a.cat_id=c.cat_id" . " LEFT JOIN " . $this->pre . "touch_article_cat AS tc ON c.cat_id = tc.cat_id" . " GROUP BY c.cat_id " . " ORDER BY parent_id, sort_order ASC";
+                $sql = "SELECT s.*, COUNT(s.cat_id) AS has_children, COUNT(a.article_id) AS aricle_num " . ' FROM ' . $this->pre . "touch_article_cat AS s" . " LEFT JOIN " . $this->pre . "touch_article AS a ON a.cat_id=s.cat_id" . " GROUP BY s.cat_id " . " ORDER BY parent_id, sort_order ASC";
                 $res = $this->query($sql);
                 write_static_cache('art_cat_pid_releate', $res);
             } else {
@@ -152,10 +151,9 @@ class ArticleBaseModel extends BaseModel {
         }
 
         if ($re_type == true) {
-            $select = '';
+            $select = '';    
             foreach ($options as $var) {
                 $select .= '<option value="' . $var['cat_id'] . '" ';
-                $select .= ' cat_type="' . $var['cat_type'] . '" ';
                 $select .= ($selected == $var['cat_id']) ? "selected='ture'" : '';
                 $select .= '>';
                 if ($var['level'] > 0) {
@@ -296,6 +294,59 @@ class ArticleBaseModel extends BaseModel {
 
             return $spec_cat_id_array;
         }
+    }
+
+    /* 获得文章列表 */
+
+    function get_articleslist() {
+        $result = get_filter();
+        if ($result === false) {
+            $filter = array();
+            $filter['keyword'] = empty($_REQUEST['keyword']) ? '' : trim($_REQUEST['keyword']);
+            if (isset($_REQUEST['is_ajax']) && $_REQUEST['is_ajax'] == 1) {
+                $filter['keyword'] = json_str_iconv($filter['keyword']);
+            }
+            $filter['cat_id'] = empty($_REQUEST['cat_id']) ? 0 : intval($_REQUEST['cat_id']);
+            $filter['sort_by'] = empty($_REQUEST['sort_by']) ? 'a.article_id' : trim($_REQUEST['sort_by']);
+            $filter['sort_order'] = empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
+
+            $where = '';
+            if (!empty($filter['keyword'])) {
+                $where = " AND a.title LIKE '%" . mysql_like_quote($filter['keyword']) . "%'";
+            }
+            if ($filter['cat_id']) {
+                $where .= " AND a." . get_article_children($filter['cat_id']);
+            }
+
+            /* 文章总数 */
+            $sql = 'SELECT COUNT(*)as count FROM ' . $this->pre . 'touch_article AS a ' .
+                    'LEFT JOIN ' . $this->pre . 'touch_article_cat AS ac ON ac.cat_id = a.cat_id ' .
+                    'WHERE 1 ' . $where;
+            $res = $this->row($sql);
+            
+            $filter['record_count'] = $res['count'];
+
+            $filter = page_and_size($filter);
+
+            /* 获取文章数据 */
+            $sql = 'SELECT a.* , ac.cat_name ' .
+                    'FROM ' . $this->pre . 'touch_article AS a ' .
+                    'LEFT JOIN ' . $this->pre . 'touch_article_cat AS ac ON ac.cat_id = a.cat_id ' .
+                    'WHERE 1 ' . $where . ' ORDER by ' . $filter['sort_by'] . ' ' . $filter['sort_order'] .' LIMIT '.$filter['start'].', '.$filter['page_size'];
+
+            $filter['keyword'] = stripslashes($filter['keyword']);
+            set_filter($filter, $sql);
+        } else {
+            $sql = $result['sql'];
+            $filter = $result['filter'];
+        }
+        $arr = array();
+        $res  = $this->query($sql);
+        foreach( $res as $rows){
+            $rows['date'] = local_date(C('time_format'), $rows['add_time']);
+            $arr[] = $rows;
+        }    
+        return array('arr' => $arr, 'filter' => $filter, 'page_count' => $filter['page_count'], 'record_count' => $filter['record_count']);
     }
 
 }

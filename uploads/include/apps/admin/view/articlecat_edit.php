@@ -9,35 +9,63 @@
         <tr>
           <td width="200">{$lang['cat_name']}:</td>
           <td><div class="col-md-4">
-              <input type='text' name='data[cat_name]' disabled="disabled" maxlength="20" value='{$cat['cat_name']}' class="form-control input-sm" />
+              <input type='text' name='data[cat_name]' maxlength="20" value='{$cat['cat_name']}' class="form-control input-sm" />
             </div></td>
         </tr>
         <tr>
-          <td>{$lang['show_in_touch']}</td>
-          <td><div class="col-md-2">
-              <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-primary btn-sm{if $cat['is_mobile'] == '1'} active{/if}">
-                  <input type="radio" name="data[is_mobile]" id="ifshow1" value="1"{if $cat['is_mobile'] == '1'} checked{/if}>
-                  {$lang['yes']} </label>
-                <label class="btn btn-primary btn-sm{if $cat['is_mobile'] == '0'} active{/if}">
-                  <input type="radio" name="data[is_mobile]" id="ifshow2" value="0"{if $cat['is_mobile'] == '0'} checked{/if}>
-                  {$lang['no']} </label>
-              </div>
-            </div></td>
-        </tr>
-        <tr>
-          <td></td>
+          <td>{$lang['parent_cat']}</td>
           <td><div class="col-md-4">
-              <input type="submit" value="{$lang['button_submit']}" class="btn btn-primary" />
-              <input type="reset" value="{$lang['button_reset']}" class="btn btn-default" />
+              <select name="data[parent_id]" onchange="catChanged()" {if $disabled }disabled="disabled"{/if} >
+                <option value="0">{$lang['cat_top']}</option>
+                
+                 {$cat_select}
+                 
+              </select>
             </div></td>
+        </tr>
+        <tr>
+          <td>{$lang['sort_order']}:</td>
+          <td><div class="col-md-4">
+              <input type="text" name='data[sort_order]' {if $cat['sort_order']}value='{$cat['sort_order']}'{else} value="50"{/if} size="15" />
+            </div></td>
+        </tr>
+        <tr>
+          <td>{$lang['cat_keywords']}</td>
+          <td><div class="col-md-4">
+            <input type="text" name="data[keywords]" maxlength="60" value="{$cat['keywords']}" size="50"  />
+            <button type="button" class="btn btn-xs btn-info">Info</button></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td><div class="alert alert-info" role="alert" style="padding:5px 15px;margin:0 15px;">{$lang['notice_keywords']}</div></td>
+        </tr>
+        <tr>
+          <td>{$lang['cat_desc']}</td>
+          <td><div class="col-md-4">
+              <textarea  name="data[cat_desc]" cols="60" rows="4">{$cat['cat_desc']}</textarea>
+            </div></td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center"><br />
+            <input type="submit" class="button" value="{$lang['button_submit']}" />
+            <input type="reset" class="button" value="{$lang['button_reset']}" /></td>
         </tr>
       </table>
       <input type="hidden" name="cat_id" value="{$cat['cat_id']}" />
     </form>
   </div>
 </div>
-<script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
-<script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.all.min.js"></script>
-<script type="text/javascript">var ue = UE.getEditor('container');</script>
+<script type="text/javascript">
+//提示信息显示隐藏
+$(function(){
+	$(".btn-info").click(function(){
+		if($(this).hasClass("info_hide")){
+			$(this).removeClass("info_hide").closest("tr").siblings("tr").find(".alert-info").show();
+		}
+		else{
+			$(this).addClass("info_hide").closest("tr").siblings("tr").find(".alert-info").hide();
+		}
+	});
+})
+</script> 
 {include file="pagefooter"}
