@@ -397,7 +397,7 @@ function changeBonus(val)
     selectedBonus = val;
   }
 
-  $.get('index.php?m=default&c=flow&a=change_bonus', {bonus:val}, function(data){
+  $.get('index.php?m=default&c=flow&a=change_bonus', {bonus:val.value}, function(data){
     changeBonusResponse(data);
   }, 'json');
   //Ajax.call('flow.php?step=change_bonus', 'bonus=' + val, changeBonusResponse, 'GET', 'JSON');
