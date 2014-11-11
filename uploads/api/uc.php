@@ -59,7 +59,7 @@ $sess_name = defined("SESS_NAME") ? SESS_NAME : 'ECS_ID';
 $sess = new EcsApiSession($db, $db->pre .'sessions', $db->pre . 'sessions_data', $sess_name);
 
 /* 载入系统参数 */
-$_CFG = load_config();
+$_CFG = load_config_uc();
 C('CFG', $_CFG);
 
 /* 初始化用户插件 */
@@ -580,7 +580,7 @@ function _stripslashes($string)
  * @access public
  * @return array
  */
-function load_config()
+function load_config_uc()
 {
     $arr = array();
     $sql = 'SELECT code, value FROM {pre}shop_config WHERE parent_id > 0';
@@ -627,7 +627,7 @@ function load_config()
     
     $ecs_version = C('ecs_version');
     if (! isset($ecs_version)) {
-        /* 如果没有版本号则默认为2.0.5 */
+        /* 如果没有版本号则默认为2.7.3 */
         C('ecs_version', 'v2.7.3');
     }
     
@@ -645,6 +645,10 @@ function load_config()
         $arr['integrate_code'] = 'ecshop'; // 默认的会员整合插件为 ecshop
     }
     
-    return $arr;
+    foreach ($arr AS $key=>$vo) {
+        $config[strtoupper($key)] = $vo;
+    }
+    
+    return $config;
 }
 ?>
