@@ -275,6 +275,7 @@ INSERT INTO `ecs_touch_shop_config` SELECT * FROM `ecs_shop_config`;
 
 INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (1, 'shop_url', 'text', '', '', '', 1);
 
+INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (1, 'is_asynclist', 'select', '1,0', '', '0', 1);
 -- ----------------------------
 -- 增加短信接口配置项
 -- ----------------------------
