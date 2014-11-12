@@ -89,7 +89,7 @@ class ProductsBaseModel extends BaseModel {
         }
         /* 取货品 */
         $sql = "SELECT * FROM " . $this->pre . "products WHERE $_goods_id $conditions";
-        $result_products = ECTouch::db()->getAll($sql);
+        $result_products = $this->query($sql);
 
         /* 取商品属性 */
         $sql = "SELECT goods_attr_id, attr_value FROM " . $this->pre . "goods_attr WHERE $_goods_id";
