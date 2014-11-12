@@ -137,6 +137,25 @@
       <!-- {/if} 是否有包装 或贺卡 -->
       
       <section class="ect-margin-tb ect-padding-lr checkout-select"> 
+	  <!-- {if $allow_use_bonus and $bonus_list} 是否使用红包 -->
+	 	<a data-toggle="collapse" data-parent="#accordion" href="#collapseBonus">
+        <p><b>{$lang.use_bonus}</b></p>
+        <i class="fa fa-angle-down"></i></a>
+        <div id="collapseBonus" class="panel-collapse collapse in">
+		  <ul class="ect-radio">
+            <li>
+              <input  type="radio" id="bonus_{$bonus.bonus_id}"  name="bonus" value="0" {if $order.bonus_id eq 0}checked="true"{/if} onclick="changeBonus(this)" >
+              <label for="bonus_{$bonus.bonus_id}">{$lang.no_use_bonus}<i></i></label>
+            </li>
+            <!-- {foreach from=$bonus_list item=bonus} 循环红包 -->
+            <li>
+              <input type="radio" class="radio" name="bonus" id="bonus_{$bonus.bonus_id}" value="{$bonus.bonus_id}" {if $order.bonus_id eq $bonus.bonus_id}checked="true"{/if} onclick="changeBonus(this)" />
+              <label for="bonus_{$bonus.bonus_id}">{$bonus.type_name}[{$bonus.bonus_money_formated}]<i></i></label>
+            </li>
+            <!-- {/foreach} 循环红包 -->
+          </ul>
+        </div>
+        <!-- {/if} 是否使用红包 -->
         <!-- {if $allow_use_surplus} 是否使用余额 --> 
         <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour1">
         <p><b> {$lang.use_surplus} </b></p>

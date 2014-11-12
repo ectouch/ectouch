@@ -44,6 +44,21 @@
       <p class="text-center">{$lang.label_share}</p>
     </li>
     </a>
+     <a href="{:url('user/tag_list')}">
+    <li class="col-sm-3 col-xs-3"><i class="glyphicon glyphicon-tags"></i>
+      <p class="text-center">{$lang.label_tag}</p>
+    </li>
+    </a>
+    <a href="{:url('user/bonus')}">
+    <li class="col-sm-3 col-xs-3"><i class="glyphicon glyphicon-gift"></i>
+      <p class="text-center">{$lang.label_bonus}</p>
+    </li>
+    </a>
+     <a href="{:url('user/booking_list')}">
+    <li class="col-sm-3 col-xs-3"><i class="glyphicon glyphicon-link"></i>
+      <p class="text-center">{$lang.label_booking}</p>
+    </li>
+    </a>
   </ul>
 </section>
 <section class="user-tab ect-margin-tb ect-margin-bottom0"> 
@@ -68,7 +83,9 @@
           </dl>
           <a href="{:url('user/delete_collection', array('rec_id'=>$this->_var['val']['rec_id']))}" class="pull-right del"><i class="glyphicon glyphicon-trash"></i></a></li>
         <!-- {/foreach} -->
+         <a href="{:url('collection_list')}" class="more">{$lang.view_more}</a>
       </ul>
+     
       <!--{else}-->
       <p class="text-center ect-margin-tb ect-padding-tb">{$lang.no_data}</p>
       <!--{/if}--> 
@@ -91,6 +108,7 @@
           </dl>
         </li>
         <!-- {/foreach} -->
+        <a href="{:url('comment_list')}" class="more">{$lang.view_more}</a>
       </ul>
       <!--{else}-->
       <p class="text-center ect-margin-tb ect-padding-tb">{$lang.no_data}</p>
@@ -129,7 +147,7 @@
             var obj = $(this);
             var url = obj.attr("href");
             $.get(url, '', function(data){
-                if(1 == data){
+                if(1 == data.status){
                     if(obj.hasClass("history_clear")){
                         obj.closest(".ect-pro-list").html("<p class='text-center  ect-margin-tb ect-padding-tb'>暂无浏览记录，点击<a href={:url('category/index')} class='ect-color ect-margin-lr' style='font-size:1.3em;'>进入</a>浏览商品</p>");
                         obj.parent().siblings("ul").remove();
@@ -144,7 +162,7 @@
                 else{
                     alert("删除失败");
                 }
-            });
+            }, 'json');
             return false;
    		});
     })

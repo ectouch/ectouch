@@ -41,7 +41,7 @@
          <!-- {else} -->
           	<input type="text" class="txtnum" readonly value="{$goods.goods_number}"/>
           <!-- {/if} --> 
-           <div class="pull-right flow-del text-center"> <a href="javascript:if (confirm('{$lang.drop_goods_confirm}')) location.href='{:url('flow/drop_goods',array('id'=>$this->_var['goods']['rec_id']))}';">{$lang.drop}</a> </div>
+           <div class="pull-right flow-del text-center"> <a href="javascript:if (confirm('{$lang.drop_goods_confirm}')) location.href='{:url('flow/drop_goods',array('id'=>$this->_var['goods']['rec_id']))}';" style="padding: 2px 5px;">{$lang.drop}</a> </div>
         </div>
       </li>
       <!-- {/foreach} -->
@@ -90,6 +90,6 @@
   <!--{else}-->
   <div class="flow-no-pro"> <img src="__TPL__/images/gwc.png">
     <p class="text-center">{$lang.empty_shopping}</p>
-    <a type="button" href="{:url('category/all')}" class="btn btn-info ect-btn-info">{$lang.go_shopping}</a> </div>
+    <a type="button" href="{:url('category/top_all')}" class="btn btn-info ect-btn-info">{$lang.go_shopping}</a> </div>
   <!-- {/if} --> 
 </div>

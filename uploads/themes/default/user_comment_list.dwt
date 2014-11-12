@@ -1,0 +1,24 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+<div class="ect-pro-list ect-booking-list">
+  <ul>
+  <!--{foreach from=$comment_list item=comment} -->
+    <li>
+      <dl>
+        <dt>
+          <h4 class="title"><a href="{:url('goods/index', array('id'=>$this->_var['comment']['id_value']))}"><!-- {if $val.comment_type eq 0} --> {$lang.goods_comment}<!-- {else} -->{$lang.article_comment}<!-- {/if} -->：{$comment.cmt_name}</a></h4>
+        </dt>
+        <dd class="date ect-color999">{$comment.formated_add_time}</dd>
+        <dd>{$val.content}</dd>
+			<!-- {if $comment.reply_content} -->
+            <dd>{$lang.reply_comment}：{$comment.reply_content}</dd>
+            <!-- {/if} -->
+        <dd><a href="javascript:if(confirm('{$lang.confirm_remove_account}')){window.location.href='{:url('user/delete_comment', array('id'=>$this->_var['comment']['comment_id']))}'};" class="pull-right del"><i class="glyphicon glyphicon-trash"></i></a></dd>
+      </dl>
+    </li>
+    <!-- {/foreach} -->
+  </ul>
+</div>
+<!-- #BeginLibraryItem "/library/page.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

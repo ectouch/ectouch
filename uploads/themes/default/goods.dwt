@@ -24,13 +24,14 @@
     </div>
   </div>
   <!--商品属性介绍-->
-  <div class="goods-info ect-padding-tb">
+  <div class="goods-info ect-padding-tb"> 
+    <!--商品描述-->
     <section class="ect-margin-tb ect-margin-lr goods-title">
       <h4 class="title pull-left">{$goods.goods_style_name}</h4>
       <span class="pull-right text-center <!--{if $sc eq 1}-->ect-colory<!--{/if}--> ect-padding-lr" onClick="collect({$goods.goods_id})" id='ECS_COLLECT'> <i class="fa <!--{if $sc eq 1}-->fa-heart<!--{else}-->fa-heart-o<!--{/if}-->"></i><br>
       {$lang.btn_collect} </span> </section>
     <section class="ect-margin-tb ect-margin-lr ">
-      <p><span class="pull-left">{$lang.amount}：<b class="ect-colory" id="ECS_GOODS_AMOUNT"></b></span><span class="pull-right">{$lang.sort_sales}：{$sales_count} 件</span></p>
+      <p><span class="pull-left">{$lang.amount}：<b class="ect-colory" id="ECS_GOODS_AMOUNT"></b></span><span class="pull-right">{$lang.sort_sales}：{$sales_count} {$lang.piece}</span></p>
       <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销-->{$lang.promote_price}<!--{else}-->{$lang.shop_price}<!--{/if}--><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--> 
         {$goods.promote_price} 
         <!--{else}--> 
@@ -39,15 +40,15 @@
     </section>
     <!-- {if $promotion} 优惠活动 -->
     <section class="ect-margin-tb ect-margin-bottom0 ect-padding-tb goods-promotion ect-padding-lr ">
-      <h5><b>本商品正在进行：</b></h5>
+      <h5><b>{$lang.activity}：</b></h5>
       <p class="ect-border-top ect-margin-tb"> 
         <!-- {foreach from=$promotion item=item key=key} 优惠活动--> 
         <!-- {if $item.type eq "snatch"} --> 
-        <!--<a title="{$lang.snatch}"><i class="label tbqb">夺</i> [{$lang.snatch}]<i class="pull-right fa fa-angle-right"></i></a>-->
+        <!--<a title="{$lang.snatch}"><i class="label tbqb">夺</i> [{$lang.snatch}]<i class="pull-right fa fa-angle-right"></i></a>--> 
         <!-- {elseif $item.type eq "group_buy"} --> 
         <a href="{$item.url}" title="{$lang.group_buy}"><i class="label tuan">{$lang.group_buy_act}</i> [{$lang.group_buy}]<i class="pull-right fa fa-angle-right"></i></a> 
         <!-- {elseif $item.type eq "auction"} --> 
-        <!--<a title="{$lang.auction}"><i class="label pm">拍卖</i> [{$lang.auction}]<i class="pull-right fa fa-angle-right"></i></a> -->
+        <!--<a title="{$lang.auction}"><i class="label pm">拍卖</i> [{$lang.auction}]<i class="pull-right fa fa-angle-right"></i></a> --> 
         <!-- {elseif $item.type eq "favourable"} --> 
         
         <a href="{$item.url}" title="{$lang.$item.type} {$item.act_name}{$item.time}"> 
@@ -62,7 +63,9 @@
         <!-- {/foreach} --> 
       </p>
     </section>
-    <!-- {/if} -->
+    <!-- {/if} --> 
+    <!--商品评价-->
+    
     <form action="javascript:addToCart({$goods.goods_id})" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY" >
       <section class="ect-padding-lr ect-padding-tb goods-option">
         <div class="goods-optionc"> 
@@ -105,11 +108,12 @@
           <!-- {/if} --> 
         </div>
       </section>
+      <section class="goods-more-a"> <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/info',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_brief}</span> <i class="pull-right fa fa-chevron-right"></i></a> <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/comment_list',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_comment}</span> <span class="pull-right"><span class="ect-color">{$comments.count}</span>{$lang.comment_num} <span class="ect-color">{$comments.favorable}%</span>{$lang.favorable_comment} <i class="fa fa-chevron-right"></i></span></a> </section>
       <div class="ect-padding-lr ect-padding-tb goods-submit">
         <div><a type="botton" class="btn btn-info ect-btn-info ect-colorf" href="javascript:addToCart_quick({$goods.goods_id})">{$lang.buy_now}</a></div>
-       </div>
-      <section class="user-tab ect-border-bottom0"> 
-      <div id="is-nav-tabs" style="height:3.15em; display:none;"></div>
+      </div>
+      <section class="user-tab ect-border-bottom0" style="display:none;">
+        <div id="is-nav-tabs" style="height:3.15em; display:none;"></div>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs text-center">
           <li class="col-xs-4 active"><a href="#one" role="tab" data-toggle="tab">{$lang.goods_brief}</a></li>
@@ -144,10 +148,39 @@
         </div>
       </section>
     </form>
-  </div><footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
+  </div>
+  <div class="goods-related ect-padding-lr ect-padding-tb">
+    <p><strong>{$lang.releate_goods}：</strong></p>
+    <!-- 本例主要代码 Start ================================ -->
+    <div id="picScroll" class="picScroll">
+      <div class="hd">
+        <ul>
+        </ul>
+      </div>
+      <div class="bd">
+        <ul>
+          <!--{foreach from=$related_goods item=goods name=goods}-->
+          <li><a href="{$goods.url}"><img _src="{$goods.goods_thumb}" src="{$goods.goods_thumb}" /></a>
+            <p class="ect-color"> 
+              <!--{if $goods.promote_price}--> 
+              {$goods.formated_promote_price}
+              <!--{else}--> 
+              {$goods.shop_price}
+              <!--{/if}--> 
+            </p>
+            <p class="text-left">{$goods.short_name}</p>
+          </li>
+          <!--{if $smarty.foreach.goods.iteration%3 eq 0}--></ul><ul><!--{/if}-->
+          <!--{/foreach}-->
+        </ul>
+      </div>
+    </div>
+    
+    <!-- 本例主要代码 End ================================ --> 
+  </div>
+  <footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
-<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript" src="__TPL__/js/lefttime.js"></script> 
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function(){Code.photoSwipe('a', '#Gallery');}, false);
@@ -233,5 +266,14 @@ function func_scroll(){//定义一个事件效果置
 window.onscroll = function () {
 	 func_scroll();
 }
-</script>
+</script> 
+<script type="text/javascript">
+				TouchSlide({ 
+					slideCell:"#picScroll",
+					titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+					autoPage:"true", //自动分页
+					pnLoop:"false", // 前后按钮不循环
+					switchLoad:"_src" //切换加载，真实图片路径为"_src" 
+				});
+			</script>
 </body></html>

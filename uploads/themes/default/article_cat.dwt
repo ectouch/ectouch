@@ -15,7 +15,7 @@
     </div>
   </form>
   <!-- {if $article_categories} -->
-  <div>
+  <div class="nav">
     <ul>
       <!--{foreach from=$article_categories item=cat name="article_cat"}-->
       <li><a href="{:url('article/art_list', array('id'=>$this->_var['cat']['id']))}">{$cat.name|escape:html}</a></li>

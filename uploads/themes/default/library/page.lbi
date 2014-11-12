@@ -1,0 +1,14 @@
+<ul class="pager ect-margin-lr ect-page">
+	  <li class="pull-left"><a href="{$page.page_prev|default:#}">上一页</a></li>
+	  <!-- {if $page.page_number} -->
+	  <li class="form-select">
+		<i class="fa fa-sort-desc"></i>
+	    <select name="sel_question" onChange="window.location.href=this.value;">
+			<!-- {foreach from=$page.page_number key=key item=num} -->
+			<option value="{$num}" {if $page.page == $key}selected{/if} >{$key}/{$page.page_count}</option>
+			<!-- {/foreach} -->
+		</select>
+	  </li>
+	  <!-- {/if} -->
+	  <li class="pull-right"><a href="{$page.page_next|default:#}">下一页</a></li>
+</ul> 

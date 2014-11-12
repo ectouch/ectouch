@@ -72,6 +72,6 @@
   {if $is_group_buy}
   {$lang.notice_gb_order_amount}{/if} 
   <!--{if $total.exchange_integral }消耗积分--> 
-  {$lang.notice_eg_integral<b class="ect-colory">{$total.exchange_integral}</b><br />
+  {$lang.notice_eg_integral}<b class="ect-colory">{$total.exchange_integral}</b><br />
   <!--{/if}--> 
 </div>
