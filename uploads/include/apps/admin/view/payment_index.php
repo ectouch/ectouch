@@ -18,7 +18,7 @@
     <td class="text-center">{$vo['pay_fee']}</td>
     <td class="text-center">
     	{if $vo['install'] == 1}
-    	<a href="{url('edit', array('code'=>$vo['code']))}">{$lang['edit']}</a> | <a href="{url('uninstall', array('code'=>$vo['code']))}">{$lang['uninstall']}</a>
+    	<a href="{url('edit', array('code'=>$vo['code']))}">{$lang['edit']}</a> | <a href="javascript:if(confirm({$lang.confirm_uninstall})){window.location.href='{url('uninstall', array('code'=>$vo['code']))}'};">{$lang['uninstall']}</a>
     	{else}
     	<a href="{url('install', array('code'=>$vo['code']))}">{$lang['install']}</a>
     	{/if}
