@@ -40,7 +40,7 @@ class ArticleController extends AdminController {
      */
     public function add() {
         if (IS_POST) {
-            $data = I('data');
+            $data = I('data');      
             /* 数据验证 */
             $msg = Check::rule(array(
                         array(Check::must($data['title']), L('no_title')),
@@ -52,15 +52,14 @@ class ArticleController extends AdminController {
                 $this->message($msg, NULL, 'error');
             }
             $data['add_time'] = gmtime();
-            ;
             $this->model->table('touch_article')->data($data)->insert();
             clear_all_files();
-            $this->message(L('brandadd_succed'), url('index'));
+            $this->message(L('articleadd_succeed'), url('index'));
         }
         /* 模板赋值 */
         $this->assign('cat_select', model('ArticleBase')->article_cat_list(0));
         $this->assign('ur_here', L('article_add'));
-        $this->assign('action_link', array('text' => L('06_goods_brand_list'), 'href' => url('index')));
+        $this->assign('action_link', array('text' => L('03_article_list'), 'href' => url('index')));
         $this->display();
     }
 

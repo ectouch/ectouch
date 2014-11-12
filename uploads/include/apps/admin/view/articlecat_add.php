@@ -14,28 +14,23 @@
         </tr>
         <tr>
           <td>{$lang['parent_cat']}</td>
-          <td><div class="col-md-4"><select name="data[parent_id]" onchange="catChanged()" {if $disabled }disabled="disabled"{/if} >
+          <td><div class="col-md-2"><select name="data[parent_id]" onchange="catChanged()" {if $disabled }disabled="disabled"{/if} class="form-control input-sm">
               <option value="0">{$lang['cat_top']}</option>
               {$cat_select}
             </select></div></td>
         </tr>
         <tr>
           <td>{$lang['sort_order']}:</td>
-          <td><div class="col-md-4"><input type="text" name='data[sort_order]' {if $cat['sort_order']}value='{$cat['sort_order']}'{else} value="50"{/if} size="15" /></div></td>
+          <td><div class="col-md-1"><input type="text" name='data[sort_order]' {if $cat['sort_order']}value='{$cat['sort_order']}'{else} value="50"{/if} class="form-control input-sm" /></div></td>
         </tr>
         <tr>
           <td>{$lang['cat_keywords']}</td>
-          <td><div class="col-md-4"><input type="text" name="data[keywords]" maxlength="60" size="50"  />
-            <button type="button" class="btn btn-xs btn-info">Info</button>
+          <td><div class="col-md-3"><input type="text" name="data[keywords]" class="form-control input-sm"  /></div>
            </td>
         </tr>
         <tr>
-        	<td>&nbsp;</td>
-        	<td><div class="alert alert-info" role="alert" style="padding:5px 15px;margin:0 15px;">{$lang['notice_keywords']}</div></td>	
-        </tr>
-        <tr>
           <td>{$lang['cat_desc']}</td>
-          <td><div class="col-md-4"><textarea  name="data[cat_desc]" cols="60" rows="4">{$cat['cat_desc']}</textarea></div></td>
+          <td><div class="col-md-4"><textarea  name="data[cat_desc]" rows="7" class="form-control input-sm">{$cat['cat_desc']}</textarea></div></td>
         </tr>
         <tr>
           <td colspan="2" align="center"><br />

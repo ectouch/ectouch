@@ -21,12 +21,10 @@
             <!-- {if $article['cat_id'] >= 0} -->
             <tr>
               <td class="narrow-label">{$lang['cat']} </td>
-              <td><div class="col-md-3">
-                  <select name="data[cat_id]" onchange="catChanged()">
+              <td><div class="col-md-2">
+                  <select name="data[cat_id]" onchange="catChanged()" class="form-control input-sm">
                     <option value="0">{$lang['select_plz']}</option>
-                    
-            {$cat_select}
-                  
+                    {$cat_select}
                   </select>
                 </div></td>
             </tr>
@@ -38,7 +36,7 @@
               <td><div class="col-md-4">
                   <div class="btn-group" data-toggle="buttons">
                     <label class="btn btn-primary btn-sm active">
-                      <input type="radio" name="data[is_open]" value="1">
+                      <input type="radio" name="data[is_open]" value="1" checked>
                       {$lang['isopen']}</label>
                     <label class="btn btn-primary btn-sm">
                       <input type="radio" name="data[is_open]" value="0">
@@ -79,7 +77,7 @@
           </table>
         </div>
         <div class="tab-pane" id="detail">
-          <table width="90%" id="detail-table">
+		  <table width="90%" class="table table-hover ectouch-table">
             <tr>
               <td><div class="col-md-9"> 
                   <script id="container" name="content" type="text/plain" style="width:810px; height:360px;"></script> 
