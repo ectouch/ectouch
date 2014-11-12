@@ -90,9 +90,10 @@ class integrate
         if (empty($cfg['db_host'])) {
             $this->db_name = $db_config['DB_NAME'];
             $this->prefix = $db_config['DB_PREFIX'];
-            if (class_exists('ECTouch')){
-                $this->db = & ECTouch::db();
-            }else{
+            if (class_exists('ECTouch')) {
+                // $this->db = & ECTouch::db();
+                $this->db = M();
+            } else {
                 $this->db = $GLOBALS['db'];
             }
         } else {
@@ -165,7 +166,10 @@ class integrate
         }
         /* 检查email是否重复 */
         $sql = "SELECT " . $this->field_id . " FROM " . $this->table($this->user_table) . " WHERE " . $this->field_email . " = '$email'";
-        if ($this->db->getOne($sql, true) > 0) {
+        if ($this->db->table($this->user_table)
+            ->field($this->field_id)
+            ->where($this->field_email . " = '$email'")
+            ->getOne() > 0) {
             $this->error = ERR_EMAIL_EXISTS;
             
             return false;
@@ -249,17 +253,21 @@ class integrate
         
         if ((! empty($cfg['email'])) && $this->field_email != 'NULL') {
             /* 检查email是否重复 */
-            $sql = "SELECT " . $this->field_id . " FROM " . ECTouch::ecs()->table($this->user_table) . " WHERE " . $this->field_email . " = '$cfg[email]' " . " AND " . $this->field_name . " != '$cfg[post_username]'";
-            if (ECTouch::db()->getOne($sql, true) > 0) {
+            if ($this->db->table($this->user_table)
+                ->field($this->field_id)
+                ->where($this->field_email . " = '$cfg[email]' " . " AND " . $this->field_name . " != '$cfg[post_username]'")
+                ->getOne() > 0) {
                 $this->error = ERR_EMAIL_EXISTS;
                 
                 return false;
             }
             // 检查是否为新E-mail
-            $sql = "SELECT count(*)" . " FROM " . ECTouch::ecs()->table($this->user_table) . " WHERE " . $this->field_email . " = '$cfg[email]' ";
-            if (ECTouch::db()->getOne($sql, true) == 0) {
+            if ($this->db->table($this->user_table)
+                ->field('count(*)')
+                ->where($this->field_email . " = '$cfg[email]' ")
+                ->getOne() == 0) {
                 // 新的E-mail
-                $sql = "UPDATE " . ECTouch::ecs()->table('users') . " SET is_validated = 0 WHERE user_name = '$cfg[post_username]'";
+                $sql = "UPDATE " . $this->db->pre . 'users ' . " SET is_validated = 0 WHERE user_name = '$cfg[post_username]'";
                 $this->db->query($sql);
             }
             $values[] = $this->field_email . "='" . $cfg['email'] . "'";
@@ -274,9 +282,9 @@ class integrate
         }
         
         if ($values) {
-            $sql = "UPDATE " . ECTouch::ecs()->table($this->user_table) . " SET " . implode(', ', $values) . " WHERE " . $this->field_name . "='" . $cfg['post_username'] . "' LIMIT 1";
+            $sql = "UPDATE " . $this->db->pre . $this->user_table . " SET " . implode(', ', $values) . " WHERE " . $this->field_name . "='" . $cfg['post_username'] . "' LIMIT 1";
             
-            ECTouch::db()->query($sql);
+            $this->db->query($sql);
             
             if ($this->need_sync) {
                 if (empty($cfg['md5password'])) {
@@ -307,42 +315,48 @@ class integrate
         
         if ($this->need_sync || (isset($this->is_ecshop) && $this->is_ecshop)) {
             /* 如果需要同步或是ecshop插件执行这部分代码 */
-            $sql = "SELECT user_id FROM " . ECTouch::ecs()->table('users') . " WHERE ";
-            $sql .= (is_array($post_id)) ? db_create_in($post_id, 'user_name') : "user_name='" . $post_id . "' LIMIT 1";
-            $col = ECTouch::db()->getCol($sql);
+            $where = (is_array($post_id)) ? db_create_in($post_id, 'user_name') : "user_name='" . $post_id . "'";
+            $col = M()->table('users')
+                ->field('user_id')
+                ->where($where)
+                ->limit('1')
+                ->getCol();
             
             if ($col) {
-                $sql = "UPDATE " . ECTouch::ecs()->table('users') . " SET parent_id = 0 WHERE " . db_create_in($col, 'parent_id'); // 将删除用户的下级的parent_id 改为0
-                ECTouch::db()->query($sql);
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('users') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户
-                ECTouch::db()->query($sql);
+                $sql = "UPDATE " . $this->db->pre . 'users ' . " SET parent_id = 0 WHERE " . db_create_in($col, 'parent_id'); // 将删除用户的下级的parent_id 改为0
+                $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'users ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户
+                $this->db->query($sql);
                 /* 删除用户订单 */
-                $sql = "SELECT order_id FROM " . ECTouch::ecs()->table('order_info') . " WHERE " . db_create_in($col, 'user_id');
-                ECTouch::db()->query($sql);
-                $col_order_id = ECTouch::db()->getCol($sql);
+                $sql = "SELECT order_id FROM " . $this->db->pre . 'order_info ' . " WHERE " . db_create_in($col, 'user_id');
+                $this->db->query($sql);
+                $col_order_id = $this->db->table('order_info')
+                    ->field('order_id')
+                    ->where(db_create_in($col, 'user_id'))
+                    ->getCol();
                 if ($col_order_id) {
-                    $sql = "DELETE FROM " . ECTouch::ecs()->table('order_info') . " WHERE " . db_create_in($col_order_id, 'order_id');
-                    ECTouch::db()->query($sql);
-                    $sql = "DELETE FROM " . ECTouch::ecs()->table('order_goods') . " WHERE " . db_create_in($col_order_id, 'order_id');
-                    ECTouch::db()->query($sql);
+                    $sql = "DELETE FROM " . $this->db->pre . 'order_info ' . " WHERE " . db_create_in($col_order_id, 'order_id');
+                    $this->db->query($sql);
+                    $sql = "DELETE FROM " . $this->db->pre . 'order_goods ' . " WHERE " . db_create_in($col_order_id, 'order_id');
+                    $this->db->query($sql);
                 }
                 
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('booking_goods') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户
-                ECTouch::db()->query($sql);
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('collect_goods') . " WHERE " . db_create_in($col, 'user_id'); // 删除会员收藏商品
-                ECTouch::db()->query($sql);
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('feedback') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户留言
-                ECTouch::db()->query($sql);
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('user_address') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户地址
-                ECTouch::db()->query($sql);
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('user_bonus') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户红包
-                ECTouch::db()->query($sql);
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('user_account') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户帐号金额
-                ECTouch::db()->query($sql);
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('tag') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户标记
-                ECTouch::db()->query($sql);
-                $sql = "DELETE FROM " . ECTouch::ecs()->table('account_log') . " WHERE " . db_create_in($col, 'user_id'); // 删除用户日志
-                ECTouch::db()->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'booking_goods ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户
+                $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'collect_goods ' . " WHERE " . db_create_in($col, 'user_id'); // 删除会员收藏商品
+                $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'feedback ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户留言
+                $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'user_address ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户地址
+                $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'user_bonus ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户红包
+                $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'user_account ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户帐号金额
+                $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'tag ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户标记
+                $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'account_log ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户日志
+                $this->db->query($sql);
             }
         }
         
@@ -362,6 +376,36 @@ class integrate
     }
 
     /**
+     * 用户绑定时同步用户数据
+     * 
+     * @param unknown $old_uid            
+     * @param unknown $new_uid            
+     */
+    function sync_user($old_uid, $new_uid)
+    {
+        if (! empty($old_uid) && ! empty($new_uid)) {
+            $sql = "UPDATE " . $this->db->pre . 'users ' . " SET parent_id = " . $new_uid . " WHERE parent_id = " . $old_uid; // 将用户的下级的parent_id 改为新绑定的用户
+            $this->db->query($sql);
+            /* 更改用户订单 */
+            $sql = "UPDATE " . $this->db->pre . 'order_info ' . " SET user_id = " . $new_uid . " WHERE user_id = " . $old_uid;
+            $this->db->query($sql);
+            
+            $sql = "UPDATE " . $this->db->pre . 'booking_goods ' . " SET user_id = " . $new_uid . " WHERE user_id = " . $old_uid; // 更改用户
+            $this->db->query($sql);
+            $sql = "UPDATE " . $this->db->pre . 'collect_goods ' . " SET user_id = " . $new_uid . " WHERE user_id = " . $old_uid; // 更改会员收藏商品
+            $this->db->query($sql);
+            $sql = "UPDATE " . $this->db->pre . 'feedback ' . " SET user_id = " . $new_uid . " WHERE user_id = " . $old_uid; // 更改用户留言
+            $this->db->query($sql);
+            $sql = "UPDATE " . $this->db->pre . 'user_address ' . " SET user_id = " . $new_uid . " WHERE user_id = " . $old_uid; // 更改用户地址
+            $this->db->query($sql);
+            $sql = "UPDATE " . $this->db->pre . 'tag ' . " SET user_id = " . $new_uid . " WHERE user_id = " . $old_uid; // 更改用户标记
+            $this->db->query($sql);
+            $sql = "UPDATE " . $this->db->pre . 'account_log ' . " SET user_id = " . $new_uid . " WHERE user_id = " . $old_uid; // 更改用户日志
+            $this->db->query($sql);
+        }
+    }
+
+    /**
      * 获取指定用户的信息
      *
      * @access public
@@ -376,7 +420,7 @@ class integrate
     {
         $post_username = $username;
         
-        $sql = "SELECT " . $this->field_id . " AS user_id," . $this->field_name . " AS user_name," . $this->field_email . " AS email," . $this->field_mobile . " AS mobile," . $this->field_gender . " AS sex," . $this->field_bday . " AS birthday," . $this->field_reg_date . " AS reg_time, " . $this->field_passwd_question . " AS passwd_question," . $this->field_pass . " AS password " . " FROM " . $this->table($this->user_table) . " WHERE " . $this->field_name . "='$post_username'";
+        $sql = "SELECT " . $this->field_id . " AS user_id," . $this->field_name . " AS user_name," . $this->field_email . " AS email," . $this->field_mobile . " AS mobile," . $this->field_gender . " AS sex," . $this->field_bday . " AS birthday," . $this->field_reg_date . " AS reg_time, " . $this->field_passwd_question . " AS passwd_question," . $this->field_pass . " AS password " . " FROM " . $this->db->pre . $this->user_table . " WHERE " . $this->field_name . "='$post_username'";
         $row = $this->db->getRow($sql);
         
         return $row;
@@ -442,15 +486,17 @@ class integrate
         
         /* 如果没有定义密码则只检查用户名 */
         if ($password === null) {
-            $sql = "SELECT " . $this->field_id . " FROM " . $this->table($this->user_table) . " WHERE " . $this->field_name . "='" . $post_username . "'";
-            
-            return $this->db->getOne($sql);
+            return $this->db->table($this->user_table)
+                ->field($this->field_id)
+                ->where($this->field_name . "='" . $post_username . "'")
+                ->getOne();
         } else {
-            $sql = "SELECT " . $this->field_id . " FROM " . $this->table($this->user_table) . " WHERE " . $this->field_name . "='" . $post_username . "' AND " . $this->field_pass . " ='" . $this->compile_password(array(
+            return $this->db->table($this->user_table)
+                ->field($this->field_id)
+                ->where($this->field_name . "='" . $post_username . "' AND " . $this->field_pass . " ='" . $this->compile_password(array(
                 'password' => $password
-            )) . "'";
-            
-            return $this->db->getOne($sql);
+            )) . "'")
+                ->getOne();
         }
     }
 
@@ -467,8 +513,10 @@ class integrate
     {
         if (! empty($email)) {
             /* 检查email是否重复 */
-            $sql = "SELECT " . $this->field_id . " FROM " . $this->table($this->user_table) . " WHERE " . $this->field_email . " = '$email' ";
-            if ($this->db->getOne($sql, true) > 0) {
+            if ($this->db->table($this->user_table)
+                ->field($this->field_id)
+                ->where($this->field_email . " = '$email' ")
+                ->getOne() > 0) {
                 $this->error = ERR_EMAIL_EXISTS;
                 return true;
             }
@@ -497,6 +545,7 @@ class integrate
      *
      * @access public
      * @param            
+     *
      * @return void
      */
     function set_cookie($username = '', $remember = null)
@@ -511,8 +560,8 @@ class integrate
             $time = time() + 3600 * 24 * 15;
             
             setcookie("ECS[username]", $username, $time, $this->cookie_path, $this->cookie_domain);
-            $sql = "SELECT user_id, password FROM " . ECTouch::ecs()->table('users') . " WHERE user_name='$username' LIMIT 1";
-            $row = ECTouch::db()->getRow($sql);
+            $sql = "SELECT user_id, password FROM " . $this->db->pre . 'users ' . " WHERE user_name='$username' LIMIT 1";
+            $row = $this->db->getRow($sql);
             if ($row) {
                 setcookie("ECS[user_id]", $row['user_id'], $time, $this->cookie_path, $this->cookie_domain);
                 setcookie("ECS[password]", $row['password'], $time, $this->cookie_path, $this->cookie_domain);
@@ -525,6 +574,7 @@ class integrate
      *
      * @access public
      * @param            
+     *
      * @return void
      */
     function set_session($username = '')
@@ -532,8 +582,8 @@ class integrate
         if (empty($username)) {
             ECTouch::sess()->destroy_session();
         } else {
-            $sql = "SELECT user_id, password, email FROM " . ECTouch::ecs()->table('users') . " WHERE user_name='$username' LIMIT 1";
-            $row = ECTouch::db()->getRow($sql);
+            $sql = "SELECT user_id, password, email FROM " . $this->db->pre . 'users ' . " WHERE user_name='$username' LIMIT 1";
+            $row = $this->db->getRow($sql);
             
             if ($row) {
                 $_SESSION['user_id'] = $row['user_id'];
@@ -625,18 +675,18 @@ class integrate
             return false;
         }
         
-        $sql = "SELECT user_name, email, password, sex, birthday" . " FROM " . ECTouch::ecs()->table('users') . " WHERE user_name = '$username'";
+        $sql = "SELECT user_name, email, password, sex, birthday" . " FROM " . $this->db->pre . 'users ' . " WHERE user_name = '$username'";
         
-        $profile = ECTouch::db()->getRow($sql);
+        $profile = $this->db->getRow($sql);
         if (empty($profile)) {
             /* 向商城表插入一条新记录 */
             if (empty($md5password)) {
-                $sql = "INSERT INTO " . ECTouch::ecs()->table('users') . "(user_name, email, sex, birthday, reg_time)" . " VALUES('$username', '" . $main_profile['email'] . "','" . $main_profile['sex'] . "','" . $main_profile['birthday'] . "','" . $main_profile['reg_time'] . "')";
+                $sql = "INSERT INTO " . $this->db->pre . 'users ' . "(user_name, email, sex, birthday, reg_time)" . " VALUES('$username', '" . $main_profile['email'] . "','" . $main_profile['sex'] . "','" . $main_profile['birthday'] . "','" . $main_profile['reg_time'] . "')";
             } else {
-                $sql = "INSERT INTO " . ECTouch::ecs()->table('users') . "(user_name, email, sex, birthday, reg_time, password)" . " VALUES('$username', '" . $main_profile['email'] . "','" . $main_profile['sex'] . "','" . $main_profile['birthday'] . "','" . $main_profile['reg_time'] . "', '$md5password')";
+                $sql = "INSERT INTO " . $this->db->pre . 'users ' . "(user_name, email, sex, birthday, reg_time, password)" . " VALUES('$username', '" . $main_profile['email'] . "','" . $main_profile['sex'] . "','" . $main_profile['birthday'] . "','" . $main_profile['reg_time'] . "', '$md5password')";
             }
             
-            ECTouch::db()->query($sql);
+            $this->db->query($sql);
             
             return true;
         } else {
@@ -657,9 +707,9 @@ class integrate
             if (empty($values)) {
                 return true;
             } else {
-                $sql = "UPDATE " . ECTouch::ecs()->table('users') . " SET " . implode(", ", $values) . " WHERE user_name='$username'";
+                $sql = "UPDATE " . $this->db->pre . 'users ' . " SET " . implode(", ", $values) . " WHERE user_name='$username'";
                 
-                ECTouch::db()->query($sql);
+                $this->db->query($sql);
                 
                 return true;
             }
@@ -758,8 +808,10 @@ class integrate
             return array();
         }
         
-        $sql = "SELECT " . $this->field_name . " FROM " . $this->table($this->user_table) . " WHERE " . db_create_in($user_list, $this->field_name);
-        $user_list = $this->db->getCol($sql);
+        $user_list = $this->db->table($this->user_table)
+            ->field($this->field_name)
+            ->where(db_create_in($user_list, $this->field_name))
+            ->getCol();
         
         return $user_list;
     }
