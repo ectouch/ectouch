@@ -133,6 +133,7 @@ $_LANG['piece'] = '件';
 $_LANG['goods_category'] = "商品分类";
 $_LANG['menu'] = "菜单";
 $_LANG['goods_detail'] = "商品详情";
+$_LANG['detail_intro'] = "详细介绍";
 $_LANG['order_detail'] = "订单确认";
 $_LANG['order_submit'] = "订单提交";
 $_LANG['select_shipping_method'] = "请选择配送方式";
@@ -156,7 +157,8 @@ $_LANG['sort_popularity'] = '人气';
 $_LANG['sort_price'] = '价格';
 $_LANG['like_num'] = '人喜欢';
 $_LANG['scan_num'] = '次浏览';
-
+$_LANG['button_submit'] = '确定';
+$_LANG['clear_filter'] = '清空';
 
 /* 商品比较JS语言项 */
 $_LANG['compare_js']['button_compare'] = '比较选定商品';
@@ -260,6 +262,10 @@ $_LANG['three_stars'] = '一般';
 $_LANG['two_stars'] = '不行';
 $_LANG['one_stars'] = '很差';
 
+$_LANG['all_comment'] = '全部';
+$_LANG['favorable_comment'] = '好评';
+$_LANG['medium_comment'] = '中评';
+$_LANG['bad_comment'] = '差评';
 /* 其他信息 */
 $_LANG['js_languages']['goodsname_not_null'] = '商品名不能为空！';
 
@@ -373,6 +379,7 @@ $_LANG['submit_comment'] = '提交评论';
 $_LANG['button_reset'] = '重置表单';
 $_LANG['goods_comment'] = '商品评论';
 $_LANG['article_comment'] = '文章评论';
+$_LANG['comment_num'] = '人评价';
 
 /* 支付确认部分 */
 $_LANG['pay_status'] = '支付状态';
@@ -539,7 +546,7 @@ $_LANG['brand_category'] = '分类浏览：';
 $_LANG['all_category'] = '所有分类';
 
 /* 商品分类页 */
-$_LANG['goods_filter'] = '商品筛选';
+$_LANG['goods_filter'] = '筛选';
 
 /* cls_image类的语言项 */
 $_LANG['directory_readonly'] = '目录 % 不存在或不可写';
@@ -979,6 +986,7 @@ $_LANG['sms_paid'] = '已付款';
 
 $_LANG['notice_gb_order_amount'] = '（备注：团购如果有保证金，第一次只需支付保证金和相应的支付费用）';
 
+$_LANG['order_effective'] = '订单已生效';
 $_LANG['pay_order'] = '支付订单 %s';
 $_LANG['validate_bonus'] = '验证红包';
 $_LANG['input_bonus_no'] = '或者输入红包序列号';

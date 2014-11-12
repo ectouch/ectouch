@@ -107,6 +107,7 @@ $_LANG['cfg_name']['page_style'] = '分页样式';
 $_LANG['cfg_name']['sort_order_type'] = '商品分类页默认排序类型';
 $_LANG['cfg_name']['sort_order_method'] = '商品分类页默认排序方式';
 $_LANG['cfg_name']['show_order_type'] = '商品分类页默认显示方式';
+$_LANG['cfg_name']['show_asynclist'] = '列表分页类型';
 $_LANG['cfg_name']['goods_name_length'] = '商品名称的长度';
 $_LANG['cfg_name']['price_format'] = '商品价格显示规则';
 $_LANG['cfg_name']['register_points'] = '会员注册赠送积分';
@@ -294,6 +295,8 @@ $_LANG['cfg_range']['help_open'][0] = '关闭';
 $_LANG['cfg_range']['help_open'][1] = '打开';
 $_LANG['cfg_range']['page_style'][0] = '默认经典';
 $_LANG['cfg_range']['page_style'][1] = '流行页码';
+$_LANG['cfg_range']['show_asynclist'][0] = '同步';
+$_LANG['cfg_range']['show_asynclist'][1] = '异步';
 
 $_LANG['cfg_range']['anonymous_buy']['0'] = '不允许';
 $_LANG['cfg_range']['anonymous_buy']['1'] = '允许';

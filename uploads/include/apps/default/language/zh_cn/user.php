@@ -11,6 +11,7 @@ $_LANG['clear_history'] = "清空";
 $_LANG['not_history'] = "暂无浏览记录，点击";
 $_LANG['enter'] = "进入";
 $_LANG['scan_goods'] = "浏览商品";
+$_LANG['view_more'] = "查看更多";
 /* 用户菜单 */
 $_LANG['label_welcome'] = '欢迎页';
 $_LANG['label_profile'] = '用户信息';
