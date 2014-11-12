@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -93,7 +92,21 @@ class ExchangeController extends CommonController {
             $next_good['url'] = build_uri('exchange_goods', array('gid' => $next_gid), $goods['goods_name']);
             $this->assign('next_good', $next_good); //下一个商品
         }
-
+        // 检查是否已经存在于用户的收藏夹
+        if ($_SESSION ['user_id']) {
+            $where['user_id'] = $_SESSION ['user_id'];
+            $where['goods_id'] = $goods['goods_id'];
+            $rs = $this->model->table('collect_goods')->where($where)->count();
+            if ($rs > 0) {
+                $this->assign('sc', 1);
+            }
+        }
+        // 获得商品的规格和属性
+        $properties = model('Goods')->get_goods_properties($goods['goods_id']);
+        // 商品属性
+        $this->assign('properties', $properties ['pro']);
+        // 商品规格
+        $this->assign('specification', $properties ['spe']);
         $this->assign('goods_id', $goods_id);
         $this->assign('pictures', model('GoodsBase')->get_goods_gallery($goods_id));
         $this->assign('cfg', C('CFG'));

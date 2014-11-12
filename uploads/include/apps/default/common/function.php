@@ -479,7 +479,7 @@ function is_spider($record = true) {
             $spider = $searchengine_name[$key];
 
             if ($record === true) {
-                ECTouch::db()->autoReplace(ECTouch::ecs()->table('searchengine'), array('date' => local_date('Y-m-d'), 'searchengine' => $spider, 'count' => 1), array('count' => 1));
+                M()->autoReplace(M()->pre . 'searchengine', array('date' => local_date('Y-m-d'), 'searchengine' => $spider, 'count' => 1), array('count' => 1));
             }
 
             return $spider;
@@ -648,7 +648,7 @@ function save_searchengine_keyword($domain, $path) {
             $keywords = ecs_iconv('UTF8', 'GBK', $keywords);
         }
 
-        ECTouch::db()->autoReplace(ECTouch::ecs()->table('keywords'), array('date' => local_date('Y-m-d'), 'searchengine' => $searchengine, 'keyword' => addslashes($keywords), 'count' => 1), array('count' => 1));
+        M()->autoReplace(M()->pre . 'keywords', array('date' => local_date('Y-m-d'), 'searchengine' => $searchengine, 'keyword' => addslashes($keywords), 'count' => 1), array('count' => 1));
     }
 }
 
@@ -761,7 +761,8 @@ function show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_
     if (is_null(ECTouch::view()->get_template_vars('helps'))) {
         ECTouch::view()->assign('helps', model('Article')->get_shop_help()); // 网店帮助
     }
-
+    
+    ECTouch::view()->assign('title', L('tips_message'));
     ECTouch::view()->assign('auto_redirect', $auto_redirect);
     ECTouch::view()->assign('message', $msg);
     ECTouch::view()->display('message.dwt');
@@ -852,7 +853,8 @@ function time2gmt($time) {
  * @return void
  * @author xuanyan
  * */
-function set_affiliate() {
+function set_affiliate($u = '') {
+    $_GET['u'] = empty($u) ?  $_GET['u'] : $u;
     $config = unserialize(C('affiliate'));
     if (!empty($_GET['u']) && $config['on'] == 1) {
         if (!empty($config['config']['expire'])) {
@@ -1370,7 +1372,7 @@ function add_feed($id, $feed_type)
             return;
         }
         $id = intval($id);
-        $order_res = ECTouch::db()->getAll("SELECT g.goods_id, g.goods_name, g.goods_sn, g.goods_desc, g.goods_thumb, o.goods_price FROM " . ECTouch::ecs()->table('order_goods') . " AS o, " . ECTouch::ecs()->table('goods') . " AS g WHERE o.order_id='{$id}' AND o.goods_id=g.goods_id");
+        $order_res = M()->query("SELECT g.goods_id, g.goods_name, g.goods_sn, g.goods_desc, g.goods_thumb, o.goods_price FROM " . M()->pre . 'order_goods ' . " AS o, " . M()->pre . 'goods ' . " AS g WHERE o.order_id='{$id}' AND o.goods_id=g.goods_id");
         foreach($order_res as $goods_data)
         {
             if(!empty($goods_data['goods_thumb']))
@@ -1465,17 +1467,19 @@ function exchange_points($uid, $fromcredits, $tocredits, $toappid, $netamount) {
  * @param  $title 提醒标题
  * @param  $msg 提醒内容
  * @param  $url 页面链接 base64_decode(urldecode($url));
+ * @param  $order_id 订单id 
  *
  */
-function send_wechat_message($type = '', $titile = '', $msg = '', $url = ''){
+function send_wechat_message($type = '', $title = '', $msg = '', $url = '', $order_id = ''){
     /* 如果需要，微信通知 wanglu */
     if(!empty($type)){
-        $remind_title = $this->model->table('wechat_setting')->field('title')->where('status = 1 and keywords = "'.$type.'"')->getOne();
-        $remind_title = $title ? $title : $remind_title;
-        $openid = $this->model->table('wechat_user')->field('openid')->where('ect_uid = '.$_SESSION['user_id'])->getOne();
-        if(!empty($remind_title) && !empty($openid)){
-            $url = base64_decode(urldecode($url));
-            $dourl = __HOST__ . url('api/index', array('openid'=>$openid, 'title'=>$remind_title, 'msg'=>$msg, 'url'=>$url));
+        $remind = M()->table('wechat_extend')->field('name, config')->where('enable = 1 and command = "'.$type.'"')->find();
+        $config = unserialize($remind['config']);
+        $title = $remind['name'] ? $remind['name'] : $title;
+        $msg = $config['template'] ? str_replace('[$order_id]', $order_id, $config['template']) : $msg;
+        $openid = M()->table('wechat_user')->field('openid')->where('ect_uid = '.$_SESSION['user_id'])->getOne();
+        if(!empty($title) && !empty($openid)){
+            $dourl = __HOST__ . url('api/index', array('openid'=>$openid, 'title'=>$title, 'msg'=>$msg, 'url'=>$url));
             Http::doGet($dourl);
         }
     }

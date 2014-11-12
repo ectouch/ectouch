@@ -40,6 +40,7 @@ class ExchangeModel extends BaseModel {
 
         /* 获得商品列表 */
         $start = ($page - 1) * $size;
+        $sort = $sort =='sales_volume'? 'xl.sales_volume': $sort;
         $sql = 'SELECT g.goods_id, g.goods_name, g.market_price, g.goods_name_style, eg.exchange_integral, ' .
                 'g.goods_type, g.goods_brief, g.goods_thumb , g.goods_img, eg.is_hot ' .
                 'FROM ' . $this->pre . 'exchange_goods AS eg LEFT JOIN  ' . $this->pre . 'goods AS g ' .

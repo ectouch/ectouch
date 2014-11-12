@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -432,7 +431,7 @@ class GoodsModel extends BaseModel {
         $temp_index = 0;
         $arr = array();
 
-         $sql = 'SELECT gg.parent_id, ggg.goods_name AS parent_name, gg.goods_id, gg.goods_price, g.goods_name, g.goods_thumb, g.goods_img, g.shop_price AS org_price, ' .
+        $sql = 'SELECT gg.parent_id, ggg.goods_name AS parent_name, gg.goods_id, gg.goods_price, g.goods_name, g.goods_thumb, g.goods_img, g.shop_price AS org_price, ' .
                 "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price " .
                 'FROM ' . $this->pre . 'group_goods AS gg ' .
                 'LEFT JOIN ' . $this->pre . 'goods AS g ON g.goods_id = gg.goods_id ' .
@@ -440,7 +439,7 @@ class GoodsModel extends BaseModel {
                 "ON mp.goods_id = gg.goods_id AND mp.user_rank = '$_SESSION[user_rank]' " .
                 "LEFT JOIN " . $this->pre . "goods AS ggg ON ggg.goods_id = gg.parent_id " .
                 "WHERE gg.parent_id " . db_create_in($goods_list) . " AND g.is_delete = 0 AND g.is_on_sale = 1 " .
-                "ORDER BY gg.parent_id, gg.goods_id"; 
+                "ORDER BY gg.parent_id, gg.goods_id";
         $res = $this->query($sql);
         foreach ($res as $key => $value) {
             $arr[$temp_index]['parent_id'] = $value['parent_id'];
@@ -728,17 +727,6 @@ class GoodsModel extends BaseModel {
         }
 
         return $res;
-    }
-
-    /**
-     * 获取评论
-     * @param unknown $goods_id
-     * @return number
-     */
-    function get_record_count($goods_id) {
-        $sql = 'SELECT count(*) as count FROM ' . $this->pre . 'comment where status=1 and id_value=' . $goods_id;
-        $res = $this->row($sql);
-        return intval($res['count']);
     }
 
 }

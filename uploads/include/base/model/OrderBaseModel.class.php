@@ -152,7 +152,7 @@ class OrderBaseModel extends BaseModel {
                 "order_sn = '$order_sn' " .
                 "WHERE " . db_create_in($card_ids, 'card_id');
         if (!$this->query($sql)) {
-            $msg .= ECTouch::db()->error();
+            $msg .= M()->error();
             return false;
         }
 
@@ -163,7 +163,7 @@ class OrderBaseModel extends BaseModel {
         if (true) {
             /* 获取订单信息 */
             $sql = "SELECT order_id, order_sn, consignee, email FROM " . $this->pre . "order_info WHERE order_sn = '$order_sn'";
-            $order = ECTouch::db()->GetRow($sql);
+            $order = M()->GetRow($sql);
 
             /* 更新订单信息 */
             if ($process == 'split') {
@@ -179,7 +179,7 @@ class OrderBaseModel extends BaseModel {
             }
 
             if (!$this->query($sql)) {
-                $msg .= ECTouch::db()->error();
+                $msg .= M()->error();
                 return false;
             }
         }

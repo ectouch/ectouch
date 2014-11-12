@@ -360,7 +360,7 @@ class UserController extends CommonController
                             'order_id' => $order['order_id']
                         )) . "\">" . L('pay_money') . "</a>";
                     } else {
-                        //@$order['handler'] = "<a class=\"btn btn-info ect-colorf\" href=\"javascript:void(0);\">" . L('view_order') . "</a>";
+                        // @$order['handler'] = "<a class=\"btn btn-info ect-colorf\" href=\"javascript:void(0);\">" . L('view_order') . "</a>";
                     }
                 }
             } else {
@@ -997,6 +997,177 @@ class UserController extends CommonController
         $this->assign('share', $share);
         $this->display('user_share.dwt');
     }
+	
+	/**
+	 * 我的标签
+	 */
+	 public function tag_list(){
+		$tags = get_user_tags($this->user_id);
+		
+		$this->assign('title', L('label_tag'));
+		$this->assign('tags', $tags);
+		$this->display('user_tag_list.dwt');
+	 }
+	 
+	 /**
+	  * 删除标签
+	  */
+	public function del_tag(){
+		if(IS_AJAX){
+			$tag_words = I('get.tag_wrods');
+			$rs = model('ClipsBase')->delete_tag($tag_words, $this->user_id);
+			if(empty($rs)){
+				exit(json_encode(array('status'=>0, 'msg'=>'删除失败')));
+			}
+		}
+	}
+	
+	/**
+	 * 我的红包
+	 */
+	 public function bonus(){
+		if(IS_POST){
+			$bonus_sn = I('post.bonus_sn', '', 'intval');
+			if (model('Users')->add_bonus($this->user_id, $bonus_sn))
+			{
+				show_message(L('add_bonus_sucess'), L('back_up_page'), url('bonus'), 'info');
+			}
+			else
+			{
+				ECTouch::err()->show(L('back_up_page'), url('bonus'));
+			}
+		}
+		 // 分页
+        $filter['page'] = '{page}';
+        $offset = $this->pageLimit(url('bonus', $filter), 5);
+		$offset_page = explode(',', $offset);
+		$count = $this->model->table('user_bonus')->where('user_id = '.$this->user_id)->count();
+		$bonus = model('Users')->get_user_bouns_list($this->user_id, $offset_page[1], $offset_page[0]);
+
+		$this->assign('title', L('label_bonus'));
+		$this->assign('page', $this->pageShow($count));
+		$this->assign('bonus', $bonus);
+		$this->display('user_bonus.dwt');
+	 }
+	 
+	 /**
+     * 缺货登记列表
+     */
+	 public function booking_list(){
+		/* 获取缺货登记的数量 */
+		$sql = "SELECT COUNT(*) as num " .
+            "FROM " .$this->model->pre. "booking_goods AS bg, " .
+                     $this->model->pre . "goods AS g " .
+            "WHERE bg.goods_id = g.goods_id AND user_id = '$this->user_id'";
+		$count = $this->model->query($sql);
+		 // 分页
+        $filter['page'] = '{page}';
+        $offset = $this->pageLimit(url('booking_list', $filter), 5);
+		$offset_page = explode(',', $offset);
+		$booking_list = model('ClipsBase')->get_booking_list($this->user_id, $offset_page[1], $offset_page[0]);
+		
+		$this->assign('title', L('label_booking'));
+		$this->assign('page', $this->pageShow($count[0]['num']));
+		$this->assign('booking_list', $booking_list);
+		$this->display('user_booking_list.dwt');
+	 }
+	 
+	 /**
+     * 添加缺货登记
+     */
+	 public function add_booking(){
+		if(IS_POST){
+			$booking = array(
+				'goods_id'     => I('post.id', 0),
+				'goods_amount' => I('post.number', 0),
+				'desc'         => I('post.desc'),
+				'linkman'      => I('post.linkman'),
+				'email'        => I('post.email'),
+				'tel'          => I('post.tel'),
+				'booking_id'   => I('post.rec_id', 0),
+			);
+
+			// 查看此商品是否已经登记过
+			$rec_id = model('ClipsBase')->get_booking_rec($this->user_id, $booking['goods_id']);
+			if ($rec_id > 0)
+			{
+				show_message(L('booking_rec_exist'), L('back_page_up'), '', 'error');
+			}
+
+			if (model('ClipsBase')->add_booking($booking))
+			{
+				show_message(L('booking_success'), L('back_booking_list'), url('booking_list'), 'info');
+			}
+			else
+			{
+				ECTouch::err()->show(L('booking_list_lnk'), url('booking_list'));
+			}
+		}
+		$goods_id = I('get.id', 0);
+		if ($goods_id == 0)
+		{
+			show_message(L('no_goods_id'), L('back_page_up'), '', 'error');
+		}
+
+		/* 根据规格属性获取货品规格信息 */
+		$goods_attr = '';
+		if ($_GET['spec'] != '')
+		{
+			$goods_attr_id = $_GET['spec'];
+
+			$attr_list = array();
+			$sql = "SELECT a.attr_name, g.attr_value " .
+					"FROM " . $this->model->pre . "goods_attr AS g, " .
+						$this->model->pre . "attribute AS a " .
+					"WHERE g.attr_id = a.attr_id " .
+					"AND g.goods_attr_id " . db_create_in($goods_attr_id);
+			$row = $this->model->query($sql);
+			if(empty($row)){
+				$row = array();
+			}
+			foreach($row as $v){
+				$attr_list[] = $v['attr_name'] . ': ' . $v['attr_value'];
+			}
+			$goods_attr = join(chr(13) . chr(10), $attr_list);
+		}
+		$this->assign('goods_attr', $goods_attr);
+		$this->assign('info', model('ClipsBase')->get_goodsinfo($goods_id));
+		$this->display('user_add_booing.dwt');
+	 }
+	 
+	 /**
+     * 删除缺货登记
+     */
+	 public function del_booking(){
+		$id = I('get.rec_id', 0);
+		if ($id == 0 || $this->user_id == 0)
+		{
+			$this->redirect(url('booking_list'));
+		}
+
+		$result = model('ClipsBase')->delete_booking($id, $this->user_id);
+		if ($result)
+		{
+			$this->redirect(url('booking_list'));
+		}
+	 }
+	 
+	 /**
+     * 收藏商品列表
+     */
+	 public function collection_list(){
+		// 分页
+		$count = $this->model->table('collect_goods')->where('user_id = '.$this->user_id)->order('add_time desc')->count();
+        $filter['page'] = '{page}';
+        $offset = $this->pageLimit(url('booking_list', $filter), 5);
+		$offset_page = explode(',', $offset);
+		$collection_list = model('ClipsBase')->get_collection_goods($this->user_id, $offset_page[1], $offset_page[0]);
+		
+		$this->assign('title', L('label_collection'));
+		$this->assign('page', $this->pageShow($count));
+		$this->assign('collection_list', $collection_list);
+		$this->display('user_collection_list.dwt');
+	 }
 
     /**
      * 添加收藏商品
@@ -1026,7 +1197,7 @@ class UserController extends CommonController
                     ->delete();
                 if (! $rs) {
                     $result['error'] = 1;
-                    $result['message'] = ECTouch::db()->errorMsg();
+                    $result['message'] = M()->errorMsg();
                     die(json_encode($result));
                 } else {
                     $result['error'] = 0;
@@ -1041,7 +1212,7 @@ class UserController extends CommonController
                     ->data($data)
                     ->insert() === false) {
                     $result['error'] = 1;
-                    $result['message'] = ECTouch::db()->errorMsg();
+                    $result['message'] = M()->errorMsg();
                     die(json_encode($result));
                 } else {
                     $result['error'] = 0;
@@ -1058,10 +1229,9 @@ class UserController extends CommonController
     public function delete_collection()
     {
         // ajax请求
-        if (IS_AJAX) {
+        if (IS_AJAX && IS_GET) {
             $rs = 0;
             $rec_id = I('get.rec_id', 0);
-            
             if ($rec_id > 0) {
                 $where['user_id'] = $this->user_id;
                 $where['rec_id'] = $rec_id;
@@ -1070,11 +1240,64 @@ class UserController extends CommonController
                     ->delete();
                 $rs = 1;
             }
-            echo $rs;
-        } else {
-            $this->redirect(url('index'));
+            echo json_encode(array('status'=>$rs));
+        }
+		elseif(!IS_AJAX && IS_GET){
+			$rec_id = I('get.rec_id', 0);
+            if ($rec_id > 0) {
+                $where['user_id'] = $this->user_id;
+                $where['rec_id'] = $rec_id;
+                $this->model->table('collect_goods')
+                    ->where($where)
+                    ->delete();
+            }
+			$this->redirect(url('collection_list'));
+		}
+		else {
+            echo json_encode(array('status'=>0));
         }
     }
+	
+	/**
+     * 添加关注
+     */
+	public function add_attention(){
+		$rec_id = I('get.rec_id', 0);
+		if ($rec_id)
+		{
+			$this->model->table('collect_goods')->data('is_attention = 1')->where('rec_id = '.$rec_id.' and user_id = '.$this->user_id)->update();
+		}
+		$this->redirect(url('collection_list'));
+	}
+	
+	/**
+     * 取消关注
+     */
+	public function del_attention(){
+		$rec_id = I('get.rec_id', 0);
+		if ($rec_id)
+		{
+			$this->model->table('collect_goods')->data('is_attention = 0')->where('rec_id = '.$rec_id.' and user_id = '.$this->user_id)->update();
+		}
+		$this->redirect(url('collection_list'));
+	}
+	
+	/**
+     * 评论列表
+     */
+	public function comment_list(){
+		// 分页
+		$count = $this->model->table('comment')->where('parent_id = 0 and user_id = '.$this->user_id)->count();
+        $filter['page'] = '{page}';
+        $offset = $this->pageLimit(url('booking_list', $filter), 5);
+		$offset_page = explode(',', $offset);
+		$comment_list = model('ClipsBase')->get_comment_list($this->user_id, $offset_page[1], $offset_page[0]);
+
+		$this->assign('title', L('label_comment'));
+		$this->assign('page', $this->pageShow($count));
+		$this->assign('comment_list', $comment_list);
+		$this->display('user_comment_list.dwt');
+	}
 
     /**
      * 删除评论
@@ -1082,7 +1305,7 @@ class UserController extends CommonController
     public function delete_comment()
     {
         // ajax请求
-        if (IS_AJAX) {
+        if (IS_AJAX && IS_GET) {
             $rs = 0;
             $id = I('get.id', 0);
             if ($id > 0) {
@@ -1093,9 +1316,21 @@ class UserController extends CommonController
                     ->delete();
                 $rs = 1;
             }
-            echo $rs;
-        } else {
-            $this->redirect(url('index'));
+            echo json_encode(array('status'=>$rs));
+        }
+		elseif(IS_GET && !IS_AJAX){
+			$id = I('get.id', 0);
+            if ($id > 0) {
+                $where['user_id'] = $this->user_id;
+                $where['comment_id'] = $id;
+                $this->model->table('comment')
+                    ->where($where)
+                    ->delete();
+            }
+			$this->redirect(url('comment_list'));
+		}
+		else {
+            echo json_encode(array('status'=>0));
         }
     }
 
@@ -1306,6 +1541,23 @@ class UserController extends CommonController
         $this->assign('title', L('register'));
         $this->assign('back_act', $this->back_act);
         $this->display('user_register.dwt');
+    }
+    
+    /**
+     * 邮件验证
+     */
+    public function validate_email()
+    {
+        $hash = I('get.hash');
+        if ($hash) {
+            $id = model('Users')->register_hash('decode', $hash);
+            if ($id > 0) {
+                $this->model->table('users')->data('is_validated = 1')->where('user_id = '.$id)->update();
+                $row = $this->model->table('users')->field('user_name, email')->where('user_id = '.$id)->find();
+                show_message(sprintf(L('validate_ok'), $row['user_name'], $row['email']), L('profile_lnk'), url('index'));
+            }
+        }
+        show_message(L('validate_fail'));
     }
 
     /**
@@ -1649,11 +1901,11 @@ class UserController extends CommonController
     public function clear_history()
     {
         // ajax请求
-        if (IS_AJAX) {
+        if (IS_AJAX && IS_AJAX) {
             setcookie('ECS[history]', '', 1);
-            echo 1;
+            echo json_encode(array('status'=>1));
         } else {
-            $this->redirect(url('index'));
+            echo json_encode(array('status'=>0));
         }
     }
 
@@ -1697,18 +1949,19 @@ class UserController extends CommonController
             exit();
         }
     }
-    
+
     /**
      * 更新商品销量
      */
-    private function update_touch_goods($order){
+    private function update_touch_goods($order)
+    {
         $sql = 'select pay_status from ' . $this->model->pre . 'order_info where  order_id = "' . $order . '"';
         $pay_status = $this->model->query($sql);
         $pay_status = $pay_status[0];
-        if ($pay_status == 2){
+        if ($pay_status == 2) {
             /* 统计时间段 */
             $period = C('top10_time');
-            //近一个月（30天）
+            // 近一个月（30天）
             if ($period == 1) { // 一年
                 $ext = " AND o.add_time > '" . local_strtotime('-1 years') . "'";
             } elseif ($period == 2) { // 半年
@@ -1722,31 +1975,25 @@ class UserController extends CommonController
             }
             $sql = 'select goods_id from ' . $this->model->pre . 'order_info where  order_id = "' . $order . '"';
             $arrGoodsid = $this->model->query($sql);
-    
+            
             $sql = 'select extension_code from ' . $this->model->pre . 'order_info where  order_id = "' . $order . '"';
             $extension_code = $this->model->query($sql);
-    
-            if ($extension_code == ''){
-                foreach ($arrGoodsid as $key=>$val){
+            
+            if ($extension_code == '') {
+                foreach ($arrGoodsid as $key => $val) {
                     /* 查询该商品销量 */
-                    $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' .
-                        'as count FROM ' . $this->pre . 'order_info AS o, ' .
-                        $this->pre . 'order_goods AS g ' .
-                        "WHERE o.order_id = g.order_id " .
-                        "  AND g.goods_id = '" . $val['goods_id'] . "' AND o.pay_status = '2' " . $ext;
+                    $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' . 'as count FROM ' . $this->pre . 'order_info AS o, ' . $this->pre . 'order_goods AS g ' . "WHERE o.order_id = g.order_id " . "  AND g.goods_id = '" . $val['goods_id'] . "' AND o.pay_status = '2' " . $ext;
                     $res = $this->model->query($sql);
                     $sales_count = $res[0]['count'];
-    
+                    
                     $nCount = $this->query('select COUNT(*) from ' . $this->model->pre . 'touch_goods where  goods_id = "' . $val['goods_id'] . '"');
                     if ($nCount[0]['COUNT(*)'] == 0) {
                         $this->model->query("INSERT INTO " . $this->model->pre . "touch_goods (`goods_id` ,`sales_volume` ) VALUES ( '" . $val['goods_id'] . "' , '0')");
                     }
                     $sql = 'update ' . $this->model->pre . 'touch_goods AS a set a.sales_volume = ' . $sales_count . " WHERE goods_id=" . $val['goods_id'];
                     $this->model->query($sql);
-    
                 }
             }
-             
         }
     }
 }

@@ -1122,12 +1122,12 @@ function is_time($time) {
  * @return  void
  */
 function assign_query_info() {
-    if (ECTouch::db()->queryTime == '') {
+    if (M()->queryTime == '') {
         $query_time = 0;
     } else {
-        $query_time = number_format(microtime(true) - ECTouch::db()->queryTime, 6);
+        $query_time = number_format(microtime(true) - M()->queryTime, 6);
     }
-    ECTouch::view()->assign('query_info', sprintf(L('query_info'), ECTouch::db()->queryCount, $query_time));
+    ECTouch::view()->assign('query_info', sprintf(L('query_info'), M()->queryCount, $query_time));
 
     /* 内存占用情况 */
     if (L('memory_info') && function_exists('memory_get_usage')) {

@@ -34,8 +34,7 @@ class ArticleController extends CommonController {
     /* ------------------------------------------------------ */
     public function index() {
         $cat_id = intval(I('get.id'));
-        $cat = model('Article')->article_categories_tree($cat_id);
-        $this->assign('article_categories', $cat); //文章分类树
+        $this->assign('article_categories', model('Article')->article_categories_tree($cat_id)); //文章分类树
         $this->display('article_cat.dwt');
     }
 

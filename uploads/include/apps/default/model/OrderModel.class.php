@@ -1329,14 +1329,14 @@ class OrderModel extends BaseModel {
             if ($this->insert(addslashes_deep($order))) {
                 break;
             } else {
-                if (ECTouch::db()->errno() != 1062) {
-                    die(ECTouch::db()->errorMsg());
+                if (M()->errno() != 1062) {
+                    die(M()->errorMsg());
                 }
             }
         } while (true); // 防止订单号重复
 
         /* 订单号 */
-        $order_id = ECTouch::db()->insert_id();
+        $order_id = M()->insert_id();
 
         /* 更新订单商品 */
         $sql = 'UPDATE ' . $this->pre .
@@ -1426,7 +1426,7 @@ class OrderModel extends BaseModel {
                 } else {
                     $this->change_goods_storage($row['goods_id'], $row['product_id'], $row['num']);
                 }
-                ECTouch::db()->query($sql);
+                M()->query($sql);
             } else {
                 $sql = "SELECT goods_id, goods_number" .
                         " FROM " . $this->pre .
@@ -1677,7 +1677,7 @@ class OrderModel extends BaseModel {
                         "VALUES('$bonus[type_id]', '$user[user_id]')";
                 for ($i = 0; $i < $bonus['number']; $i++) {
                     if (!$this->query($sql)) {
-                        return ECTouch::db()->errorMsg();
+                        return M()->errorMsg();
                     }
                 }
             }

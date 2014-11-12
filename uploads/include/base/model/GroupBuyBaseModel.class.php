@@ -181,7 +181,7 @@ class GroupBuyBaseModel extends BaseModel {
         $deposit = floatval($deposit);
         if ($deposit > 0 && $stat['total_order'] > 0) {
             $sql .= " AND (o.money_paid + o.surplus) >= '$deposit'";
-            $row = ECTouch::db()->getRow($sql);
+            $row = M()->getRow($sql);
             $stat['valid_order'] = $row['total_order'];
             if ($stat['valid_order'] == 0) {
                 $stat['valid_goods'] = 0;

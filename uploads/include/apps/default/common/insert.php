@@ -10,14 +10,14 @@ defined('IN_ECTOUCH') or die('Deny Access');
  * @return  string
  */
 function insert_query_info() {
-    if (ECTouch::db()->queryTime == '') {
+    if (M()->queryTime == '') {
         $query_time = 0;
     } else {
         if (PHP_VERSION >= '5.0.0') {
-            $query_time = number_format(microtime(true) - ECTouch::db()->queryTime, 6);
+            $query_time = number_format(microtime(true) - M()->queryTime, 6);
         } else {
             list($now_usec, $now_sec) = explode(' ', microtime());
-            list($start_usec, $start_sec) = explode(' ', ECTouch::db()->queryTime);
+            list($start_usec, $start_sec) = explode(' ', M()->queryTime);
             $query_time = number_format(($now_sec - $start_sec) + ($now_usec - $start_usec), 6);
         }
     }
@@ -32,13 +32,13 @@ function insert_query_info() {
     /* 是否启用了 gzip */
     $gzip_enabled = gzip_enabled() ? L('gzip_enabled') : L('gzip_disabled');
 
-    $online_count = ECTouch::db()->getOne("SELECT COUNT(*) FROM " . ECTouch::ecs()->table('sessions'));
+    $online_count = M()->table('sessions')->field('COUNT(*)')->getOne();
 
     /* 加入触发cron代码 */
     $cron_method = C('cron_method');
     $cron_method = empty($cron_method) ? '<img src="api/cron.php?t=' . gmtime() . '" alt="" style="width:0px;height:0px;" />' : '';
 
-    return sprintf(L('query_info'), ECTouch::db()->queryCount, $query_time, $online_count) . $gzip_enabled . $memory_usage . $cron_method;
+    return sprintf(L('query_info'), M()->queryCount, $query_time, $online_count) . $gzip_enabled . $memory_usage . $cron_method;
 }
 
 /**
@@ -52,11 +52,11 @@ function insert_history() {
     $history = array();
     if (!empty($_COOKIE['ECS']['history'])) {
         $where = db_create_in($_COOKIE['ECS']['history'], 'goods_id');
-        $sql = 'SELECT goods_id, goods_name, goods_thumb, shop_price FROM ' . ECTouch::ecs()->table('goods') .
+        $sql = 'SELECT goods_id, goods_name, goods_thumb, shop_price FROM ' . M()->pre . 'goods' .
                 " WHERE $where AND is_on_sale = 1 AND is_alone_sale = 1 AND is_delete = 0";
-        $query = ECTouch::db()->query($sql);
+        $query = M()->query($sql);
         $res = array();
-        while ($row = ECTouch::db()->fetch_array($query)) {
+        foreach ($query as $key=>$row){
             $goods['goods_id'] = $row['goods_id'];
             $goods['goods_name'] = $row['goods_name'];
             $goods['short_name'] = C('goods_name_length') > 0 ? sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
@@ -73,9 +73,9 @@ function insert_history() {
  * 调用购物车商品数目
  */
 function insert_cart_info_number() {
-    $sql = 'SELECT SUM(goods_number) AS number FROM ' . ECTouch::ecs()->table('cart') .
+    $sql = 'SELECT SUM(goods_number) AS number FROM ' . M()->pre .'cart ' .
     " WHERE session_id = '" . SESS_ID . "' AND rec_type = '" . CART_GENERAL_GOODS . "'";
-    $res = ECTouch::db()->GetRow($sql);
+    $res = M()->getRow($sql);
     $number = $res['number'];
     return intval($number);
 }
@@ -88,9 +88,9 @@ function insert_cart_info_number() {
  */
 function insert_cart_info() {
     $sql = 'SELECT SUM(goods_number) AS number, SUM(goods_price * goods_number) AS amount' .
-            ' FROM ' . ECTouch::ecs()->table('cart') .
+            ' FROM ' . M()->pre . 'cart ' .
             " WHERE session_id = '" . SESS_ID . "' AND rec_type = '" . CART_GENERAL_GOODS . "'";
-    $row = ECTouch::db()->GetRow($sql);
+    $row = M()->getRow($sql);
 
     if ($row) {
         $number = intval($row['number']);
@@ -120,22 +120,22 @@ function insert_ads($arr) {
     if (!empty($arr['num']) && $arr['num'] != 1) {
         $sql = 'SELECT a.ad_id, a.position_id, a.media_type, a.ad_link, a.ad_code, a.ad_name, p.ad_width, ' .
                 'p.ad_height, p.position_style, RAND() AS rnd ' .
-                'FROM ' . ECTouch::ecs()->table('touch_ad') . ' AS a ' .
-                'LEFT JOIN ' . ECTouch::ecs()->table('touch_ad_position') . ' AS p ON a.position_id = p.position_id ' .
+                'FROM ' . M()->pre . 'touch_ad ' . ' AS a ' .
+                'LEFT JOIN ' . M()->pre . 'touch_ad_position ' . ' AS p ON a.position_id = p.position_id ' .
                 "WHERE enabled = 1 AND start_time <= '" . $time . "' AND end_time >= '" . $time . "' " .
                 "AND a.position_id = '" . $arr['id'] . "' " .
                 'ORDER BY rnd LIMIT ' . $arr['num'];
-        $res = ECTouch::db()->GetAll($sql);
+        $res = M()->query($sql);
     } else {
         if ($static_res[$arr['id']] === NULL) {
             $sql = 'SELECT a.ad_id, a.position_id, a.media_type, a.ad_link, a.ad_code, a.ad_name, p.ad_width, ' .
                     'p.ad_height, p.position_style, RAND() AS rnd ' .
-                    'FROM ' . ECTouch::ecs()->table('touch_ad') . ' AS a ' .
-                    'LEFT JOIN ' . ECTouch::ecs()->table('touch_ad_position') . ' AS p ON a.position_id = p.position_id ' .
+                    'FROM ' . M()->pre . 'touch_ad ' . ' AS a ' .
+                    'LEFT JOIN ' . M()->pre . 'touch_ad_position' . ' AS p ON a.position_id = p.position_id ' .
                     "WHERE enabled = 1 AND a.position_id = '" . $arr['id'] .
                     "' AND start_time <= '" . $time . "' AND end_time >= '" . $time . "' " .
                     'ORDER BY rnd LIMIT 1';
-            $static_res[$arr['id']] = ECTouch::db()->GetAll($sql);
+            $static_res[$arr['id']] = M()->query($sql);
         }
         $res = $static_res[$arr['id']];
     }
@@ -151,7 +151,7 @@ function insert_ads($arr) {
             case 0: // 图片广告
                 $src = (strpos($row['ad_code'], 'http://') === false && strpos($row['ad_code'], 'https://') === false) ?
                         __URL__ . "/$row[ad_code]" : $row['ad_code'];
-                $ads[] = "<a href='".url('default/affiche/index', array('ad_id'=>$row['ad_id'], 'uri'=>urlencode($row["ad_link"]) ))."' 
+                $ads[] = "<a href='" . url('default/affiche/index', array('ad_id' => $row['ad_id'], 'uri' => urlencode($row["ad_link"]))) . "' 
                 target='_blank'><img src='$src' width='" . $row['ad_width'] . "' height='$row[ad_height]'
                 border='0' /></a>";
                 break;
@@ -173,7 +173,7 @@ function insert_ads($arr) {
                 $ads[] = $row['ad_code'];
                 break;
             case 3: // TEXT
-                $ads[] = "<a href='".url('default/affiche/index', array('ad_id'=>$row['ad_id'], 'uri'=>urlencode($row["ad_link"]) ))."'
+                $ads[] = "<a href='" . url('default/affiche/index', array('ad_id' => $row['ad_id'], 'uri' => urlencode($row["ad_link"]))) . "'
                 target='_blank'>" . htmlspecialchars($row['ad_code']) . '</a>';
                 break;
         }
@@ -242,11 +242,22 @@ function insert_comments($arr) {
     ECTouch::view()->assign('email', $_SESSION['email']);
     ECTouch::view()->assign('comment_type', $arr['type']);
     ECTouch::view()->assign('id', $arr['id']);
+    //全部评论
     $cmt = model('Comment')->assign_comment($arr['id'], $arr['type']);
-    ECTouch::view()->assign('comments', $cmt['comments']);
+    ECTouch::view()->assign('comment_list', $cmt['comments']);
     ECTouch::view()->assign('pager', $cmt['pager']);
-
-
+    //好评
+    $cmt_fav = model('Comment')->assign_comment($arr['id'], $arr['type'], '1');
+    ECTouch::view()->assign('comment_fav', $cmt_fav['comments']);
+    ECTouch::view()->assign('pager_fav', $cmt_fav['pager']);
+    //中评
+    $cmt_med = model('Comment')->assign_comment($arr['id'], $arr['type'], '2');
+    ECTouch::view()->assign('comment_med', $cmt_med['comments']);
+    ECTouch::view()->assign('pager_med', $cmt_med['pager']);
+    //差评
+    $cmt_bad = model('Comment')->assign_comment($arr['id'], $arr['type'], '3');
+    ECTouch::view()->assign('comment_bad', $cmt_bad['comments']);
+    ECTouch::view()->assign('pager_bad', $cmt_bad['pager']);
     $val = ECTouch::view()->fetch('library/comments_list.lbi');
 
     ECTouch::view()->caching = $need_cache;
@@ -268,20 +279,20 @@ function insert_bought_notes($arr) {
     ECTouch::view()->caching = false;
     ECTouch::view()->force_compile = true;
 
-    /* 商品购买记录 */
+   /* 商品购买记录 */
     $sql = 'SELECT u.user_name, og.goods_number, oi.add_time, IF(oi.order_status IN (2, 3, 4), 0, 1) AS order_status ' .
-            'FROM ' . ECTouch::ecs()->table('order_info') . ' AS oi LEFT JOIN ' . ECTouch::ecs()->table('users') . ' AS u ON oi.user_id = u.user_id, ' . ECTouch::ecs()->table('order_goods') . ' AS og ' .
+            'FROM ' . M()->pre . 'order_info ' . ' AS oi LEFT JOIN ' . M()->pre . 'users ' . ' AS u ON oi.user_id = u.user_id, ' . M()->pre . 'order_goods ' . ' AS og ' .
             'WHERE oi.order_id = og.order_id AND ' . time() . ' - oi.add_time < 2592000 AND og.goods_id = ' . $arr['id'] . ' ORDER BY oi.add_time DESC LIMIT 5';
-    $bought_notes = ECTouch::db()->getAll($sql);
+    $bought_notes = M()->query($sql);
 
     foreach ($bought_notes as $key => $val) {
         $bought_notes[$key]['add_time'] = local_date("Y-m-d G:i:s", $val['add_time']);
     }
 
-    $sql = 'SELECT count(*) ' .
-            'FROM ' . ECTouch::ecs()->table('order_info') . ' AS oi LEFT JOIN ' . ECTouch::ecs()->table('users') . ' AS u ON oi.user_id = u.user_id, ' . ECTouch::ecs()->table('order_goods') . ' AS og ' .
-            'WHERE oi.order_id = og.order_id AND ' . time() . ' - oi.add_time < 2592000 AND og.goods_id = ' . $arr['id'];
-    $count = ECTouch::db()->getOne($sql);
+    $count = M()->table('order_info  AS oi LEFT JOIN ' . M()->pre . 'users ' . ' AS u ON oi.user_id = u.user_id, ' . M()->pre . 'order_goods ' . ' AS og ')
+    ->field('count(*)')
+    ->where('  oi.order_id = og.order_id AND ' . time() . ' - oi.add_time < 2592000 AND og.goods_id = ' . $arr['id'])
+    ->getOne();
 
 
     /* 商品购买记录分页样式 */

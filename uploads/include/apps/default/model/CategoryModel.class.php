@@ -201,7 +201,7 @@ class CategoryModel extends BaseModel {
             {
                 $sql = "SELECT parent_id, cat_id, grade ".
                     " FROM " . $this->pre . 'category';
-                $res = ECTOUCH::db()->getAll($sql);
+                $res = M()->query($sql);
                 write_static_cache('cat_parent_grade', $res);
             }
             else
