@@ -178,7 +178,7 @@
     
     <!-- 本例主要代码 End ================================ --> 
   </div>
-  <footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
+  <footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript" src="__TPL__/js/lefttime.js"></script> 

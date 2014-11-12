@@ -34,7 +34,7 @@
   </div>
   <!-- {/if} --> 
   </div>
-    <footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
+    <footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
 </body></html>

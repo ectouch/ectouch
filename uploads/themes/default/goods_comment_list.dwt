@@ -7,7 +7,7 @@
   <!-- #BeginLibraryItem "/library/comments.lbi" -->
   <div id="ECS_COMMENT"> {* ECSHOP 提醒您：动态载入comments_list.lbi，显示评论列表和评论表单 *}{insert name='comments' type=$type id=$id}</div>
   <!-- #EndLibraryItem -->
-  <footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
+  <footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
 </body></html>

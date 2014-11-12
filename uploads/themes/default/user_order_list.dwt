@@ -8,7 +8,7 @@
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
-<footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
+<footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 <script type="text/javascript">
 {foreach from=$lang.merge_order_js item=item key=key}
     var {$key} = "{$item}";

@@ -155,6 +155,6 @@
     <li>{$lang.booking_process}：<b>{$order.how_oos_name}</b></li>
   </ul>
 </section>
-<footer class="logo"><img src="__TPL__/images/copyright.png" width="176" height="60"></footer>
+<footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
