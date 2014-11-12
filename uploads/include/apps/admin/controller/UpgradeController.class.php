@@ -21,6 +21,8 @@ class UpgradeController extends AdminController
 
     private $md5_arr = array();
     private $_filearr = array('admin', 'api', 'include', 'plugins', '');
+    private $_wechat = 'wechat';
+    private $_extend = 'extend';
     // md5验证地址
     private $_upgrademd5 = 'http://www.ectouch.cn/upgrademd5/';
     // 补丁地址
@@ -227,8 +229,12 @@ class UpgradeController extends AdminController
             }
             closedir($handler);
         } else {
-            if (dirname($path) == '.' || (isset($dir_arr[1]) && in_array($dir_arr[1], $this->_filearr))) {
-                $this->md5_arr[base64_encode($path)] = md5_file($path);
+            if (dirname($path) == '.' || (isset($dir_arr[1]) && in_array($dir_arr[1], $this->_filearr)) ) {
+                $pos_wechat = strpos(strtolower($path), $this->_wechat);
+                $pos_extend = strpos(strtolower($path), $this->_extend);
+                if($pos_wechat === false && $pos_extend === false){
+                    $this->md5_arr[base64_encode($path)] = md5_file($path);
+                }
             }
         }
     }
