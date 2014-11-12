@@ -106,14 +106,14 @@ class PackageBaseModel extends BaseModel {
      */
     function get_package_goods($package_id) {
         $sql = "SELECT pg.goods_id, g.goods_name, pg.goods_number, p.goods_attr, p.product_number, p.product_id
-            FROM " . ECTouch::ecs()->table('package_goods') . " AS pg
-                LEFT JOIN " . ECTouch::ecs()->table('goods') . " AS g ON pg.goods_id = g.goods_id
-                LEFT JOIN " . ECTouch::ecs()->table('products') . " AS p ON pg.product_id = p.product_id
+            FROM " . $this->pre . 'package_goods ' . " AS pg
+                LEFT JOIN " . $this->pre . 'goods ' . " AS g ON pg.goods_id = g.goods_id
+                LEFT JOIN " . $this->pre . 'products ' . " AS p ON pg.product_id = p.product_id
             WHERE pg.package_id = '$package_id'";
         if ($package_id == 0) {
             $sql .= " AND pg.admin_id = '$_SESSION[admin_id]'";
         }
-        $resource = ECTouch::db()->query($sql);
+        $resource = $this->query($sql);
         if (!$resource) {
             return array();
         }
@@ -122,7 +122,7 @@ class PackageBaseModel extends BaseModel {
 
         /* 生成结果数组 取存在货品的商品id 组合商品id与货品id */
         $good_product_str = '';
-        while ($_row = ECTouch::db()->fetch_array($resource)) {
+        foreach ($resource as $key=>$_row){
             if ($_row['product_id'] > 0) {
                 /* 取存商品id */
                 $good_product_str .= ',' . $_row['goods_id'];
@@ -144,8 +144,8 @@ class PackageBaseModel extends BaseModel {
 
         /* 取商品属性 */
         if ($good_product_str != '') {
-            $sql = "SELECT goods_attr_id, attr_value FROM " . ECTouch::ecs()->table('goods_attr') . " WHERE goods_id IN ($good_product_str)";
-            $result_goods_attr = ECTouch::db()->getAll($sql);
+            $sql = "SELECT goods_attr_id, attr_value FROM " . $this->pre . 'goods_attr' . " WHERE goods_id IN ($good_product_str)";
+            $result_goods_attr = $this->query($sql);
 
             $_goods_attr = array();
             foreach ($result_goods_attr as $value) {
