@@ -76,6 +76,19 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_ad_position` (
 INSERT INTO `ecs_touch_ad_position` (`position_id`, `position_name`, `ad_width`, `ad_height`, `position_desc`, `position_style`) VALUES
 (1, '首页Banner广告位', 360, 168, '', '<ul>\r\n{foreach from=$ads item=ad}\r\n  <li>{$ad}</li>\r\n{/foreach}\r\n</ul>\r\n');
 
+
+--
+-- 表的结构 `ecs_touch_adsense`
+--
+DROP TABLE IF EXISTS `ecs_touch_adsense`;
+
+CREATE TABLE IF NOT EXISTS `ecs_touch_adsense` (
+  `from_ad` smallint(5) NOT NULL DEFAULT '0',
+  `referer` varchar(255) NOT NULL DEFAULT '',
+  `clicks` int(10) unsigned NOT NULL DEFAULT '0',
+  KEY `from_ad` (`from_ad`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 --
 -- 表的结构 `ecs_touch_article_cat`
 --
@@ -245,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_payment` (
 
 INSERT INTO `ecs_touch_payment` (`pay_id`, `pay_code`, `pay_name`, `pay_fee`, `pay_desc`, `pay_order`, `pay_config`, `enabled`, `is_cod`, `is_online`) VALUES
 (1, 'balance', '余额支付', '0', '&lt;p&gt;使用帐户余额支付。只有会员才能使用，通过设置信用额度，可以透支。&lt;/p&gt;', 0, 'a:0:{}', 1, 0, 1),
-(2, 'alipay_wap', '支付宝（手机版）', '0', '&lt;p&gt;支付宝（手机版）网站(www.alipay.com) 是国内先进的网上支付平台。&lt;/p&gt;', 0, 'a:4:{i:0;a:3:{s:4:"name";s:14:"alipay_account";s:4:"type";s:4:"text";s:5:"value";s:15:"pay@ecmoban.com";}i:1;a:3:{s:4:"name";s:10:"alipay_key";s:4:"type";s:4:"text";s:5:"value";s:32:"m2rgo80qokhtn14vjp2b9zjjbjfqiyce";}i:2;a:3:{s:4:"name";s:14:"alipay_partner";s:4:"type";s:4:"text";s:5:"value";s:16:"2088011125312949";}i:3;a:3:{s:4:"name";s:10:"relate_pay";s:4:"type";s:6:"select";s:5:"value";s:1:"0";}}', 1, 0, 1);
+(2, 'alipay_wap', '支付宝（手机版）', '0', '&lt;p&gt;支付宝（手机版）网站(www.alipay.com) 是国内先进的网上支付平台。&lt;/p&gt;', 0, 'a:4:{i:0;a:3:{s:4:"name";s:14:"alipay_account";s:4:"type";s:4:"text";s:5:"value";s:15:"";}i:1;a:3:{s:4:"name";s:10:"alipay_key";s:4:"type";s:4:"text";s:5:"value";s:32:"";}i:2;a:3:{s:4:"name";s:14:"alipay_partner";s:4:"type";s:4:"text";s:5:"value";s:16:"";}i:3;a:3:{s:4:"name";s:10:"relate_pay";s:4:"type";s:6:"select";s:5:"value";s:1:"0";}}', 1, 0, 1);
 
 --
 -- 表的结构 `ecs_touch_shop_config`
