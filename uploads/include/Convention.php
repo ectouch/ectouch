@@ -21,7 +21,7 @@ return array(
 	'APP' => array(
 		'TIMEZONE' => 'PRC', // 时区设置
 		/* 日志和错误调试配置 */
-		'DEBUG' => true, // 是否开启调试模式，true开启，false关闭
+		'DEBUG' => false, // 是否开启调试模式，true开启，false关闭
 		'LOG_ON' => false, // 是否开启出错信息保存到文件，true开启，false不开启
 		'LOG_PATH' => ROOT_PATH . 'data/cache/log/', // 出错信息存放的目录，出错信息以天为单位存放，一般不需要修改
 		'ERROR_URL' => '', // 出错信息重定向页面，为空采用默认的出错页面，一般不需要修改
