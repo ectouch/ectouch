@@ -30,8 +30,10 @@ class CommonController extends BaseController
         parent::__construct();
         $this->ecshop_init();
         // 微信oauth处理
-        if (method_exists('WechatController', 'do_oauth')) {
-            call_user_func(array('WechatController', 'do_oauth'));
+        if(class_exists('WechatController')){
+            if (method_exists('WechatController', 'do_oauth')) {
+                call_user_func(array('WechatController', 'do_oauth'));
+            }
         }
         /* 语言包 */
         $this->assign('lang', L());
