@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -28,13 +27,26 @@ class BrandBaseModel extends BaseModel {
     function get_brand_info($id) {
         $sql = 'SELECT b.* , tb.brand_banner FROM ' . $this->pre . "brand as b LEFT JOIN " . $this->pre . "touch_brand as tb ON b.brand_id = tb.brand_id WHERE b.brand_id = '$id'";
         $res = $this->row($sql);
-        $brand_logo = strtolower(substr($res ['brand_logo'], 0, '4')) == 'http' ? $res ['brand_logo'] : $base_url . 'data/brandlogo/' . $res ['brand_logo'];
-        $brand_banner = strtolower(substr($res ['brand_banner'], 0, '4')) == 'http' ? $res ['brand_banner'] : $base_url . 'data/brand_banner/' . $res ['brand_banner'];
-
         $res['brand_logo'] = get_banner_path($res ['brand_logo']);
         $res['brand_banner'] = get_banner_path($res ['brand_banner']);
 
         return $res;
+    }
+
+    /**
+     * 取得品牌列表
+     * @return array 品牌列表 id => name
+     */
+    function get_brand_list() {
+        $sql = 'SELECT brand_id, brand_name FROM ' . $this->pre . 'brand ORDER BY sort_order';
+        $res = $this->query($sql);
+
+        $brand_list = array();
+        foreach ($res AS $row) {
+            $brand_list[$row['brand_id']] = addslashes($row['brand_name']);
+        }
+
+        return $brand_list;
     }
 
 }
