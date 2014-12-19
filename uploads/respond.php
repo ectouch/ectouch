@@ -15,7 +15,7 @@
 
 /* 访问控制 */
 define('IN_ECTOUCH', true);
-if(!isset($_GET['code'])){
+if(!isset($_REQUEST['code'])){
     header('location: ./index.php?'.$_SERVER['QUERY_STRING']);
     exit;
 }
