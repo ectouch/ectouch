@@ -42,6 +42,11 @@ class ExchangeController extends CommonController {
         $this->assign('size', $this->size);
         $this->assign('sort', $this->sort);
         $this->assign('order', $this->order);
+        $goods_list = model('Exchange')->exchange_get_goods($this->children, $this->integral_min, $this->integral_max, $this->ext, $this->size, $this->page, $this->sort, $this->order);
+        $count = model('Exchange')->get_exchange_goods_count($this->children, $this->integral_min, $this->integral_max);
+        $this->pageLimit(url('index', array('sort' => $this->sort, 'order' => $this->order)), $this->size);
+        $this->assign('goods_list', $goods_list);
+        $this->assign('pager', $this->pageShow($count));
         $this->display('exchange_list.dwt');
     }
 
@@ -141,7 +146,7 @@ class ExchangeController extends CommonController {
             exit;
         }
         /* 查询：检查兑换商品是否有库存 */
-        if ($goods['goods_number'] == 0 && $_CFG['use_storage'] == 1) {
+        if ($goods['goods_number'] == 0 && C('use_storage') == 1) {
             show_message(L('eg_error_number'), array(L('back_up_page')), array($back_act), 'error');
         }
         /* 查询：检查兑换商品是否是取消 */
@@ -175,7 +180,7 @@ class ExchangeController extends CommonController {
         }
 
         //查询：商品存在规格 是货品 检查该货品库存
-        if ((!empty($specs)) && ($product_info['product_number'] == 0) && ($_CFG['use_storage'] == 1)) {
+        if ((!empty($specs)) && ($product_info['product_number'] == 0) && (C('use_storage') == 1)) {
             show_message(L('eg_error_number'), array(L('back_up_page')), array($back_act), 'error');
         }
 
@@ -233,6 +238,7 @@ class ExchangeController extends CommonController {
         // 如果分类ID为0，则返回总分类页
         $page_size = C('page_size');
         $this->size = intval($page_size) > 0 ? intval($page_size) : 10;
+        $this->page = I('request.page') ? intval(I('request.page')) : 1;
         $this->ext = '';
         $this->cat_id = I('request.cat_id');
         $this->integral_max = I('request.integral_max');
@@ -258,11 +264,7 @@ class ExchangeController extends CommonController {
                     'grid',
                     'album'
                 ))) ? trim($_REQUEST ['display']) : (isset($_COOKIE ['ECS'] ['display']) ? $_COOKIE ['ECS'] ['display'] : $default_display_type);
-        $display = in_array($display, array(
-                    'list',
-                    'grid',
-                    'album'
-                )) ? $display : 'album';
+        $this->assign('display', $display);
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
         $this->children = get_children($this->cat_id);
     }
