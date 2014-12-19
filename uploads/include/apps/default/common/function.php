@@ -10,84 +10,74 @@ defined('IN_ECTOUCH') or die('Deny Access');
  * @return  string
  */
 function get_page_title($cat = 0, $str = '') {
-	/* 初始化“页面标题”和“当前位置” */
+    /* 初始化“页面标题”和“当前位置” */
     $page_title = C('shop_title') . ' - ' . 'Powered by ECTouch.cn';
-    $ur_here = '<a href="'.__APP__.'">' . L('home') . '</a>';
-	/* 控制器名称 */
-	$controller_name = strtolower(CONTROLLER_NAME);
-	/* 处理有分类的 */
-	if (in_array($controller_name, array('category', 'goods', 'article', 'brand'))) {
-		/* 商品分类或商品 */
-		if ('category' == $controller_name || 'goods' == $controller_name || 'brand' == $controller_name) {
-			if ($cat > 0) {
-				$cat_arr = model('Category')->get_parent_cats($cat);
-				$key     = 'cid';
-				$type    = 'category/index';
-			} else {
-				$cat_arr = array();
-			}
-		} elseif ('article' == $controller_name) { /* 文章分类或文章 */
-			if ($cat > 0) {
-				$cat_arr = model('Article')->get_article_parent_cats($cat);
-				$key  = 'acid';
-				$type = 'article/index';
-			} else {
-				$cat_arr = array();
-			}
-		}
-		/* 循环分类 */
-		if (!empty($cat_arr)) {
-			krsort($cat_arr);
-			foreach ($cat_arr AS $val) {
-				$page_title = htmlspecialchars($val['cat_name']) . '_' . $page_title;
-				$args       = array($key => $val['cat_id']);
-				$ur_here   .= ' <code>&gt;</code> <a href="' . url($type, $args) . '">' . htmlspecialchars($val['cat_name']) . '</a>';
-			}
-		}
-	} else { /* 处理无分类的 */
-		/* 团购 */
-		if ('groupbuy' == $controller_name)
-		{
-			$page_title = L('group_buy_goods') . '_' . $page_title;
-			$args       = array('gbid' => '0');
-			$ur_here   .= ' <code>&gt;</code> <a href="' . url('groupbuy/index', $args) . '">' . L('group_buy_goods') . '</a>';
-		}
-		/* 拍卖 */
-		elseif ('auction' == $controller_name)
-		{
-			$page_title = L('auction') . '_' . $page_title;
-			$args       = array('auid' => '0');
-			$ur_here   .= ' <code>&gt;</code> <a href="' . url('auction/index', $args) . '">' . L('auction') . '</a>';
-		}
-		/* 夺宝 */
-		elseif ('snatch' == $controller_name)
-		{
-			$page_title = L('snatch') . '_' . $page_title;
-			$args       = array('id' => '0');
-			$ur_here   .= ' <code> &gt; </code><a href="' . url('snatch/index', $args) . '">' . L('snatch') . '</a>';
-		}
-		/* 批发 */
-		elseif ('wholesale' == $controller_name)
-		{
-			$page_title = L('wholesale') . '_' . $page_title;
-			$args       = array('wsid' => '0');
-			$ur_here   .= ' <code>&gt;</code> <a href="' . url('wholesale/index', $args) . '">' . L('wholesale') . '</a>';
-		}
-		/* 积分兑换 */
-		elseif ('exchange' == $controller_name)
-		{
-			$page_title = L('exchange') . '_' . $page_title;
-			$args       = array('wsid' => '0');
-			$ur_here   .= ' <code>&gt;</code> <a href="' . url('exchange/index', $args) . '">' . L('exchange') . '</a>';
-		}
-		/* 其他的在这里补充 */
-	}
+    $ur_here = '<a href="' . __APP__ . '">' . L('home') . '</a>';
+    /* 控制器名称 */
+    $controller_name = strtolower(CONTROLLER_NAME);
+    /* 处理有分类的 */
+    if (in_array($controller_name, array('category', 'goods', 'article', 'brand'))) {
+        /* 商品分类或商品 */
+        if ('category' == $controller_name || 'goods' == $controller_name || 'brand' == $controller_name) {
+            if ($cat > 0) {
+                $cat_arr = model('Category')->get_parent_cats($cat);
+                $key = 'cid';
+                $type = 'category/index';
+            } else {
+                $cat_arr = array();
+            }
+        } elseif ('article' == $controller_name) { /* 文章分类或文章 */
+            if ($cat > 0) {
+                $cat_arr = model('Article')->get_article_parent_cats($cat);
+                $key = 'acid';
+                $type = 'article/index';
+            } else {
+                $cat_arr = array();
+            }
+        }
+        /* 循环分类 */
+        if (!empty($cat_arr)) {
+            krsort($cat_arr);
+            foreach ($cat_arr AS $val) {
+                $page_title = htmlspecialchars($val['cat_name']) . '_' . $page_title;
+                $args = array($key => $val['cat_id']);
+                $ur_here .= ' <code>&gt;</code> <a href="' . url($type, $args) . '">' . htmlspecialchars($val['cat_name']) . '</a>';
+            }
+        }
+    } else { /* 处理无分类的 */
+        /* 团购 */
+        if ('groupbuy' == $controller_name) {
+            $page_title = L('group_buy_goods') . '_' . $page_title;
+            $args = array('gbid' => '0');
+            $ur_here .= ' <code>&gt;</code> <a href="' . url('groupbuy/index', $args) . '">' . L('group_buy_goods') . '</a>';
+        }
+        /* 拍卖 */ elseif ('auction' == $controller_name) {
+            $page_title = L('auction') . '_' . $page_title;
+            $args = array('auid' => '0');
+            $ur_here .= ' <code>&gt;</code> <a href="' . url('auction/index', $args) . '">' . L('auction') . '</a>';
+        }
+        /* 夺宝 */ elseif ('snatch' == $controller_name) {
+            $page_title = L('snatch') . '_' . $page_title;
+            $args = array('id' => '0');
+            $ur_here .= ' <code> &gt; </code><a href="' . url('snatch/index', $args) . '">' . L('snatch') . '</a>';
+        }
+        /* 批发 */ elseif ('wholesale' == $controller_name) {
+            $page_title = L('wholesale') . '_' . $page_title;
+            $args = array('wsid' => '0');
+            $ur_here .= ' <code>&gt;</code> <a href="' . url('wholesale/index', $args) . '">' . L('wholesale') . '</a>';
+        }
+        /* 积分兑换 */ elseif ('exchange' == $controller_name) {
+            $page_title = L('exchange') . '_' . $page_title;
+            $args = array('wsid' => '0');
+            $ur_here .= ' <code>&gt;</code> <a href="' . url('exchange/index', $args) . '">' . L('exchange') . '</a>';
+        }
+        /* 其他的在这里补充 */
+    }
 
-	/* 处理最后一部分 */
-    if (!empty($str))
-    {
-        $page_title  = $str . '_' . $page_title;
-        $ur_here    .= ' <code>&gt;</code> ' . $str;
+    /* 处理最后一部分 */
+    if (!empty($str)) {
+        $page_title = $str . '_' . $page_title;
+        $ur_here .= ' <code>&gt;</code> ' . $str;
     }
 
     /* 返回值 */
@@ -191,10 +181,10 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
 
     $page_prev = ($page > 1) ? $page - 1 : 1;
     $page_next = ($page < $page_count) ? $page + 1 : $page_count;
-    
+
     switch ($app) {
         case 'category/index':
-            $uri_args = array('id' => $cat, 'bid' => $brand, 'price_min' => $price_min, 'price_max' => $price_max, 'filter_attr' => $filter_attr, 'sort' => $sort, 'order' => $order, 'display' => $display_type, 'keywords'=>$keywords);
+            $uri_args = array('id' => $cat, 'bid' => $brand, 'price_min' => $price_min, 'price_max' => $price_max, 'filter_attr' => $filter_attr, 'sort' => $sort, 'order' => $order, 'display' => $display_type, 'keywords' => $keywords);
             break;
         case 'article_cat':
             $uri_args = array('acid' => $cat, 'sort' => $sort, 'order' => $order);
@@ -216,10 +206,10 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
             $pager['page_next'] = $url_format . $page_next;
             $pager['page_last'] = $url_format . $page_count;
         } else {
-            $pager['page_first'] = build_uri($app, array_merge($uri_args, array('page'=>1) ));
-            $pager['page_prev'] = build_uri($app, array_merge($uri_args,array('page'=>$page_prev)));   
-            $pager['page_next'] = build_uri($app,array_merge($uri_args,array('page'=>$page_next)));     
-            $pager['page_last'] = build_uri($app, array_merge($uri_args , array('page'=>$page_count )));
+            $pager['page_first'] = build_uri($app, array_merge($uri_args, array('page' => 1)));
+            $pager['page_prev'] = build_uri($app, array_merge($uri_args, array('page' => $page_prev)));
+            $pager['page_next'] = build_uri($app, array_merge($uri_args, array('page' => $page_next)));
+            $pager['page_last'] = build_uri($app, array_merge($uri_args, array('page' => $page_count)));
         }
         $pager['array'] = array();
 
@@ -258,14 +248,14 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
                 $pager['page_number'][$i] = $url_format . $i;
             }
         } else {
-            $pager['page_first'] = ($page - $_offset > 1 && $_pagenum < $page_count) ? build_uri($app, array_merge($uri_args , array('page'=>1))) : '';
-            $pager['page_prev'] = ($page > 1) ? build_uri($app, array_merge($uri_args , array('page'=>$page_prev))) : '';
-            $pager['page_next'] = ($page < $page_count) ? build_uri($app, array_merge( $uri_args ,array('page'=>$page_next))) : '';
-            $pager['page_last'] = ($_to < $page_count) ? build_uri($app, array_merge( $uri_args ,array('page'=>$page_count))) : '';
+            $pager['page_first'] = ($page - $_offset > 1 && $_pagenum < $page_count) ? build_uri($app, array_merge($uri_args, array('page' => 1))) : '';
+            $pager['page_prev'] = ($page > 1) ? build_uri($app, array_merge($uri_args, array('page' => $page_prev))) : '';
+            $pager['page_next'] = ($page < $page_count) ? build_uri($app, array_merge($uri_args, array('page' => $page_next))) : '';
+            $pager['page_last'] = ($_to < $page_count) ? build_uri($app, array_merge($uri_args, array('page' => $page_count))) : '';
             $pager['page_kbd'] = ($_pagenum < $page_count) ? true : false;
             $pager['page_number'] = array();
             for ($i = $_from; $i <= $_to; ++$i) {
-                $pager['page_number'][$i] = build_uri($app, array_merge($uri_args , array('page'=> $i)));
+                $pager['page_number'][$i] = build_uri($app, array_merge($uri_args, array('page' => $i)));
             }
         }
     }
@@ -277,7 +267,7 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
             $pager['search'][$key] = $row;
         }
     }
-  
+
     ECTouch::view()->assign('pager', $pager);
 }
 
@@ -374,6 +364,73 @@ function get_pager($url, $param, $record_count, $page = 1, $size = 10) {
     $pager['search'] = $param;
 
     return $pager;
+}
+
+/**
+ * 调用调查内容
+ *
+ * @access  public
+ * @param   integer $id   调查的编号
+ * @return  array
+ */
+function get_vote($id = '') {
+    /* 随机取得一个调查的主题 */
+    if (empty($id)) {
+        $time = gmtime();
+        $sql = 'SELECT vote_id, vote_name, can_multi, vote_count, RAND() AS rnd' .
+                ' FROM ' . M()->pre .
+                "vote WHERE start_time <= '$time' AND end_time >= '$time' " .
+                ' ORDER BY rnd LIMIT 1';
+    } else {
+        $sql = 'SELECT vote_id, vote_name, can_multi, vote_count' .
+                ' FROM ' . M()->pre .
+                "vote WHERE vote_id = '$id'";
+    }
+    $res = M()->query($sql);
+    $vote_arr = $res[0];
+
+    if ($vote_arr !== false && !empty($vote_arr)) {
+        /* 通过调查的ID,查询调查选项 */
+        $sql_option = 'SELECT v.*, o.option_id, o.vote_id, o.option_name, o.option_count ' .
+                'FROM ' . M()->pre . 'vote AS v, ' .
+                M()->pre . 'vote_option AS o ' .
+                "WHERE o.vote_id = v.vote_id AND o.vote_id = '$vote_arr[vote_id]' ORDER BY o.option_order ASC, o.option_id DESC";
+        $res = M()->query($sql_option);
+
+        /* 总票数 */
+        $sql = 'SELECT SUM(option_count) AS all_option FROM ' . M()->pre .
+                "vote_option WHERE vote_id = '" . $vote_arr['vote_id'] . "' GROUP BY vote_id";
+        $all_option = M()->query($sql);
+        $option_num = $all_option[0]['all_option'];
+
+        $arr = array();
+        $count = 100;
+        foreach ($res AS $idx => $row) {
+            if ($option_num > 0 && $idx == count($res) - 1) {
+                $percent = $count;
+            } else {
+                $percent = ($row['vote_count'] > 0 && $option_num > 0) ? round(($row['option_count'] / $option_num) * 100) : 0;
+
+                $count -= $percent;
+            }
+            $arr[$row['vote_id']]['options'][$row['option_id']]['percent'] = $percent;
+
+            $arr[$row['vote_id']]['vote_id'] = $row['vote_id'];
+            $arr[$row['vote_id']]['vote_name'] = $row['vote_name'];
+            $arr[$row['vote_id']]['can_multi'] = $row['can_multi'];
+            $arr[$row['vote_id']]['vote_count'] = $row['vote_count'];
+
+            $arr[$row['vote_id']]['options'][$row['option_id']]['option_id'] = $row['option_id'];
+            $arr[$row['vote_id']]['options'][$row['option_id']]['option_name'] = $row['option_name'];
+            $arr[$row['vote_id']]['options'][$row['option_id']]['option_count'] = $row['option_count'];
+        }
+
+        $vote_arr['vote_id'] = (!empty($vote_arr['vote_id'])) ? $vote_arr['vote_id'] : '';
+
+        $vote = array('id' => $vote_arr['vote_id'], 'content' => $arr);
+
+        return $vote;
+    }
 }
 
 /**
@@ -761,7 +818,7 @@ function show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_
     if (is_null(ECTouch::view()->get_template_vars('helps'))) {
         ECTouch::view()->assign('helps', model('Article')->get_shop_help()); // 网店帮助
     }
-    
+
     ECTouch::view()->assign('title', L('tips_message'));
     ECTouch::view()->assign('auto_redirect', $auto_redirect);
     ECTouch::view()->assign('message', $msg);
@@ -854,7 +911,7 @@ function time2gmt($time) {
  * @author xuanyan
  * */
 function set_affiliate($u = '') {
-    $_GET['u'] = empty($u) ?  $_GET['u'] : $u;
+    $_GET['u'] = empty($u) ? $_GET['u'] : $u;
     $config = unserialize(C('affiliate'));
     if (!empty($_GET['u']) && $config['on'] == 1) {
         if (!empty($config['config']['expire'])) {
@@ -1295,12 +1352,29 @@ function send_pwd_email($uid, $user_name, $email, $code) {
  * @param   string  $code   支付方式代码
  * @param   string  $params  必须有type值, $params = array('type'=>0), 0 同步，1 异步
  */
-function return_url($code = '', $params = array())
-{
-    $params['code'] = $code; 
-    $data = serialize($params);
-    $base64 = base64_encode($data);
+function return_url($code = '', $params = array()) {
+    $params['code'] = $code;
+    $base64 = urlsafe_b64encode(serialize($params));
     return __URL__ . '/respond.php?code=' . $base64;
+}
+
+//url base64编码
+function urlsafe_b64encode($string)
+{
+    $data = base64_encode($string);
+    $data = str_replace(array('+', '/', '='), array('-', '_', ''), $data);
+    return $data;
+}
+
+//url base64解码
+function urlsafe_b64decode($string)
+{
+    $data = str_replace(array('-', '_'), array('+', '/'), $string);
+    $mod4 = strlen($data) % 4;
+    if ($mod4) {
+        $data .= substr('====', $mod4);
+    }
+    return base64_decode($data);
 }
 
 /* * ********************************************************
@@ -1362,35 +1436,28 @@ function deleteRepeat($array) {
  *
  * @return void
  */
-function add_feed($id, $feed_type)
-{
+function add_feed($id, $feed_type) {
     $feed = array();
-    if ($feed_type == BUY_GOODS)
-    {
-        if (empty($id))
-        {
+    if ($feed_type == BUY_GOODS) {
+        if (empty($id)) {
             return;
         }
         $id = intval($id);
         $order_res = M()->query("SELECT g.goods_id, g.goods_name, g.goods_sn, g.goods_desc, g.goods_thumb, o.goods_price FROM " . M()->pre . 'order_goods ' . " AS o, " . M()->pre . 'goods ' . " AS g WHERE o.order_id='{$id}' AND o.goods_id=g.goods_id");
-        foreach($order_res as $goods_data)
-        {
-            if(!empty($goods_data['goods_thumb']))
-            {
+        foreach ($order_res as $goods_data) {
+            if (!empty($goods_data['goods_thumb'])) {
                 $url = __URL__ . $goods_data['goods_thumb'];
-            }
-            else
-            {
+            } else {
                 $url = __URL__ . C('no_picture');
             }
             $link = __URL__ . "goods.php?id=" . $goods_data["goods_id"];
 
             $feed['icon'] = "goods";
             $feed['title_template'] = '<b>{username} ' . L('feed_user_buy') . ' {goods_name}</b>';
-            $feed['title_data'] = array('username'=> $_SESSION['user_name'], 'goods_name'=> $goods_data['goods_name']);
+            $feed['title_data'] = array('username' => $_SESSION['user_name'], 'goods_name' => $goods_data['goods_name']);
             $feed['body_template'] = '{goods_name}  ' . L('feed_goods_price') . ':{goods_price}  ' . L('feed_goods_desc') . ':{goods_desc}';
-            $feed['body_data'] = array('goods_name'=>$goods_data['goods_name'], 'goods_price'=>$goods_data['goods_price'], 'goods_desc'=>sub_str(strip_tags($goods_data['goods_desc']), 150, true));
-            $feed['images'][] = array('url'=> $url, 'link'=> $link);
+            $feed['body_data'] = array('goods_name' => $goods_data['goods_name'], 'goods_price' => $goods_data['goods_price'], 'goods_desc' => sub_str(strip_tags($goods_data['goods_desc']), 150, true));
+            $feed['images'][] = array('url' => $url, 'link' => $link);
             uc_call("uc_feed_add", array($feed['icon'], $_SESSION['user_id'], $_SESSION['user_name'], $feed['title_template'], $feed['title_data'], $feed ['body_template'], $feed['body_data'], '', '', $feed['images']));
         }
     }
@@ -1470,16 +1537,16 @@ function exchange_points($uid, $fromcredits, $tocredits, $toappid, $netamount) {
  * @param  $order_id 订单id 
  *
  */
-function send_wechat_message($type = '', $title = '', $msg = '', $url = '', $order_id = ''){
+function send_wechat_message($type = '', $title = '', $msg = '', $url = '', $order_id = '') {
     /* 如果需要，微信通知 wanglu */
-    if(!empty($type)){
-        $remind = M()->table('wechat_extend')->field('name, config')->where('enable = 1 and command = "'.$type.'"')->find();
+    if (!empty($type)) {
+        $remind = M()->table('wechat_extend')->field('name, config')->where('enable = 1 and command = "' . $type . '"')->find();
         $config = unserialize($remind['config']);
         $title = $remind['name'] ? $remind['name'] : $title;
         $msg = $config['template'] ? str_replace('[$order_id]', $order_id, $config['template']) : $msg;
-        $openid = M()->table('wechat_user')->field('openid')->where('ect_uid = '.$_SESSION['user_id'])->getOne();
-        if(!empty($title) && !empty($openid)){
-            $dourl = __HOST__ . url('api/index', array('openid'=>$openid, 'title'=>$title, 'msg'=>$msg, 'url'=>$url));
+        $openid = M()->table('wechat_user')->field('openid')->where('ect_uid = ' . $_SESSION['user_id'])->getOne();
+        if (!empty($title) && !empty($openid)) {
+            $dourl = __HOST__ . url('api/index', array('openid' => $openid, 'title' => $title, 'msg' => $msg, 'url' => $url));
             Http::doGet($dourl);
         }
     }
