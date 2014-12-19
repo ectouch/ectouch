@@ -42,7 +42,7 @@
 onload = function()
 {
     // 开始检查订单
-    startCheckOrder();
+//  startCheckOrder();
 //    changeRange(document.forms['theForm'].elements['act_range'].value);
 //    changeType(document.forms['theForm'].elements['act_type'].value);
 }
@@ -285,5 +285,4 @@ function changeType(typeId)
 
 //-->
 </script>  
-<script type="text/javascript">var ue = UE.getEditor('container');</script> 
 {include file="pagefooter"}

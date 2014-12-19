@@ -16,7 +16,7 @@
     <td class="text-left">{$vo['end_time']}</td>
     <td class="text-center">{$vo['max_amount']}</td>
     <td class="text-center">{$vo['min_amount']}</td>
-    <td class="text-center"><a href="{url('edit', array('id'=>$vo['act_id']))}">{$lang['edit']}</a> | <a href="{url('del', array('id'=>$vo['brand_id']))}">{$lang['remove']}</a></td>
+    <td class="text-center"><a href="{url('edit', array('id'=>$vo['act_id']))}">{$lang['edit']}</a></td>
   </tr>
   {/loop}
 </table>
