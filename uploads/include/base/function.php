@@ -1095,7 +1095,7 @@ function is_email($user_email) {
  */
 function is_mobile($user_email) {
     $chars = "/^13[0-9]{1}[0-9]{8}$|15[0-9]{1}[0-9]{8}$|18[0-9]{1}[0-9]{8}$/";
-    if (preg_match($chars, $mobile)) {
+    if (preg_match($chars, $user_email)) {
         return true;
     } else {
         return false;
