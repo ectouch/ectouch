@@ -218,24 +218,30 @@ class FlowModel extends BaseModel {
      * @return string
      */
     function act_range_desc($favourable) {
-
+    
         if ($favourable ['act_range'] == FAR_BRAND) {
             $condition = "brand_id " . db_create_in($favourable ['act_range_ext']);
             $field = 'brand_name';
             $this->table = 'brand';
-            return join(',', $this->gecol($condition, $field));
+            $array = $this->gecol($condition, $field);
+            $array = $array ? $array : array();
+            return join(',', $array);
         } elseif ($favourable ['act_range'] == FAR_CATEGORY) {
             $this->table = 'category';
             $condition = "cat_id " . db_create_in($favourable ['act_range_ext']);
             $field = 'cat_name';
-            return join(',', $this->gecol($condition, $field));
+            $array = $this->gecol($condition, $field);
+            $array = $array ? $array : array();
+            return join(',', $array);
         } elseif ($favourable ['act_range'] == FAR_GOODS) {
             $this->table = 'goods';
             $condition = "goods_id " . db_create_in($favourable ['act_range_ext']);
             $field = 'goods_name';
-            return join(',', $this->gecol($condition, $field));
+            $array = $this->gecol($condition, $field);
+            $array = $array ? $array : array();
+            return join(',', $array);
         } else {
-
+    
             return '';
         }
     }
