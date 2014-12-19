@@ -227,7 +227,7 @@ class CommentController extends CommonController {
                 $this->assign('pager', $comment['pager']);
             }
             $this->assign('rank', $rank);
-            $this->assign('comment_info', model('Comment')->get_comment_info($cmt->id, $cmt->type));
+            $this->assign('comments_info', model('Comment')->get_comment_info($cmt->id, $cmt->type));
             $this->assign('comment_type', $cmt->type);
             $this->assign('id', $cmt->id);
             $this->assign('username', $_SESSION['user_name']);
