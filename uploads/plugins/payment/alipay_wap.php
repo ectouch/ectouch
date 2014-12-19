@@ -102,7 +102,6 @@ class alipay_wap
             'req_data' => $req_data, // 请求业务数据
             "_input_charset" => $charset
         );
-        
         ksort($parameter);
         reset($parameter);
         $param = '';
@@ -156,7 +155,7 @@ class alipay_wap
         $sign = substr($sign, 0, - 1) . $payment['alipay_key'];
         
         /* 生成支付按钮 */
-        $button = '<div><input type="button" class="btn btn-info ect-btn-info ect-colorf" onclick="window.open(\'' . $gateway . $param . '&sign=' . md5($sign) . '\')" value="' . l('pay_button') . '" class="c-btn3" /></div>';
+        $button = '<div><input type="button" class="btn btn-info ect-btn-info ect-colorf ect-bg" onclick="window.open(\'' . $gateway . $param . '&sign=' . md5($sign) . '\')" value="' . l('pay_button') . '" class="c-btn3" /></div>';
         return $button;
     }
 
@@ -240,12 +239,12 @@ class alipay_wap
                     $order_url = urlencode(base64_encode($order_url));
                     send_wechat_message('pay_remind', '', $out_trade_no[0].' 订单已支付', $order_url, $out_trade_no[0]);
                 }
-                echo "success";
+                exit("success");
             } else {
-                echo "fail";
+                exit("fail");
             }
         } else {
-            echo "fail";
+            exit("fail");
         }
     }
 }
