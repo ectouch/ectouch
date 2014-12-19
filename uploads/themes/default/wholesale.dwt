@@ -80,31 +80,28 @@
     <!-- 批发商品购物车 -->
     <section class="ect-padding-lr ect-padding-tb goods-option">
       <div class="goods-optionc">
-        <h5><span>{$lang.wholesale_goods_cart}</span></h5>
-        <table width="100%" border="0" align="center" cellspacing="1" bgcolor="#547289">
-          <tr>
-            <td bgcolor="#ffffff" align="center">{$lang.goods_name}</td>
-            <td bgcolor="#ffffff" align="center">{$lang.goods_attr}</td>
-            <td bgcolor="#ffffff" align="center">{$lang.number}</td>
-            <td bgcolor="#ffffff" align="center">{$lang.ws_price}</td>
-            <td bgcolor="#ffffff" align="center">{$lang.ws_subtotal}</td>
-            <td bgcolor="#ffffff" align="center">{$lang.handle}</td>
-          </tr>
-          <!-- {foreach from=$cart_goods key=key item=goods} 循环批发商品开始 -->
-          <tr>
-            <td bgcolor="#ffffff" align="center"><a href="{$goods.goods_url}" target="_blank" class="f6">{$goods.goods_name}</a></td>
-            <td bgcolor="#ffffff" align="center">{$goods.goods_attr}</td>
-            <td bgcolor="#ffffff" align="center">{$goods.goods_number}</td>
-            <td bgcolor="#ffffff" align="center">{$goods.formated_goods_price}</td>
-            <td bgcolor="#ffffff" align="center">{$goods.formated_subtotal}</td>
-            <td bgcolor="#ffffff" align="center"><a href="{:url('drop_goods',array('key'=>$this->_var['key']))}" class="f6">{$lang.drop}</a></td>
-          </tr>
-          <!--{/foreach}-->
-        </table>
+        <h4 style="margin:10px 0;"><strong>{$lang.wholesale_goods_cart}</strong></h4>
+        <div class="ect-wholesale">
+        <!-- {foreach from=$cart_goods key=key item=goods} 循环批发商品开始 -->
+        <section>
+        <div class="ect-wholesale-list">
+        	<h4 class="pull-left"><a href="{$goods.goods_url}" target="_blank" class="f6">{$goods.goods_name}</a>[{$goods.goods_attr}]</h4>
+            <span class="pull-right"><a href="{:url('drop_goods',array('key'=>$this->_var['key']))}" class="f6">{$lang.drop}</a></span>
+            </div>
+            <div class="ect-wholesale-list">
+            	<span class="pull-left">{$lang.number}:{$goods.goods_number}</span>
+                <span class="pull-right">{$goods.formated_goods_price}</span>
+            </div>
+            <div class="ect-wholesale-list">
+            	<span class="pull-right ect-color">{$lang.ws_subtotal}:{$goods.formated_subtotal}</span>
+            </div>
+        </section>
+        <!--{/foreach}-->
+        </div>
         <form method="post" action="{:url('submit_order')}">
           <table border="0" cellpadding="5" cellspacing="1" width="100%">
             <tr>
-              <td class="f5" style="text-decoration:none;">{$lang.ws_remark}</td>
+              <td class="f5" style="text-decoration:none; padding:0.8em 0;">{$lang.ws_remark}</td>
             </tr>
             <tr>
               <td><textarea name="remark" rows="4" class="border" style="width:99%; border:1px solid #ccc;"></textarea>

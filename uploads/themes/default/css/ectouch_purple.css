@@ -492,3 +492,11 @@ border: 1px solid transparent;border-radius: 4px;cursor: pointer;display: inline
 .article-info .article-info-con{font-size:1.2em;}
 .article-info .article-info-con *{width:100%;}
 
+/*批发*/
+.ect-wholesale{}
+.ect-wholesale section{ border-bottom:1px dashed #e3e3e3;}
+.ect-wholesale section:first-child{border-top:1px solid #e3e3e3;}
+.ect-wholesale section:last-child{border-bottom:1px solid #e3e3e3 !important;}
+.ect-wholesale-list:first-child{margin-top:15px;}
+.ect-wholesale-list{clear:both; margin:6px 0; overflow:hidden;}
+
