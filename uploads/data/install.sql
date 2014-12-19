@@ -21,6 +21,29 @@ INSERT INTO `ecs_touch_activity` (`act_id`, `act_banner`) VALUES
 (5, 'data/attached/banner_image/ea725b8e67518d05c5cd80e5fed8d04f.jpg');
 
 --
+-- 表的结构 `ecs_touch_topic`
+--
+DROP TABLE IF EXISTS `ecs_touch_topic`;
+
+CREATE TABLE IF NOT EXISTS `ecs_touch_topic` (
+  `topic_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL DEFAULT '''''',
+  `intro` text NOT NULL,
+  `start_time` int(11) NOT NULL DEFAULT '0',
+  `end_time` int(10) NOT NULL DEFAULT '0',
+  `data` text NOT NULL,
+  `template` varchar(255) NOT NULL DEFAULT '''''',
+  `css` text NOT NULL,
+  `topic_img` varchar(255) DEFAULT NULL,
+  `title_pic` varchar(255) DEFAULT NULL,
+  `base_style` char(6) DEFAULT NULL,
+  `htmls` mediumtext,
+  `keywords` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  KEY `topic_id` (`topic_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+
+--
 -- 表的结构 `ecs_touch_ad`
 --
 
@@ -280,7 +303,7 @@ INSERT INTO `ecs_touch_shop_config` SELECT * FROM `ecs_shop_config`;
 
 INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (1, 'shop_url', 'text', '', '', '', 1);
 
-INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (1, 'is_asynclist', 'select', '1,0', '', '0', 1);
+INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (1, 'show_asynclist', 'select', '1,0', '', '0', 1);
 -- ----------------------------
 -- 增加短信接口配置项
 -- ----------------------------
