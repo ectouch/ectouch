@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -40,7 +39,7 @@ class ExchangeModel extends BaseModel {
 
         /* 获得商品列表 */
         $start = ($page - 1) * $size;
-        $sort = $sort =='sales_volume'? 'xl.sales_volume': $sort;
+        $sort = $sort == 'sales_volume' ? 'xl.sales_volume' : $sort;
         $sql = 'SELECT g.goods_id, g.goods_name, g.market_price, g.goods_name_style, eg.exchange_integral, ' .
                 'g.goods_type, g.goods_brief, g.goods_thumb , g.goods_img, eg.is_hot ' .
                 'FROM ' . $this->pre . 'exchange_goods AS eg LEFT JOIN  ' . $this->pre . 'goods AS g ' .
@@ -126,11 +125,38 @@ class ExchangeModel extends BaseModel {
             $row['goods_img'] = get_image_path($goods_id, $row['goods_img']);
             $row['goods_thumb'] = get_image_path($goods_id, $row['goods_thumb'], true);
             $row['original_img'] = get_image_path($goods_id, $row['original_img'], true);
-            $row['goods_brand_url'] = build_uri('brand/goods_list', array('id' => $row['brand_id']));;
+            $row['goods_brand_url'] = build_uri('brand/goods_list', array('id' => $row['brand_id']));
             return $row;
         } else {
             return false;
         }
+    }
+
+    /**
+     * 获得分类下的商品总数
+     *
+     * @access  public
+     * @param   string     $cat_id
+     * @return  integer
+     */
+    function get_exchange_goods_count($children, $min = 0, $max = 0, $ext = '') {
+        $where = "eg.is_exchange = 1 AND g.is_delete = 0 AND ($children OR " . model('Goods')->get_extension_goods($children) . ')';
+
+
+        if ($min > 0) {
+            $where .= " AND eg.exchange_integral >= $min ";
+        }
+
+        if ($max > 0) {
+            $where .= " AND eg.exchange_integral <= $max ";
+        }
+
+        $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre . 'exchange_goods AS eg, ' .
+                $this->pre . "goods AS g WHERE eg.goods_id = g.goods_id AND $where $ext";
+        
+        /* 返回商品总数 */
+        $res = $this->row($sql); 
+        return $res['count'];
     }
 
 }
