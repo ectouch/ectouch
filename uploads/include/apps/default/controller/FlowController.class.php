@@ -354,6 +354,7 @@ class FlowController extends CommonController {
             $your_discount = sprintf('', $favour_name, price_format($discount ['discount']));
             $result ['total_desc'] = $cart_goods ['total'] ['goods_price'];
             $result ['total_number'] = $cart_goods ['total'] ['total_number'];
+            $result['market_total'] =  $cart_goods['total']['market_price'];//市场价格
             die(json_encode($result));
         } else {
             $result ['error'] = 100;
@@ -397,7 +398,8 @@ class FlowController extends CommonController {
         //  检查用户是否已经登录 如果用户已经登录了则检查是否有默认的收货地址 如果没有登录则跳转到登录和注册页面
         if (empty($_SESSION ['direct_shopping']) && $_SESSION ['user_id'] == 0) {
             /* 用户没有登录且没有选定匿名购物，转向到登录页面 */
-            ecs_header("Location: " . url('user/login') . "\n");
+            $this->redirect(url('user/login',array('step'=>'flow')));
+            exit;
         }
         // 获取收货人信息
         $consignee = model('Order')->get_consignee($_SESSION ['user_id']);
@@ -684,7 +686,7 @@ class FlowController extends CommonController {
                         show_message(L('invalid_captcha'));
                     }
                 }
-                if ($user->login($username, $password, isset($remember))) {
+                if (self::$user->login($username, $password, isset($remember))) {
                     model('Users')->update_user_info(); // 更新用户信息
                     model('Users')->recalculate_price(); // 重新计算购物车中的商品价格
 
@@ -1687,7 +1689,7 @@ class FlowController extends CommonController {
                 $order['bonus_id'] = intval($_GET['bonus']);
             } else {
                 $order['bonus_id'] = 0;
-                $result['error'] = $_LANG['invalid_bonus'];
+                $result['error'] = L('invalid_bonus');
             }
 
             /* 计算订单的费用 */
@@ -1700,7 +1702,6 @@ class FlowController extends CommonController {
             }
 
             $result['content'] = ECTouch::$view->fetch('library/order_total.lbi');
-            ;
         }
 
         die(json_encode($result));
