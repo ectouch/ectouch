@@ -20,6 +20,7 @@ class CategoryController extends CommonController {
     private $cat_id = 0; // 分类id
     private $children = '';
     private $brand = 0; // 品牌
+    private $type = ''; //商品类型
     private $price_min = 0; // 最低价格
     private $price_max = 0; // 最大价格
     private $ext = '';
@@ -44,6 +45,19 @@ class CategoryController extends CommonController {
      */
     public function index() {
         $this->parameter();
+        if (I('get.id', 0) == 0 && CONTROLLER_NAME == 'category') {
+            $arg = array(
+                'id' => $this->cat_id,
+                'brand' => $this->brand,
+                'price_max' => $this->price_max,
+                'price_min' => $this->price_min,
+                'filter_attr' => $this->filter_attr_str,
+                'page' => $this->page,
+            );
+
+            $url = url('Category/index', $arg);
+            $this->redirect($url);
+        }
         $this->assign('brand_id', $this->brand);
         $this->assign('price_max', $this->price_max);
         $this->assign('price_min', $this->price_min);
@@ -55,16 +69,24 @@ class CategoryController extends CommonController {
         $this->assign('id', $this->cat_id);
         // 获取分类
         $this->assign('category', model('CategoryBase')->get_top_category());
-        $count = model('Category')->category_get_count($this->children, $this->brand, $this->ext, $this->keywords); 
+        $count = model('Category')->category_get_count($this->children, $this->brand, $this->type, $this->price_min, $this->price_max, $this->ext);
 
         $goodslist = $this->category_get_goods();
         $this->assign('goods_list', $goodslist);
-        $this->pageLimit(url('index', array('page'=>'page','id'=>$this->cat_id)), $this->size); 
-        $this->assign('page', $this->pageShow($count));
+        $this->pageLimit(url('index', array('id' => $this->cat_id, 'brand' => $this->brand, 'price_max' => $this->price_max, 'price_min' => $this->price_min, 'filter_attr' => $this->filter_attr_str, 'sort' => $this->sort, 'order' => $this->order)), $this->size);
+        $this->assign('pager', $this->pageShow($count));
+
         /* 页面标题 */
         $page_info = get_page_title($this->cat_id);
         $this->assign('ur_here', $page_info['ur_here']);
         $this->assign('page_title', $page_info['title']);
+        $cat = model('Category')->get_cat_info($this->cat_id);  // 获得分类的相关信息
+        if (!empty($cat['keywords'])) {
+            if (!empty($cat['keywords'])) {
+                $this->assign('keywords_list', explode(' ', $cat['keywords']));
+            }
+        }
+        $this->assign('categories', model('CategoryBase')->get_categories_tree($this->cat_id));
 
         $this->display('category.dwt');
     }
@@ -125,15 +147,13 @@ class CategoryController extends CommonController {
                 $this->tag = 'OR g.goods_id ' . db_create_in($this->tag);
             }
             $this->assign('keywords', $keywords);
-        } elseif ($this->cat_id == 0) {
-            ecs_header("Location: " . url('category/top_all') . "\n");
         }
     }
 
     /**
      * 处理参数便于搜索商品信息
      */
-    public function parameter() {
+    private function parameter() {
         // 如果分类ID为0，则返回总分类页
         if (empty($this->cat_id)) {
             $this->cat_id = 0;
@@ -149,6 +169,7 @@ class CategoryController extends CommonController {
         $price_min = I('request.price_min');
         $filter_attr = I('request.filter_attr');
         $this->size = intval($page_size) > 0 ? intval($page_size) : 10;
+        $this->page = I('request.page') > 0 ? intval(I('request.page')) : 1;
         $this->brand = $brand > 0 ? $brand : 0;
         $this->price_max = $price_max > 0 ? $price_max : 0;
         $this->price_min = $price_min > 0 ? $price_min : 0;
@@ -162,7 +183,7 @@ class CategoryController extends CommonController {
         $default_display_type = C('show_order_type') == '0' ? 'list' : (C('show_order_type') == '1' ? 'grid' : 'album');
         $default_sort_order_method = C('sort_order_method') == '0' ? 'DESC' : 'ASC';
         $default_sort_order_type = C('sort_order_type') == '0' ? 'goods_id' : (C('sort_order_type') == '1' ? 'shop_price' : 'last_update');
-
+        $this->type = (isset($_REQUEST['type']) && in_array(trim(strtolower($_REQUEST['type'])), array('best', 'hot', 'new', 'promotion'))) ? trim(strtolower($_REQUEST['type'])) : '';
         $this->sort = (isset($_REQUEST['sort']) && in_array(trim(strtolower($_REQUEST['sort'])), array(
                     'goods_id',
                     'shop_price',
@@ -179,13 +200,8 @@ class CategoryController extends CommonController {
                     'grid',
                     'album'
                 ))) ? trim($_REQUEST['display']) : (isset($_COOKIE['ECS']['display']) ? $_COOKIE['ECS']['display'] : $default_display_type);
-        $display = in_array($display, array(
-                    'list',
-                    'grid',
-                    'album'
-                )) ? $display : 'album';
+        $this->assign('display', $display);
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
-
         $this->children = get_children($this->cat_id);
         /* 赋值固定内容 */
         if ($this->brand > 0) {
@@ -342,7 +358,7 @@ class CategoryController extends CommonController {
         ksort($brands);
         $this->assign('brands', $brands);
         /* 属性筛选 */
-        $thisext = ''; // 商品查询条件扩展
+        $this->ext = ''; // 商品查询条件扩展
         if ($cat['filter_attr'] > 0) {
             $cat_filter_attr = explode(',', $cat['filter_attr']); // 提取出此分类的筛选属性
             $all_attr_list = array();
@@ -483,6 +499,25 @@ class CategoryController extends CommonController {
         } else {
             $where.=" AND ($this->children OR " . model('Goods')->get_extension_goods($this->children) . ') ';
         }
+        if ($this->type) {
+            switch ($this->type) {
+                case 'best':
+                    $where .= ' AND g.is_best = 1';
+                    break;
+                case 'new':
+                    $where .= ' AND g.is_new = 1';
+                    break;
+                case 'hot':
+                    $where .= ' AND g.is_hot = 1';
+                    break;
+                case 'promotion':
+                    $time = gmtime();
+                    $where .= " AND g.promote_price > 0 AND g.promote_start_date <= '$time' AND g.promote_end_date >= '$time'";
+                    break;
+                default:
+                    $where .= '';
+            }
+        }
         if ($this->brand > 0) {
             $where .= "AND g.brand_id=$this->brand ";
         }
@@ -555,6 +590,8 @@ class CategoryController extends CommonController {
                 $arr[$row['goods_id']]['mysc'] = $rs;
             }
             $arr[$row['goods_id']]['promotion'] = model('GoodsBase')->get_promotion_show($row['goods_id']);
+            $arr[$row['goods_id']]['comment_count'] = model('Comment')->get_goods_comment($row['goods_id'], 0);  //商品总评论数量 
+            $arr[$row['goods_id']]['favorable_count'] = model('Comment')->favorable_comment($row['goods_id'], 0);  //获得商品好评数量  
         }
         return $arr;
     }
