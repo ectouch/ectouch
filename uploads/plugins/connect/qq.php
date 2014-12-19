@@ -50,8 +50,8 @@ if (isset($set_modules) && $set_modules == TRUE) {
     $modules[$i]['date'] = '2014-8-19';
     /* 配置信息 */
     $modules[$i]['config'] = array(
+        array('type' => 'text', 'name' => 'app_id', 'value' => ''),
         array('type' => 'text', 'name' => 'app_key', 'value' => ''),
-        array('type' => 'text', 'name' => 'app_secret', 'value' => ''),
     );
     return;
 }
@@ -74,8 +74,8 @@ class qq {
      * @param string $access_token            
      */
     public function __construct($conf, $access_token = NULL) {
-        $this->appid = $conf['app_key'];
-        $this->appkey = $conf['app_secret'];
+        $this->appid = $conf['app_id'];
+        $this->appkey = $conf['app_key'];
         $this->access_token = $access_token;
         $this->scope = 'get_user_info,add_share';
     }
