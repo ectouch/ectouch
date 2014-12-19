@@ -56,7 +56,7 @@ function insert_history() {
                 " WHERE $where AND is_on_sale = 1 AND is_alone_sale = 1 AND is_delete = 0";
         $query = M()->query($sql);
         $res = array();
-        foreach ($query as $key=>$row){
+        foreach ($query as $key => $row) {
             $goods['goods_id'] = $row['goods_id'];
             $goods['goods_name'] = $row['goods_name'];
             $goods['short_name'] = C('goods_name_length') > 0 ? sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
@@ -73,8 +73,8 @@ function insert_history() {
  * 调用购物车商品数目
  */
 function insert_cart_info_number() {
-    $sql = 'SELECT SUM(goods_number) AS number FROM ' . M()->pre .'cart ' .
-    " WHERE session_id = '" . SESS_ID . "' AND rec_type = '" . CART_GENERAL_GOODS . "'";
+    $sql = 'SELECT SUM(goods_number) AS number FROM ' . M()->pre . 'cart ' .
+            " WHERE session_id = '" . SESS_ID . "' AND rec_type = '" . CART_GENERAL_GOODS . "'";
     $res = M()->getRow($sql);
     $number = $res['number'];
     return intval($number);
@@ -242,6 +242,8 @@ function insert_comments($arr) {
     ECTouch::view()->assign('email', $_SESSION['email']);
     ECTouch::view()->assign('comment_type', $arr['type']);
     ECTouch::view()->assign('id', $arr['id']);
+    $comments = model('Comment')->get_comment_info($arr['id'], 0);
+    ECTouch::view()->assign('comments_info', $comments);
     //全部评论
     $cmt = model('Comment')->assign_comment($arr['id'], $arr['type']);
     ECTouch::view()->assign('comment_list', $cmt['comments']);
@@ -279,7 +281,7 @@ function insert_bought_notes($arr) {
     ECTouch::view()->caching = false;
     ECTouch::view()->force_compile = true;
 
-   /* 商品购买记录 */
+    /* 商品购买记录 */
     $sql = 'SELECT u.user_name, og.goods_number, oi.add_time, IF(oi.order_status IN (2, 3, 4), 0, 1) AS order_status ' .
             'FROM ' . M()->pre . 'order_info ' . ' AS oi LEFT JOIN ' . M()->pre . 'users ' . ' AS u ON oi.user_id = u.user_id, ' . M()->pre . 'order_goods ' . ' AS og ' .
             'WHERE oi.order_id = og.order_id AND ' . time() . ' - oi.add_time < 2592000 AND og.goods_id = ' . $arr['id'] . ' ORDER BY oi.add_time DESC LIMIT 5';
@@ -290,9 +292,9 @@ function insert_bought_notes($arr) {
     }
 
     $count = M()->table('order_info  AS oi LEFT JOIN ' . M()->pre . 'users ' . ' AS u ON oi.user_id = u.user_id, ' . M()->pre . 'order_goods ' . ' AS og ')
-    ->field('count(*)')
-    ->where('  oi.order_id = og.order_id AND ' . time() . ' - oi.add_time < 2592000 AND og.goods_id = ' . $arr['id'])
-    ->getOne();
+            ->field('count(*)')
+            ->where('  oi.order_id = og.order_id AND ' . time() . ' - oi.add_time < 2592000 AND og.goods_id = ' . $arr['id'])
+            ->getOne();
 
 
     /* 商品购买记录分页样式 */
