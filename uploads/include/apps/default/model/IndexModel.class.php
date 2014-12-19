@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -36,7 +35,7 @@ class IndexModel extends CommonModel {
         $sql = 'SELECT g.goods_id, g.goods_name, g.goods_name_style, g.market_price, g.shop_price AS org_price, g.promote_price, ' . "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price, " . "promote_start_date, promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img, RAND() AS rnd " . 'FROM ' . $this->pre . 'goods AS g ' . "LEFT JOIN " . $this->pre . "member_price AS mp " . "ON mp.goods_id = g.goods_id AND mp.user_rank = '$_SESSION[user_rank]' ";
         $sql .= ' WHERE g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 AND ' . $type;
         $sql .= ' ORDER BY g.sort_order, g.last_update DESC limit ' . $start . ', ' . $limit;
-        
+
         $result = $this->query($sql);
         foreach ($result as $key => $vo) {
             if ($vo['promote_price'] > 0) {
@@ -123,6 +122,22 @@ class IndexModel extends CommonModel {
         }
 
         return $goods;
+    }
+
+    /**
+     * 首页推荐分类
+     * @return type
+     *  by Leah
+     */
+    function get_recommend_res() {
+        $cat_recommend_res = $this->query("SELECT c.cat_id, c.cat_name, cr.recommend_type FROM " . $this->pre . "cat_recommend AS cr INNER JOIN " . $this->pre . "category AS c ON cr.cat_id=c.cat_id");
+        if (!empty($cat_recommend_res)) {
+            $cat_rec_array = array();
+            foreach ($cat_recommend_res as $cat_recommend_data) {
+                $cat_rec[$cat_recommend_data['recommend_type']][] = array('cat_id' => $cat_recommend_data['cat_id'], 'cat_name' => $cat_recommend_data['cat_name'], 'url' => url('category/index', array('id' => $cat_recommend_data['cat_id'])), 'cat_id' => model('Category')->get_parent_id_tree($cat_recommend_data['cat_id']), 'goods_list' => model('Category')->assign_cat_goods($cat_recommend_data['cat_id'],3));
+            }
+            return $cat_rec;
+        }
     }
 
 }
