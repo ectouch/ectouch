@@ -57,7 +57,7 @@
 	</div>
   <!-- {else} -->
   	<div class="flow-jiesuan ect-padding-lr ect-padding-tb">
-  	<a href="{:url('flow/checkout')}" type="button" class="btn btn-info ect-btn-info">{$lang.check_out}</a>
+  	<a href="{:url('flow/checkout')}" type="button" class="btn btn-info ect-btn-info ect-bg">{$lang.check_out}</a>
   </div>
   <!-- {/if} -->
   <!-- {if $linked_goods} 关联商品-->
@@ -90,6 +90,6 @@
   <!--{else}-->
   <div class="flow-no-pro"> <img src="__TPL__/images/gwc.png">
     <p class="text-center">{$lang.empty_shopping}</p>
-    <a type="button" href="{:url('category/top_all')}" class="btn btn-info ect-btn-info">{$lang.go_shopping}</a> </div>
+    <a type="button" href="{:url('category/top_all')}" class="btn btn-info ect-btn-info ect-bg">{$lang.go_shopping}</a> </div>
   <!-- {/if} --> 
 </div>

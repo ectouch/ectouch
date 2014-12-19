@@ -3,19 +3,19 @@
   <section class="ect-bg-colorf user-service flow-consignee">
     <ul>
       <li class="ect-radio">
-        <input name="msg_type" type="radio" id="msg-type0" checked="checked">
+        <input name="msg_type" type="radio" id="msg-type0" checked="checked" value="0">
         <label for="msg-type0">{$lang.type[0]}<i></i></label>
         &nbsp;
-        <input name="msg_type" type="radio" id="msg-type1" value="">
+        <input name="msg_type" type="radio" id="msg-type1" value="1">
         <label for="msg-type1">{$lang.type[1]}<i></i></label>
         &nbsp;
-        <input name="msg_type" type="radio" id="msg-type2" value="">
+        <input name="msg_type" type="radio" id="msg-type2" value="2">
         <label for="msg-type2">{$lang.type[2]}<i></i></label>
         &nbsp;
-        <input name="msg_type" type="radio" id="msg-type3" value="">
+        <input name="msg_type" type="radio" id="msg-type3" value="3">
         <label for="msg-type3">{$lang.type[3]}<i></i></label>
         &nbsp;
-        <input name="msg_type" type="radio" id="msg-type4" value="">
+        <input name="msg_type" type="radio" id="msg-type4" value="4">
         <label for="msg-type4">{$lang.type[4]}<i></i></label>
         &nbsp; </li>
       <li>

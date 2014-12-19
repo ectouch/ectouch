@@ -1,0 +1,16 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="tab-content">
+  <div class="tab-msg">
+    <ul class="msg">
+      <!--{foreach from=$myprice.bid_price item=item}-->
+      <li>
+        <p><span class="pull-left">{$item.price}</span> 
+          <!--{if $item.is_only}--> 
+          <span class="pull-right">({$lang.only_price})</span> 
+          <!--{/if}--> 
+        </p>
+      </li>
+      <!-- {/foreach} -->
+    </ul>
+  </div>
+</div>

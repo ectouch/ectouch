@@ -80,7 +80,7 @@
       </section>
       <input type="hidden" name="goods_id" value="{$goods.goods_id}" />
       <div class="ect-padding-lr ect-padding-tb goods-submit">
-     	 <button type="submit" class="btn btn-info ect-btn-info ect-colorf" >{$lang.exchange_goods}</button>
+     	 <button type="submit" class="btn btn-info ect-btn-info ect-colorf ect-bg" >{$lang.exchange_goods}</button>
       </div>
       <section class="user-tab ect-border-bottom0"> 
       <div id="is-nav-tabs" style="height:3.15em; display:none;"></div>

@@ -13,7 +13,7 @@
        <li>
           <div class="input-text code"><b>{$lang.comment_captcha}</b><span>
              <input name="captcha" type="text" placeholder="{$lang.comment_captcha}">
-             </span><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm" onClick="this.src='{:url('public/captcha', array('t'=>'Math.random()'))}'" /></div>
+             </span><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm pull-right" onClick="this.src='{:url('public/captcha', array('t'=>'Math.random()'))}'" /></div>
             </li>
             <!--{/if}-->
       </ul>
@@ -22,9 +22,16 @@
   <p class="ect-checkbox ect-padding-tb ect-margin-tb ect-margin-bottom0 ect-padding-lr">
      <input type="checkbox" value="1" name="remember" id="remember" class="l-checkbox" />
      <label for="remember">{$lang.remember}<i></i></label>
+      <!-- {if $anonymous_buy eq 1 && $step eq 'flow'} 是否允许未登录用户购物 -->
+      <a href="{:url('flow/consignee',array('direct_shopping'=>1))}" style="float:right;">{$lang.direct_shopping}</a>
+      <!-- {/if} -->
+     
   </p>
    <input type="hidden" name="back_act" value="{$back_act}" />
-  <div class="ect-padding-lr ect-padding-tb"> <input type="submit" class="btn btn-info ect-btn-info ect-colorf" value="{$lang.now_landing}" /></div>
+  <div class="ect-padding-lr ect-padding-tb"> 
+ 
+  <input type="submit" class="btn btn-info ect-btn-info ect-bg" value="{$lang.now_landing}" />
+  </div>
   </form>
   <p class="ect-padding-lr ect-margin-tb text-right ect-margin-bottom0" style="clear:both"><a href="{:url('user/get_password_phone')}">{$lang.forgot_password}</a>  <a href="{:url('user/register')}">{$lang.free_registered}</a></p>
   <div class="ect-padding-lr ect-margin-tb user-hezuo">

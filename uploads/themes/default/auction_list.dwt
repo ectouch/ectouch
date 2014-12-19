@@ -1,0 +1,56 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="con">
+  <div style="height:4.2em;"></div>
+  <header>
+    <nav class="ect-nav ect-bg icon-write"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
+  </header>
+  <div class="ect-wrapper text-center" style="display:none;">
+    <div> <a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('auction/index', array('id'=>$this->_var['id'],'sort'=>'goods_id','order'=>'DESC'))}">{$lang.sort_default}</a> <a class="{if $sort == 'sales_count' && $order == 'DESC'}select ect-colory{elseif $sort =='sales_count' && $order == 'ASC'}ect-colory{/if}" href="{:url('auction/index', array('id'=>$this->_var['id'],'sort'=>'sales_count', 'order'=> ($this->_var['sort']=='sales_count' && $this->_var['order']=='ASC')?'DESC':'ASC'))}">{$lang.sort_sales} <i class="glyphicon glyphicon-arrow-up"></i></a> <a class="{if $sort =='click_num' && $order == 'DESC'}select ect-colory{elseif $sort =='click_num' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('auction/index', array('id'=>$this->_var['id'],'sort'=>'click_num', 'order'=> ($this->_var['sort']=='click_num' && $this->_var['order']=='ASC')?'DESC':'ASC'))}">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a> <a class="{if $sort =='cur_price' && $order == 'DESC'}select ect-colory{elseif $sort =='cur_price' && $order == 'ASC'}ect-colory{else}{/if}" href="{:url('auction/index', array('id'=>$this->_var['id'],'sort'=>'cur_price', 'order'=> ($this->_var['sort']=='cur_price' && $this->_var['order']=='ASC')?'DESC':'ASC'))}" class="xl">{$lang.sort_price} <i class="glyphicon glyphicon-arrow-up"></i></a> </div>
+  </div>
+  <!--{if $show_asynclist}-->
+  <div class="ect-margin-tb ect-pro-list ect-margin-bottom0 ect-border-bottom0">
+    <ul id="J_ItemList">
+      <li class="single_item"></li>
+      <a href="javascript:;" class="get_more"></a>
+    </ul>
+  </div>
+  <!--{else}--> 
+  <!-- {if $auction_list} 如果有拍卖活动 -->
+  <div class="ect-margin-tb ect-pro-list ect-margin-bottom0 ect-border-bottom0">
+    <ul id="J_ItemList">
+      <!--{foreach name=auction_list from=$auction_list item=auction}-->
+      <li class="single_item"> <a href="{$auction.url}"><img src="{$auction.act_banner}" alt="{$auction.goods_name}"></a>
+        <dl>
+          <dt>
+            <h4 class="title"><a href="{$auction.url}">{$auction.goods_name}</a></h4>
+          </dt>
+          <dd class="dd-num"> <span class="pull-left"> {$lang.act_status}： 
+            <!-- {if $auction.status_no eq 0} --> 
+            {$lang.au_pre_start}<br>
+            <!-- {elseif $auction.status_no eq 1} --> 
+            {$lang.au_under_way_1}<br>
+            <!-- {else} --> 
+            {$lang.au_finished}<br>
+            <!-- {/if} --> 
+            </span> </dd>
+          <dd class="dd-num"> <span class="pull-left"><strong>{$lang.au_start_price}：<b class="ect-colory">{$auction.formated_start_price}</b></strong> </span> </dd>
+          <dd class="dd-num"> <span class="pull-left"> 
+            <!-- {if $auction.end_price gt 0} --> 
+            <strong>{$lang.au_end_price}：<b class="ect-colory">{$auction.formated_end_price}</b></strong> 
+            <!-- {/if} --></span> </dd>
+        </dl>
+      </li>
+      <!--{/foreach}-->
+    </ul>
+  </div>
+  {include file='library/page.lbi '} 
+  <!--{/if}--> 
+  <!--{/if}--> 
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript">
+if({$show_asynclist}){
+	get_asynclist("{:url('auction/asynclist', array('page'=>$this->_var['page'], 'sort'=>$this->_var['sort'], 'order'=>$this->_var['order']))}" , '__TPL__/images/loader.gif');
+}
+</script>
+</body></html>

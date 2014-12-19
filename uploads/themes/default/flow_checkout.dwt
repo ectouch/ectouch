@@ -210,7 +210,7 @@
         </ul>
         <!-- #BeginLibraryItem "/Library/order_total.lbi" --><!-- #EndLibraryItem --> </section>
       <div class="ect-padding-lr ect-padding-tb ect-margin-tb">
-        <input type="submit" name="submit" value="{$lang.order_submit}" class="btn btn-info ect-btn-info ect-colorf"/>
+        <input type="submit" name="submit" value="{$lang.order_submit}" class="btn btn-info ect-btn-info ect-colorf ect-bg"/>
         <input type="hidden" name="step" value="done" />
       </div>
     </form>

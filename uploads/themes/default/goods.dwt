@@ -12,7 +12,7 @@
     </div>
     <div class="bd">
       <ul id="Gallery">
-        <li><a href="{$goods.original_img}"><img src="{$goods.original_img}" alt="{$goods.goods_name}" /></a></li>
+        <li><a href="{$goods.goods_img}"><img src="{$goods.goods_img}" alt="{$goods.goods_name}" /></a></li>
         <!--{if $pictures}--> 
         <!-- {foreach from=$pictures item=picture name=no}--> 
         <!-- {if $smarty.foreach.no.iteration > 1}  -->
@@ -44,13 +44,12 @@
       <p class="ect-border-top ect-margin-tb"> 
         <!-- {foreach from=$promotion item=item key=key} 优惠活动--> 
         <!-- {if $item.type eq "snatch"} --> 
-        <!--<a title="{$lang.snatch}"><i class="label tbqb">夺</i> [{$lang.snatch}]<i class="pull-right fa fa-angle-right"></i></a>--> 
+        <a href="{$item.url}" title="{$lang.snatch}"><i class="label tbqb">{$lang.snatch_act}</i> [{$lang.snatch}]<i class="pull-right fa fa-angle-right"></i></a>
         <!-- {elseif $item.type eq "group_buy"} --> 
         <a href="{$item.url}" title="{$lang.group_buy}"><i class="label tuan">{$lang.group_buy_act}</i> [{$lang.group_buy}]<i class="pull-right fa fa-angle-right"></i></a> 
         <!-- {elseif $item.type eq "auction"} --> 
-        <!--<a title="{$lang.auction}"><i class="label pm">拍卖</i> [{$lang.auction}]<i class="pull-right fa fa-angle-right"></i></a> --> 
+        <a href="{$item.url}" title="{$lang.auction}"><i class="label pm">{$lang.auction_act}</i> [{$lang.auction}]<i class="pull-right fa fa-angle-right"></i></a>
         <!-- {elseif $item.type eq "favourable"} --> 
-        
         <a href="{$item.url}" title="{$lang.$item.type} {$item.act_name}{$item.time}"> 
         <!--{if $item.act_type eq 0}--> 
         <i class="label mz">{$lang.favourable_mz}</i> 
@@ -108,9 +107,12 @@
           <!-- {/if} --> 
         </div>
       </section>
-      <section class="goods-more-a"> <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/info',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_brief}</span> <i class="pull-right fa fa-chevron-right"></i></a> <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/comment_list',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_comment}</span> <span class="pull-right"><span class="ect-color">{$comments.count}</span>{$lang.comment_num} <span class="ect-color">{$comments.favorable}%</span>{$lang.favorable_comment} <i class="fa fa-chevron-right"></i></span></a> </section>
+      <section class="goods-more-a"> 
+      <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/info',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_brief}</span> <span class="pull-right"><i class="fa fa-chevron-right"></i></span></a> 
+      <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/comment_list',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_comment}</span> <span class="pull-right"><span class="ect-color">{$comments.count}</span>{$lang.comment_num} <span class="ect-color">{$comments.favorable}%</span>{$lang.favorable_comment} <i class="fa fa-chevron-right"></i></span></a> 
+      </section>
       <div class="ect-padding-lr ect-padding-tb goods-submit">
-        <div><a type="botton" class="btn btn-info ect-btn-info ect-colorf" href="javascript:addToCart_quick({$goods.goods_id})">{$lang.buy_now}</a></div>
+        <div><a type="botton" class="btn btn-info ect-btn-info ect-colorf ect-bg" href="javascript:addToCart_quick({$goods.goods_id})">{$lang.buy_now}</a></div>
       </div>
       <section class="user-tab ect-border-bottom0" style="display:none;">
         <div id="is-nav-tabs" style="height:3.15em; display:none;"></div>

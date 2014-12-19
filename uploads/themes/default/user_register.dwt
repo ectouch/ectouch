@@ -32,7 +32,7 @@
           <input name="enabled_sms" type="hidden" value="1" />
           <input type="hidden" name="sms_code" value="{$sms_code}" id="sms_code" />
           <input type="hidden" name="back_act" value="{$back_act}" />
-          <button name="Submit" type="submit" class="btn btn-info ect-btn-info ect-colorf">{$lang.register}</button>
+          <button name="Submit" type="submit" class="btn btn-info ect-btn-info ect-colorf ect-bg">{$lang.register}</button>
         </div>
       </form>
     </div>
@@ -76,7 +76,7 @@
           <input name="act" type="hidden" value="act_register" />
           <input name="enabled_sms" type="hidden" value="0" />
           <input type="hidden" name="back_act" value="{$back_act}" />
-          <button href="flow_consignee.html" name="Submit" type="submit" class="btn btn-info ect-btn-info ect-colorf">{$lang.next}</button>
+          <button href="flow_consignee.html" name="Submit" type="submit" class="btn btn-info ect-btn-info ect-colorf ect-bg">{$lang.next}</button>
         </div>
       </form>
     </div>

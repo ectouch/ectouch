@@ -108,7 +108,7 @@
         </div>
       </section>
       <div class="ect-padding-lr ect-padding-tb goods-submit">
-        <a href="javascript:;" class="btn btn-info ect-btn-info ect-colorf" onClick="document.getElementById('ECS_FORMBUY').submit()">{$lang.button_buy}</a> 
+        <a href="javascript:;" class="btn btn-info ect-btn-info ect-colorf ect-bg" onClick="document.getElementById('ECS_FORMBUY').submit()">{$lang.button_buy}</a> 
       </div>
       <div class="tab-info">{$gb_goods.goods_desc}</div>
     </form>

@@ -24,7 +24,7 @@
     </ul>
     </div>
     <!-- {if $favourable.available} -->
-    <div class="ect-padding-lr ect-padding-tb ect-margin-tb"> <input type="submit" class="btn btn-info ect-btn-info ect-colorf" value="{$lang.add_to_cart}" /></div>
+    <div class="ect-padding-lr ect-padding-tb ect-margin-tb"> <input type="submit" class="btn btn-info ect-btn-info ect-colorf ect-bg" value="{$lang.add_to_cart}" /></div>
     <!-- {/if} -->
     <input type="hidden" name="act_id" value="{$favourable.act_id}" />
     <input type="hidden" name="step" value="add_favourable" />

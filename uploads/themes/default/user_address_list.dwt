@@ -7,7 +7,7 @@
     </ul>
   </section>
 </div>
-<div class="ect-padding-lr ect-padding-tb ect-margin-tb"> <a href="{:url('user/add_address')}" type="botton" class="btn btn-info ect-btn-info ect-colorf">{$lang.add_address}</a> </div>
+<div class="ect-padding-lr ect-padding-tb ect-margin-tb"> <a href="{:url('user/add_address')}" type="botton" class="btn btn-info ect-btn-info ect-colorf ect-bg">{$lang.add_address}</a> </div>
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript" src="__PUBLIC__/js/jquery.more.js"></script> 

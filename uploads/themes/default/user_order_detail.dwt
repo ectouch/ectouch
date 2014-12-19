@@ -24,7 +24,7 @@
     </p>
     <!-- {/if} -->
     <!-- {if $order.invoice_no}-->
-    <p> <a href="{:url('user/order_tracking', array('order_id'=>$this->_var['order']['order_id']))}" type="button" class="btn btn-info ect-btn-info ect-colorf">{$lang.order_tracking}</a> </p>
+    <p> <a href="{:url('user/order_tracking', array('order_id'=>$this->_var['order']['order_id']))}" type="button" class="btn btn-info ect-btn-info ect-colorf ect-bg">{$lang.order_tracking}</a> </p>
     <!--{/if}--> 
   </div>
   {if $order.order_amount gt 0}
@@ -110,7 +110,7 @@
          </li></ul>
          </section>
           <section class="ect-padding-lr ect-padding-tb ect-margin-tb ect-margin-bottom0">
-         <input type="submit" name="Submit" class="btn btn-info ect-btn-info ect-colorf" value="{$lang.button_submit}{$lang.use_surplus}" />
+         <input type="submit" name="Submit" class="btn btn-info ect-btn-info ect-colorf ect-bg" value="{$lang.button_submit}{$lang.use_surplus}" />
          <input type="hidden" name="order_id" value="{$smarty.get.order_id}" />
          </section>
     </form>
