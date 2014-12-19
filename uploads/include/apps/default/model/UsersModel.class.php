@@ -167,6 +167,23 @@ class UsersModel extends BaseModel {
             if (!empty($register_points)) {
                 model('ClipsBase')->log_account_change($_SESSION['user_id'], 0, 0, C('register_points'), C('register_points'), L('register_points'));
             }
+            
+            //定义other合法的变量数组
+            $other_key_array = array('msn', 'qq', 'office_phone', 'home_phone', 'mobile_phone', 'parent_id');
+            $update_data['reg_time'] = local_strtotime(local_date('Y-m-d H:i:s'));
+            if ($other) {
+                foreach ($other as $key => $val) {
+                    //删除非法key值
+                    if (!in_array($key, $other_key_array)) {
+                        unset($other[$key]);
+                    } else {
+                        $other[$key] = htmlspecialchars(trim($val)); //防止用户输入javascript代码
+                    }
+                }
+                $update_data = array_merge($update_data, $other);
+            }
+            $condition['user_id'] = $_SESSION['user_id'];
+            $this->update($condition, $update_data);
 
             /* 推荐处理 */
             $affiliate = unserialize(C('affiliate'));
@@ -195,22 +212,6 @@ class UsersModel extends BaseModel {
                 }
             }
 
-            //定义other合法的变量数组
-            $other_key_array = array('msn', 'qq', 'office_phone', 'home_phone', 'mobile_phone');
-            $update_data['reg_time'] = local_strtotime(local_date('Y-m-d H:i:s'));
-            if ($other) {
-                foreach ($other as $key => $val) {
-                    //删除非法key值
-                    if (!in_array($key, $other_key_array)) {
-                        unset($other[$key]);
-                    } else {
-                        $other[$key] = htmlspecialchars(trim($val)); //防止用户输入javascript代码
-                    }
-                }
-                $update_data = array_merge($update_data, $other);
-            }
-            $condition['user_id'] = $_SESSION['user_id'];
-            $this->update($condition, $update_data);
             model('Users')->update_user_info();      // 更新用户信息
             model('Users')->recalculate_price();     // 重新计算购物车中的商品价格
 
@@ -583,6 +584,7 @@ class UsersModel extends BaseModel {
                 'order_status' => $value['order_status'],
                 'shipping_id' => $value['shipping_id'],
                 'total_fee' => price_format($value['total_fee'], false),
+                'url' => url('user/order_detail', array('order_id' => $value['order_id'])),
                 'handler' => $value['handler']);
         }
         return $arr;
@@ -1723,6 +1725,29 @@ class UsersModel extends BaseModel {
                 return $uid;
             } else {
                 setcookie('ecshop_affiliate_uid', '', 1);
+            }
+        }
+        elseif($_SESSION['user_id'] !== 0){
+            //推荐 by ecmoban
+            $reg_info = $this->model->table('users')->field('reg_time, parent_id')->where('user_id = '.$_SESSION['user_id'])->find();
+            //推荐信息
+            $config = unserialize(C('affiliate'));
+            if (!empty($config['config']['expire'])) {
+                if ($config['config']['expire_unit'] == 'hour') {
+                    $c = 1;
+                } elseif ($config['config']['expire_unit'] == 'day') {
+                    $c = 24;
+                } elseif ($config['config']['expire_unit'] == 'week') {
+                    $c = 24 * 7;
+                } else {
+                    $c = 1;
+                }
+                //有效时间
+                $eff_time = 3600 * $config['config']['expire'] * $c;
+                //有效时间内
+                if(gmtime() - $reg_info['reg_time'] <= $eff_time){
+                    return $reg_info['parent_id'];
+                }
             }
         }
 
