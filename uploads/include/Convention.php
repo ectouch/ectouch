@@ -19,7 +19,7 @@ defined('IN_ECTOUCH') or die('Deny Access');
 return array(
 	/* 应用配置 */
 	'APP' => array(
-		'TIMEZONE' => 'PRC', // 时区设置
+		'DEFAULT_TIMEZONE' => 'PRC', // 时区设置
 		/* 日志和错误调试配置 */
 		'DEBUG' => false, // 是否开启调试模式，true开启，false关闭
 		'LOG_ON' => false, // 是否开启出错信息保存到文件，true开启，false不开启
