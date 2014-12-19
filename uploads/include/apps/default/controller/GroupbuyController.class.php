@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -42,6 +41,11 @@ class GroupbuyController extends CommonController {
         $this->assign('size', $this->size);
         $this->assign('sort', $this->sort);
         $this->assign('order', $this->order);
+        $gb_list = model('Groupbuy')->group_buy_list($this->size, $this->page, $this->sort, $this->order);
+        $this->assign('gb_list', $gb_list);
+        $count = model('Groupbuy')->group_buy_count();
+        $this->pageLimit(url('index', array('sort' => $this->sort, 'order' => $this->order)), $this->size);
+        $this->assign('pager', $this->pageShow($count));
         /* 显示模板 */
         $this->display('group_buy_list.dwt');
     }
@@ -238,12 +242,14 @@ class GroupbuyController extends CommonController {
      * 处理参数便于搜索商品信息
      */
     private function parameter() {
-        // 如果分类ID为0，则返回总分类页
+        $this->assign('show_asynclist', C('show_asynclist'));
         $page_size = C('page_size');
         $brand = I('request.brand');
         $price_max = I('request.price_max');
         $price_min = I('request.price_min');
         $filter_attr = I('request.filter_attr');
+        $page = I('request.page');
+        $this->page = $page ? $page : 1;
         $this->size = intval($page_size) > 0 ? intval($page_size) : 10;
         $this->brand = $brand > 0 ? $brand : 0;
 
@@ -268,11 +274,7 @@ class GroupbuyController extends CommonController {
                     'grid',
                     'album'
                 ))) ? trim($_REQUEST ['display']) : (isset($_COOKIE ['ECS'] ['display']) ? $_COOKIE ['ECS'] ['display'] : $default_display_type);
-        $display = in_array($display, array(
-                    'list',
-                    'grid',
-                    'album'
-                )) ? $display : 'album';
+        $this->assign('display', $display);
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
     }
 

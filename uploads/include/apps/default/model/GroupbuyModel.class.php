@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -71,24 +70,22 @@ class GroupbuyModel extends BaseModel {
                 }
             }
             //添加当前价格字段为列表排序
-            $this->table = 'touch_goods_activity';
             $sql = 'SELECT count(*) as count FROM ' . $this->pre . "touch_goods_activity WHERE  `act_id` = '" . $group_buy['act_id'] . "'";
             $res = $this->row($sql);
             if ($res['count']) {
-                $sql = 'UPDATE ' . $this->pre . 'touch_goods_activity set cur_price = ' . $cur_price . ' WHERE act_id = ' . $group_buy['act_id'];
+                $this->table = 'touch_goods_activity';
                 $data['cur_price'] = $cur_price;
                 $condition['act_id'] = $group_buy['act_id'];
                 $this->update($condition, $data);
+            } else {
+                $this->table = 'touch_goods_activity';
+                $data1['act_id'] = $group_buy['act_id'];
+                $data1['cur_price'] = $cur_price;
+                $this->insert($data1);
             }
-            else{
-                $data['act_id'] = $group_buy['act_id'];
-                $data['cur_price'] = $cur_price;
-                $this->insert($data);
-            }
-            $this->query($sql);
 
             $group_buy['cur_price'] = price_format($cur_price);
-            $group_buy['spare_discount'] = round($cur_price / $group_buy['market_price'] * 10, 2);
+            $group_buy['spare_discount'] = $group_buy['market_price'] != 0 ? round($cur_price / $group_buy['market_price'] * 10, 2):0;
             $group_buy['spare_price'] = price_format($group_buy['market_price'] - $cur_price); //增加优惠金额 by carson add 20140606
             $group_buy['market_price'] = price_format($group_buy['market_price']); //增加市场价 by carson add 20140606
             //$stat = group_buy_stat($group_buy['act_id'], $ext_info['deposit']);
@@ -106,6 +103,20 @@ class GroupbuyModel extends BaseModel {
             $gb_list[] = $group_buy;
         }
         return $gb_list;
+    }
+
+    /**
+     * 取得团购活动总数
+     * @return type
+     */
+    function group_buy_count() {
+        $now = gmtime();
+        $sql = "SELECT COUNT(*) as count " .
+                "FROM " . $this->pre .
+                "goods_activity WHERE act_type = '" . GAT_GROUP_BUY . "' " .
+                "AND start_time <= '$now' AND is_finished < 3";
+        $res = $this->row($sql);
+        return $res['count'];
     }
 
 }
