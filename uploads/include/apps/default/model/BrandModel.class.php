@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -30,7 +29,7 @@ class BrandModel extends BaseModel {
 
         $start = ($page - 1) * $size;
         /* 获得商品列表 */
-        $sort = $sort =='sales_volume'? 'xl.sales_volume': $sort;
+        $sort = $sort == 'sales_volume' ? 'xl.sales_volume' : $sort;
         $sql = 'SELECT g.goods_id, g.goods_name,g.goods_number, g.market_price, g.shop_price AS org_price, ' . "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price, g.promote_price, " . 'g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb , g.goods_img ' . 'FROM ' . $this->pre . 'goods AS g ' . 'LEFT JOIN ' . $this->pre . 'touch_goods AS xl ' . "ON g.goods_id=xl.goods_id " . 'LEFT JOIN ' . $this->pre . 'member_price AS mp ' . "ON mp.goods_id = g.goods_id AND mp.user_rank = '$_SESSION[user_rank]' " . "WHERE g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 AND g.brand_id = '$brand_id' $cate_where" . "ORDER BY $sort $order LIMIT $start , $size";
         $res = $this->query($sql);
         $arr = array();
@@ -61,6 +60,8 @@ class BrandModel extends BaseModel {
             $arr[$row['goods_id']]['sales_count'] = model('GoodsBase')->get_sales_count($row['goods_id']);
             $arr[$row['goods_id']]['sc'] = model('GoodsBase')->get_goods_collect($row['goods_id']);
             $arr[$row['goods_id']]['promotion'] = model('GoodsBase')->get_promotion_show($row['goods_id']);
+            $arr[$row['goods_id']]['comment_count'] = model('Comment')->get_goods_comment($row['goods_id'], 0);  //商品总评论数量
+            $arr[$row['goods_id']]['favorable_count'] = model('Comment')->favorable_comment($row['goods_id'], 0);  //获得商品好评数量
             $arr[$row['goods_id']]['mysc'] = 0;
             // 检查是否已经存在于用户的收藏夹
             if ($_SESSION['user_id']) {
@@ -96,12 +97,32 @@ class BrandModel extends BaseModel {
         $arr = array();
         foreach ($res as $row) {
             $arr[$row['brand_id']]['brand_name'] = $row['brand_name'];
-            $arr[$row['brand_id']]['url'] = build_uri('brand/goods_list', array( 'id' => $row['brand_id']));
+            $arr[$row['brand_id']]['url'] = build_uri('brand/goods_list', array('id' => $row['brand_id']));
             $arr[$row['brand_id']]['brand_logo'] = get_banner_path($row['brand_logo']);
             $arr[$row['brand_id']]['brand_banner'] = get_banner_path($row['brand_banner']);
-            $arr[$row['brand_id']]['brand_desc'] = htmlspecialchars($val['brand_desc'], ENT_QUOTES);
+            $arr[$row['brand_id']]['goods_num'] = model('Brand')->goods_count_by_brand($row['brand_id']);
+            $arr[$row['brand_id']]['brand_desc'] = htmlspecialchars($row['brand_desc'], ENT_QUOTES);
         }
         return $arr;
+    }
+
+    /**
+     * 获得指定的品牌下的商品总数
+     *
+     * @access  private
+     * @param   integer     $brand_id
+     * @param   integer     $cate
+     * @return  integer
+     */
+    function goods_count_by_brand($brand_id, $cate = 0) {
+        $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre . 'goods AS g ' .
+                "WHERE brand_id = '$brand_id' AND g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 ";
+
+        if ($cate > 0) {
+            $sql .= " AND " . get_children($cate);
+        }
+        $res = $this->row($sql);
+        return $res['count'];
     }
 
 }

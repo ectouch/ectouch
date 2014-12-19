@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -73,15 +72,22 @@ class BrandController extends CommonController {
         $brand_id = I('request.id');
         $brand_info = model('BrandBase')->get_brand_info($brand_id);
         if (empty($brand_info)) {
-            ecs_header("Location: ./\n");
+            $this->redirect(url('index'));
             exit();
         }
+        $cat = I('request.cat') ? intval(I('request.cat')) : 0;
         $this->assign('page', $this->page);
         $this->assign('size', $this->size);
         $this->assign('sort', $this->sort);
         $this->assign('order', $this->order);
         $this->assign('brand_id', $brand_id);
-        $this->display('brand_goods_list.dwt', $cache_id);
+        $this->assign('cat', $cat);
+        $goods_list = model('Brand')->brand_get_goods($brand_id, '', $this->sort, $this->order, $this->size, $this->page);
+        $this->assign('goods_list', $goods_list);
+        $count = model('Brand')->goods_count_by_brand($brand_id, $this->cat);
+        $this->pageLimit(url('goods_list', array('id' => $brand_id, 'sort' => $this->sort, 'order' => $this->order)), $this->size);
+        $this->assign('pager', $this->pageShow($count));
+        $this->display('brand_goods_list.dwt');
     }
 
     /**
@@ -112,17 +118,19 @@ class BrandController extends CommonController {
     /**
      * 处理参数便于搜索商品信息
      */
-    public function parameter() {
+    private function parameter() {
         // 初始化分页信息
         $page_size = C('page_size');
         $brand = I('request.brand');
         $this->size = intval($page_size) > 0 ? intval($page_size) : 10;
         $this->brand = $brand > 0 ? $brand : 0;
+        $this->page = I('request.page') ? intval(I('request.page')) : 1;
         /* 排序、显示方式以及类型 */
         $default_display_type = C('show_order_type') == '0' ? 'list' : (C('show_order_type') == '1' ? 'grid' : 'album');
         $default_sort_order_method = C('sort_order_method') == '0' ? 'DESC' : 'ASC';
         $default_sort_order_type = C('sort_order_type') == '0' ? 'goods_id' : (C('sort_order_type') == '1' ? 'shop_price' : 'last_update');
 
+        $this->assign('show_asynclist', C('show_asynclist'));
         $this->sort = (isset($_REQUEST['sort']) && in_array(trim(strtolower($_REQUEST['sort'])), array(
                     'goods_id',
                     'shop_price',
@@ -139,11 +147,7 @@ class BrandController extends CommonController {
                     'grid',
                     'album'
                 ))) ? trim($_REQUEST['display']) : (isset($_COOKIE['ECS']['display']) ? $_COOKIE['ECS']['display'] : $default_display_type);
-        $display = in_array($display, array(
-                    'list',
-                    'grid',
-                    'album'
-                )) ? $display : 'album';
+        $this->assign('display', $display);
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
     }
 
