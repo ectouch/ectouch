@@ -46,7 +46,7 @@ C(load_file(BASE_PATH . 'Convention.php'));
 /* 数据库配置 */
 C('DB', load_file(ROOT_PATH . 'data/config.php'));
 /* 设置时区 */
-date_default_timezone_set(C('TIMEZONE'));
+date_default_timezone_set(C('DEFAULT_TIMEZONE'));
 /* 项目函数 */
 load_file(ROOT_PATH . 'include/base/function.php');
 /* 初始化数据库类 */
