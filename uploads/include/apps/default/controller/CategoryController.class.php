@@ -29,7 +29,6 @@ class CategoryController extends CommonController {
     private $sort = 'last_update';
     private $order = 'ASC'; // 排序方式
     private $keywords = ''; // 搜索关键词
-    private $tag = ''; // tag搜索id
     private $filter_attr_str = 0;
 
     /**
@@ -142,9 +141,9 @@ class CategoryController extends CommonController {
             $this->keywords .= ')';
             $goods_ids = array_unique($goods_ids);
             // 拼接商品id
-            $this->tag = implode(',', $goods_ids);
-            if (!empty($this->tag)) {
-                $this->tag = 'OR g.goods_id ' . db_create_in($this->tag);
+            $tag_id = implode(',', $goods_ids);
+            if (!empty($tag_id)) {
+                $this->keywords .= 'OR g.goods_id ' . db_create_in($tag_id);
             }
             $this->assign('keywords', $keywords);
         }
@@ -495,7 +494,7 @@ class CategoryController extends CommonController {
         $display = $GLOBALS['display'];
         $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 ";
         if ($this->keywords != '') {
-            $where .= " AND (( 1 " . $this->keywords . " ) " . $this->tag_where . " ) ";
+            $where .= " AND (( 1 " . $this->keywords . " ) ) ";
         } else {
             $where.=" AND ($this->children OR " . model('Goods')->get_extension_goods($this->children) . ') ';
         }
