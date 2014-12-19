@@ -1,7 +1,16 @@
 <?php
 
 /**
- * 授权管理语言
+ * ECTouch Open Source Project
+ * ============================================================================
+ * Copyright (c) 2012-2014 http://ectouch.cn All rights reserved.
+ * ----------------------------------------------------------------------------
+ * 文件名称：authorization.php
+ * ----------------------------------------------------------------------------
+ * 功能描述：授权管理语言
+ * ----------------------------------------------------------------------------
+ * Licensed ( http://www.ectouch.cn/docs/license.txt )
+ * ----------------------------------------------------------------------------
  */
 $_LANG['website_name'] = '插件名称';
 $_LANG['website_qq'] = '作者QQ';
@@ -17,8 +26,9 @@ $_LANG['reinstall'] = '已安装';
 $_LANG['uninstall'] = '卸载';
 $_LANG['version'] = '版本';
 
-$_LANG['app_key'] =  'App Key';
+$_LANG['app_key'] = 'App Key';
 $_LANG['app_secret'] = 'App Secret';
+$_LANG['app_id'] = 'APP ID';
 
 $_LANG['yes_uninstall'] = '卸载成功';
 $_LANG['no_uninstall'] = '卸载失败,找不到文件';

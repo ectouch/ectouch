@@ -1,6 +1,17 @@
 <?php
 
-/* 商品分类字段信息 */
+/**
+ * ECTouch Open Source Project
+ * ============================================================================
+ * Copyright (c) 2012-2014 http://ectouch.cn All rights reserved.
+ * ----------------------------------------------------------------------------
+ * 文件名称：authorization.php
+ * ----------------------------------------------------------------------------
+ * 功能描述：商品分类语言
+ * ----------------------------------------------------------------------------
+ * Licensed ( http://www.ectouch.cn/docs/license.txt )
+ * ----------------------------------------------------------------------------
+ */
 $_LANG['cat_id'] = '编号';
 $_LANG['cat_name'] = '分类名称';
 $_LANG['isleaf'] = '不允许';
@@ -66,12 +77,11 @@ $_LANG['filter_attr'] = '筛选属性';
 $_LANG['filter_attr_notic'] = '筛选属性可在前分类页面筛选商品';
 $_LANG['filter_attr_not_repeated'] = '筛选属性不可重复';
 
-/*JS 语言项*/
+/* JS 语言项 */
 $_LANG['js_languages']['catname_empty'] = '分类名称不能为空!';
 $_LANG['js_languages']['unit_empyt'] = '数量单位不能为空!';
 $_LANG['js_languages']['is_leafcat'] = '您选定的分类是一个末级分类。\r\n新分类的上级分类不能是一个末级分类';
 $_LANG['js_languages']['not_leafcat'] = '您选定的分类不是一个末级分类。\r\n商品的分类转移只能在末级分类之间才可以操作。';
 $_LANG['js_languages']['filter_attr_not_repeated'] = '筛选属性不可重复';
 $_LANG['js_languages']['filter_attr_not_selected'] = '请选择筛选属性';
-
 ?>

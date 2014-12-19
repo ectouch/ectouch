@@ -1,9 +1,22 @@
 <?php
+
+/**
+ * ECTouch Open Source Project
+ * ============================================================================
+ * Copyright (c) 2012-2014 http://ectouch.cn All rights reserved.
+ * ----------------------------------------------------------------------------
+ * 文件名称：Common.php
+ * ----------------------------------------------------------------------------
+ * 功能描述：公共语言
+ * ----------------------------------------------------------------------------
+ * Licensed ( http://www.ectouch.cn/docs/license.txt )
+ * ----------------------------------------------------------------------------
+ */
 global $_LANG;
 
-$_LANG['app_name'] = 'ECSHOP';
-$_LANG['cp_home'] = 'ECSHOP 管理中心';
-$_LANG['copyright'] = '版权所有 &copy; 2005-2012 上海商派网络科技有限公司，并保留所有权利。';
+$_LANG['app_name'] = 'ECTouch';
+$_LANG['cp_home'] = '管理中心';
+$_LANG['copyright'] = '上海商创网络科技有限公司. All Rights Reserved.';
 $_LANG['query_info'] = '共执行 %d 个查询，用时 %s 秒';
 $_LANG['memory_info'] = '，内存占用 %0.3f MB';
 $_LANG['gzip_enabled'] = '，Gzip 已启用';
@@ -98,7 +111,7 @@ $_LANG['new_order_2'] = ' 个新订单以及 ';
 $_LANG['new_order_3'] = ' 个新付款的订单';
 $_LANG['new_order_link'] = '点击查看新订单';
 
-/*语言项*/
+/* 语言项 */
 $_LANG['chinese_simplified'] = '简体中文';
 $_LANG['english'] = '英文';
 

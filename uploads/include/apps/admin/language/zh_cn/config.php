@@ -1,8 +1,17 @@
 <?php
-/**
- * 商店设置语言文件
- */
 
+/**
+ * ECTouch Open Source Project
+ * ============================================================================
+ * Copyright (c) 2012-2014 http://ectouch.cn All rights reserved.
+ * ----------------------------------------------------------------------------
+ * 文件名称：config.php
+ * ----------------------------------------------------------------------------
+ * 功能描述：商店设置语言
+ * ----------------------------------------------------------------------------
+ * Licensed ( http://www.ectouch.cn/docs/license.txt )
+ * ----------------------------------------------------------------------------
+ */
 //require(ROOT_PATH.ADMIN_PATH.'/sms_url.php');
 $_LANG['cfg_name']['basic'] = '基本设置';
 $_LANG['cfg_name']['display'] = '显示设置';
@@ -112,7 +121,7 @@ $_LANG['cfg_name']['goods_name_length'] = '商品名称的长度';
 $_LANG['cfg_name']['price_format'] = '商品价格显示规则';
 $_LANG['cfg_name']['register_points'] = '会员注册赠送积分';
 $_LANG['cfg_name']['shop_logo'] = '商店 Logo';
-$_LANG['cfg_name']['enable_gzip']     = '是否启用Gzip模式';
+$_LANG['cfg_name']['enable_gzip'] = '是否启用Gzip模式';
 $_LANG['cfg_name']['anonymous_buy'] = '是否允许未登录用户购物';
 $_LANG['cfg_name']['min_goods_amount'] = '最小购物金额';
 $_LANG['cfg_name']['one_step_buy'] = '是否一步购物';
@@ -123,13 +132,13 @@ $_LANG['cfg_name']['show_goodsnumber'] = '是否显示库存';
 $_LANG['cfg_name']['show_addtime'] = '是否显示上架时间';
 $_LANG['cfg_name']['show_marketprice'] = '是否显示市场价格';
 $_LANG['cfg_name']['goodsattr_style'] = '商品属性显示样式';
-$_LANG['cfg_name']['test_mail_address']  = '邮件地址';
+$_LANG['cfg_name']['test_mail_address'] = '邮件地址';
 $_LANG['cfg_name']['send'] = '发送测试邮件';
 $_LANG['cfg_name']['send_service_email'] = '下订单时是否给客服发邮件';
 $_LANG['cfg_name']['show_goods_in_cart'] = '购物车里显示商品方式';
 $_LANG['cfg_name']['show_attr_in_cart'] = '购物车里是否显示商品属性';
 $_LANG['test_mail_title'] = '测试邮件';
-$_LANG['cfg_name']['email_content']  = '您好！这是一封检测邮件服务器设置的测试邮件。收到此邮件，意味着您的邮件服务器设置正确！您可以进行其它邮件发送的操作了！';
+$_LANG['cfg_name']['email_content'] = '您好！这是一封检测邮件服务器设置的测试邮件。收到此邮件，意味着您的邮件服务器设置正确！您可以进行其它邮件发送的操作了！';
 $_LANG['cfg_name']['sms'] = '短信设置';
 $_LANG['cfg_name']['sms_shop_mobile'] = '商家的手机号码';
 $_LANG['cfg_name']['sms_order_placed'] = '客户下订单时是否给商家发短信';
@@ -415,18 +424,18 @@ $_LANG['mail_save_success'] = '邮件服务器设置成功。';
 $_LANG['sendemail_success'] = '恭喜！测试邮件已成功发送到 ';
 $_LANG['sendemail_false'] = '邮件发送失败，请检查您的邮件服务器设置！';
 
-$_LANG['js_languages']['smtp_host_empty']   = '您没有填写邮件服务器地址!';
-$_LANG['js_languages']['smtp_port_empty']   = '您没有填写服务器端口!';
+$_LANG['js_languages']['smtp_host_empty'] = '您没有填写邮件服务器地址!';
+$_LANG['js_languages']['smtp_port_empty'] = '您没有填写服务器端口!';
 $_LANG['js_languages']['reply_email_empty'] = '您没有填写邮件回复地址!';
-$_LANG['js_languages']['test_email_empty']  = '您没有填写发送测试邮件的地址!';
-$_LANG['js_languages']['email_address_same']  = '邮件回复地址与发送测试邮件的地址不能相同!';
+$_LANG['js_languages']['test_email_empty'] = '您没有填写发送测试邮件的地址!';
+$_LANG['js_languages']['email_address_same'] = '邮件回复地址与发送测试邮件的地址不能相同!';
 
-$_LANG['cfg_name']['wap']   = 'WAP设置';
-$_LANG['cfg_name']['wap_config']    = '是否使用WAP功能';
+$_LANG['cfg_name']['wap'] = 'WAP设置';
+$_LANG['cfg_name']['wap_config'] = '是否使用WAP功能';
 $_LANG['cfg_range']['wap_config'][0] = '关闭';
 $_LANG['cfg_range']['wap_config'][1] = '开启';
-$_LANG['cfg_name']['wap_logo']      = 'WAP LOGO上传';
-$_LANG['cfg_desc']['wap_logo']      = '为了更好地兼容各种手机类型，LOGO 最好为png图片';
+$_LANG['cfg_name']['wap_logo'] = 'WAP LOGO上传';
+$_LANG['cfg_desc']['wap_logo'] = '为了更好地兼容各种手机类型，LOGO 最好为png图片';
 
 $_LANG['cfg_desc']['wap_config'] = '此功能只支持简体中文且只在中国大陆区有效';
 $_LANG['cfg_name']['recommend_order'] = '推荐商品排序';
