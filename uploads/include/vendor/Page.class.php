@@ -274,9 +274,9 @@ class Page {
      * 获取REQUEST_URI
      * @return type
      */
-    private function _requestUri() {
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $uri = $_SERVER['REQUEST_URI'];
+    private function _requestUri($url) {
+        if (isset($url)) {
+            $uri = $url;
         } else {
             if (isset($_SERVER['argv'])) {
                 $uri = $_SERVER['PHP_SELF'] . '?' . $_SERVER['argv'][0];
@@ -292,7 +292,7 @@ class Page {
      * @param type $url
      */
     private function _setUrl($url = "") {
-        $this->requestUri = $this->_requestUri();
+        $this->requestUri = $this->_requestUri($url);
         if (!empty($url) && preg_match('/\{page\}/', $url)) {
             $this->url = $url;
         } else {
