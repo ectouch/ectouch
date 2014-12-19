@@ -11,8 +11,8 @@ class EcsSms {
 
     function __construct() {
         /* 直接赋值 */
-        $this->sms_name = $GLOBALS['_CFG']['sms_ecmoban_user'];
-        $this->sms_password = $GLOBALS['_CFG']['sms_ecmoban_password'];
+        $this->sms_name = C('sms_ecmoban_user');
+        $this->sms_password = C('sms_ecmoban_password');
     }
 
     // 发送短消息
