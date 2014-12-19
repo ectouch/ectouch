@@ -40,7 +40,8 @@ class ArticleController extends AdminController {
      */
     public function add() {
         if (IS_POST) {
-            $data = I('data');      
+            $data = I('data');  
+            $data['content'] = I('post.content');
             /* 数据验证 */
             $msg = Check::rule(array(
                         array(Check::must($data['title']), L('no_title')),

@@ -47,7 +47,7 @@ class ArticlecatController extends AdminController {
             }
             $this->model->table('touch_article_cat')->data($data)->insert();
             clear_all_files();
-            $this->message(L('brandadd_succed'), url('index'));
+            $this->message(L('catadd_succed'), url('index'));
         }
         /* 模板赋值 */
         $this->assign('cat_select',model('ArticleBase')->article_cat_list(0));

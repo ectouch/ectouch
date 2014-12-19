@@ -49,7 +49,7 @@ class FavourableController extends AdminController {
                 $data2['act_banner'] = substr($result['message']['act_banner']['savepath'], 2) . $result['message']['act_banner']['savename'];
                 $this->model->table('touch_activity')->data($data2)->where('act_id=' . $id)->update();
             }
-            $this->message(sprintf(L('brandedit_succed'), $data['brand_name']), url('index'));
+            $this->message(L('edit_favourable_ok'), url('index'));
         }
         /* 查询附表信息 */
         $touch_result = $this->model->table('touch_activity')->where('act_id=' . $id)->find();
@@ -62,7 +62,6 @@ class FavourableController extends AdminController {
             $favourable['act_banner'] = $touch_result['act_banner'];
             $favourable['act_content'] = html_out($touch_result['act_content']);
         }
-        $this->assign('act_range_ext', $act_range_ext);
         /* 模板赋值 */
         $this->assign('favourable', $favourable);
         $this->assign('ur_here', L('edit_favourable'));

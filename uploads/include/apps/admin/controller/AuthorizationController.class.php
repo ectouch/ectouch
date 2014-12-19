@@ -152,7 +152,7 @@ class AuthorizationController extends AdminController {
             $this->message(L('yes_uninstall'), NULL, 'error');
         }
         $where ['from'] = I('type');
-        $this->model->table('touch_auth')->data($data)->where($where)->delete();
+        $this->model->table('touch_auth')->where($where)->delete();
 
         $this->message(L('yes_uninstall'), url('index'));
     }
