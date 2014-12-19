@@ -149,6 +149,8 @@ $_LANG['favourable_mz'] = "赠";
 $_LANG['favourable_mj'] = "减";
 $_LANG['favourable_zk'] = "折";
 $_LANG['group_buy_act'] = "团";
+$_LANG['snatch_act'] = "夺";
+$_LANG['auction_act'] = "拍卖";
 
 /* 分类展示页  */
 $_LANG['sort_default'] = '默认';
@@ -721,6 +723,7 @@ $_LANG['other_info'] = '其它信息';
 $_LANG['user_balance'] = '会员余额';
 $_LANG['wholesale_goods_cart'] = '批发商品购物车';
 $_LANG['wholesale_goods_list'] = '批发商品列表';
+$_LANG['wholesale_goods_info'] = '批发商品';
 $_LANG['bid_record'] = '出价记录';
 $_LANG['shipping_method'] = '配送方式';
 $_LANG['payment_method'] = '支付方式';
@@ -852,7 +855,7 @@ $_LANG['buy_now'] = '立即购买';
 $_LANG['update_cart'] = '更新购物车';
 $_LANG['back_to_cart'] = '返回购物车';
 $_LANG['update_cart_notice'] = '购物车更新成功，请您重新选择您需要的赠品。';
-$_LANG['direct_shopping'] = '不打算登录，直接购买';
+$_LANG['direct_shopping'] = '直接购买';
 $_LANG['goods_not_exists'] = '对不起，指定的商品不存在';
 $_LANG['drop_goods_confirm'] = '您确实要把该商品移出购物车吗？';
 $_LANG['goods_number_not_int'] = '请您输入正确的商品数量。';
