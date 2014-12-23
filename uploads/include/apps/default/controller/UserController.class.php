@@ -991,8 +991,9 @@ class UserController extends CommonController {
         $errorCorrectionLevel = 'L';
         // 点的大小：1到10
         $matrixPointSize = 4;
-        $filename = 'data/attached/image/' . $errorCorrectionLevel . $matrixPointSize . '.png';
+        $filename = 'data/attached/image/' . $errorCorrectionLevel . $matrixPointSize .$this->user_id . '.png';
         QRcode::png($shoprul, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
+        
         $this->assign('shopurl_qr', __URL__ . '/' . $filename);
         $this->assign('shopurl', $shoprul);
         $this->assign('shopdesc', C('shop_desc'));
