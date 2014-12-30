@@ -1,7 +1,7 @@
 {include file="pageheader"}
 
-<script src="http://ectouch.cn/api/notice.html"></script>
-<script src="http://ectouch.cn/api/patch.html?release=<?php echo RELEASE;?>"></script>
+<script src="http://www.ectouch.cn/apis/notice.html"></script>
+<script src="http://www.ectouch.cn/apis/patch.html?release=<?php echo RELEASE;?>"></script>
 
 <div class="panel panel-default">
   <div class="panel-heading">
