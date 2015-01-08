@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_ad` (
 
 INSERT INTO `ecs_touch_ad` (`ad_id`, `position_id`, `media_type`, `ad_name`, `ad_link`, `ad_code`, `start_time`, `end_time`, `link_man`, `link_email`, `link_phone`, `click_count`, `enabled`) VALUES
 (1, 1, 0, '1', '', 'http://www.ectouch.cn/data/assets/images/ectouch_ad1.jpg', 1396339200, 1525161600, '', '', '', 0, 1),
-(2, 1, 0, '2', '', 'http://www.ectouch.cn/data/assets/images/ectouch_ad2.jpg', 1396339200, 1525161600, '', '', '', 0, 1);
+(2, 1, 0, '2', '', 'http://www.ectouch.cn/data/assets/images/ectouch_ad2.jpg', 1396339200, 1525161600, '', '', '', 0, 1),
 (3, 1, 0, '3', '', 'http://www.ectouch.cn/data/assets/images/ectouch_ad3.jpg', 1396339200, 1525161600, '', '', '', 0, 1);
 
 --
