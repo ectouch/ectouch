@@ -1552,3 +1552,35 @@ function send_wechat_message($type = '', $title = '', $msg = '', $url = '', $ord
     }
 }
 
+/**
+ * 获取商品销量总数
+ *
+ * @access public
+ * @param integer $goods_id
+ * @return integer
+ */
+function get_goods_count($goods_id)
+{
+    /* 统计时间段 */
+    $period = C('top10_time');
+    $ext = '';
+    if ($period == 1) {// 一年
+        $ext = "AND o.add_time >'" . local_strtotime('-1 years') . "'";
+    } elseif ($period == 2) {// 半年
+        $ext = "AND o.add_time > '" . local_strtotime('-6 months') . "'";
+    } elseif ($period == 3) {// 三个月
+        $ext = " AND o.add_time > '" . local_strtotime('-3 months') . "'";
+    } elseif ($period == 4) {// 一个月
+        $ext = " AND o . add_time > '" . local_strtotime(' - 1 months') . "'";
+    }
+    /* 查询该商品销量 */
+    $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) as count ' .
+        'FROM '. M()->pre .'order_info AS o, '. M()->pre .'order_goods AS g ' .
+        "WHERE o . order_id = g . order_id " .
+        " AND o . order_status = '" . OS_CONFIRMED . "'" .
+        " AND o . shipping_status " . db_create_in(array(SS_SHIPPED, SS_RECEIVED)) .
+        " AND o . pay_status " . db_create_in(array(PS_PAYED, PS_PAYING)) .
+        " AND g . goods_id = '$goods_id'";
+    $result = M()->getRow($sql);
+    return $result['count'];
+}
