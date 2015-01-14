@@ -596,13 +596,7 @@ class GoodsBaseModel extends BaseModel {
      * @return Ambigous <string, boolean>
      */
     function get_sales_count($goods_id) {
-        /* 查询该商品销量 */
-        $sql = 'SELECT IFNULL(SUM(sales_volume), 0) ' .
-                'as num FROM ' . $this->pre .
-                "touch_goods WHERE goods_id =  " . $goods_id;
-        $res = $this->row($sql);
-        $sales_count = $res['num'];
-        return $sales_count;
+        return get_goods_count($goods_id);
     }
 
 }
