@@ -143,9 +143,9 @@ class CommentModel extends BaseModel {
         $result = $this->row($sql);
         $bad = $result['count'];
 
-        $info['favorable_count'] = $favorable['count'];    //好评数量
-        $info['medium_count'] = $medium['count']; //中评数量
-        $info['bad_count'] = $bad['count'];     //差评数量
+        $info['favorable_count'] = $favorable; //好评数量
+        $info['medium_count'] = $medium; //中评数量
+        $info['bad_count'] = $bad; //差评数量
         if ($info['count'] > 0) {
             $info['favorable'] = 0;
             if ($favorable) {
