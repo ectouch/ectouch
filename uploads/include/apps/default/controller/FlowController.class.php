@@ -21,6 +21,7 @@ class FlowController extends CommonController {
      * 购物车列表
      */
     public function index() {
+		$_SESSION['flow_type'] = CART_GENERAL_GOODS;
         /* 如果是一步购物，跳到结算中心 */
         if (C('one_step_buy') == '1') {
             ecs_header("Location: " . url('flow/checkout') . "\n");
@@ -668,7 +669,6 @@ class FlowController extends CommonController {
                 $this->assign('rand', mt_rand());
             }
         } else {
-            autoload('lib_passport');
             $act = in($_POST ['act']);
             $username = in($_POST ['username']);
             $password = in($_POST ['password']);
@@ -737,7 +737,6 @@ class FlowController extends CommonController {
      * 收货信息
      */
     public function consignee() {
-        autoload('lib_transaction');
         if ($_SERVER ['REQUEST_METHOD'] == 'GET') {
             /* 取得购物类型 */
             $flow_type = isset($_SESSION ['flow_type']) ? intval($_SESSION ['flow_type']) : CART_GENERAL_GOODS;
@@ -1258,8 +1257,7 @@ class FlowController extends CommonController {
 
         /* 如果需要，发短信 */
         if (C('sms_order_placed') == '1' && C('sms_shop_mobile') != '') {
-            autoload('EcsSms');
-            $sms = new EcsSms ();
+            $sms = new EcsSms();
             $msg = $order ['pay_status'] == PS_UNPAYED ? L('order_placed_sms') : L('order_placed_sms') . '[' . L('sms_paid') . ']';
             $sms->send(C('sms_shop_mobile'), sprintf($msg, $order ['consignee'], $order ['mobile']), '', 13, 1);
         }
@@ -2104,7 +2102,6 @@ class FlowController extends CommonController {
 
      */
     public function drop_consignee() {
-        autoload('lib_transaction');
         $consignee_id = intval($_GET['id']);
         if (model('Users')->drop_consignee($consignee_id)) {
             ecs_header("Location: " . url('flow/consignee_list') . "\n");
