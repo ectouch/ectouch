@@ -25,7 +25,7 @@ class RespondController extends CommonController
     {
         parent::__construct();
         // 获取参数
-        $code = I('code');
+        $code = I('get.code');
         $this->data = unserialize(urlsafe_b64decode($code));
 	}
 
