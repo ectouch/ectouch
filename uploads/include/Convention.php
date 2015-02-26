@@ -65,8 +65,6 @@ return array(
 		'URL_PATHINFO_FETCH' =>  'ORIG_PATH_INFO,REDIRECT_PATH_INFO,REDIRECT_URL', // 用于兼容判断PATH_INFO 参数的SERVER替代变量列表
 		'URL_PARAMS_BIND' =>  true, // URL变量绑定到Action方法参数
 		'URL_PARAMS_BIND_TYPE'  =>  0, // URL变量绑定的类型 0 按变量名绑定 1 按变量顺序绑定
-		/* 语言配置 */
-        'LANG' => 'zh_cn', // 语言包
 		'AUTOLOAD_DIR' => array(), // 自动加载扩展目录
 	),
 	/* 数据库配置 */
