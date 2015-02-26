@@ -4,6 +4,19 @@
 defined('IN_ECTOUCH') or die('Deny Access');
 
 /**
+ * 检查是否是微信浏览器访问
+ */
+function is_wechat_browser()
+{
+    $user_agent = $_SERVER['HTTP_USER_AGENT'];
+    if (strpos($user_agent, 'MicroMessenger') === false) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
  * 取得页面标题
  *
  * @access  public
