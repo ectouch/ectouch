@@ -205,7 +205,7 @@ class GoodsModel extends BaseModel {
                     $lnk[$key]['goods'][$row['goods_id']]['goods_name'] = $row['goods_name'];
                     $lnk[$key]['goods'][$row['goods_id']]['short_name'] = C('goods_name_length') > 0 ?
                             sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
-                    $lnk[$key]['goods'][$row['goods_id']]['goods_thumb'] = (empty($row['goods_thumb'])) ? C('no_picture') : $row['goods_thumb'];
+                    $lnk[$key]['goods'][$row['goods_id']]['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
                     $lnk[$key]['goods'][$row['goods_id']]['market_price'] = price_format($row['market_price']);
                     $lnk[$key]['goods'][$row['goods_id']]['shop_price'] = price_format($row['shop_price']);
                     $lnk[$key]['goods'][$row['goods_id']]['promote_price'] = bargain_price($row['promote_price'], $row['promote_start_date'], $row['promote_end_date']);
