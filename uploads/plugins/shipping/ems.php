@@ -3,18 +3,16 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-$shipping_lang = ROOT_PATH.'lang/' .$GLOBALS['_CFG']['lang']. '/shipping/ems.php';
+$shipping_lang = ROOT_PATH . 'plugins/shipping/language/' . C('lang') . '/' . basename(__FILE__);
 if (file_exists($shipping_lang))
 {
     global $_LANG;
     include_once($shipping_lang);
 }
 
-include_once(ROOT_PATH . 'lang/' . $GLOBALS['_CFG']['lang'] . '/admin/shipping.php');
-
 /* 模块的基本信息 */
 if (isset($set_modules) && $set_modules == TRUE)
-{
+{    
     $i = (isset($modules)) ? count($modules) : 0;
 
     /* 配送方式插件的代码必须和文件名保持一致 */

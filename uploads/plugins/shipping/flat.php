@@ -3,7 +3,7 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-$shipping_lang = ROOT_PATH.'lang/' .$GLOBALS['_CFG']['lang']. '/shipping/flat.php';
+$shipping_lang = ROOT_PATH . 'plugins/shipping/language/' . C('lang') . '/' . basename(__FILE__);
 if (file_exists($shipping_lang))
 {
     global $_LANG;
