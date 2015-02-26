@@ -102,6 +102,7 @@ class GroupbuyController extends CommonController {
 
         /* 取得商品的规格 */
         $properties = model('Goods')->get_goods_properties($goods_id);
+        $this->assign('properties', $properties['pro']); // 商品属性
         $this->assign('specification', $properties['spe']); // 商品规格
         //模板赋值
         $this->assign('cfg', C('CFG'));
