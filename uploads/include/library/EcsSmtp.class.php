@@ -63,7 +63,7 @@ class EcsSmtp {
 
     function connect($params = array()) {
         if (!isset($this->status)) {
-            $obj = new smtp($params);
+            $obj = new EcsSmtp($params);
 
             if ($obj->connect()) {
                 $obj->status = SMTP_STATUS_CONNECTED;
@@ -71,7 +71,8 @@ class EcsSmtp {
 
             return $obj;
         } else {
-            if (!empty($GLOBALS['_CFG']['smtp_ssl'])) {
+            $smtp_ssl = C('smtp_ssl');
+            if (!empty($smtp_ssl)) {
                 $this->host = "ssl://" . $this->host;
             }
             $this->connection = @fsockopen($this->host, $this->port, $errno, $errstr, $this->timeout);
