@@ -153,7 +153,14 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_article` (
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`article_id`),
   KEY `cat_id` (`cat_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=51 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+
+--
+-- `ecs_touch_article`
+--
+
+INSERT INTO `ecs_touch_article` (`article_id`, `cat_id`, `title`, `content`, `author`, `author_email`, `keywords`, `is_open`, `add_time`, `file_url`, `open_type`) VALUES(6, -1, '用户协议', '', '', '', '', 1, UNIX_TIMESTAMP(), '', 0);
+
 
 --
 -- 表的结构 `ecs_touch_brand`
