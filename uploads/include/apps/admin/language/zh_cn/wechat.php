@@ -1,9 +1,17 @@
 <?php
 
 /**
- * 微信通语言
+ * ECTouch Open Source Project
+ * ============================================================================
+ * Copyright (c) 2012-2014 http://ectouch.cn All rights reserved.
+ * ----------------------------------------------------------------------------
+ * 文件名称：wechat.php
+ * ----------------------------------------------------------------------------
+ * 功能描述：微信通语言
+ * ----------------------------------------------------------------------------
+ * Licensed ( http://www.ectouch.cn/docs/license.txt )
+ * ----------------------------------------------------------------------------
  */
-
 $_LANG['num_order'] = '编号';
 $_LANG['wechat'] = '公众平台';
 $_LANG['wechat_number'] = '微信号';
@@ -60,6 +68,7 @@ $_LANG['message_time'] = '发送时间';
 $_LANG['button_send'] = '发送';
 $_LANG['select_openid'] = '请选择微信用户';
 $_LANG['sub_help1'] = '只有48小时内给公众号发送过信息的粉丝才能接收到信息';
+$_LANG['sub_binduser'] = '绑定用户';
 //分组
 $_LANG['group_sys'] = '同步分组信息';
 $_LANG['group_title'] = '分组管理';
@@ -90,6 +99,7 @@ $_LANG['menu_help1'] = '如无特殊需要，这里请不要填写 (如果要实
 $_LANG['qrcode'] = '二维码';
 $_LANG['qrcode_scene'] = '应用场景';
 $_LANG['qrcode_scene_value'] = '应用场景值';
+$_LANG['qrcode_scene_limit'] = '场景值已存在，请重新填写';
 $_LANG['qrcode_type'] = '二维码类型';
 $_LANG['qrcode_function'] = '功能';
 $_LANG['qrcode_short'] = '临时二维码';
@@ -104,3 +114,13 @@ $_LANG['title'] = '标题';
 $_LANG['please_upload'] = '请上传图片';
 $_LANG['content'] = '正文';
 $_LANG['link_err'] = '链接格式不正确';
+//扫码引荐
+$_LANG['share'] = '扫码引荐';
+$_LANG['share_name'] = '推荐人';
+$_LANG['share_userid'] = '推荐人ID';
+$_LANG['share_account'] = '现金分成';
+$_LANG['scan_num'] = '扫描量';
+$_LANG['expire_seconds'] = '有效时间';
+$_LANG['share_help'] = '不填则为无限制';
+$_LANG['interactive_user'] = '交互用户';
+$_LANG['official'] = '官方';
