@@ -541,10 +541,11 @@ class ClipsBaseModel extends BaseModel {
         $info['formated_credit_line'] = price_format($info['credit_line'], false);
 
         //新增获取用户头像，昵称
-        if (method_exists('WechatController', 'get_avatar')) {
-            $u_row = call_user_func(array('WechatController', 'get_avatar'), $user_id);
-        } else {
-            $u_row = '';
+        $u_row = '';
+        if(class_exists('WechatController')){
+            if (method_exists('WechatController', 'get_avatar')) {
+                $u_row = call_user_func(array('WechatController', 'get_avatar'), $user_id);
+            }
         }
         if ($u_row) {
             $info['nickname'] = $u_row['nickname'];
