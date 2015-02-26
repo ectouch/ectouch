@@ -335,8 +335,7 @@ class WholesaleController extends CommonController {
 
         /* 如果需要，发短信 */
         if (C('sms_order_placed') == '1' && C('sms_shop_mobile') != '') {
-            autoload('EcsSms');
-            $sms = new EcsSms ();
+            $sms = new EcsSms();
             $msg = L('order_placed_sms');
             $sms->send(C('sms_shop_mobile'), sprintf($msg, $order ['consignee'], $order ['mobile']), '', 13, 1);
         }
