@@ -25,7 +25,14 @@ class ArticleController extends AdminController {
         foreach ($articlecat as $key => $cat) {
             $articlecat[$key]['type_name'] = L('type_name.' . $cat['cat_type']);
         }
-        $article_list = model('ArticleBase')->get_articleslist();
+        
+        //分页
+        $filter['page'] = '{page}';
+        $offset = $this->pageLimit(url('index', $filter), 12);
+        $total = model('ArticleBase')->get_article_count(0);
+        $this->assign('page', $this->pageShow($total));
+        
+        $article_list = model('ArticleBase')->get_articleslist($offset);
         $this->assign('article_list', $article_list['arr']);
         $this->assign('filter', $article_list['filter']);
         $this->assign('record_count', $article_list['record_count']);
