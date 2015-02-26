@@ -87,6 +87,7 @@ class BrandController extends CommonController {
         $count = model('Brand')->goods_count_by_brand($brand_id, $this->cat);
         $this->pageLimit(url('goods_list', array('id' => $brand_id, 'sort' => $this->sort, 'order' => $this->order)), $this->size);
         $this->assign('pager', $this->pageShow($count));
+		$this->assign('show_marketprice', C('show_marketprice'));
         $this->display('brand_goods_list.dwt');
     }
 
@@ -95,6 +96,7 @@ class BrandController extends CommonController {
      */
     public function list_asynclist() {
         $this->parameter();
+		$this->assign('show_marketprice', C('show_marketprice'));
         $brand_id = I('request.brand');
         $brand_info = model('BrandBase')->get_brand_info($brand_id);
         if (empty($brand_info)) {
