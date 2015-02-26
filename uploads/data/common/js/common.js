@@ -243,8 +243,8 @@ function bid(step) {
         return;
     }
 
-    $.post('index.php?m=default&c=snatch&a=bid&id=' + id, {
-        price: price
+    $.post('index.php?m=default&c=snatch&a=bid', {
+        price: price,id:id
     }, function(data) {
         bidResponse(data);
     }, 'json');
