@@ -985,21 +985,29 @@ class UserController extends CommonController {
 
             $this->assign('goods', $goods);
         }
-        $shoprul = __URL__ . '/?u=' . $this->user_id;
-        // 二维码
-        // 纠错级别：L、M、Q、H
-        $errorCorrectionLevel = 'L';
-        // 点的大小：1到10
-        $matrixPointSize = 4;
-        $filename = 'data/attached/image/' . $errorCorrectionLevel . $matrixPointSize .$this->user_id . '.png';
-        QRcode::png($shoprul, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
+        $shopurl = __URL__ . '/?u=' . $this->user_id;
         
-        $this->assign('shopurl_qr', __URL__ . '/' . $filename);
-        $this->assign('shopurl', $shoprul);
+        $this->assign('shopurl', $shopurl);
+        $this->assign('domain', __HOST__);
         $this->assign('shopdesc', C('shop_desc'));
         $this->assign('title', L('label_share'));
         $this->assign('share', $share);
         $this->display('user_share.dwt');
+    }
+    
+    /**
+     * 生成二维码
+     */
+    public function create_qrcode(){
+        $value = I('get.value');
+        if($value){
+            // 二维码
+            // 纠错级别：L、M、Q、H
+            $errorCorrectionLevel = 'L';
+            // 点的大小：1到10
+            $matrixPointSize = 4;
+            QRcode::png($value, false, $errorCorrectionLevel, $matrixPointSize, 2);
+        }
     }
 
     /**
@@ -1394,6 +1402,7 @@ class UserController extends CommonController {
             $this->assign('enabled_captcha', 1);
             $this->assign('rand', mt_rand());
         }
+		
         $this->assign('step', I('get.step'));
         $this->assign('anonymous_buy', C('anonymous_buy'));
         $this->assign('title', L('login'));
@@ -1571,28 +1580,28 @@ class UserController extends CommonController {
                     $res = new $type($info, $_SESSION['access_token']);
                     $openid = $res->get_openid();
                     // 获取用户信息
-                    $user = $res->get_user_info($openid);
+                    $userinfo = $res->get_user_info($openid);
                     // 处理数据
-                    $info['aite_id'] = $type . '_' . $openid; // 添加登录标示
-                    $info['user_name'] = str_replace("'", "", empty($user['name']) ? $user['nickname'] : $user['name']);
-                    if (model('Users')->get_one_user($info['aite_id'])) {
+                    $userinfo['aite_id'] = $type . '_' . $openid; // 添加登录标示
+                    $userinfo['user_name'] = str_replace("'", "", empty($userinfo['name']) ? $userinfo['nickname'] : $userinfo['name']);
+                    if (model('Users')->get_one_user($userinfo['aite_id'])) {
                         // 已有记录
-                        self::$user->set_session($info['user_name']);
-                        self::$user->set_cookie($info['user_name']);
+                        self::$user->set_session($userinfo['user_name']);
+                        self::$user->set_cookie($userinfo['user_name']);
                         model('Users')->update_user_info();
                         model('Users')->recalculate_price();
                         $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
                         $this->redirect($jump_url);
                     }
                     // 无记录
-                    if (model('Users')->check_user_name($info['user_name'])) { // 重名处理
-                        $info['user_name'] = $user['user_name'] . '_' . $type . (rand(10000, 99999));
+                    if (model('Users')->check_user_name($userinfo['user_name'])) { // 重名处理
+                        $userinfo['user_name'] = $userinfo['user_name'] . '_' . $type . (rand(10000, 99999));
                     }
-                    $info['email'] = empty($user['email']) ? get_pinyin($info['user_name']) . '@' . get_top_domain() : $user['email'];
+                    $userinfo['email'] = empty($userinfo['email']) ? get_pinyin($userinfo['user_name']) . '@' . get_top_domain() : $userinfo['email'];
                     // 插入数据库
-                    model('Users')->third_reg($info);
-                    self::$user->set_session($info['user_name']);
-                    self::$user->set_cookie($info['user_name']);
+                    model('Users')->third_reg($userinfo);
+                    self::$user->set_session($userinfo['user_name']);
+                    self::$user->set_cookie($userinfo['user_name']);
                     model('Users')->update_user_info();
                     model('Users')->recalculate_price();
                     $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
