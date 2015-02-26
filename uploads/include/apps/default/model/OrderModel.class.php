@@ -221,8 +221,8 @@ class OrderModel extends BaseModel {
                 " GROUP BY b.type_id ";
         $list = $this->query($sql);
 
-        /* 查询定单中非赠品总金额 */
-        $amount = order_amount($order_id, false);
+        /* 查询订单中非赠品总金额 */
+        $amount = $this->order_amount($order_id, false);
 
         /* 查询订单日期 */
         $sql = "SELECT add_time " .
