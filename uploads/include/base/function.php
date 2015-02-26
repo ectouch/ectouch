@@ -1735,9 +1735,12 @@ function exception_handler($errno, $errstr, $errfile, $errline) {
  * @return string   $url
  */
 function get_image_path($goods_id, $image = '', $thumb = false, $call = 'goods', $del = false) {
-    $url = empty($image) ? C('no_picture') : $image;
-    $base_url = substr(C('SHOP_URL'), -1) == '/' ? C('SHOP_URL') : C('SHOP_URL') . '/';
-    $url = strtolower(substr($url, 0, '4')) == 'http' ? $url : $base_url . $url;
+    $url = C('no_picture');
+    if(!empty($image)){
+      $base_url = substr(C('SHOP_URL'), -1) == '/' ? C('SHOP_URL') : C('SHOP_URL') . '/';
+      $url = strtolower(substr($image, 0, '4')) == 'http' ? $image : $base_url . $image;
+    }
+   
     return $url;
 }
 
