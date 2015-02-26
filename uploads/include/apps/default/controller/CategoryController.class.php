@@ -86,7 +86,7 @@ class CategoryController extends CommonController {
             }
         }
         $this->assign('categories', model('CategoryBase')->get_categories_tree($this->cat_id));
-
+		$this->assign('show_marketprice', C('show_marketprice'));
         $this->display('category.dwt');
     }
 
@@ -95,6 +95,7 @@ class CategoryController extends CommonController {
      */
     public function asynclist() {
         $this->parameter();
+		$this->assign('show_marketprice', C('show_marketprice'));
         $asyn_last = intval(I('post.last')) + 1;
         $this->size = I('post.amount');
         $this->page = ($asyn_last > 0) ? ceil($asyn_last / $this->size) : 1;
@@ -597,7 +598,7 @@ class CategoryController extends CommonController {
             }
             $arr[$row['goods_id']]['promotion'] = model('GoodsBase')->get_promotion_show($row['goods_id']);
             $arr[$row['goods_id']]['comment_count'] = model('Comment')->get_goods_comment($row['goods_id'], 0);  //商品总评论数量 
-            $arr[$row['goods_id']]['favorable_count'] = model('Comment')->favorable_comment($row['goods_id'], 0);  //获得商品好评数量  
+            $arr[$row['goods_id']]['favorable_count'] = model('Comment')->favorable_comment($row['goods_id'], 0);  //获得商品好评百分比
         }
         return $arr;
     }
