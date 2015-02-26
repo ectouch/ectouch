@@ -110,7 +110,23 @@
       <div class="ect-padding-lr ect-padding-tb goods-submit">
         <a href="javascript:;" class="btn btn-info ect-btn-info ect-colorf ect-bg" onClick="document.getElementById('ECS_FORMBUY').submit()">{$lang.button_buy}</a> 
       </div>
-      <div class="tab-info">{$gb_goods.goods_desc}</div>
+      <div class="tab-info">
+      <!-- {if $properties}--> 
+      <table width="100%" border="0" cellpadding="5" cellspacing="0">
+        <!-- {foreach from=$properties item=property_group key=key} -->
+        <tr>
+        <th colspan="2" style="padding:7px; border-bottom:1px #ddd dashed;">{$key|escape}</th>
+        </tr>
+        <!-- {foreach from=$property_group item=property} -->
+        <tr>
+        <td style="width:30%; align:left; padding:5px;">[{$property.name|escape:html}]</td>
+        <td style="width:70%; align:left; padding:5px;">{$property.value}</td>
+        </tr>
+        <!-- {/foreach}--> 
+        <!-- {/foreach}-->
+      </table>
+      <!-- {/if}-->
+      {$gb_goods.goods_desc}</div>
     </form>
   </div>
 </div>

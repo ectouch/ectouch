@@ -1,6 +1,7 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
 <!-- {if $share.on eq 1} --> 
 <!-- {if !$goodsid || $goodsid eq 0} -->
+<!-- {if $share.config.separate_by == 0} -->
   <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
     <tr align="center" class="first-tr">
       <td>{$lang.affiliate_lever}</td>
@@ -17,6 +18,7 @@
     </tr>
     <!-- {/foreach} -->
   </table>
+  <!-- {/if} -->
         <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
     <tr align="center" class="first-tr">
       <td bgcolor="#ffffff">{$lang.order_number}</td>
@@ -66,7 +68,7 @@
 		common : {
 			bdText : '{$shopdesc}',
 			bdUrl : '{$shopurl}',
-			bdPic : '{$shopurl_qr}'
+			bdPic : "{$domain}{:url('user/create_qrcode', array('value'=>$this->_var['shopurl']))}"
 		},
 		share : [{
 			"bdSize" : 32

@@ -112,7 +112,7 @@
 
 <!-- 文章列表 start--> 
 <!--{if $article}--> 
-<a href="{$article.url}" >{$article.index}、{$article.short_title}</a> 
+<a href="{$article.url}" >{$id}、{$article.short_title}</a> 
 <!-- {/if}--> 
 <!-- 文章列表end--> 
 

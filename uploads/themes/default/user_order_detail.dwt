@@ -47,7 +47,7 @@
   </div>
 </section>
 <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center"> {$order.handler} 
-  <!-- {if $order.shipping_id} --><a class="btn btn-info ect-bg-colory" type="button" href="{:url('order_tracking', array('order_id'=>$this->_var['order']['order_id']))}">{$lang.order_tracking}</a><!-- {/if} --> 
+  <!-- {if $order.shipping_id > 0} --><a class="btn btn-info ect-bg-colory" type="button" href="{:url('order_tracking', array('order_id'=>$this->_var['order']['order_id']))}">{$lang.order_tracking}</a><!-- {/if} --> 
 </div>
 <section class="order-detail-info ect-margin-tb" style="margin-bottom:0;">
   <ul>

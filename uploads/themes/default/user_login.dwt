@@ -29,11 +29,13 @@
   </p>
    <input type="hidden" name="back_act" value="{$back_act}" />
   <div class="ect-padding-lr ect-padding-tb"> 
- 
   <input type="submit" class="btn btn-info ect-btn-info ect-bg" value="{$lang.now_landing}" />
   </div>
   </form>
-  <p class="ect-padding-lr ect-margin-tb text-right ect-margin-bottom0" style="clear:both"><a href="{:url('user/get_password_phone')}">{$lang.forgot_password}</a>  <a href="{:url('user/register')}">{$lang.free_registered}</a></p>
+  <p class="ect-padding-lr ect-margin-tb text-right ect-margin-bottom0" style="clear:both">
+	<a href="{:url('user/get_password_phone')}">{$lang.forgot_password}</a>  
+	<a href="{:url('user/register')}">{$lang.free_registered}</a>
+  </p>
   <div class="ect-padding-lr ect-margin-tb user-hezuo">
   	{$lang.third_login}
   	<p>

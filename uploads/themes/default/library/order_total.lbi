@@ -1,13 +1,13 @@
 
 <div class="ect-padding-tb text-right" id="ECS_ORDERTOTAL">
-  <!-- {if $smarty.session.user_id > 0 and ($config.use_integral or $config.use_bonus)} --> 
+  <!-- {if $smarty.session.user_id > 0 and ( C('use_integral') or C('use_bonus') )} --> 
   {$lang.complete_acquisition} 
-  <!-- {if $config.use_integral} 是否使用积分-->
+  <!-- {if C('use_integral')} 是否使用积分-->
   <b class="ect-colory">{$total.will_get_integral}</b>
   {$points_name} 
   <!-- {/if} --> 
-  <!-- {if $config.use_integral and $config.use_bonus} 是否同时使用积分红包-->，{$lang.with_price} <!-- {/if} --> 
-  <!-- {if $config.use_bonus} 是否使用红包-->
+  <!-- {if ('use_integral') and C('use_bonus')} 是否同时使用积分红包-->，{$lang.with_price} <!-- {/if} --> 
+  <!-- {if C('use_bonus')} 是否使用红包-->
   <b class="ect-colory">{$total.will_get_bonus}</b>
   {$lang.de}{$lang.bonus}。 
   <!-- {/if} --> <br/>
