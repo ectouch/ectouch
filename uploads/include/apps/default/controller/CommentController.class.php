@@ -125,16 +125,16 @@ class CommentController extends CommonController {
                         $cur_time = gmtime();
                         if (($cur_time - $_SESSION ['send_time']) < 30) { // 小于30秒禁止发评论
                             $result ['error'] = 1;
-                            $result ['message'] = $this->_LANG ['cmt_spam_warning'];
+                            $result ['message'] = L('cmt_spam_warning');
                         } else {
-                            $factor = intval($this->_CFG ['comment_factor']);
+                            $factor = intval(C('comment_factor'));
                             if ($cmt->type == 0 && $factor > 0) {
                                 /* 只有商品才检查评论条件 */
                                 switch ($factor) {
                                     case COMMENT_LOGIN :
                                         if ($_SESSION ['user_id'] == 0) {
                                             $result ['error'] = 1;
-                                            $result ['message'] = $this->_LANG ['comment_login'];
+                                            $result ['message'] = L('comment_login');
                                         }
                                         break;
 
