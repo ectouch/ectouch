@@ -298,7 +298,7 @@ class ArticleBaseModel extends BaseModel {
 
     /* 获得文章列表 */
 
-    function get_articleslist() {
+    function get_articleslist($offset) {
         $result = get_filter();
         if ($result === false) {
             $filter = array();
@@ -332,7 +332,7 @@ class ArticleBaseModel extends BaseModel {
             $sql = 'SELECT a.* , ac.cat_name ' .
                     'FROM ' . $this->pre . 'touch_article AS a ' .
                     'LEFT JOIN ' . $this->pre . 'touch_article_cat AS ac ON ac.cat_id = a.cat_id ' .
-                    'WHERE 1 ' . $where . ' ORDER by ' . $filter['sort_by'] . ' ' . $filter['sort_order'] .' LIMIT '.$filter['start'].', '.$filter['page_size'];
+                    'WHERE 1 ' . $where . ' ORDER by ' . $filter['sort_by'] . ' ' . $filter['sort_order'] .' LIMIT '.$offset;
 
             $filter['keyword'] = stripslashes($filter['keyword']);
             set_filter($filter, $sql);
