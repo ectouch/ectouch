@@ -62,18 +62,20 @@ class ArticleController extends CommonController {
         $this->size = I('post.amount');
         $this->page = ($asyn_last > 0) ? ceil($asyn_last / $this->size) : 1;
         $list = model('ArticleBase')->get_cat_articles($this->cat_id, $this->page, $this->size, $this->keywords);
+        $id = ($this->page - 1) * $this->size + 1;
         foreach ($list as $key => $value) {
+            $this->assign('id', $id);
             $this->assign('article', $value);
             $sayList [] = array(
                 'single_item' => ECTouch::view()->fetch('library/asynclist_info.lbi')
             );
+            $id++;
         }
         die(json_encode($sayList));
         exit();
     }
 
     /* ------------------------------------------------------ */
-
     //-- 文章详情
     /* ------------------------------------------------------ */
     public function info() {
@@ -81,6 +83,18 @@ class ArticleController extends CommonController {
         $article_id = intval(I('get.aid'));
         $article = model('Article')->get_article_info($article_id);
         $this->assign('article', $article);
+        $this->display('article_info.dwt');
+    }
+
+    /* ------------------------------------------------------ */
+    //-- 微信图文详情
+    /* ------------------------------------------------------ */
+    public function wechat_news_info() {
+        /* 文章详情 */
+        $news_id = intval(I('get.id'));
+        $data = $this->model->table('wechat_media')->field('title, content')->where('id = ' . $news_id)->find();
+        $data['content'] = htmlspecialchars_decode($data['content']);
+        $this->assign('article', $data);
         $this->display('article_info.dwt');
     }
 
