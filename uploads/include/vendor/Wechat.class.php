@@ -501,7 +501,7 @@ class Wechat
 	 */
 	public function getRevScanInfo(){
 		if (isset($this->_receive['ScanCodeInfo'])){
-		    if (!is_array($this->_receive['SendPicsInfo'])) {
+		    if (!is_array($this->_receive['ScanCodeInfo'])) {
 		        $array=(array)$this->_receive['ScanCodeInfo'];
 		        $this->_receive['ScanCodeInfo']=$array;
 		    }else {
@@ -1112,7 +1112,16 @@ class Wechat
 	 */
 	protected function setCache($cachename,$value,$expired){
 		//TODO: set cache implementation
-		return false;
+		$cache_dir = ROOT_PATH . 'data/cache/filecache/';
+		if(!is_dir($cache_dir)){
+			@mkdir($cache_dir, 0755, true);
+		}
+		$file = $cache_dir . $cachename . '.cache';
+		$data = array(
+			'value' => $value,
+			'expired' => time() + $expired
+		);
+		return file_put_contents( $file, serialize($data) ) ? true : false;
 	}
 
 	/**
@@ -1122,7 +1131,19 @@ class Wechat
 	 */
 	protected function getCache($cachename){
 		//TODO: get cache implementation
-		return false;
+		$cache_dir = ROOT_PATH . 'data/cache/filecache/';
+		$file = $cache_dir . $cachename . '.cache';
+		if(!is_file($file)){
+			return false;	
+		}
+		
+		$content = file_get_contents($file);
+		$data = unserialize($content);
+		if (!is_array($data) || !isset($data['value']) || (!empty($data['value']) && $data['expired']<time())) {
+            @unlink($file);
+            return false;
+        }
+        return $data['value'];
 	}
 
 	/**
@@ -1132,7 +1153,12 @@ class Wechat
 	 */
 	protected function removeCache($cachename){
 		//TODO: remove cache implementation
-		return false;
+		$cache_dir = ROOT_PATH . 'data/cache/filecache/';
+		$file = $cache_dir . $cachename . '.cache';
+		if(is_file($file)){
+			@unlink($file);
+		}
+		return true;
 	}
 
 	/**
@@ -1208,7 +1234,7 @@ class Wechat
 		if (!$appid) $appid = $this->appid;
 		if ($jsapi_ticket) { //手动指定token，优先使用
 		    $this->jsapi_ticket = $jsapi_ticket;
-		    return $this->access_token;
+		    return $this->jsapi_ticket;
 		}
 		$authname = 'wechat_jsapi_ticket'.$appid;
 		if ($rs = $this->getCache($authname))  {
@@ -2268,7 +2294,7 @@ class Wechat
 			'CreateTime'=>time(),
 			'MsgType'=>'transfer_customer_service',
 		);
-		if (!$customer_account) {
+		if ($customer_account) {
 			$msg['TransInfo'] = array('KfAccount'=>$customer_account);
 		}
 		$this->Message($msg);
@@ -3210,15 +3236,15 @@ class Prpcrypt
 {
     public $key;
 
-    /**
-     * 兼容老版本php构造函数
-     */
-    function Prpcrypt($k)
-    {
+    function __construct($k) {
         $this->key = base64_decode($k . "=");
     }
 
-    function __construct($k) {
+    /**
+     * 兼容老版本php构造函数，不能在 __construct() 方法前边，否则报错
+     */
+    function Prpcrypt($k)
+    {
         $this->key = base64_decode($k . "=");
     }
 
