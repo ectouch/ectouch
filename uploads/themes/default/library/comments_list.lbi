@@ -151,7 +151,7 @@
           <!-- 判断是否启用验证码{if $enabled_captcha} -->
           <p class="ect-padding-tb code"><span>
             <input placeholder="{$lang.comment_captcha}" type="text" name="captcha"/>
-            </span> <img class="pull-right" src="{:url('public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" onClick="this.src='{:url('public/captcha', array('rand'=>'Math.random()'))}'"  /> </p>
+            </span> <img class="pull-right" src="{:url('public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" onClick="this.src='{:url('public/captcha')}&t='+Math.random()"  /> </p>
           <!-- {/if} -->
           <p class="ect-padding-tb">
             <input type="submit" class="btn btn-info ect-btn-info" value="{$lang.submit_comment}"/>
