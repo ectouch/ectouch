@@ -92,7 +92,7 @@ class BrandModel extends BaseModel {
      */
     function get_brands($app = 'brand', $size, $page) {
         $start = ($page - 1) * $size;
-        $sql = "SELECT b.brand_id, b.brand_name, b.brand_logo, b.brand_desc, t.brand_banner FROM " . $this->pre . "brand b LEFT JOIN  " . $this->pre . "touch_brand t ON t.brand_id = b.brand_id " . "WHERE is_show = 1 " . "GROUP BY b.brand_id , b.sort_order ASC LIMIT $start , $size";
+        $sql = "SELECT b.brand_id, b.brand_name, b.brand_logo, b.brand_desc, t.brand_banner FROM " . $this->pre . "brand b LEFT JOIN  " . $this->pre . "touch_brand t ON t.brand_id = b.brand_id " . "WHERE is_show = 1 " . "GROUP BY b.brand_id , b.sort_order order by b.sort_order ASC LIMIT $start , $size";
         $res = $this->query($sql);
         $arr = array();
         foreach ($res as $row) {
@@ -123,6 +123,17 @@ class BrandModel extends BaseModel {
         }
         $res = $this->row($sql);
         return $res['count'];
+    }
+    
+    /**
+     * 获得品牌数量
+     *
+     */
+    function get_brands_count() {
+        $sql = "SELECT count(*) as num FROM " . $this->pre . "brand b LEFT JOIN  " . $this->pre . "touch_brand t ON t.brand_id = b.brand_id " . "WHERE is_show = 1 ";
+        $res = $this->row($sql);
+        $sales_count = $res['num'] ? $res['num'] : 0;
+        return $sales_count;
     }
 
 }
