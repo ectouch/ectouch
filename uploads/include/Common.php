@@ -957,7 +957,9 @@ function load_file($file) {
  */
 function E($msg, $code = 0) {
     //throw new Exception($msg, $code);
-    exit($msg);
+    //exit($msg);
+    include(ROOT_PATH. '404.html');
+    exit();
 }
 
 /**
