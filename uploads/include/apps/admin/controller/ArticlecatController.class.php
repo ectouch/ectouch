@@ -96,5 +96,35 @@ class ArticlecatController extends AdminController {
         $this->assign('ur_here', L('articlecat_edit'));
         $this->display();
     }
+    
+    /**
+     * 删除文章分类
+     */
+    public function del(){
+        
+        $id = I('get.cat_id');
+        
+        $count = $this->model->table('touch_article_cat')->field('COUNT(*)')->where("parent_id = '$id'")->getOne();
+       
+        if ($count > 0)
+        {
+            /* 还有子分类，不能删除 */
+            $this->message(L('is_fullcat'), url('index'));
+        }
+
+        /* 非空的分类不允许删除 */
+        $count = $this->model->table('touch_article')->field('COUNT(*)')->where("cat_id = '$id'")->getOne();
+        if ($count > 0)
+        {
+            $this->message(L('not_emptycat'), url('index'));
+        }
+        else
+        {            
+            $condition['cat_id'] = $id;
+            $this->model->table('touch_article_cat')->where($condition)->delete();
+            clear_all_files();
+            $this->message(L('drop_succeed'), url('index'));
+        }
+    }
 
 }

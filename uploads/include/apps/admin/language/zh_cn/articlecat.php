@@ -40,8 +40,8 @@ $_LANG['articlecat_edit'] = '文章分类编辑';
 
 
 /* 提示信息 */
-$_LANG['catname_exist'] = '分类名 %s 已经存在';
-$_LANG['parent_id_err'] = '分类名 %s 的父分类不能设置成本身或本身的子分类';
+$_LANG['catname_exist'] = '分类名已经存在';
+$_LANG['parent_id_err'] = '分类名的父分类不能设置成本身或本身的子分类';
 $_LANG['back_list'] = '返回分类列表';
 $_LANG['continue_add'] = '继续添加新分类';
 $_LANG['catadd_succed'] = '已成功添加';
@@ -52,6 +52,7 @@ $_LANG['no_catname'] = '请填入分类名';
 $_LANG['edit_fail'] = '编辑失败';
 $_LANG['enter_int'] = '请输入一个整数';
 $_LANG['not_emptycat'] = '分类下还有文章，不允许删除非空分类';
+$_LANG['drop_succeed'] = '已成功删除！';
 
 /* 帮助信息 */
 $_LANG['notice_keywords'] = '关键字为选填项，其目的在于方便外部搜索引擎搜索';
