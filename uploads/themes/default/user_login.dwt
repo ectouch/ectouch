@@ -13,7 +13,7 @@
        <li>
           <div class="input-text code"><b>{$lang.comment_captcha}</b><span>
              <input name="captcha" type="text" placeholder="{$lang.comment_captcha}">
-             </span><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm pull-right" onClick="this.src='{:url('public/captcha', array('t'=>'Math.random()'))}'" /></div>
+             </span><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm pull-right" onClick="this.src='{:url('public/captcha')}&t='+Math.random()" /></div>
             </li>
             <!--{/if}-->
       </ul>
