@@ -102,7 +102,7 @@ class UsersModel extends BaseModel {
      *
      * @return  bool         $bool
      */
-    function register($username, $password, $email, $other = array()) {
+    function register($username, $password, $email, $other = array(), $rand) {
         /* 检查注册是否关闭 */
         $shop_reg_closed = C('shop_reg_closed');
         if (!empty($shop_reg_closed)) {
@@ -1807,6 +1807,44 @@ class UsersModel extends BaseModel {
         $this->table = 'users';
         $condition['user_name'] = $user_name;
         return $this->count($condition);
+    }
+    
+    /**
+     * 查询会员账户明细
+     * @access  public
+     * @param   int     $user_id    会员ID
+     * @param   int     $num        每页显示数量
+     * @param   int     $start      开始显示的条数
+     * @return  array
+     */
+    public function get_account_detail($user_id, $num, $start) {
+        
+        // 获取余额记录
+        $account_log = array();
+        
+        $sql = 'SELECT * FROM ' . $this->pre . "account_log WHERE user_id = " . $user_id . ' AND user_money <> 0' .
+        " ORDER BY log_id DESC limit " . $start . ',' . $num;
+        $res = $this->query($sql);
+        
+        if (empty($res)) {
+            return array();
+            exit;
+        }
+        
+        foreach ($res as $k => $v) {
+            $res[$k]['change_time'] = local_date(C('date_format'), $v['change_time']);
+            $res[$k]['type'] = $v['user_money'] > 0 ? L('account_inc') : L('account_dec');
+            $res[$k]['user_money'] = price_format(abs($v['user_money']), false);
+            $res[$k]['frozen_money'] = price_format(abs($v['frozen_money']), false);
+            $res[$k]['rank_points'] = abs($v['rank_points']);
+            $res[$k]['pay_points'] = abs($v['pay_points']);
+            $res[$k]['short_change_desc'] = sub_str($v['change_desc'], 60);
+            $res[$k]['amount'] = $v['user_money'];
+        }
+        
+        return $res;
+        
+       
     }
 
 }

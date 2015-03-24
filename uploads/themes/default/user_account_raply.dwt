@@ -1,0 +1,46 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+<ul class="nav nav-tabs" role="tablist">
+    <li><a href="{:url('User/account_detail')}" >{$lang.add_surplus_log}</a></li>
+    <li><a href="{:url('User/account_log')}" >{$lang.view_application}</a></li>
+	<li><a href="{:url('User/account_deposit')}" >{$lang.surplus_type_0}</a></li>
+	<li class="active"><a href="{:url('User/account_raply')}" >{$lang.surplus_type_1}</a></li>
+  </ul>
+<form action="{:url('user/act_account')}" method="post" name="theForm" >
+  <div class="ect-bg-colorf flow-consignee">
+    <ul class="o-info">
+      <li>
+        <div class="input-text"><b class="pull-left">{$lang.repay_money}：</b><span>
+          <input name="amount" placeholder="{$lang.repay_money}" type="text" class="inputBg_touch" value="" />
+          </span></div>
+      </li>
+     
+      <li class="input-text"><b class="pull-left">{$lang.process_notic}：</b>
+        <textarea name="user_note" placeholder="{$lang.process_notic}" type="text">{$order.user_note|escape}</textarea>
+      </li>
+    </ul>
+  </div>
+  <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center">
+  <input type="hidden" name="surplus_type" value="1" />
+    <input type="submit" name="submit"  class="btn btn-info"  value="{$lang.submit_request}"/>
+    <input type="reset" name="submit"  class="btn btn-info ect-bg-colory"  value="{$lang.button_reset}"/>
+  </div>
+</form>
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript" src="__PUBLIC__/js/region.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/shopping_flow.js"></script> 
+<script type="text/javascript">
+	region.isAdmin = false;
+	{foreach from=$lang.flow_js item=item key=key}
+	var {$key} = "{$item}";
+	{/foreach}
+	{literal}
+	onload = function() {
+	      if (!document.all)
+	      {
+	        document.forms['theForm'].reset();
+	      }
+	}
+	{/literal}
+</script>
+</body></html>

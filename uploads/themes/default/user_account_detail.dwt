@@ -1,4 +1,11 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href="{:url('User/account_detail')}" >{$lang.add_surplus_log}</a></li>
+    <li><a href="{:url('User/account_log')}" >{$lang.view_application}</a></li>
+	<li><a href="{:url('User/account_deposit')}" >{$lang.surplus_type_0}</a></li>
+	<li><a href="{:url('User/account_raply')}" >{$lang.surplus_type_1}</a></li>
+  </ul>
+  
  <div class="user-account-detail">
   	<ul class=" ect-bg-colorf">
      <!--{foreach from=$account_log item=item}-->
@@ -8,8 +15,9 @@
         </li>
 <!--{/foreach}-->
     </ul>
-    <p class="pull-right count">{$lang.current_surplus}<b class="ect-colory">{$surplus_amount}</b></p>
+    <p class="pull-right count" style="background-color: bisque;">{$lang.current_surplus}<b class="ect-colory">{$surplus_amount}</b></p>
   </div>
+   {include file='library/page.lbi '}
 </div>
 <!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
