@@ -290,6 +290,8 @@ class ClipsBaseModel extends BaseModel {
         $data['tel'] = $booking['tel'];
         $data['goods_id'] = $booking['goods_id'];
         $data['goods_desc'] = $booking['desc'];
+        $data['goods_number'] = $booking['goods_amount'];
+        $data['booking_time'] = gmtime();
         return $this->insert($data);
     }
 
@@ -384,12 +386,11 @@ class ClipsBaseModel extends BaseModel {
      */
     public function get_online_payment_list($include_balance = true) {
         $sql = 'SELECT pay_id, pay_code, pay_name, pay_fee, pay_desc ' .
-                'FROM ' . $this->pre . "payment WHERE enabled = 1 AND is_cod <> 1";
+                'FROM ' . $this->pre . "touch_payment WHERE enabled = 1 AND is_cod <> 1";
         if (!$include_balance) {
             $sql .= " AND pay_code <> 'balance' ";
         }
-
-        $modules = $this->select($sql);
+        $modules = M()->query($sql);
         //支付插件排序
         if (isset($modules)) {
             /* 将财付通提升至第二个显示 */
@@ -455,14 +456,14 @@ class ClipsBaseModel extends BaseModel {
                 }
 
                 /* 支付方式的ID */
-                $this->table = 'payment';
+                $this->table = 'touch_payment';
                 $condition['pay_name'] = $vo['payment'];
                 $condition['enabled'] = 1;
                 $pid = $this->field('pay_id', $condition);
 
                 /* 如果是预付款而且还没有付款, 允许付款 */
                 if (($vo['is_paid'] == 0) && ($vo['process_type'] == 0)) {
-                    $vo['handle'] = '<a href="' . url('user/pay') . '&id=' . $vo['id'] . '&pid=' . $pid . '">' . L('pay') . '</a>';
+                    $vo['handle'] = '<a href="' . url('user/pay') . '&id=' . $vo['id'] . '&pid=' . $pid . '" class="btn btn-default">' . L('pay') . '</a>';
                 }
 
                 $account_log[] = $vo;
