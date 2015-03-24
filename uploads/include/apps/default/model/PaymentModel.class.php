@@ -155,8 +155,7 @@ class PaymentModel extends BaseModel {
 
                     /* 如果需要，发短信 */
                     if (C('sms_order_payed') == '1' && C('sms_shop_mobile') != '') {
-                        include_once(ROOT_PATH . 'includes/cls_sms.php');
-                        $sms = new sms();
+                        $sms = new EcsSms();
                         $sms->send(C('sms_shop_mobile'), sprintf(L('order_payed_sms'), $order_sn, $order['consignee'], $order['mobile']), '', 13, 1);
                     }
 

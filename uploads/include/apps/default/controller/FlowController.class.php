@@ -144,7 +144,8 @@ class FlowController extends CommonController {
             'error' => 0,
             'message' => '',
             'content' => '',
-            'goods_id' => ''
+            'goods_id' => '',
+            'product_spec' => ''
         );
 
         if (empty($_POST ['goods'])) {
@@ -153,6 +154,8 @@ class FlowController extends CommonController {
         }
         $json = new EcsJson;
         $goods = $json->decode($_POST ['goods']);
+        $result['goods_id'] = $goods->goods_id;
+        $result['product_spec'] = $goods->spec;
         // 检查：如果商品有规格，而post的数据没有规格，把商品的规格属性通过JSON传到前台
         if (empty($goods->spec) and empty($goods->quick)) {
             $sql = "SELECT a.attr_id, a.attr_name, a.attr_type, " . "g.goods_attr_id, g.attr_value, g.attr_price " . 'FROM ' . $this->model->pre . 'goods_attr AS g ' . 'LEFT JOIN ' . $this->model->pre . 'attribute AS a ON a.attr_id = g.attr_id ' . "WHERE a.attr_type != 0 AND g.goods_id = '" . $goods->goods_id . "' " . 'ORDER BY a.sort_order, g.attr_price, g.goods_attr_id';
@@ -196,6 +199,9 @@ class FlowController extends CommonController {
             if ($arrGoods ['goods_number'] < $goodsnmber) {
                 $result['error'] = 1;
                 $result['message'] = sprintf(L('stock_insufficiency'), $arrGoods ['goods_name'], $arrGoods ['goods_number'], $arrGoods ['goods_number']);
+                if (C('use_how_oos') == 1){
+                    $result['message'] =L('oos_tips');
+                }
                 die(json_encode($result));
             }
         }
@@ -1371,7 +1377,7 @@ class FlowController extends CommonController {
             $this->assign('payment_list', $payment_list);
             $this->assign('pay_code', 'no_balance');
         }
-
+        
         /* 订单信息 */
         $this->assign('order', $order);
         $this->assign('total', $total);

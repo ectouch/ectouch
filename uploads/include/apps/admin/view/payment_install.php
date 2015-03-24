@@ -13,6 +13,13 @@
             </div>
           </td>
         </tr>
+        <tr>
+          <td>{$lang['payment_desc']}:</td>
+          <td><div class="col-md-4">
+              <textarea  name="data[pay_desc]" class="form-control input-sm" rows="3" >{$pay['pay_desc']}</textarea>
+            </div>
+          </td>
+        </tr>
         {loop $pay['pay_config'] $key $vo}
         <tr>
           <td>{$vo['label']}</td>
@@ -20,7 +27,7 @@
               {if $vo['type'] == 'text'}
               <input name="cfg_value[]" rows="6" class="form-control input-sm" type="text" value="{$vo['value']}" />
               {elseif $vo['type'] == 'textarea'}
-              <textarea name="cfg_value[]">{$vo['value']}</textarea>
+              <textarea name="cfg_value[]" class="form-control" rows="3">{$vo['value']}</textarea>
               {elseif $vo['type'] == 'select'}
               <select name="cfg_value[]" class="form-control input-sm">
               {loop $vo['range'] $k $v}
@@ -89,7 +96,6 @@
       			<input type="hidden"  name="data[pay_code]" value="{$pay['pay_code']}" />
       			<input type="hidden"  name="data[is_cod]" value="{$pay['is_cod']}" />
       			<input type="hidden"  name="data[is_online]" value="{$pay['is_online']}" />
-      			<input type="hidden"  name="data[pay_desc]" value="{$pay['pay_desc']}" />
               	<input type="submit" value="{$lang['button_submit']}" class="btn btn-primary" />
               	<input type="reset" value="{$lang['button_reset']}" class="btn btn-default" />
             </div></td>
