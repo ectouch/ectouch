@@ -199,7 +199,7 @@ var second = "秒";
 var end = "结束";
 var goodsId = {$goods_id};
 var now_time = {$now_time};
-
+var use_how_oos = {:C('use_how_oos')};
 onload = function(){
   changePrice(2);
   fixpng();

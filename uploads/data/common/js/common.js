@@ -1025,11 +1025,15 @@ function addToCartResponse_quick(result) {
         // 如果需要缺货登记，跳转
 
         if (result.error == 1) {
-            alert(result.message);
-//			if (confirm(result.message)) {
-//				location.href = 'index.php?m=default&c=user&a=add_booking&id='
-//						+ result.goods_id + '&spec=' + result.product_spec;
-//			}
+			if(use_how_oos == 1){
+        		if (confirm(result.message)) {
+    				location.href = 'index.php?m=default&c=user&a=add_booking&id='
+    						+ result.goods_id + '&spec=' + result.product_spec;
+    			}
+        	}else{
+        		alert(result.message);
+        	}
+			
         }
         // 没选规格，弹出属性选择框
         else if (result.error == 6) {
