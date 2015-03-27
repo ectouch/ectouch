@@ -713,4 +713,6 @@ $_LANG['passwd_questions']['interest']        = '我最大的爱好？';
 $_LANG['passwd_questions']['favorite_novel']  = '我最喜欢的小说？';
 $_LANG['passwd_questions']['favorite_equipe'] = '我最喜欢的运动队？';
 
+$_LANG['can_not_empty'] = '不能为空';
+
 ?>

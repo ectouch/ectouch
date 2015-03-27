@@ -1378,6 +1378,15 @@ class FlowController extends CommonController {
             $this->assign('pay_code', 'no_balance');
         }
         
+        // 如果是银行汇款或货到付款 则显示支付描述
+        
+        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'balance'){
+            if (!empty($order ['pay_name'])) {
+                $order ['pay_name'] = trim(stripcslashes($payment ['pay_name']));
+            }
+            $this->assign('pay_desc',$payment['pay_desc']);
+        }
+        
         /* 订单信息 */
         $this->assign('order', $order);
         $this->assign('total', $total);

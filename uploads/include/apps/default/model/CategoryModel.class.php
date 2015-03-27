@@ -47,14 +47,16 @@ class CategoryModel extends BaseModel {
      * @param string $children 
      * @param unknown $brand 
      */
-    function category_get_count($children,$brand, $type, $min, $max, $ext) {
-        $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 AND ($children OR " . model('Goods')->get_extension_goods($children) . ')';
-        if ($brand > 0) {
-            $where .= " AND g.brand_id=$brand ";
+    function category_get_count($children,$brand, $type, $min, $max, $ext, $keyword) {
+        
+        $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 ";
+        if ($keyword != '') {
+            $where .= " AND (( 1 " . $keyword . " ) ) ";
+        } else {
+            $where.=" AND ($children OR " . model('Goods')->get_extension_goods($children) . ') ';
         }
-        if($type){
-            switch ($type)
-            {
+        if ($type) {
+            switch ($type) {
                 case 'best':
                     $where .= ' AND g.is_best = 1';
                     break;
@@ -65,19 +67,24 @@ class CategoryModel extends BaseModel {
                     $where .= ' AND g.is_hot = 1';
                     break;
                 case 'promotion':
-                    $time    = gmtime();
+                    $time = gmtime();
                     $where .= " AND g.promote_price > 0 AND g.promote_start_date <= '$time' AND g.promote_end_date >= '$time'";
                     break;
                 default:
                     $where .= '';
             }
         }
-        if($min > 0) {
+        if ($this->brand > 0) {
+            $where .= "AND g.brand_id=$this->brand ";
+        }
+        if ($min > 0) {
             $where .= " AND g.shop_price >= $min ";
         }
         if ($max > 0) {
-            $where .= " AND g.shop_price <= $max ";
+            $where .= " AND g.shop_price <= $max";
         }
+        
+      
         $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre . 'goods AS g ' . ' LEFT JOIN ' . $this->pre . 'touch_goods AS xl ' . ' ON g.goods_id=xl.goods_id ' . ' LEFT JOIN ' . $this->pre . 'member_price AS mp ' . "ON mp.goods_id = g.goods_id AND mp.user_rank = '$_SESSION[user_rank]' " . "WHERE $where $ext ";
         $res = $this->row($sql);
         return $res['count'];

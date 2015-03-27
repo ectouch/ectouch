@@ -551,7 +551,7 @@ class UsersModel extends BaseModel {
                 "(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax - discount) AS total_fee " .
                 " FROM " . $this->pre .
                 "order_info WHERE user_id = '$user_id' " . $pay . " ORDER BY add_time DESC LIMIT $start , $num";
-        $res = $this->query($sql, $num, $start);
+        $res = M()->query($sql);
         foreach ($res as $key => $value) {
             if ($value['order_status'] == OS_UNCONFIRMED) {
                 $value['handler'] = "<a href=\"" . url('user/cancel_order', array('order_id' => $value['order_id'])) . "\" onclick=\"if (!confirm('" . L('confirm_cancel') . "')) return false;\">" . L('cancel') . "</a>";
