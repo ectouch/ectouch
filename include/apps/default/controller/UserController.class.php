@@ -1756,6 +1756,9 @@ class UserController extends CommonController {
                 ECTouch::err()->show(L('sign_up'), url('register'));
             }
             
+            
+          
+            
             /*把新注册用户的扩展信息插入数据库*/
             $sql = 'SELECT id,is_need,reg_field_name FROM ' . M()->pre . 'reg_fields' . ' WHERE display = 1 ORDER BY dis_order, id';   //读出所有自定义扩展字段的id
             $fields_arr = M()->query($sql);
@@ -1770,7 +1773,27 @@ class UserController extends CommonController {
                     }
                 }
             }
+            
+
+            
+            
+            
             if (model('Users')->register($username, $password, $email, $other , C('send_type_rand') !== false) !== false) {
+                
+
+                $sel_question = I('post.sel_question');
+                $passwd_answer = I('post.passwd_answer');
+                
+                // 写入密码提示问题和答案
+                if (!empty($passwd_answer) && !empty($sel_question)) {
+                    $where_up['user_id'] = $_SESSION['user_id'];
+                    $data_up['passwd_question'] = $sel_question;
+                    $data_up['passwd_answer'] = $passwd_answer;
+                    $this->model->table('users')
+                    ->data($data_up)
+                    ->where($where_up)
+                    ->update();
+                }
                 
                 /*把新注册用户的扩展信息插入数据库*/
                 $sql = 'SELECT id,is_need,reg_field_name FROM ' . M()->pre . 'reg_fields' . ' WHERE  display = 1 ORDER BY dis_order, id';   //读出所有自定义扩展字段的id
