@@ -20,6 +20,32 @@
                 <input placeholder="{$lang.no_mobile}" name="mobile" id="mobile_phone" type="text">
                 </span></div>
             </li>
+			<!-- {foreach from=$extend_info_list item=field} -->
+			<!-- {if $field.id eq 6} -->
+			<li>
+        <div class="form-select"> <i class="fa fa-sort"></i>
+          <select name="sel_question">
+            <option value='0'>{$lang.sel_question}</option>
+            
+            {html_options options=$passwd_questions selected=$field.passwd_question}
+          
+          </select>
+        </div>
+      </li>
+      <li>
+        <div class="input-text"><b class="pull-left">{$lang.passwd_answer}:</b> <span>
+          <input placeholder="{$lang.passwd_answer}" name="passwd_answer" type="text" value="{$profile.passwd_answer}" />
+          </span></div>
+      </li>
+			<!-- {else} -->
+			<li <!-- {if $field.is_need} -->id="extend_field{$field.id}i"<!--{/if}-->>
+				<div class="input-text"><b>{$field.reg_field_name}：</b>
+				<span>
+					<input name="extend_field{$field.id}" type="text" size="25" class="inputBg" /><!-- {if $field.is_need} --><font style="color:#FF0000;float:right"> *</font><!-- {/if} -->
+                </span></div>
+			</li>
+			<!-- {/if} -->
+			<!-- {/foreach} -->
             <li>
               <div class="input-text code"><b>{$lang.code}：</b><span>
                 <input placeholder="{$lang.no_code}" name="mobile_code" id="mobile_code" type="text">
@@ -43,7 +69,7 @@
     <script type="text/javascript" src="__PUBLIC__/js/sms.js"></script> 
     <!--{/if}-->
     <div class="tab-pane" id="two">
-      <form action="{:url('user/register')}" method="post" name="formUser" class="validforms">
+      <form action="{:url('user/register')}" method="post" name="formUser" class="validforms" >
         <input type="hidden" name="flag" id="flag" value="register" />
         <div class="flow-consignee ect-bg-colorf">
           <ul>
@@ -63,6 +89,35 @@
                 <input placeholder="{$lang.no_password}" class="inputBg" id="password_text" type="text" style="display:none;">
                 </span><i class="glyphicon glyphicon-eye-open" onClick="clickText();"></i></div>
             </li>
+			
+			<!-- {foreach from=$extend_info_list item=field} -->
+			<!-- {if $field.id eq 6} -->
+			<li>
+        <div class="form-select"> <i class="fa fa-sort"></i>
+          
+		  <select name='sel_question'>
+		  	<option value='0'>{$lang.sel_question}</option>
+                  {foreach from=$password_question key=key item=question}
+   					 <option value="{$key}">{$question}</option>
+                  {/foreach}
+                </select>
+        </div>
+      </li>
+      <li>
+        <div class="input-text"><b class="pull-left">{$lang.passwd_answer}:</b> <span>
+          <input placeholder="{$lang.passwd_answer}" name="passwd_answer" type="text" value="{$profile.passwd_answer}" />
+          </span></div>
+      </li>
+			<!-- {else} -->
+			<li>
+				<div class="input-text"><b>{$field.reg_field_name}：</b>
+				<span>
+					<input name="extend_field{$field.id}" type="text" size="25" class="inputBg" /><!-- {if $field.is_need} --><font style="color:#FF0000;float:right"> *</font><!-- {/if} -->
+                </span></div>
+			</li>
+			<!-- {/if} -->
+			<!-- {/foreach} -->
+			
              <!-- 判断是否启用验证码{if $enabled_captcha} -->
             <li>
               <div class="input-text code"><b>{$lang.code}：</b><span>
@@ -88,7 +143,7 @@
 </div>
 <!--  {/if} -->
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
 <script type="text/javascript">
 /*点击更换密码框为文本框*/
 function clickText(){

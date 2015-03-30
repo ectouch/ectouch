@@ -514,7 +514,7 @@ class UserController extends CommonController {
 		$this->assign('show_asynclist', C('show_asynclist'));
         $count = $this->model->table('order_info')->where('user_id = ' . $this->user_id)->count();
         $filter['page'] = '{page}';
-        $offset = $this->pageLimit(url('not_pay_order_list', $filter), $size);
+        $offset = $this->pageLimit(url('order_list', $filter), $size);
         $offset_page = explode(',', $offset);
         $orders = model('Users')->get_user_orders($this->user_id, $pay, $offset_page[1], $offset_page[0]);
         $this->assign('pay', $pay);
@@ -1770,7 +1770,7 @@ class UserController extends CommonController {
                     }
                 }
             }
-            if (model('Users')->register($username, $password, $email, $other) !== false) {
+            if (model('Users')->register($username, $password, $email, $other , C('send_type_rand') !== false) !== false) {
                 
                 /*把新注册用户的扩展信息插入数据库*/
                 $sql = 'SELECT id,is_need,reg_field_name FROM ' . M()->pre . 'reg_fields' . ' WHERE  display = 1 ORDER BY dis_order, id';   //读出所有自定义扩展字段的id
@@ -1833,6 +1833,9 @@ class UserController extends CommonController {
         }
         $this->assign('extend_info_list', $extend_info_list);
 
+         // 密码提示问题
+        $this->assign('password_question', L('passwd_questions'));
+        
         // 注册页面显示
 
         if (empty($this->back_act) && isset($GLOBALS['_SERVER']['HTTP_REFERER'])) {
