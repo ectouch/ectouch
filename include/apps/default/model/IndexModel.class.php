@@ -54,7 +54,7 @@ class IndexModel extends CommonModel {
             $goods[$key]['shop_price'] = price_format($vo['shop_price']);
             $goods[$key]['thumb'] = get_image_path($vo['goods_id'], $vo['goods_thumb'], true);
             $goods[$key]['goods_img'] = get_image_path($vo['goods_id'], $vo['goods_img']);
-            $goods[$key]['url'] = build_uri('goods/index', array('id' => $vo['goods_id']));
+            $goods[$key]['url'] = url('goods/index', array('id' => $vo['goods_id']));
             $goods[$key]['sales_count'] = model('GoodsBase')->get_sales_count($vo['goods_id']);
             $goods[$key]['sc'] = model('GoodsBase')->get_goods_collect($vo['goods_id']);
             $goods[$key]['mysc'] = 0;
@@ -118,7 +118,7 @@ class IndexModel extends CommonModel {
             $goods[$idx]['shop_price'] = price_format($row['shop_price']);
             $goods[$idx]['thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
             $goods[$idx]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);
-            $goods[$idx]['url'] = build_uri('goods/index', array('id' => $row['goods_id']));
+            $goods[$idx]['url'] = url('goods/index', array('id' => $row['goods_id']));
         }
 
         return $goods;
@@ -132,9 +132,15 @@ class IndexModel extends CommonModel {
     function get_recommend_res() {
         $cat_recommend_res = $this->query("SELECT c.cat_id, c.cat_name, cr.recommend_type FROM " . $this->pre . "cat_recommend AS cr INNER JOIN " . $this->pre . "category AS c ON cr.cat_id=c.cat_id");
         if (!empty($cat_recommend_res)) {
-            $cat_rec_array = array();
+            $cat_rec = array();
             foreach ($cat_recommend_res as $cat_recommend_data) {
-                $cat_rec[$cat_recommend_data['recommend_type']][] = array('cat_id' => $cat_recommend_data['cat_id'], 'cat_name' => $cat_recommend_data['cat_name'], 'url' => url('category/index', array('id' => $cat_recommend_data['cat_id'])), 'cat_id' => model('Category')->get_parent_id_tree($cat_recommend_data['cat_id']), 'goods_list' => model('Category')->assign_cat_goods($cat_recommend_data['cat_id'],3));
+                $cat_rec[$cat_recommend_data['recommend_type']][] = array(
+                    'cat_id' => $cat_recommend_data['cat_id'], 
+                    'cat_name' => $cat_recommend_data['cat_name'],
+                    'url' => url('category/index', array('id' => $cat_recommend_data['cat_id'])), 
+                    'child_id' => model('Category')->get_parent_id_tree($cat_recommend_data['cat_id']), 
+                    'goods_list' => model('Category')->assign_cat_goods($cat_recommend_data['cat_id'],3)
+                );
             }
             return $cat_rec;
         }

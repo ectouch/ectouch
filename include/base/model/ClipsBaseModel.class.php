@@ -56,7 +56,7 @@ class ClipsBaseModel extends BaseModel {
                 $goods_list[$row['goods_id']]['market_price'] = price_format($row['market_price']);
                 $goods_list[$row['goods_id']]['shop_price'] = price_format($row['shop_price']);
                 $goods_list[$row['goods_id']]['promote_price'] = ($promote_price > 0) ? price_format($promote_price) : '';
-                $goods_list[$row['goods_id']]['url'] = build_uri('goods/index', array('id' => $row['goods_id']));
+                $goods_list[$row['goods_id']]['url'] = url('goods/index', array('id' => $row['goods_id']));
             }
         }
 
@@ -227,7 +227,7 @@ class ClipsBaseModel extends BaseModel {
                     'goods_number' => $vo['goods_number'],
                     'booking_time' => local_date(C('date_format'), $vo['booking_time']),
                     'dispose_note' => $vo['dispose_note'],
-                    'url' => build_uri('goods/index', array('id' => $vo['goods_id'])));
+                    'url' => url('goods/index', array('id' => $vo['goods_id'])));
             }
         }
 

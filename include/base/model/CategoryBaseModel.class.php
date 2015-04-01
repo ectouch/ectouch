@@ -53,8 +53,8 @@ class CategoryBaseModel extends BaseModel {
                 if ($row['is_show']) {
                     $cat_arr[$row['cat_id']]['id'] = $row['cat_id'];
                     $cat_arr[$row['cat_id']]['name'] = $row['cat_name'];
-                    $cat_arr[$row['cat_id']]['cat_image'] = empty($row['cat_image']) ? C('no_picture') : $row['cat_image'];
-                    $cat_arr[$row['cat_id']]['url'] = build_uri('category/index', array('id' => $row['cat_id']));
+                    $cat_arr[$row['cat_id']]['cat_image'] = get_image_path($row['cat_image'],false);
+                    $cat_arr[$row['cat_id']]['url'] = url('category/index', array('id' => $row['cat_id']));
 
                     if (isset($row['cat_id']) != NULL) {
                         $cat_arr[$row['cat_id']]['cat_id'] = $this->get_child_tree($row['cat_id']);
@@ -80,8 +80,8 @@ class CategoryBaseModel extends BaseModel {
                 if ($row['is_show'])
                     $three_arr[$row['cat_id']]['id'] = $row['cat_id'];
                 $three_arr[$row['cat_id']]['name'] = $row['cat_name'];
-                $three_arr[$row['cat_id']]['cat_image'] = empty($row['cat_image']) ? __PUBLIC__ . '/' . C('no_picture') : $row['cat_image'];
-                $three_arr[$row['cat_id']]['url'] = build_uri('category/index', array('id' => $row['cat_id']));
+                $three_arr[$row['cat_id']]['cat_image'] = get_image_path($row['cat_image'],false);
+                $three_arr[$row['cat_id']]['url'] = url('category/index', array('id' => $row['cat_id']));
 
                 if (isset($row['cat_id']) != NULL) {
                     $three_arr[$row['cat_id']]['cat_id'] = $this->get_child_tree($row['cat_id']);
@@ -106,8 +106,8 @@ class CategoryBaseModel extends BaseModel {
             if ($row['is_show']) {
                 $cat_arr[$row['cat_id']]['id'] = $row['cat_id'];
                 $cat_arr[$row['cat_id']]['name'] = $row['cat_name'];
-                $cat_arr[$row['cat_id']]['cat_image'] = empty($row['cat_image']) ? __PUBLIC__ . '/' . C('no_picture') : $row['cat_image'];
-                $cat_arr[$row['cat_id']]['url'] = build_uri('category/index', array('id' => $row['cat_id']));
+                $cat_arr[$row['cat_id']]['cat_image'] = get_image_path($row['cat_image'],false);
+                $cat_arr[$row['cat_id']]['url'] = url('category/index', array('id' => $row['cat_id']));
             }
         }
         return $cat_arr;
@@ -162,7 +162,7 @@ class CategoryBaseModel extends BaseModel {
         for ($i = 0, $count = count($arr); $i < $count; $i++) {
             $arr[$i]['short_name'] = C('goods_name_length') > 0 ?
                     sub_str($arr[$i]['goods_name'], C('goods_name_length')) : $arr[$i]['goods_name'];
-            $arr[$i]['url'] = build_uri('goods/index', array('id' => $arr[$i]['goods_id']));
+            $arr[$i]['url'] = url('goods/index', array('id' => $arr[$i]['goods_id']));
             $arr[$i]['thumb'] = get_image_path($arr[$i]['goods_id'], $arr[$i]['goods_thumb'], true);
             $arr[$i]['price'] = price_format($arr[$i]['shop_price']);
         }

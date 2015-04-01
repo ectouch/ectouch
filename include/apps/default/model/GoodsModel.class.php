@@ -209,7 +209,7 @@ class GoodsModel extends BaseModel {
                     $lnk[$key]['goods'][$row['goods_id']]['market_price'] = price_format($row['market_price']);
                     $lnk[$key]['goods'][$row['goods_id']]['shop_price'] = price_format($row['shop_price']);
                     $lnk[$key]['goods'][$row['goods_id']]['promote_price'] = bargain_price($row['promote_price'], $row['promote_start_date'], $row['promote_end_date']);
-                    $lnk[$key]['goods'][$row['goods_id']]['url'] = build_uri('goods/index', array('id' => $row['goods_id']));
+                    $lnk[$key]['goods'][$row['goods_id']]['url'] = url('goods/index', array('id' => $row['goods_id']));
                 }
             }
         }
@@ -264,7 +264,7 @@ class GoodsModel extends BaseModel {
             $goods[$idx]['shop_price'] = price_format($row['shop_price']);
             $goods[$idx]['thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
             $goods[$idx]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);
-            $goods[$idx]['url'] = build_uri('goods/index', array('id' => $row['goods_id']));
+            $goods[$idx]['url'] = url('goods/index', array('id' => $row['goods_id']));
         }
 
         if ($from == 'web') {
@@ -277,7 +277,7 @@ class GoodsModel extends BaseModel {
         $sql = 'SELECT cat_name FROM ' . $this->pre . "category WHERE cat_id = '$cat_id'";
         $result = $this->row($sql);
         $cat['name'] = $result['cat_name'];
-        $cat['url'] = build_uri('category/index', array('id' => $cat_id));
+        $cat['url'] = url('category/index', array('id' => $cat_id));
         $cat['id'] = $cat_id;
 
         return $cat;
@@ -330,7 +330,7 @@ class GoodsModel extends BaseModel {
             $goods[$idx]['brief'] = $value['goods_brief'];
             $goods[$idx]['thumb'] = get_image_path($value['goods_id'], $value['goods_thumb'], true);
             $goods[$idx]['goods_img'] = get_image_path($value['goods_id'], $value['goods_img']);
-            $goods[$idx]['url'] = build_uri('goods/index', array('id' => $value['goods_id']));
+            $goods[$idx]['url'] = url('goods/index', array('id' => $value['goods_id']));
 
             $idx++;
         }
@@ -341,7 +341,7 @@ class GoodsModel extends BaseModel {
         $brand['id'] = $brand_id;
         $result = $this->row($sql);
         $brand['name'] = $result['brand_name'];
-        $brand['url'] = build_uri('brand/index', array('bid' => $brand_id));
+        $brand['url'] = url('brand/index', array('bid' => $brand_id));
 
         $brand_goods = array('brand' => $brand, 'goods' => $goods);
 
@@ -454,7 +454,7 @@ class GoodsModel extends BaseModel {
             $arr[$temp_index]['shop_price'] = price_format($value['shop_price']); //配件原价格
             $arr[$temp_index]['goods_thumb'] = get_image_path($value['goods_id'], $value['goods_thumb'], true);
             $arr[$temp_index]['goods_img'] = get_image_path($value['goods_id'], $value['goods_img']);
-            $arr[$temp_index]['url'] = build_uri('goods/index', array('id' => $value['goods_id']));
+            $arr[$temp_index]['url'] = url('goods/index', array('id' => $value['goods_id']));
             $temp_index++;
         }
         return $arr;
@@ -495,7 +495,7 @@ class GoodsModel extends BaseModel {
                 $arr[$row['goods_id']]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);
                 $arr[$row['goods_id']]['market_price'] = price_format($row['market_price']);
                 $arr[$row['goods_id']]['shop_price'] = price_format($row['shop_price']);
-                $arr[$row['goods_id']]['url'] = build_uri('goods/index', array('id' => $row['goods_id']));
+                $arr[$row['goods_id']]['url'] = url('goods/index', array('id' => $row['goods_id']));
 
                 if ($row['promote_price'] > 0) {
                     $arr[$row['goods_id']]['promote_price'] = bargain_price($row['promote_price'], $row['promote_start_date'], $row['promote_end_date']);
@@ -563,7 +563,7 @@ class GoodsModel extends BaseModel {
         $res = $this->query($sql);
         $arr = array();
         foreach ($res as $row) {
-            $row ['url'] = $row ['open_type'] != 1 ? build_uri('article/index', array('id' => $row ['article_id'])) : trim($row ['file_url']);
+            $row ['url'] = $row ['open_type'] != 1 ? url('article/index', array('id' => $row ['article_id'])) : trim($row ['file_url']);
             $row ['add_time'] = local_date(C('date_format'), $row ['add_time']);
             $row ['short_title'] = C('article_title_length') > 0 ? sub_str($row ['title'], C('article_title_length')) : $row ['title'];
             $arr [] = $row;

@@ -138,7 +138,7 @@ function build_urhere($arr, $type = 'category') {
                 break;
         }
 
-        $str .= ' <code>&gt;</code> <a href="' . build_uri($type, $args) . '">' . htmlspecialchars($val['cat_name']) . '</a>';
+        $str .= ' <code>&gt;</code> <a href="' . url($type, $args) . '">' . htmlspecialchars($val['cat_name']) . '</a>';
     }
 
     return $str;
@@ -219,10 +219,10 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
             $pager['page_next'] = $url_format . $page_next;
             $pager['page_last'] = $url_format . $page_count;
         } else {
-            $pager['page_first'] = build_uri($app, array_merge($uri_args, array('page' => 1)));
-            $pager['page_prev'] = build_uri($app, array_merge($uri_args, array('page' => $page_prev)));
-            $pager['page_next'] = build_uri($app, array_merge($uri_args, array('page' => $page_next)));
-            $pager['page_last'] = build_uri($app, array_merge($uri_args, array('page' => $page_count)));
+            $pager['page_first'] = url($app, array_merge($uri_args, array('page' => 1)));
+            $pager['page_prev'] = url($app, array_merge($uri_args, array('page' => $page_prev)));
+            $pager['page_next'] = url($app, array_merge($uri_args, array('page' => $page_next)));
+            $pager['page_last'] = url($app, array_merge($uri_args, array('page' => $page_count)));
         }
         $pager['array'] = array();
 
@@ -261,14 +261,14 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
                 $pager['page_number'][$i] = $url_format . $i;
             }
         } else {
-            $pager['page_first'] = ($page - $_offset > 1 && $_pagenum < $page_count) ? build_uri($app, array_merge($uri_args, array('page' => 1))) : '';
-            $pager['page_prev'] = ($page > 1) ? build_uri($app, array_merge($uri_args, array('page' => $page_prev))) : '';
-            $pager['page_next'] = ($page < $page_count) ? build_uri($app, array_merge($uri_args, array('page' => $page_next))) : '';
-            $pager['page_last'] = ($_to < $page_count) ? build_uri($app, array_merge($uri_args, array('page' => $page_count))) : '';
+            $pager['page_first'] = ($page - $_offset > 1 && $_pagenum < $page_count) ? url($app, array_merge($uri_args, array('page' => 1))) : '';
+            $pager['page_prev'] = ($page > 1) ? url($app, array_merge($uri_args, array('page' => $page_prev))) : '';
+            $pager['page_next'] = ($page < $page_count) ? url($app, array_merge($uri_args, array('page' => $page_next))) : '';
+            $pager['page_last'] = ($_to < $page_count) ? url($app, array_merge($uri_args, array('page' => $page_count))) : '';
             $pager['page_kbd'] = ($_pagenum < $page_count) ? true : false;
             $pager['page_number'] = array();
             for ($i = $_from; $i <= $_to; ++$i) {
-                $pager['page_number'][$i] = build_uri($app, array_merge($uri_args, array('page' => $i)));
+                $pager['page_number'][$i] = url($app, array_merge($uri_args, array('page' => $i)));
             }
         }
     }

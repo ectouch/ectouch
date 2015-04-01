@@ -73,7 +73,7 @@ class TopicController extends CommonController {
                 $row['shop_price'] = '';
             }
 
-            $row['url'] = build_uri('goods/index', array('id' => $row['goods_id']), $row['goods_name']);
+            $row['url'] = url('goods/index', array('id' => $row['goods_id']));
             $row['goods_style_name'] = add_style($row['goods_name'], $row['goods_name_style']);
             $row['short_name'] = C('goods_name_length') > 0 ? sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
             $row['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);

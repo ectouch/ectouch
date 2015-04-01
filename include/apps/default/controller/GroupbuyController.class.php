@@ -97,7 +97,7 @@ class GroupbuyController extends CommonController {
             ecs_header("Location: ./\n");
             exit;
         }
-        $goods['url'] = build_uri('goods', array('gid' => $goods_id), $goods['goods_name']);
+        $goods['url'] = url('Goods/index', array('id' => $goods_id));
         $this->assign('gb_goods', $goods);
 
         /* 取得商品的规格 */

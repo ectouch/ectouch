@@ -162,7 +162,7 @@ class CategoryModel extends BaseModel {
             $goods[$idx]['shop_price'] = price_format($value['shop_price']);
             $goods[$idx]['thumb'] = get_image_path($value['goods_id'], $value['goods_thumb'], true);
             $goods[$idx]['goods_img'] = get_image_path($value['goods_id'], $value['goods_img']);
-            $goods[$idx]['url'] = build_uri('goods/index', array('id' => $value['goods_id']));
+            $goods[$idx]['url'] = url('goods/index', array('id' => $value['goods_id']));
 
             $goods[$idx]['short_style_name'] = add_style($goods[$idx]['short_name'], $value['goods_name_style']);
             $idx++;
@@ -270,7 +270,7 @@ class CategoryModel extends BaseModel {
                 if ($row['is_show']) {
                     $three_c_arr[$row['cat_id']]['id'] = $row['cat_id'];
                     $three_c_arr[$row['cat_id']]['name'] = $row['cat_name'];
-                    $three_c_arr[$row['cat_id']]['url'] = build_uri('category/index', array('id' => $row['cat_id']), $row['cat_name']);
+                    $three_c_arr[$row['cat_id']]['url'] = url('category/index', array('id' => $row['cat_id']));
                 }
             }
         }
@@ -324,7 +324,7 @@ class CategoryModel extends BaseModel {
             $goods[$idx]['shop_price'] = price_format($row['shop_price']);
             $goods[$idx]['thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
             $goods[$idx]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);
-            $goods[$idx]['url'] = build_uri('goods/index', array('id' => $row['goods_id']), $row['goods_name']);
+            $goods[$idx]['url'] = url('goods/index', array('id' => $row['goods_id']));
         }
         return $goods;
     }

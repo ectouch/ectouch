@@ -62,7 +62,7 @@ class SnatchModel extends BaseModel {
             $goods['formated_promote_price'] = ($promote_price > 0) ? price_format($promote_price) : '';
             $goods['goods_thumb'] = get_image_path($goods['goods_id'], $goods['goods_thumb'], true);
             $goods['goods_img'] = get_image_path($goods['goods_id'], $goods['goods_img'], true);
-            $goods['url'] = build_uri('goods', array('gid' => $goods['goods_id']), $goods['goods_name']);
+            $goods['url'] = url('goods/index', array('id' => $goods['goods_id']));
             $goods['start_time'] = local_date(C('time_format'), $goods['start_time']);
 
             $info = unserialize($goods['ext_info']);

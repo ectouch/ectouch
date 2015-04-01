@@ -53,7 +53,7 @@ class ArticleBaseModel extends BaseModel {
                 $arr[$article_id]['title'] = $vo['title'];
                 $arr[$article_id]['short_title'] = C('article_title_length') > 0 ? sub_str($vo['title'], C('article_title_length')) : $vo['title'];
                 $arr[$article_id]['author'] = empty($vo['author']) || $vo['author'] == '_SHOPHELP' ? C('shop_name') : $vo['author'];
-                $arr[$article_id]['url'] = $vo['open_type'] != 1 ? build_uri('article/info', array('aid' => $article_id)) : trim($vo['file_url']);
+                $arr[$article_id]['url'] = $vo['open_type'] != 1 ? url('article/info', array('aid' => $article_id)) : trim($vo['file_url']);
                 $arr[$article_id]['add_time'] = date(C('date_format'), $vo['add_time']);
                 $i++;
             }
@@ -165,8 +165,8 @@ class ArticleBaseModel extends BaseModel {
             return $select;
         } else {
             foreach ($options as $key => $value) {
-                $options[$key]['url'] = build_uri('article_cat/index', array(
-                    'acid' => $value['cat_id']
+                $options[$key]['url'] = url('article/index', array(
+                    'id' => $value['cat_id']
                 ));
             }
             return $options;

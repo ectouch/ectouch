@@ -1271,7 +1271,7 @@ function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_s
         return $select;
     } else {
         foreach ($options AS $key => $value) {
-            $options[$key]['url'] = build_uri('category/index', array('id' => $value['cat_id']));
+            $options[$key]['url'] = url('category/index', array('id' => $value['cat_id']));
         }
 
         return $options;
@@ -1458,6 +1458,7 @@ function price_format($price, $change_price = true) {
     if ($price === '') {
         $price = 0;
     }
+    $price = 0 + $price;//添加这一行，转换成数值
     if ($change_price && defined('ECS_ADMIN') === false) {
         switch (C('price_format')) {
             case 0:

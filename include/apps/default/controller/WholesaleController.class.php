@@ -243,7 +243,7 @@ class WholesaleController extends CommonController {
                 'subtotal' => $total,
                 'formated_goods_price' => price_format($goods['goods_price'], false),
                 'formated_subtotal' => price_format($total, false),
-                'goods_url' => build_uri('goods', array('gid' => $wholesale['goods_id']), $wholesale['goods_name']),
+                'goods_url' => url('goods/index', array('id' => $wholesale['goods_id'])),
             );
         }
         unset($goods_attr, $attr_id, $goods_list, $wholesale, $goods_attr_name);

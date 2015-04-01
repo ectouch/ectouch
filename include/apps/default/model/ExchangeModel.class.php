@@ -62,7 +62,7 @@ class ExchangeModel extends BaseModel {
             $arr[$row['goods_id']]['type'] = $row['goods_type'];
             $arr[$row['goods_id']]['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
             $arr[$row['goods_id']]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);
-            $arr[$row['goods_id']]['url'] = build_uri('exchange_goods', array('gid' => $row['goods_id']), $row['goods_name']);
+            $arr[$row['goods_id']]['url'] = url('exchange_goods', array('gid' => $row['goods_id']));
             $arr[$row['goods_id']]['sc'] = model('GoodsBase')->get_goods_collect($row['goods_id']);
             $arr[$row['goods_id']]['mysc'] = 0;
             // 检查是否已经存在于用户的收藏夹
@@ -125,7 +125,7 @@ class ExchangeModel extends BaseModel {
             $row['goods_img'] = get_image_path($goods_id, $row['goods_img']);
             $row['goods_thumb'] = get_image_path($goods_id, $row['goods_thumb'], true);
             $row['original_img'] = get_image_path($goods_id, $row['original_img'], true);
-            $row['goods_brand_url'] = build_uri('brand/goods_list', array('id' => $row['brand_id']));
+            $row['goods_brand_url'] = url('brand/goods_list', array('id' => $row['brand_id']));
             return $row;
         } else {
             return false;

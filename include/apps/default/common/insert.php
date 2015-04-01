@@ -62,7 +62,7 @@ function insert_history() {
             $goods['short_name'] = C('goods_name_length') > 0 ? sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
             $goods['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
             $goods['shop_price'] = price_format($row['shop_price']);
-            $goods['url'] = build_uri('goods/index', array('gid' => $row['goods_id']), $row['goods_name']);
+            $goods['url'] = url('goods/index', array('id' => $row['goods_id']));
             $history[] = $goods;
         }
     }

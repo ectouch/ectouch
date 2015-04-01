@@ -67,7 +67,7 @@ class AuctionModel extends BaseModel {
             $auction['formated_deposit'] = price_format($auction['deposit']);
             $auction['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
             $auction['act_banner'] = $row['act_banner'] ? $row['act_banner'] : $auction['goods_thumb'];
-            $auction['url'] = build_uri('info', array('id' => $auction['act_id']));
+            $auction['url'] = url('auction/info', array('id' => $auction['act_id']));
 
             if ($auction['status_no'] < 2) {
                 $auction_list['under_way'][] = $auction;

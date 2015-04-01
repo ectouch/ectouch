@@ -54,9 +54,7 @@ class BrandModel extends BaseModel {
             $arr[$row['goods_id']]['goods_brief'] = $row['goods_brief'];
             $arr[$row['goods_id']]['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
             $arr[$row['goods_id']]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);
-            $arr[$row['goods_id']]['url'] = build_uri('goods/index', array(
-                'id' => $row['goods_id']
-                    ), $row['goods_name']);
+            $arr[$row['goods_id']]['url'] = url('goods/index', array('id' => $row['goods_id']));
             $arr[$row['goods_id']]['sales_count'] = model('GoodsBase')->get_sales_count($row['goods_id']);
             $arr[$row['goods_id']]['sc'] = model('GoodsBase')->get_goods_collect($row['goods_id']);
             $arr[$row['goods_id']]['promotion'] = model('GoodsBase')->get_promotion_show($row['goods_id']);
@@ -97,7 +95,7 @@ class BrandModel extends BaseModel {
         $arr = array();
         foreach ($res as $row) {
             $arr[$row['brand_id']]['brand_name'] = $row['brand_name'];
-            $arr[$row['brand_id']]['url'] = build_uri('brand/goods_list', array('id' => $row['brand_id']));
+            $arr[$row['brand_id']]['url'] = url('brand/goods_list', array('id' => $row['brand_id']));
             $arr[$row['brand_id']]['brand_logo'] = get_banner_path($row['brand_logo']);
             $arr[$row['brand_id']]['brand_banner'] = get_banner_path($row['brand_banner']);
             $arr[$row['brand_id']]['goods_num'] = model('Brand')->goods_count_by_brand($row['brand_id']);

@@ -88,13 +88,13 @@ class ExchangeController extends CommonController {
 
         $prev_gid = $this->model->query($sql);
         if (!empty($prev_gid[0]['goods_id'])) {
-            $prev_good['url'] = build_uri('exchange_goods', array('gid' => $prev_gid), $goods['goods_name']);
+            $prev_good['url'] = url('exchange/exchange_goods', array('gid' => $prev_gid));
             $this->assign('prev_good', $prev_good); //上一个商品
         }
         $sql = "SELECT max(eg.goods_id) as max FROM " . $this->model->pre . "exchange_goods AS eg," . $this->model->pre . "goods AS g WHERE eg.goods_id = g.goods_id AND eg.goods_id < " . $goods['goods_id'] . " AND eg.is_exchange = 1 AND g.is_delete = 0";
         $next_gid = $this->model->query($sql);
         if (!empty($next_gid[0]['max'])) {
-            $next_good['url'] = build_uri('exchange_goods', array('gid' => $next_gid), $goods['goods_name']);
+            $next_good['url'] = url('exchange/exchange_goods', array('gid' => $next_gid));
             $this->assign('next_good', $next_good); //下一个商品
         }
         // 检查是否已经存在于用户的收藏夹

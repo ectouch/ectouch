@@ -129,7 +129,7 @@ class AuctionController extends CommonController {
                 $this->redirect(url('Auction/index'));
                 exit;
             }
-            $goods['url'] = build_uri('goods', array('gid' => $goods_id), $goods['goods_name']);
+            $goods['url'] = url('goods/index', array('id' => $goods_id));
             $this->assign('auction_goods', $goods);
             // 商品相册
             $this->assign('pictures', model('GoodsBase')->get_goods_gallery($goods_id));

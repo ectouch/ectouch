@@ -66,7 +66,7 @@ class WholesaleModel extends BaseModel
         $res = $this->query($sql);
         foreach ($res as $row) {
             $row['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
-            $row['goods_url'] = build_uri('info', array('id' => $row['goods_id']), $row['goods_name']);
+            $row['goods_url'] = url('wholesale/info', array('id' => $row['goods_id']));
             $properties = model('Goods')->get_goods_properties($row['goods_id']);
             $row['goods_attr'] = $properties['pro'];
             $price_ladder = $this->get_price_ladder($row['goods_id']);
