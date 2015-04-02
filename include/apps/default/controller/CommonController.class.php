@@ -151,7 +151,7 @@ class CommonController extends BaseController
         
         // search 关键词
         $search_keywords = C('search_keywords');
-        if (is_string($search_keywords)) {
+        if (!empty($search_keywords) && is_string($search_keywords)) {
             $keywords = explode(',', $search_keywords);
             $this->assign('hot_search_keywords', $keywords);
         }
