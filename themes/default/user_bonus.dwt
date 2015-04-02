@@ -1,6 +1,7 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+ 
 <div class="user-account-detail user-bonus">
-   <!-- {if $bonus} -->
+  <!-- {if $bonus} -->
   <ul>
 	<!--{foreach from=$bonus item=item}-->
     <li>
@@ -11,9 +12,10 @@
 	</li>
     <!--{/foreach}-->
   </ul>
-  </div>
-<!-- #BeginLibraryItem "/library/page.lbi" --><!-- #EndLibraryItem --> 
+  <!-- #BeginLibraryItem "/library/page.lbi" --><!-- #EndLibraryItem --> 
   <!-- {/if} -->
+  </div>
+
   <form action="{:url('user/bonus')}" method="post" onSubmit="return addBonus()" class="form-inline bonus-form-inline" role="form">
     <div class="form-group bonus-form-group">
 	  <div class="form-group-text"><input type="text" class="form-control" name="bonus_sn" placeholder="{$lang.bonus_number}"/></div>
