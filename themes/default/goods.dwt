@@ -33,10 +33,13 @@
     <section class="ect-margin-tb ect-margin-lr ">
       <p><span class="pull-left">{$lang.amount}：<b class="ect-colory" id="ECS_GOODS_AMOUNT"></b></span><span class="pull-right">{$lang.sort_sales}：{$sales_count} {$lang.piece}</span></p>
       <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销-->{$lang.promote_price}<!--{else}-->{$lang.shop_price}<!--{/if}--><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--> 
-        {$goods.promote_price} 
+        {$goods.promote_price}  
         <!--{else}--> 
         {$goods.shop_price_formated} 
-        <!--{/if}--> <small> <del><!-- {if $cfg.show_marketprice} 市场价格-->{$goods.market_price} <!-- {/if} --></del></small></p>
+        <!--{/if}--> <small> <del><!-- {if $cfg.show_marketprice} 市场价格-->{$goods.market_price} <!-- {/if} --></del></small>
+	  </p>
+	  <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--><strong id="leftTime" class="price">{$lang.please_waiting}</strong><!--{/if}--></p>
+		 
     </section>
     <!-- {if $promotion} 优惠活动 -->
     <section class="ect-margin-tb ect-margin-bottom0 ect-padding-tb goods-promotion ect-padding-lr ">
@@ -189,16 +192,16 @@ document.addEventListener('DOMContentLoaded', function(){Code.photoSwipe('a', '#
 
 
 /*倒计时*/
-var goods_id = {$goods_id};
+var goods_id = {$goods.goods_id};
 var goodsattr_style = 1;
-var gmt_end_time = 0;
-var day = "天";
-var hour = "小时";
-var minute = "分钟";
-var second = "秒";
-var end = "结束";
 var goodsId = {$goods_id};
+
+var gmt_end_time = "{$goods.gmt_end_time|default:0}";
+{foreach from=$lang.goods_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
 var now_time = {$now_time};
+
 var use_how_oos = {:C('use_how_oos')};
 onload = function(){
   changePrice(2);
