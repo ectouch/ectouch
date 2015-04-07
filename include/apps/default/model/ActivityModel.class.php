@@ -166,5 +166,15 @@ class ActivityModel extends BaseModel {
         $res = $this->row($sql);
         return intval($res['sum']);
     }
+	
+	    /**
+     * 获取优惠活动的信息和活动 数量
+     */
+    function get_activity_count() {
+        $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre . 'favourable_activity f LEFT JOIN ' . $this->pre . 'touch_activity a on a.act_id = f.act_id ';
+        $res = $this->row($sql);
+        $count = $res['count'] ? $res['count'] : 0;
+        return $count;
+    }
 
 }

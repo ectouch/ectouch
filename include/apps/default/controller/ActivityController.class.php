@@ -41,6 +41,13 @@ class ActivityController extends CommonController {
         $this->assign('size', $this->size);
         $this->assign('sort', $this->sort);
         $this->assign('order', $this->order);
+		$count = model('Activity')->get_activity_count();
+        $this->pageLimit(url('index'), $this->size);
+        $this->assign('pager', $this->pageShow($count));
+        
+        $list = model('Activity')->get_activity_info($this->size, $this->page);
+        $this->assign('list', $list);
+		
         $this->display('activity.dwt');
     }
 
