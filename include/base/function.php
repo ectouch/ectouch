@@ -1739,9 +1739,14 @@ function get_image_path($goods_id, $image = '', $thumb = false, $call = 'goods',
     $url = C('no_picture');
     if(!empty($image)){
       $base_url = substr(C('SHOP_URL'), -1) == '/' ? C('SHOP_URL') : C('SHOP_URL') . '/';
-      $url = strtolower(substr($image, 0, '4')) == 'http' ? $image : $base_url . $image;
+      if(strtolower(substr($image, 0, 4)) == 'http'){
+          $url = $image;
+      }else if(strtolower(substr($image, 0, 13)) == 'data/attached'){
+          $url = __ROOT__ . '/' . $image;
+      }else{
+          $url = $base_url . $image;
+      }
     }
-   
     return $url;
 }
 
