@@ -4,7 +4,7 @@
     <p class="text-center" style="font-size: x-large;">{$lang.shop_register_closed}</p>
 
     <!-- {else} -->
-  <!--{if $enabled_sms_signin neq 1} 支持手机短信功能-->
+  <!--{if $enabled_sms_signin eq 1} 支持手机短信功能-->
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="#one" role="tab" data-toggle="tab">{$lang.mobile_login}</a></li>
     <li><a href="#two" role="tab" data-toggle="tab">{$lang.emaill_login}</a></li>
