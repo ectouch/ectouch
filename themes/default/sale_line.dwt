@@ -1,0 +1,35 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+<section class="user-order-detail">
+ 	{if $list}
+  	<table class="table">
+		<thead>
+			<tr>
+			  <th>用户名</th>
+			  <th>手机号</th>
+			  <th>注册时间</th>
+			</tr>
+      	</thead>
+		<tbody>
+		<!--{foreach from=$list item=item}-->
+		<tr>
+			<td><a href="{:url()}">{$item.user_name}</a></td>
+			<td>{$item.mobile_phone}</td>
+			<td>{$item.reg_time}</td>
+		</tr>
+		<!--{/foreach}-->
+		</tbody>
+	</table>
+	{else}
+		<div>暂无下线</div>
+	{/if}
+</section>
+{if $list}
+    {include file='library/page.lbi'}
+{/if}
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>
+<style>
+	.table th,.table td{text-align:center}
+</style>

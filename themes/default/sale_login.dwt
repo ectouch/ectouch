@@ -1,5 +1,5 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
- <form name="formLogin" action="{:url('user/login')}" method="post" class="validforms">
+ <form name="formLogin" action="{:url('sale/login')}" method="post" class="validforms">
  <div class="flow-consignee ect-bg-colorf">
      <section>
       <ul>
@@ -32,16 +32,15 @@
   <input type="submit" class="btn btn-info ect-btn-info ect-bg" value="{$lang.now_landing}" />
   </div>
   </form>
-  <p class="ect-padding-lr ect-margin-tb text-right ect-margin-bottom0" style="clear:both;">
-  	<a href="{:url('sale/register')}" style="float:left;color:#00CCFF">注册分销商</a>
-	<a href="{:url('user/get_password_phone')}">{$lang.forgot_password}</a>  
-	<a href="{:url('user/register')}">{$lang.free_registered}</a>
+  <p class="ect-padding-lr ect-margin-tb text-right ect-margin-bottom0" style="clear:both">
+	<a href="{:url('sale/get_password_phone')}">{$lang.forgot_password}</a>  
+	<a href="{:url('sale/register')}">{$lang.free_registered}</a>
   </p>
   <div class="ect-padding-lr ect-margin-tb user-hezuo">
   	{$lang.third_login}
   	<p>
-    	<a href="{:url('user/third_login',array('type'=>'qq'))}"><img src="__TPL__/images/qq.png"></a>
-        <a href="{:url('user/third_login',array('type'=>'sina'))}"><img src="__TPL__/images/weibo.png"></a>
+    	<a href="{:url('sale/third_login',array('type'=>'qq'))}"><img src="__TPL__/images/qq.png"></a>
+        <a href="{:url('sale/third_login',array('type'=>'sina'))}"><img src="__TPL__/images/weibo.png"></a>
     </p>
   </div>
   </div>

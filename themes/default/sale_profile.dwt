@@ -1,0 +1,29 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript">
+	  {foreach from=$lang.profile_js item=item key=key}
+		var {$key} = "{$item}";
+	  {/foreach}
+	</script>
+<form name="formEdit" action="{:url('sale/profile')}" method="post" onSubmit="return userEdit()">
+  <section class="flow-consignee ect-bg-colorf">
+    <ul>
+      <li>
+        <div class="input-text"><b class="pull-left">{$lang.email}：</b><span>
+          <input name="email" type="text" placeholder="{$lang.no_emaill}"  value="{$profile.email}">
+          </span></div>
+      </li>
+      <li>
+              <div class="input-text"><b>{$lang.mobile}：</b><span>
+                <input placeholder="{$lang.no_mobile}" name="mobile_phone" type="text" id="mobile_phone" value="{$profile.mobile_phone}"  />
+                </span></div>
+            </li>
+    </ul>
+  </section>
+  <input name="act" type="hidden" value="profile" />
+  <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center">
+    <input name="submit" type="submit" value="{$lang.confirm_edit}" class="btn btn-info" />
+  </div>
+</form>
+</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body></html>
