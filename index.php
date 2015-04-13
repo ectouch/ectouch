@@ -21,5 +21,5 @@ header("Content-Type:text/html;charset=utf-8");
 header("Pragma: no-cache");
 /* 修复后退没有提交数据的问题 */
 header("Cache-control: private");
-/* 加载核心文件 */
+/* 加载核心文件 */ 
 require ('include/EcTouch.php');
