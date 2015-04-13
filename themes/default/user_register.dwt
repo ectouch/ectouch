@@ -4,7 +4,7 @@
     <p class="text-center" style="font-size: x-large;">{$lang.shop_register_closed}</p>
 
     <!-- {else} -->
-  <!--{if $enabled_sms_signin eq 1} 支持手机短信功能-->
+  <!--{if $enabled_sms_signin neq 1} 支持手机短信功能-->
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="#one" role="tab" data-toggle="tab">{$lang.mobile_login}</a></li>
     <li><a href="#two" role="tab" data-toggle="tab">{$lang.emaill_login}</a></li>
@@ -41,14 +41,14 @@
 			<li <!-- {if $field.is_need} -->id="extend_field{$field.id}i"<!--{/if}-->>
 				<div class="input-text"><b>{$field.reg_field_name}：</b>
 				<span>
-					<input name="extend_field{$field.id}" type="text" size="25" class="inputBg" /><!-- {if $field.is_need} --><font style="color:#FF0000;float:right"> *</font><!-- {/if} -->
+					<input name="extend_field{$field.id}" type="text" size="25" class="inputBg"  {if $field.is_need} style="width:85%;"{/if} /><!-- {if $field.is_need} --><font style="color:#FF0000;float:right"> *</font><!-- {/if} -->
                 </span></div>
 			</li>
 			<!-- {/if} -->
 			<!-- {/foreach} -->
             <li>
               <div class="input-text code"><b>{$lang.code}：</b><span>
-                <input placeholder="{$lang.no_code}" name="mobile_code" id="mobile_code" type="text">
+                <input placeholder="{$lang.no_code}" name="mobile_code" id="mobile_code" type="text" >
                 </span> <a class="pull-right ect-bg" id="zphone" name="sendsms" onClick="sendSms();" type="botton">{$lang.get_code}</a></div>
             </li>
           </ul>
@@ -112,7 +112,7 @@
 			<li>
 				<div class="input-text"><b>{$field.reg_field_name}：</b>
 				<span>
-					<input name="extend_field{$field.id}" type="text" size="25" class="inputBg" /><!-- {if $field.is_need} --><font style="color:#FF0000;float:right"> *</font><!-- {/if} -->
+					<input name="extend_field{$field.id}" type="text" size="25" class="inputBg" {if $field.is_need} style="width:85%;"{/if} /><!-- {if $field.is_need} --><font style="color:#FF0000;float:right"> *</font><!-- {/if} -->
                 </span></div>
 			</li>
 			<!-- {/if} -->
@@ -155,8 +155,17 @@ function clickText(){
 	}else{
 		var pwd_text = $("#password_text").val();
        	$("#password_text").hide();
-       	$("#password1").val(pwd_text).show();;;		
+       	$("#password1").val(pwd_text).show();
 		$(".input-text .glyphicon-eye-open").removeClass("glyphicon-eye-close");			
+	}
+}
+function blurText(){
+	if($("#password_text").is(":hidden")&&$("#password1").is(":visible")&&!$(".input-text .glyphicon-eye-open").hasClass("glyphicon-eye-close")){
+	  	var pwd = $("#password1").val();
+       	$("#password_text").val(pwd);
+	}else{
+		var pwd_text = $("#password_text").val();
+       	$("#password1").val(pwd_text);		
 	}
 }
 </script>
