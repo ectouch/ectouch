@@ -136,7 +136,8 @@ class AdvertController extends AdminController {
         }
         //分页
         $filter['page'] = '{page}';
-        $offset = $this->pageLimit(url('index', $filter), 12);
+        $filter['id'] = $position_id;
+        $offset = $this->pageLimit(url('ad_list', $filter), 12);
         $total = $this->model->table('touch_ad')->where($condition)->count();
         $this->assign('page', $this->pageShow($total));
         //广告位列表
