@@ -193,7 +193,7 @@ class AdvertController extends AdminController {
                     /* 上传广告图片 */
                     if ($_FILES['ad_img']['name']) {
                         /* ad_img广告图片 */
-                        $result = $this->ectouchUpload('ad_img', 'ad_img');
+                        $result = $this->ectouchUpload('ad_img');
                         if ($result['error'] > 0) {
                             $this->message($result['message'], NULL, 'error');
                         }
@@ -313,7 +313,7 @@ class AdvertController extends AdminController {
                         }
 
                         /* ad_img广告图片 */
-                        $result = $this->ectouchUpload('ad_img', 'ad_img');
+                        $result = $this->ectouchUpload('ad_img');
                         if ($result['error'] > 0) {
                             $this->message($result['message'], NULL, 'error');
                         }
