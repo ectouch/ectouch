@@ -75,7 +75,7 @@ class SaleController extends CommonController {
         if (IS_POST) {
             $email = I('post.email');
             $other['qq'] = $qq = I('post.extend_field2');
-            $other['mobile_phone'] = I('post.mobile_phone');
+            $other['mobile_phone'] = $mobile_phone = I('post.mobile_phone');
            
             if (!empty($office_phone) && !preg_match('/^[\d|\_|\-|\s]+$/', $office_phone)) {
                 show_message(L('passport_js.office_phone_invalid'));
@@ -86,9 +86,11 @@ class SaleController extends CommonController {
             if (!empty($qq) && !preg_match('/^\d+$/', $qq)) {
                 show_message(L('passport_js.qq_invalid'));
             }
-            if (!empty($mobile_phone) && !preg_match('/^[\d-\s]+$/', $mobile_phone)) {
+            if (!empty($mobile_phone) && !preg_match("/^1[0-9]{10}$/", $mobile_phone)) {
                 show_message(L('passport_js.mobile_phone_invalid'));
             }
+            
+           
 
             // 写入密码提示问题和答案
             if (!empty($passwd_answer) && !empty($sel_question)) {
@@ -173,132 +175,6 @@ class SaleController extends CommonController {
         $this->display('sale_profile.dwt');
     }
 
-    
-
-    /**
-     * 分享推荐
-     */
-    public function share() {
-        $share = unserialize(C('affiliate'));
-        $goodsid = I('request.goodsid', 0);
-        if (empty($goodsid)) {
-            $page = I('request.page', 1);
-            $size = I(C('page_size'), 10);
-            empty($share) && $share = array();
-            if (empty($share['config']['separate_by'])) {
-                // 推荐注册分成
-                $affdb = array();
-                $num = count($share['item']);
-                $up_uid = "'$this->user_id'";
-                $all_uid = "'$this->user_id'";
-                for ($i = 1; $i <= $num; $i++) {
-                    $count = 0;
-                    if ($up_uid) {
-                        $where = 'parent_id IN(' . $up_uid . ')';
-                        $rs = $this->model->table('users')
-                                ->field('user_id')
-                                ->where($where)
-                                ->select();
-                        if (empty($rs)) {
-                            $rs = array();
-                        }
-                        $up_uid = '';
-                        foreach ($rs as $k => $v) {
-                            $up_uid .= $up_uid ? ",'$v[user_id]'" : "'$v[user_id]'";
-                            if ($i < $num) {
-                                $all_uid .= ", '$v[user_id]'";
-                            }
-                            $count++;
-                        }
-                    }
-                    $affdb[$i]['num'] = $count;
-                    $affdb[$i]['point'] = $share['item'][$i - 1]['level_point'];
-                    $affdb[$i]['money'] = $share['item'][$i - 1]['level_money'];
-                    $this->assign('affdb', $affdb);
-
-                    $sqlcount = "SELECT count(*) as count FROM " . $this->model->pre . "order_info o" . " LEFT JOIN " . $this->model->pre . "users u ON o.user_id = u.user_id" . " LEFT JOIN " . $this->model->pre . "affiliate_log a ON o.order_id = a.order_id" . " WHERE o.user_id > 0 AND (u.parent_id IN ($all_uid) AND o.is_separate = 0 OR a.user_id = '$this->user_id' AND o.is_separate > 0)";
-
-                    $sql = "SELECT o.*, a.log_id, a.user_id as suid,  a.user_name as auser, a.money, a.point, a.separate_type FROM " . $this->model->pre . "order_info o" . " LEFT JOIN " . $this->model->pre . "users u ON o.user_id = u.user_id" . " LEFT JOIN " . $this->model->pre . "affiliate_log a ON o.order_id = a.order_id" . " WHERE o.user_id > 0 AND (u.parent_id IN ($all_uid) AND o.is_separate = 0 OR a.user_id = '$this->user_id' AND o.is_separate > 0)" . " ORDER BY order_id DESC";
-                }
-            } else {
-                // 推荐订单分成
-                $sqlcount = "SELECT count(*) as count FROM " . $this->model->pre . "order_info o" . " LEFT JOIN " . $this->model->pre . "users u ON o.user_id = u.user_id" . " LEFT JOIN " . $this->model->pre . "affiliate_log a ON o.order_id = a.order_id" . " WHERE o.user_id > 0 AND (o.parent_id = '$this->user_id' AND o.is_separate = 0 OR a.user_id = '$this->user_id' AND o.is_separate > 0)";
-
-                $sql = "SELECT o.*, a.log_id,a.user_id as suid, a.user_name as auser, a.money, a.point, a.separate_type,u.parent_id as up FROM " . $this->model->pre . "order_info o" . " LEFT JOIN " . $this->model->pre . "users u ON o.user_id = u.user_id" . " LEFT JOIN " . $this->model->pre . "affiliate_log a ON o.order_id = a.order_id" . " WHERE o.user_id > 0 AND (o.parent_id = '$this->user_id' AND o.is_separate = 0 OR a.user_id = '$this->user_id' AND o.is_separate > 0)" . " ORDER BY order_id DESC";
-            }
-
-            $res = $this->model->query($sqlcount);
-            $count = $res[0]['count'];
-            $url_format = url('share', array(
-                'page' => '{page}'
-            ));
-            $limit = $this->pageLimit($url_format, 10);
-            $sql = $sql . ' LIMIT ' . $limit;
-            $rt = $this->model->query($sql);
-            if ($rt) {
-                foreach ($rt as $k => $v) {
-                    if (!empty($v['suid'])) {
-                        // 在affiliate_log有记录
-                        if ($v['separate_type'] == - 1 || $v['separate_type'] == - 2) {
-                            // 已被撤销
-                            $v['is_separate'] = 3;
-                        }
-                    }
-                    $rt[$k]['order_sn'] = substr($v['order_sn'], 0, strlen($v['order_sn']) - 5) . "***" . substr($v['order_sn'], - 2, 2);
-                }
-            } else {
-                $rt = array();
-            }
-            $pager = $this->pageShow($count);
-
-            $this->assign('pager', $pager);
-            $this->assign('affiliate_type', $share['config']['separate_by']);
-            $this->assign('logdb', $rt);
-        } else {
-            // 单个商品推荐
-            $this->assign('userid', $this->user_id);
-            $this->assign('goodsid', $goodsid);
-
-            $types = array(
-                1,
-                2,
-                3,
-                4,
-                5
-            );
-            $this->assign('types', $types);
-
-            $goods = model('Goods')->get_goods_info($goodsid);
-            $goods['goods_img'] = get_image_path(0, $goods['goods_img']);
-            $goods['goods_thumb'] = get_image_path(0, $goods['goods_thumb']);
-            $goods['shop_price'] = price_format($goods['shop_price']);
-
-            $this->assign('goods', $goods);
-        }
-        $shopurl = __URL__ . '/?u=' . $this->user_id;
-        
-        $this->assign('shopurl', $shopurl);
-        $this->assign('domain', __HOST__);
-        $this->assign('shopdesc', C('shop_desc'));
-        $this->assign('title', L('label_share'));
-        $this->assign('share', $share);
-        $this->display('sale_share.dwt');
-    }
-    
-    /**
-     * 生成二维码
-     */
-    public function create_qrcode(){
-        $value = I('get.value');
-        if($value){
-            // 二维码
-            // 纠错级别：L、M、Q、H
-            $errorCorrectionLevel = 'L';
-            // 点的大小：1到10
-            $matrixPointSize = 4;
-            QRcode::png($value, false, $errorCorrectionLevel, $matrixPointSize, 2);
-        }
-    }
 
     /**
      * 登录
@@ -647,13 +523,17 @@ class SaleController extends CommonController {
         if (IS_POST) {
             $old_password = isset($_POST['old_password']) ? in($_POST['old_password']) : null;
             $new_password = isset($_POST['new_password']) ? in($_POST['new_password']) : '';
+            $comfirm_password = isset($_POST['comfirm_password']) ? in($_POST['comfirm_password']) : '';
             $user_id = isset($_POST['uid']) ? intval($_POST['uid']) : $this->user_id;
             $code = isset($_POST['code']) ? in($_POST['code']) : ''; // 邮件code
             $mobile = isset($_POST['mobile']) ? base64_decode(in($_POST['mobile'])) : ''; // 手机号
             $question = isset($_POST['question']) ? base64_decode(in($_POST['question'])) : ''; // 问题
 
+            if ($comfirm_password != $new_password){
+                show_message(L('password_js.both_password_error'),L('back_page_up'), '', 'info');
+            }
             if (strlen($new_password) < 6) {
-                show_message(L('passport_js.password_shorter'));
+                show_message(L('passport_js.password_shorter'),L('back_page_up'), '', 'info');
             }
 
             $user_info = self::$user->get_profile_by_id($user_id); // 论坛记录
@@ -773,8 +653,7 @@ class SaleController extends CommonController {
         $mobile_url = __URL__; // 二维码内容
         $errorCorrectionLevel = 'L'; // 纠错级别：L、M、Q、H
         $matrixPointSize = 7; // 点的大小：1到10
-        $mobile_qr = 'data/cache/sale_qrcode.png';
-        unlink($mobile_qr);
+        $mobile_qr = 'data/sale/sale_qrcode_'.$this->user_id.'.png';
         QRcode::png($shopurl, ROOT_PATH . $mobile_qr, $errorCorrectionLevel, $matrixPointSize, 2);
         // 二维码路径赋值
         $this->assign('mobile_qr', $mobile_qr);
@@ -805,17 +684,27 @@ class SaleController extends CommonController {
      * 获取全部分销订单
      */
     public function order_list() {
+        
+        $where = 'parent_id = ' . $this->user_id;
+        if (I('get.uid') > 0){
+            $where = $where.' and user_id ='.I('get.uid');
+        }
         $pay = 1;
         $size = I(C('page_size'), 10);
-        $count = $this->model->table('order_info')->where('parent_id = ' . $this->user_id)->count();
+        $count = $this->model->table('order_info')->where($where)->count();
         $filter['page'] = '{page}';
+        $filter['uid'] = I('get.uid');
         $offset = $this->pageLimit(url('order_list', $filter), $size);
         $offset_page = explode(',', $offset);
-        $orders = model('Sale')->get_user_orders($this->user_id, $pay, $offset_page[1], $offset_page[0]);
+        $orders = model('Sale')->get_user_orders($this->user_id, $pay, $offset_page[1], $offset_page[0],I('get.uid'));
         $this->assign('pay', $pay);
         $this->assign('title', L('order_list'));
         $this->assign('pager', $this->pageShow($count));
         $this->assign('orders_list', $orders);
+        // 获取下线信息
+        if (I('get.uid') > 0){
+             $this->assign('uname', model('Sale')->get_user_by_id(I('get.uid')));
+        }
         $this->display('sale_order_list.dwt');
     }
     

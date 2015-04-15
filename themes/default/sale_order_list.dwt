@@ -1,5 +1,6 @@
 <!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
 
+ {if $uname}<p style="text-align:center;background-color:#FFFFCC;height: 3rem;line-height: 3rem;">下线用户 <span style="color:#00CCFF; font-weight:bold;">{$uname}</span> 的订单</p>{/if}
  <section class="user-order-detail">
  	{if $orders_list}
   	<table class="table">
@@ -7,7 +8,7 @@
 			<tr>
 			  <th>{$lang.order_number}</th>
 			  <th>{$lang.order_total_fee}</th>
-			  <th>{$lang.order_addtime}</th>
+			  <th>操作状态</th>
 			</tr>
       	</thead>
 		<tbody>
@@ -15,7 +16,7 @@
 		<tr>
 			<td><a href="{:url('sale/order_detail', array('order_id'=>$this->_var['item']['order_id']))}">{$item.order_sn}</a></td>
 			<td><span class="ect-color">{$item.total_fee}</span></td>
-			<td>{$item.order_time}</td>
+			<td>{$item.is_separate}</td>
 		</tr>
 		<!--{/foreach}-->
 		</tbody>

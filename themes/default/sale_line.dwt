@@ -12,7 +12,7 @@
 		<tbody>
 		<!--{foreach from=$list item=item}-->
 		<tr>
-			<td><a href="{:url()}">{$item.user_name}</a></td>
+			<td><a href="{:url('sale/order_list',array('uid'=>$this->_var['item']['user_id']))}">{$item.user_name}</a></td>
 			<td>{$item.mobile_phone}</td>
 			<td>{$item.reg_time}</td>
 		</tr>

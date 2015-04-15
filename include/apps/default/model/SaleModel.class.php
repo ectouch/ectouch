@@ -1666,7 +1666,7 @@ class SaleModel extends BaseModel {
      * @param   int         $start          列表起始位置
      * @return  array       $order_list     订单列表
      */
-    function get_user_orders($user_id, $pay = 1, $num = 10, $start = 0) {
+    function get_user_orders($parent_id, $pay = 1, $num = 10, $start = 0 ,$user_id) {
         /* 取得订单列表 */
         $arr = array();
     
@@ -1675,11 +1675,15 @@ class SaleModel extends BaseModel {
         } else {
             $pay = 'and pay_status = ' . PS_UNPAYED;
         }
+        $where = '';
+        if($user_id > 0){
+            $where = " and user_id = '$user_id' ";
+        }
     
-        $sql = "SELECT order_id, order_sn, shipping_id, order_status, shipping_status, pay_status, add_time, " .
+        $sql = "SELECT order_id, order_sn, shipping_id, order_status, shipping_status, pay_status, add_time, is_separate, " .
             "(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax - discount) AS total_fee " .
             " FROM " . $this->pre .
-            "order_info WHERE parent_id = '$user_id' " . $pay . " ORDER BY add_time DESC LIMIT $start , $num";
+            "order_info WHERE parent_id = '$parent_id' " . $where . $pay . " ORDER BY add_time DESC LIMIT $start , $num";
         $res = M()->query($sql);
         foreach ($res as $key => $value) {
            
@@ -1695,6 +1699,7 @@ class SaleModel extends BaseModel {
                 'total_fee' => price_format($value['total_fee'], false),
                 'url' => url('user/order_detail', array('order_id' => $value['order_id'])),
                 'goods_count' => model('Users')->get_order_goods_count($value['order_id']),
+                'is_separate' => $value['is_separate'] > 0 ? "<span style='font-weight:bold'>以分成</span>" : "<span style='color:red;font-weight:bold'>未分成</span>",
                 );
         }
         return $arr;
@@ -1776,5 +1781,15 @@ class SaleModel extends BaseModel {
     
         return $order;
     }
+    
+    // 根据id获取用户名
+
+    public function get_user_by_id($user_id){
+
+        $sql = "SELECT user_name FROM " . $this->pre . "users WHERE user_id = '$user_id'";
+        $info = $this->row($sql);
+        return $info['user_name'] ? $info['user_name'] : '';
+    }
+    
 
 }
