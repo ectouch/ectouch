@@ -120,6 +120,21 @@
     <li>{$lang.select_payment}：<b>{$order.pay_name}</b></li>
     <li>{$lang.order_amount}：<b class="ect-colory">{$order.formated_order_amount}</b></li>
     <li>{$order.pay_desc}</li>
+    <!--{if $payment_list}--> 
+    <li>
+    <form name="payment" method="post" action="{:url('user/edit_payment')}">
+      {$lang.change_payment}: <br/>
+      <select name="pay_id" style="margin:6px 0">
+        <!--{foreach from=$payment_list item=payment}-->
+        <option value="{$payment.pay_id}"> {$payment.pay_name}({$lang.pay_fee}:{$payment.format_pay_fee}) </option>
+        <!--{/foreach}-->
+      </select>
+      <br/>
+      <input type="hidden" name="order_id" value="{$order.order_id}" />
+      <input type="submit" name="Submit" class="btn btn-info ect-btn-info ect-colorf ect-bg" value="{$lang.button_submit}" />
+    </form>  
+    </li>
+    <!--{/if}-->
   </ul>
 </section>  
 <section class="order-detail-info ect-margin-tb ect-margin-bottom0 user-bottom0">
