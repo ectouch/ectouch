@@ -365,7 +365,7 @@ $_LANG['total_fee'] = '应付款金额';
 $_LANG['self_site'] = '本站';
 $_LANG['order_gift_integral'] = '订单 %s 赠送的积分';
 
-$_LANG['order_payed_sms'] = '订单 %s 付款了。收货人：%s；电话：%s。';
+$_LANG['order_payed_sms'] = '订单 %s 付款了，收货人：%s 电话：%s';
 
 /* 缺货处理 */
 $_LANG['oos'][OOS_WAIT] = '等待所有商品备齐后再发';
@@ -984,7 +984,7 @@ $_LANG['back_home'] = '<a href="'.url('index/index').'">返回首页</a>';
 $_LANG['goto_user_center'] = '<a href="'.url('user/index').'">用户中心</a>';
 $_LANG['order_submit_back'] = '您可以 %s 或去 %s';
 
-$_LANG['order_placed_sms'] = "您有新订单.收货人:%s 电话:%s";
+$_LANG['order_placed_sms'] = '您有新订单，收货人：%s 电话：%s';
 $_LANG['sms_paid'] = '已付款';
 
 $_LANG['notice_gb_order_amount'] = '（备注：团购如果有保证金，第一次只需支付保证金和相应的支付费用）';

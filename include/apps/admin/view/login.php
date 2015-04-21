@@ -96,11 +96,13 @@ a.fcolor {
             <td>{$lang['label_password']}</td>
             <td colspan="2"><input type="password" name="password" class="logininput" /></td>
           </tr>
+          {if $gd_version > 0}
           <tr>
             <td>{$lang['label_captcha']}</td>
             <td width="100"><input name="captcha" type="text" class="logincaptcha" maxlength="4" /></td>
             <td width="100"><img src="{url('verify')}" onclick="this.src='{url('verify')}&v='+Math.random();" width="50" title="{$lang['click_for_another']}" style="cursor: pointer;" /></td>
           </tr>
+          {/if}
           <tr>
             <td></td>
             <td colspan="2"><input type="checkbox" value="1" name="remember" id="remember" />
@@ -121,6 +123,12 @@ a.fcolor {
   <input type="hidden" name="act" value="signin" />
 </form>
 <script type="text/javascript">
+if (window.parent != window)
+{
+  window.top.location.href = location.href;
+}
+document.forms['theForm'].elements['username'].focus();
+
 $(function(){
 	$('form[name="theForm"]').submit(function(){
 		var username = $('input[name="username"]').val();

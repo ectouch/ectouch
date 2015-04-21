@@ -131,11 +131,19 @@ class IndexController extends AdminController
                     Check::must($password),
                     L('login_faild')
                 ),
-                array(
-                    Check::same($captcha, $_SESSION['ectouch_verify']),
-                    L('captcha_error')
-                )
             ));
+            $captcha_admin = C('captcha');
+            if (($captcha_admin & CAPTCHA_ADMIN) && gd_version() > 0)
+            {
+                $captcha = strtoupper(in($_POST['captcha']));
+                // 数据验证
+                $msg = Check::rule(array(
+                    array(
+                        Check::same($captcha, $_SESSION['ectouch_verify']),
+                        L('captcha_error')
+                    )
+                ));
+            }
             // 提示信息
             if ($msg !== true) {
                 $result = array(
@@ -170,6 +178,11 @@ class IndexController extends AdminController
             // 已登录直接进入管理中心
             if ($this->isLogin()) {
                 $this->redirect(url('index'));
+            }
+            $captcha_admin = C('captcha');
+            if (($captcha_admin & CAPTCHA_ADMIN) && gd_version() > 0)
+            {
+                $this->assign('gd_version', gd_version());
             }
             $this->display('login');
         }

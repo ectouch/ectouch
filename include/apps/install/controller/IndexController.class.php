@@ -37,7 +37,8 @@ class IndexController extends Controller {
             $error = '系统不支持session，无法进行安装！<br>';
         }
         $dir_list = array(
-            'data/'
+            'data',
+            'data/config.php',
         );
         foreach($dir_list as $dir)
         {

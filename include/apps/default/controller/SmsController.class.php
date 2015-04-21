@@ -67,7 +67,7 @@ class SmsController extends CommonController {
         }
 
         $this->mobile_code = $this->random(6, 1);
-        $message = "您的验证码是：" . $this->mobile_code . "。请不要把验证码泄露给其他人。";
+        $message = "您的验证码是：" . $this->mobile_code . "，请不要把验证码泄露给其他人，如非本人操作，可不用理会";
 
         $sms = new EcsSms();
         $sms_error = '';

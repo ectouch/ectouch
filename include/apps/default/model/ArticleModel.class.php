@@ -61,7 +61,7 @@ class ArticleModel extends BaseModel {
             $arr[$row['cat_id']]['article'][$key]['article_id'] = $row['article_id'];
             $arr[$row['cat_id']]['article'][$key]['title'] = $row['title'];
             $arr[$row['cat_id']]['article'][$key]['short_title'] = C('article_title_length') > 0 ? sub_str($row['title'], C('article_title_length')) : $row['title'];
-            $arr[$row['cat_id']]['article'][$key]['url'] = $row['open_type'] != 1 ? url('article/info', array('aid' => $row['article_id'])):$row['file_url'];
+            $arr[$row['cat_id']]['article'][$key]['url'] = $row['open_type'] != 1 ? url('article/info', array('aid' => $row['article_id'])) : trim($row['file_url']);
         }
 
         return $arr;

@@ -509,16 +509,16 @@ class UserController extends CommonController {
      * 获取未付款订单
      */
     public function not_pay_order_list() {
-        $pay = 1;
-		$size = I(C('page_size'), 10);
-		$this->assign('show_asynclist', C('show_asynclist'));
+        $pay = 0;
+        $size = I(C('page_size'), 10);
+        $this->assign('show_asynclist', C('show_asynclist'));
         $count = $this->model->table('order_info')->where('user_id = ' . $this->user_id)->count();
         $filter['page'] = '{page}';
-        $offset = $this->pageLimit(url('order_list', $filter), $size);
+        $offset = $this->pageLimit(url('not_pay_order_list', $filter), $size);
         $offset_page = explode(',', $offset);
         $orders = model('Users')->get_user_orders($this->user_id, $pay, $offset_page[1], $offset_page[0]);
         $this->assign('pay', $pay);
-        $this->assign('title', L('order_list_lnk'));
+        $this->assign('title', L('not_pay_list'));
         $this->assign('pager', $this->pageShow($count));
         $this->assign('orders_list', $orders);
         $this->display('user_order_list.dwt');
@@ -529,15 +529,16 @@ class UserController extends CommonController {
      */
     public function order_list() {
         $pay = 1;
+        $size = I(C('page_size'), 10);
         $count = $this->model->table('order_info')->where('user_id = ' . $this->user_id)->count();
         $filter['page'] = '{page}';
-        $offset = $this->pageLimit(url('order_list', $filter), 5);
+        $offset = $this->pageLimit(url('order_list', $filter), $size);
         $offset_page = explode(',', $offset);
         $orders = model('Users')->get_user_orders($this->user_id, $pay, $offset_page[1], $offset_page[0]);
         $this->assign('pay', $pay);
         $this->assign('title', L('order_list_lnk'));
         $this->assign('pager', $this->pageShow($count));
-        $this->assign('orders', $orders);
+        $this->assign('orders_list', $orders);
         $this->display('user_order_list.dwt');
     }
 

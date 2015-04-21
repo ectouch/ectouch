@@ -80,7 +80,7 @@ class CategoryBaseModel extends BaseModel {
                 if ($row['is_show'])
                     $three_arr[$row['cat_id']]['id'] = $row['cat_id'];
                 $three_arr[$row['cat_id']]['name'] = $row['cat_name'];
-                $three_arr[$row['cat_id']]['cat_image'] = get_image_path($row['cat_image'],false);
+                $three_arr[$row['cat_id']]['cat_image'] = get_image_path(0,$row['cat_image'],false);
                 $three_arr[$row['cat_id']]['url'] = url('category/index', array('id' => $row['cat_id']));
 
                 if (isset($row['cat_id']) != NULL) {
@@ -106,7 +106,7 @@ class CategoryBaseModel extends BaseModel {
             if ($row['is_show']) {
                 $cat_arr[$row['cat_id']]['id'] = $row['cat_id'];
                 $cat_arr[$row['cat_id']]['name'] = $row['cat_name'];
-                $cat_arr[$row['cat_id']]['cat_image'] = get_image_path($row['cat_image'],false);
+                $cat_arr[$row['cat_id']]['cat_image'] = get_image_path(0,$row['cat_image'],false);
                 $cat_arr[$row['cat_id']]['url'] = url('category/index', array('id' => $row['cat_id']));
             }
         }

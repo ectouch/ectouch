@@ -137,10 +137,10 @@
           <td>
             <div class="col-md-2">
               <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-primary btn-sm active">
+                <label class="btn btn-primary btn-sm {if $info['enabled'] == '1'}active{/if}">
                   <input type="radio" name="data[enabled]" id="enabled1" value="1" {if $info['enabled'] == '1'} checked="true" {/if} />
                   {$lang['enabled']} </label>
-                <label class="btn btn-primary btn-sm">
+                <label class="btn btn-primary btn-sm {if $info['enabled'] == '0'}active{/if} ">
                   <input type="radio" name="data[enabled]" id="enabled2" value="0" {if $info['enabled'] == '0'}checked="true" {/if} />
                   {$lang['is_enabled']}</label>
               </div>

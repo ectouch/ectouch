@@ -40,6 +40,14 @@ class BrandController extends CommonController {
         $this->assign('size', $this->size);
         $this->assign('sort', $this->sort);
         $this->assign('order', $this->order);
+        
+        $count = model('Brand')->get_brands_count();
+        $this->pageLimit(url('index'), $this->size);
+        $this->assign('pager', $this->pageShow($count));
+        
+        $list = model('Brand')->get_brands('brand', $this->size, $this->page);
+        $this->assign('list', $list);
+        
         $this->display('brand_list.dwt');
     }
 

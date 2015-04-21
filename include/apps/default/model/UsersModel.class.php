@@ -585,6 +585,7 @@ class UsersModel extends BaseModel {
                 'shipping_id' => $value['shipping_id'],
                 'total_fee' => price_format($value['total_fee'], false),
                 'url' => url('user/order_detail', array('order_id' => $value['order_id'])),
+                'goods_count' => model('Users')->get_order_goods_count($value['order_id']),
                 'handler' => $value['handler']);
         }
         return $arr;
@@ -1807,6 +1808,21 @@ class UsersModel extends BaseModel {
         $this->table = 'users';
         $condition['user_name'] = $user_name;
         return $this->count($condition);
+    }
+	
+	 /**
+     * 获取订单商品数量
+     * @return type
+     */
+    function get_order_goods_count($order_id) {
+    
+        $sql = "SELECT  COUNT(*) as count " .
+            "FROM " . $this->pre . "order_goods AS o " .
+            "LEFT JOIN " . $this->pre . "products AS p ON o.product_id = p.product_id " .
+            "LEFT JOIN " . $this->pre . "goods AS g ON o.goods_id = g.goods_id " .
+            "WHERE o.order_id = '$order_id' ";
+        $res = $this->row($sql);
+        return $res['count'];
     }
     
     /**

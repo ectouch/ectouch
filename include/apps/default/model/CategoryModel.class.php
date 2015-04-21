@@ -328,5 +328,15 @@ class CategoryModel extends BaseModel {
         }
         return $goods;
     }
+	
+	/**
+     * 获得分类下的小图标
+     * @param  integer $cat_id 
+     * @return void       
+     */
+    function get_cat_image($cat_id){ 
+        $cats = $this->row('SELECT cat_image FROM ' . $this->pre . "touch_category WHERE cat_id = '$cat_id'");
+        return $cats['cat_image'];
+    }
 
 }

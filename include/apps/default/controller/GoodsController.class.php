@@ -111,7 +111,8 @@ class GoodsController extends CommonController {
         }
         // 更新点击次数
         $data = 'click_count = click_count + 1';
-        $this->model->table('goods')->data($data)->where('goods_id = ' . $_REQUEST['id'])->update();
+        $this->model->table('goods')->data($data)->where('goods_id = ' . $this->goods_id)->update();
+           
         // 当前系统时间
         $this->assign('now_time', gmtime());
         $this->assign('sales_count', model('GoodsBase')->get_sales_count($this->goods_id));

@@ -158,7 +158,7 @@ class EcsSms {
 
     //打印日志
     function logResult($word = '') {
-        $fp = fopen(ROOT_PATH . "/smserrlog.txt", "a");
+        $fp = fopen(ROOT_PATH . "data/smserrlog.txt", "a");
         flock($fp, LOCK_EX);
         fwrite($fp, "执行日期：" . strftime("%Y%m%d%H%M%S", time()) . "\n" . $word . "\n");
         flock($fp, LOCK_UN);
