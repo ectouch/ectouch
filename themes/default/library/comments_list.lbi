@@ -19,6 +19,9 @@
             <p>{$comment.content}</p>
             <p>{$lang.comment_rank}：<span><img src="__TPL__/images/stars{$comment.rank}.png" class="star" alt="{$comment.comment_rank}" /></span></p>
             <p><span class="pull-left">{$lang.username}：<!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></span><span class="pull-right">{$comment.add_time}</span></p>
+            <!-- {if $comment.re_content} -->
+            <p>{$lang.admin_username}<span>{$comment.re_content}</span></p>
+			<!-- {/if} -->
           </li>
           <!-- {/foreach} -->
         </ul>
@@ -44,6 +47,9 @@
             <p>{$comment.content}</p>
             <p>{$lang.comment_rank}：<span><img src="__TPL__/images/stars{$comment.rank}.png" class="star" alt="{$comment.comment_rank}" /></span></p>
             <p><span class="pull-left">{$lang.username}：<!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></span><span class="pull-right">{$comment.add_time}</span></p>
+            <!-- {if $comment.re_content} -->
+            <p>{$lang.admin_username}<span>{$comment.re_content}</span></p>
+			<!-- {/if} -->
           </li>
           <!-- {/foreach} -->
         </ul>
@@ -69,6 +75,9 @@
             <p>{$comment.content}</p>
             <p>{$lang.comment_rank}：<span><img src="__TPL__/images/stars{$comment.rank}.png" class="star" alt="{$comment.comment_rank}" /></span></p>
             <p><span class="pull-left">{$lang.username}：：<!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></span><span class="pull-right">{$comment.add_time}</span></p>
+            <!-- {if $comment.re_content} -->
+            <p>{$lang.admin_username}<span>{$comment.re_content}</span></p>
+			<!-- {/if} -->
           </li>
           <!-- {/foreach} -->
         </ul>
@@ -94,6 +103,9 @@
             <p>{$comment.content}</p>
             <p>{$lang.comment_rank}：<span><img src="__TPL__/images/stars{$comment.rank}.png" class="star" alt="{$comment.comment_rank}" /></span></p>
             <p><span class="pull-left">{$lang.username}：：<!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></span><span class="pull-right">{$comment.add_time}</span></p>
+            <!-- {if $comment.re_content} -->
+            <p>{$lang.admin_username}<span>{$comment.re_content}</span></p>
+			<!-- {/if} -->
           </li>
           <!-- {/foreach} -->
         </ul>

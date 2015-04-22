@@ -9,8 +9,6 @@
         <p class="ect-margin-tb">{$lang.remember_order_number}：<b class="ect-color">{$order.order_sn}</b></p>
         <p class="ect-margin-tb"><!--{if $order.shipping_name}-->{$lang.select_shipping}:<b>{$order.shipping_name}</b><!--{/if}--></p>
         <p class="ect-margin-tb">{$lang.order_amount}: <b>{$total.amount_formated}</b></p>
-        <p class="ect-margin-tb">{$lang.select_payment}: <b>{$order.pay_name}</b></p>
-        <p class="ect-margin-tb" style="padding: 10px;">{$pay_desc}</p>
         <!--{if $virtual_card}-->
         <div class="alert alert-warning" role="alert" style="height: 100px;">
  	    <!--{foreach from=$virtual_card item=vgoods}-->
@@ -31,6 +29,10 @@
         <!--{/foreach}--> 
 		</div>
         <!-- {/if} -->
+      {if $pay_desc}
+      <p class="ect-margin-tb">{$lang.select_payment}: <b>{$order.pay_name}</b></p>
+      <p class="ect-margin-tb text-center" style="background-color: rgb(255, 240, 240);padding: 10px;">{$pay_desc}</p>
+      {/if}
        <p class="ect-margin-tb text-center">{$pay_online}</p>
        <p class="ect-margin-tb text-center">{$order_submit_back}</p>
   </section>

@@ -119,7 +119,9 @@
   <ul>
     <li>{$lang.select_payment}：<b>{$order.pay_name}</b></li>
     <li>{$lang.order_amount}：<b class="ect-colory">{$order.formated_order_amount}</b></li>
-    <li>{$order.pay_desc}</li>
+    	<!-- {if $pay_desc} -->
+	<li>{$pay_desc}</li>
+	<!-- {/if} -->
     <!--{if $payment_list}--> 
     <li>
     <form name="payment" method="post" action="{:url('user/edit_payment')}">

@@ -29,7 +29,7 @@
     </li>
     </a> <a href="{:url('user/profile')}">
     <li class="col-sm-3 col-xs-3"><i class="fa fa-user"></i>
-      <p class="text-center">{$lang.user_center}</p>
+      <p class="text-center">{$lang.profile}</p>
     </li>
     </a> <a href="{:url('user/edit_password')}">
     <li class="col-sm-3 col-xs-3"><i class="fa fa-shield"></i>

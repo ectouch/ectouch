@@ -180,7 +180,7 @@
         <p><b> {$lang.order_postscript} </b></p>
         <i class="fa fa-angle-down"></i> </a>
         <div id="collapseFive" class="panel-collapse collapse in">
-          <input name="" type="text" class="fuyan" placeholder="{$lang.please_order_postscript}">
+          <input name="postscript" type="text" class="fuyan" placeholder="{$lang.please_order_postscript}">
         </div>
       </section>
       <section class="ect-margin-tb ect-margin-bottom0 ect-padding-lr checkout-select checkout-pro-list">
