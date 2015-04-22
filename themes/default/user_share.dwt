@@ -50,6 +50,9 @@
   </table>
   <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
     <tr>
+      <td style="text-align:center;">{$shopurl}<br><img src="{$domain}{:url('user/create_qrcode', array('value'=>$this->_var['shopurl']))}"></td>
+    </tr>
+    <tr>
         <td >
         	<div class="bdsharebuttonbox" data-tag="share_1" style="width:12em;margin:0 auto;">
 				<a class="bds_qzone" data-cmd="qzone" href="#"></a>
