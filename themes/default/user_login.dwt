@@ -33,7 +33,6 @@
   </div>
   </form>
   <p class="ect-padding-lr ect-margin-tb text-right ect-margin-bottom0" style="clear:both;">
-  	<a href="{:url('sale/register')}" style="float:left;color:#00CCFF">注册分销商</a>
 	<a href="{:url('user/get_password_phone')}">{$lang.forgot_password}</a>  
 	<a href="{:url('user/register')}">{$lang.free_registered}</a>
   </p>
