@@ -91,7 +91,7 @@ class alipay_wap
         
         $gateway = 'http://wappaygw.alipay.com/service/rest.htm?';
         // 请求业务数据
-        $req_data = '<direct_trade_create_req>' . '<subject>' . $order['order_sn'] . '</subject>' . '<out_trade_no>' . $order['order_sn'] . 'O' . $order['log_id'] . '</out_trade_no>' . '<total_fee>' . $order['order_amount'] . '</total_fee>' . '<seller_account_name>' . $payment['alipay_account'] . '</seller_account_name>' . '<call_back_url>' . return_url(basename(__FILE__, '.php'), array('type'=>0)) . '</call_back_url>' . '<notify_url>' . return_url(basename(__FILE__, '.php'), array('type'=>1)) . '</notify_url>' . '<out_user>' . $order['consignee'] . '</out_user>' . '<merchant_url>' . __URL__ . '</merchant_url>' . '<pay_expire>3600</pay_expire>' . '</direct_trade_create_req>';
+        $req_data = '<direct_trade_create_req>' . '<subject>' . $order['order_sn'] . '</subject>' . '<out_trade_no>' . $order['order_sn'] . 'O' . $order['log_id'] . '</out_trade_no>' . '<total_fee>' . $order['order_amount'] . '</total_fee>' . '<seller_account_name>' . $payment['alipay_account'] . '</seller_account_name>' . '<call_back_url>' . return_url(basename(__FILE__, '.php'), array('type'=>0)) . '</call_back_url>' . '<notify_url>' . __URL__.'/notify_url.php' . '</notify_url>' . '<out_user>' . $order['consignee'] . '</out_user>' . '<merchant_url>' . __URL__ . '</merchant_url>' . '<pay_expire>3600</pay_expire>' . '</direct_trade_create_req>';
         $parameter = array(
             'service' => 'alipay.wap.trade.create.direct', // 接口名称
             'format' => 'xml', // 请求参数格式
