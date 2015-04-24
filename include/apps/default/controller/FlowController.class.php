@@ -1381,8 +1381,7 @@ class FlowController extends CommonController {
         }
         
         // 如果是银行汇款或货到付款 则显示支付描述
-        
-         if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'cod'){
+        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'cod'){
             if (empty($order ['pay_name'])) {
                 $order ['pay_name'] = trim(stripcslashes($payment ['pay_name']));
             }

@@ -669,7 +669,7 @@ class UserController extends CommonController {
         $order['shipping_status'] = L('ss.' . $order['shipping_status']);
         // 如果是银行汇款或货到付款 则显示支付描述
         $payment = model('Order')->payment_info($order ['pay_id']);
-        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'balance'){
+        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'cod'){
             $this->assign('pay_desc',$payment['pay_desc']);
         }
 		
