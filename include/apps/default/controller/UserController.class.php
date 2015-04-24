@@ -1779,7 +1779,7 @@ class UserController extends CommonController {
             
             
             
-            if (model('Users')->register($username, $password, $email, $other , C('send_type_rand') !== false) !== false) {
+            if (model('Users')->register($username, $password, $email, $other) !== false) {
                 
 
                 $sel_question = I('post.sel_question');

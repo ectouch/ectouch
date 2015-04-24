@@ -102,7 +102,7 @@ class UsersModel extends BaseModel {
      *
      * @return  bool         $bool
      */
-    function register($username, $password, $email, $other = array(), $rand) {
+    function register($username, $password, $email, $other = array()) {
         /* 检查注册是否关闭 */
         $shop_reg_closed = C('shop_reg_closed');
         if (!empty($shop_reg_closed)) {
