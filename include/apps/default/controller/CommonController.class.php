@@ -40,6 +40,8 @@ class CommonController extends BaseController
         /* 页面标题 */
         $page_info = get_page_title();
         self::$view->assign('page_title', $page_info['title']);
+        self::$view->assign('keywords', C('shop_keywords'));
+        self::$view->assign('description', C('shop_desc'));
         /* 模板赋值 */
         assign_template();
     }
