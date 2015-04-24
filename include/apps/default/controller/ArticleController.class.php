@@ -50,6 +50,17 @@ class ArticleController extends CommonController {
         $this->pageLimit(url('art_list', array('id' => $this->cat_id)), $this->size);
         $this->assign('pager', $this->pageShow($count));
         $this->assign('artciles_list', $artciles_list);
+        
+        //处理关键词描述
+        $sql = "select * from ".M()->pre."touch_article_cat where cat_id = ".$this->cat_id;
+        $cat = M()->query($sql);
+        if (!empty($cat['0']['keywords'])) {
+            $this->assign('meta_keywords',htmlspecialchars($cat['0']['keywords']));
+        }
+        if (!empty($cat['0']['cat_desc'])) {
+            $this->assign('meta_description',htmlspecialchars($cat['0']['cat_desc']));
+        }
+        
         $this->display('article_list.dwt');
     }
 
@@ -83,6 +94,15 @@ class ArticleController extends CommonController {
         $article_id = intval(I('get.aid'));
         $article = model('Article')->get_article_info($article_id);
         $this->assign('article', $article);
+        
+        //处理关键词描述
+        if (!empty($article['keywords'])) {
+            $this->assign('meta_keywords',htmlspecialchars($article['keywords']));
+        }
+        if (!empty($article['description'])) {
+            $this->assign('meta_description',htmlspecialchars($article['description']));
+        }
+        
         $this->display('article_info.dwt');
     }
 
@@ -102,9 +122,10 @@ class ArticleController extends CommonController {
      * 处理参数便于搜索商品信息
      */
     private function parameter() {
+        $this->assign('show_asynclist', C('show_asynclist'));
         // 如果分类ID为0，则返回总分类页
-        $page_size = C('article_page_size');
-        $this->size = intval($page_size) > 0 ? intval($page_size) : 10;
+        $page_size = C('article_number');
+        $this->size = intval($page_size) > 0 ? intval($page_size) : $this->size;
         $this->page = I('request.page') ? intval(I('request.page')) : 1;
         $this->cat_id = intval(I('request.id'));
         $this->keywords = I('request.keywords');

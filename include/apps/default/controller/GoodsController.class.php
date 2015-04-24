@@ -127,8 +127,8 @@ class GoodsController extends CommonController {
         /* 页面标题 */
         $page_info = get_page_title($goods['cat_id'], $goods['goods_name']);
         /* meta */
-        $this->assign('keywords',           htmlspecialchars($goods['keywords']));
-        $this->assign('description',        htmlspecialchars($goods['goods_brief']));
+        $this->assign('meta_keywords',           htmlspecialchars($goods['keywords']));
+        $this->assign('meta_description',        htmlspecialchars($goods['goods_brief']));
         $this->assign('ur_here', $page_info['ur_here']);
         $this->assign('page_title', $page_info['title']);
         $this->display('goods.dwt');

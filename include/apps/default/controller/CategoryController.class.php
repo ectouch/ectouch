@@ -79,10 +79,12 @@ class CategoryController extends CommonController {
         $this->assign('page_title', $page_info['title']);
         $cat = model('Category')->get_cat_info($this->cat_id);  // 获得分类的相关信息
         if (!empty($cat['keywords'])) {
-            if (!empty($cat['keywords'])) {
-                $this->assign('keywords_list', explode(' ', $cat['keywords']));
-            }
+            $this->assign('meat_keywords',htmlspecialchars($cat['keywords']));
         }
+        if (!empty($cat['cat_desc'])) {
+            $this->assign('meta_description',htmlspecialchars($cat['cat_desc']));
+        }
+
         $this->assign('categories', model('CategoryBase')->get_categories_tree($this->cat_id));
 		$this->assign('show_marketprice', C('show_marketprice'));
         $this->display('category.dwt');
@@ -443,7 +445,7 @@ class CategoryController extends CommonController {
     public function top_all() {
         /* 页面的缓存ID */
         $cache_id = sprintf('%X', crc32($_SERVER['REQUEST_URI'] . C('lang')));
-        if (!ECTouch::view()->is_cached('category_top_all.dwt', $cache_id)) {
+        if (!ECTouch::view()->is_cached('category_all.dwt', $cache_id)) {
             $category = model('CategoryBase')->get_categories_tree();
             $this->assign('title', L('catalog'));
             $this->assign('category', $category);
