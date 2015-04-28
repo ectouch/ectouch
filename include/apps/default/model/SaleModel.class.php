@@ -1791,5 +1791,14 @@ class SaleModel extends BaseModel {
         return $info['user_name'] ? $info['user_name'] : '';
     }
     
+    /**
+     * 获取用户下线数量
+     * @return Ambigous <number, unknown>
+     */
+    public function get_sale_goods_count(){
+        $count = M()->table('order_info')->field('COUNT(*)')->where("parent_id = ".session('user_id'))->getOne();
+        return $count > 0 ? $count : 0;
+    }
+    
 
 }

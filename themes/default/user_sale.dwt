@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="Keywords" content="{$meta_keywords}" />
+<meta name="Description" content="{$meta_description}" />
+<title>{$page_title} 触屏版</title>
+<link rel="stylesheet" href="__PUBLIC__/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="__PUBLIC__/bootstrap/css/font-awesome.min.css">
+<link rel="stylesheet" href="{$ectouch_css_path}">
+<link rel="stylesheet" href="__TPL__/css/user.css">
+<link rel="stylesheet" href="__TPL__/css/photoswipe.css">
+</head>
+
+</head><body>
+<div class="con">
+<div class="user-share-user">
+	<div class="user-share-local"><a href="{:url('user/index')}" ><i class="fa fa-angle-left"></i><span>会员中心</span></a></div>
+    <div class="user-share-info">
+<div class="img pull-left"><img src="__TPL__/images/idx-pic.jpg" width="" height="" alt=""/></div>
+    	<div class="text pull-left">
+			<ul>
+            	<li><h3 class="pull-left">{$info.username}<h4 class="pull-left">{$rank_name}</h4></h3></li>
+	            <li><p >账户余额</p></li>
+     	       <li><h3>{$info.surplus}</h3></li>
+            <ul>
+        </div>
+    </div>
+    <div class="user-share-code"><a href="{:url('sale/to_sale')}" ><img src="{$mobile_qr}" width="231" height="235" alt=""/> <i class="fa fa-angle-right"></i></a></div>
+<div class="user-share-num">
+  <ul class="text-center">
+        	<li class="col-xs-3"><h3>分销产品</h3><h3>{$goods_count}</h3></li>
+            <li class="col-xs-3"><h3>分销商</h3><h3>{$line_count}</h3></li>
+            <li class="col-xs-3"><h3>分销订单</h3><h3>{$order_count}</h3></li>
+            <li class="col-xs-3"><h3>我的佣金</h3><h3>{$info.surplus}</h3></li>
+        </ul>
+</div>
+</div>
+<div class="ect-pro-list ect-share-list">
+	<ul>
+    	<li><a href="{:url('sale/to_sale')}" style="height:auto;">我要分销<i class="pull-right fa fa-angle-right"></i></a></li>
+        <li><a href="{:Url('sale/line')}" style="height:auto;">我的下线<i class="pull-right fa fa-angle-right"></i></a></li>		
+        <li><a href="{:url('sale/order_list')}" style="height:auto;">分销订单<i class="pull-right fa fa-angle-right"></i></a></li>	
+    </ul>
+</div>
+</div>
+
+<script type="text/javascript" src="__PUBLIC__/js/jquery.min.js" ></script> 
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json.js" ></script> 
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/jquery.more.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/utils.js" ></script> 
+<script src="__TPL__/js/TouchSlide.1.1.js"></script> 
+<script src="__TPL__/js/ectouch.js"></script> 
+<script src="__TPL__/js/simple-inheritance.min.js"></script> 
+<script src="__TPL__/js/code-photoswipe-1.0.11.min.js"></script> 
+<script src="__PUBLIC__/bootstrap/js/bootstrap.min.js"></script> 
+<script src="__TPL__/js/jquery.scrollUp.min.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/validform.js" ></script> 
+<script language="javascript">
+	/*banner滚动图片*/
+		TouchSlide({
+			slideCell : "#focus",
+			titCell : ".hd ul", // 开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+			mainCell : ".bd ul",
+			effect : "left",
+			autoPlay : true, // 自动播放
+			autoPage : true, // 自动分页
+			delayTime: 200, // 毫秒；切换效果持续时间（执行一次效果用多少毫秒）
+			interTime: 2500, // 毫秒；自动运行间隔（隔多少毫秒后执行下一个效果）
+			switchLoad : "_src" // 切换加载，真实图片路径为"_src"
+		});
+	/*弹出评论层并隐藏其他层*/
+	function openSearch(){
+		if($(".con").is(":visible")){
+			$(".con").hide();	
+			$(".search").show();
+		}
+	}
+	function closeSearch(){
+		if($(".con").is(":hidden")){
+			$(".con").show();	
+			$(".search").hide();
+		}
+	}
+</script> 
+</body></html>

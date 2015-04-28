@@ -577,3 +577,42 @@ border: 1px solid transparent;border-radius: 4px;cursor: pointer;display: inline
 .ect-wholesale-list:first-child{margin-top:15px;}
 .ect-wholesale-list{clear:both; margin:6px 0; overflow:hidden;}
 
+
+
+/*share*/
+.ect-share-list{font-size:1.2em;}
+.ect-share-list li{padding:0 !important;}
+.ect-share-list li .fa-angle-right{font-size:1.5em !important;}
+.ect-share-list li a{display:block; width:100%; height:100%; padding:0.6em 0.6em !important;}
+
+.ect-share-order{margin-bottom:1rem;}
+.ect-share-order{background:none;}
+.ect-share-order li{background:#fff; margin-bottom:1.4rem; border-top:1px solid #e3e3e3; border-bottom:1px solid #e3e3e3 !important;}
+.ect-share-order section{margin-top:1.2rem; margin-bottom:1.2rem; overflow:hidden;}
+.ect-share-order>ul>li>h3{border-bottom:1px solid #e3e3e3; font-size:1.6rem; }
+.ect-share-order>ul>li>h4{border-top:1px solid #e3e3e3; padding-top:1.6rem; font-size:1.4rem;}
+
+
+.user-share-user{background:url(../images/user_share_img.png) no-repeat 0 0; background-size:cover; padding:0.6em 0; padding-bottom:6em; position:relative; overflow:hidden;}
+
+.user-share-local{padding-top:0.4rem; overflow:hidden;}
+.user-share-local i{font-size:2em; margin-left:0.6em; color:#fff; float:left;}
+.user-share-local span{color:#fff; margin-left:0.5em; font-size:1.1em; margin-top:0.2em; float:left;}
+
+.user-share-info{clear:both; margin-top:1.8em; margin-bottom:0.4em; margin-left:1em; overflow:hidden;}
+.user-share-info>.img{border:1px solid #fff;display:block; float:left; border-radius:100%}
+.user-share-info img{width:5em; height:5em; border-radius:100%; margin:0.4em;}
+.user-share-info h3{font-size:1.4em;}
+.user-share-info h4{font-size:1em; margin-top:0.4em; margin-left:0.6em;}
+
+.user-share-info .text{color:#fff;  margin-left:1em;}
+.user-share-info .text ul li{margin:0.2em 0; overflow:hidden;}
+
+.user-share-num{overflow:hidden;background:rgba(0,0,0,0.4);border-top:rgba(255,255,255,0.2) 1px solid; position:absolute; bottom:0; left:0; right:0;}
+
+.user-share-num ul li{padding:1em 0;color:#fff;}
+.user-share-num ul li h3{font-size:1.1em !important;}
+
+.user-share-code{position:absolute; right:1em;top:50%; margin-top:-2.4em;}
+.user-share-code img{width:2.6em; height:auto; margin-top:-1.8em;}
+.user-share-code i.fa-angle-right{font-size:3em; color:#fff;}

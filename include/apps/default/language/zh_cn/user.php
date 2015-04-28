@@ -26,6 +26,8 @@ $_LANG['label_comment'] = '我的评论';
 $_LANG['label_share'] = '我的分享';
 $_LANG['label_group_buy'] = '我的团购';
 $_LANG['label_booking'] = '缺货登记';
+$_LANG['label_fenxiao'] = '我要分销';
+$_LANG['label_fenxiao2'] = '我的分销';
 $_LANG['label_user_surplus'] = '资金管理';
 $_LANG['label_track_packages'] = '跟踪包裹';
 $_LANG['label_transform_points'] = '积分兑换';
@@ -714,5 +716,8 @@ $_LANG['passwd_questions']['favorite_novel']  = '我最喜欢的小说？';
 $_LANG['passwd_questions']['favorite_equipe'] = '我最喜欢的运动队？';
 
 $_LANG['can_not_empty'] = '不能为空';
+
+$_LANG['apply_sale_wait'] = '已提交申请,请等待审核';
+$_LANG['back_user_home_lnk'] = '返回用户首页';
 
 ?>

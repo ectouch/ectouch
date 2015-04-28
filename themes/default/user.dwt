@@ -59,6 +59,21 @@
       <p class="text-center">{$lang.label_booking}</p>
     </li>
     </a>
+	<!--  {if C('fenxiao')}  -->
+		<!--  {if $user_rank eq 100} -->
+		<a href="{:url('sale/index')}">
+		<li class="col-sm-3 col-xs-3"><i class="glyphicon glyphicon-link"></i>
+		  <p class="text-center">{$lang.label_fenxiao2}</p>
+		</li>
+		</a>
+		<!--  {else}  -->
+		<a href="{:url('user/apply_sale')}">
+		<li class="col-sm-3 col-xs-3"><i class="glyphicon glyphicon-link"></i>
+		  <p class="text-center">{$lang.label_fenxiao}</p>
+		</li>
+		</a>
+		<!--  {/if}  -->
+	<!--  {/if}  -->	
   </ul>
 </section>
 <section class="user-tab ect-margin-tb ect-margin-bottom0"> 

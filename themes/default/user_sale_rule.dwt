@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ECTouch演示站 - Powered by ECTouch.cn 触屏版</title>
+<link rel="stylesheet" href="../../data/common/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../data/common/bootstrap/css/font-awesome.min.css">
+<link rel="stylesheet" href="css/ectouch.css">
+<link rel="stylesheet" href="css/user.css">
+<link rel="stylesheet" href="css/photoswipe.css">
+
+</head><body>
+<div class="con">
+<div class="ect-bg">
+  <header class="ect-header ect-margin-tb ect-margin-lr text-center ect-bg icon-write"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>分享规则</span> </header>
+  <nav class="ect-nav ect-nav-list" style="display:none;">
+    <ul class="ect-diaplay-box text-center">
+      <li class="ect-box-flex"><a href="/ectouchwechat/index.php?m=default&c=index&a=index"><i class="ect-icon ect-icon-home"></i>首页</a></li>
+      <li class="ect-box-flex"><a href="/ectouchwechat/index.php?m=default&c=category&a=top_all"><i class="ect-icon ect-icon-cate"></i>分类</a></li>
+      <li class="ect-box-flex"><a href="javascript:openSearch();"><i class="ect-icon ect-icon-search"></i>搜索</a></li>
+      <li class="ect-box-flex"><a href="/ectouchwechat/index.php?m=default&c=flow&a=cart"><i class="ect-icon ect-icon-flow"></i>购物车</a></li>
+      <li class="ect-box-flex"><a href="/ectouchwechat/index.php?m=default&c=user&a=index"><i class="ect-icon ect-icon-user"></i>个人中心</a></li>
+    </ul>
+  </nav>
+</div>
+<div class="ect-pro-list" style="border-bottom:1px solid #e3e3e3;">
+	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
+    <tbody><tr align="center" class="first-tr">
+      <td>等级</td>
+      <td>人数</td>
+      <td>积分分成百分比</td>
+      <td>现金分成百分比</td>
+    </tr>
+        <tr align="center">
+      <td>1</td>
+      <td>0</td>
+      <td>60%</td>
+      <td>60%</td>
+    </tr>
+        <tr align="center">
+      <td>2</td>
+      <td>0</td>
+      <td>30%</td>
+      <td>30%</td>
+    </tr>
+        <tr align="center">
+      <td>3</td>
+      <td>0</td>
+      <td>7%</td>
+      <td>7%</td>
+    </tr>
+        <tr align="center">
+      <td>4</td>
+      <td>0</td>
+      <td>3%</td>
+      <td>3%</td>
+    </tr>
+        <tr align="center">
+      <td>5</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+      </tbody></table>
+</div>
+</div>
+<script type="text/javascript" src="../../data/common/js/jquery.min.js" ></script> 
+<script type="text/javascript" src="../../ectouchwechat/data/common/js/jquery.json.js" ></script> 
+<script type="text/javascript" src="../../ectouchwechat/data/common/js/common.js"></script> 
+<script type="text/javascript" src="../../ectouchwechat/data/common/js/jquery.more.js"></script> 
+<script type="text/javascript" src="../../ectouchwechat/data/common/js/utils.js" ></script> 
+<script src="js/TouchSlide.1.1.js"></script> 
+<script src="js/ectouch.js"></script> 
+<script src="js/simple-inheritance.min.js"></script> 
+<script src="js/code-photoswipe-1.0.11.min.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/jquery.scrollUp.min.js"></script> 
+<script type="text/javascript" src="js/validform.js" ></script> 
+<script language="javascript">
+	/*banner滚动图片*/
+		TouchSlide({
+			slideCell : "#focus",
+			titCell : ".hd ul", // 开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+			mainCell : ".bd ul",
+			effect : "left",
+			autoPlay : true, // 自动播放
+			autoPage : true, // 自动分页
+			delayTime: 200, // 毫秒；切换效果持续时间（执行一次效果用多少毫秒）
+			interTime: 2500, // 毫秒；自动运行间隔（隔多少毫秒后执行下一个效果）
+			switchLoad : "_src" // 切换加载，真实图片路径为"_src"
+		});
+	/*弹出评论层并隐藏其他层*/
+	function openSearch(){
+		if($(".con").is(":visible")){
+			$(".con").hide();	
+			$(".search").show();
+		}
+	}
+	function closeSearch(){
+		if($(".con").is(":hidden")){
+			$(".con").show();	
+			$(".search").hide();
+		}
+	}
+
+</body></html>

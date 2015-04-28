@@ -43,6 +43,9 @@ class UserController extends CommonController {
      * 会员中心欢迎页
      */
     public function index() {
+        // 是否成为分销商
+        $user_info = model('ClipsBase')->get_user_default($this->user_id);
+        $this->assign('user_rank',$user_info['user_rank']);
         // 用户等级
         if ($rank = model('ClipsBase')->get_rank_info()) {
             $this->assign('rank_name', sprintf(L('your_level'), $rank['rank_name']));
@@ -669,7 +672,7 @@ class UserController extends CommonController {
         $order['shipping_status'] = L('ss.' . $order['shipping_status']);
         // 如果是银行汇款或货到付款 则显示支付描述
         $payment = model('Order')->payment_info($order ['pay_id']);
-        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'cod'){
+        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'balance'){
             $this->assign('pay_desc',$payment['pay_desc']);
         }
 		
@@ -1777,10 +1780,16 @@ class UserController extends CommonController {
             
 
             
-            
+            // 判断是否为分销商推荐用户
+            if (session('sale_id')){
+                $other['parent_id'] = session('sale_id');
+            }
             
             if (model('Users')->register($username, $password, $email, $other) !== false) {
-                
+                // 判断是否为分销商推荐用户
+                if (session('sale_id')){
+                    session('sale_id',null);
+                }
 
                 $sel_question = I('post.sel_question');
                 $passwd_answer = I('post.passwd_answer');
@@ -2330,6 +2339,27 @@ class UserController extends CommonController {
                 }
             }
         }
+    }
+    
+    /**
+     *  申请成为分销商
+     */
+    public function apply_sale(){
+        
+        // 分销商短信验证
+         if(C('sms_fenxiao') > 0 && intval(C('sms_signin')) > 0){
+            $user_info = model('Users')->get_profile($this->user_id);
+            $this->assign('user_info', $user_info);
+            $_SESSION['sms_code'] = $sms_code = md5(mt_rand(1000, 9999));
+            $this->assign('sms_code', $sms_code);
+            $this->display('user_apply_sale.dwt');
+            exit;
+        }else{
+            $time = gmtime();
+            $sql = "update ".M()->pre."users set apply_sale=1 , apply_time = ".$time." where user_id = ".session('user_id');
+            M()->query($sql);
+        }
+        show_message(L('apply_sale_wait'), L('back_user_home_lnk'), url('user/index'), 'info');
     }
 
 }

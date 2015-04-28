@@ -48,8 +48,39 @@ class SaleController extends CommonController {
      * 会员中心欢迎页
      */
     public function index() {
+        // 分销二维码
+
+        $mobile_qr = 'data/sale/sale_qrcode_'.$this->user_id.'.png';
+        if (!file_exists($mobile_qr)){
+            //生成分享连接
+            $shopurl = __HOST__.url('index/index',array('sale'=>$this->user_id));
+            $this->assign('shopurl', $shopurl);
+            $this->assign('domain', __HOST__);
+            $this->assign('shopdesc', C('shop_desc'));
+            
+            // 生成二维码
+            $mobile_url = __URL__; // 二维码内容
+            $errorCorrectionLevel = 'L'; // 纠错级别：L、M、Q、H
+            $matrixPointSize = 7; // 点的大小：1到10
+            QRcode::png($shopurl, ROOT_PATH . $mobile_qr, $errorCorrectionLevel, $matrixPointSize, 2);
+        }
+        // 二维码路径赋值
+        $this->assign('mobile_qr', $mobile_qr); 
+        
+        // 订单数量
+        $count = $this->model->table('order_info')->where('parent_id = ' . $this->user_id)->count();
+        $this->assign('order_count', $count);
+        
+        //我的下线数量
+        $line_count = model('Sale')->get_line_count();
+        $this->assign('line_count', $line_count);
+        
+        //分销产品
+        $goods_count = model('Sale')->get_sale_goods_count();
+        $this->assign('goods_count', $goods_count);
+        
         // 用户类型
-        $this->assign('rank_name', sprintf(L('your_level'), '分销用户'));
+        $this->assign('rank_name', sprintf('分销用户'));
         // 用户余额
         $surplus_amount = model('ClipsBase')->get_user_surplus($this->user_id);
         if (empty($surplus_amount)) {
@@ -64,7 +95,7 @@ class SaleController extends CommonController {
         }
         $this->assign('user_notice', C('user_notice'));
         $this->assign('title', L('user_center'));
-        $this->display('sale.dwt');
+        $this->display('user_sale.dwt');
     }
 
     /**
@@ -659,7 +690,7 @@ class SaleController extends CommonController {
         $this->assign('mobile_qr', $mobile_qr);
         
         $this->assign('title','我要分销');
-        $this->display('to_sale.dwt');
+        $this->display('user_sale_code.dwt');
     }
     
     /**
@@ -677,7 +708,7 @@ class SaleController extends CommonController {
         //模板赋值
         $this->assign('list',    $list);
         $this->assign('title','我的下线');
-        $this->display('sale_line.dwt');
+        $this->display('user_sale_offline.dwt');
     }
     
     /**
@@ -705,7 +736,7 @@ class SaleController extends CommonController {
         if (I('get.uid') > 0){
              $this->assign('uname', model('Sale')->get_user_by_id(I('get.uid')));
         }
-        $this->display('sale_order_list.dwt');
+        $this->display('user_sale_order.dwt');
     }
     
     /**

@@ -446,6 +446,7 @@ class UsersModel extends BaseModel {
         $info['mobile_phone'] = $infos['mobile_phone'];
         $info['passwd_question'] = $infos['passwd_question'];
         $info['passwd_answer'] = $infos['passwd_answer'];
+        $info['user_rank'] = $infos['user_rank'];
 
         return $info;
     }
