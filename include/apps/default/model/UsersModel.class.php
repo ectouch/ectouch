@@ -749,7 +749,7 @@ class UsersModel extends BaseModel {
             /* 添加地址 */
             $this->table = 'user_address';
             $res = $this->insert($consignee);
-            $consignee['address_id'] = mysql_insert_id();
+            $consignee['address_id'] = M()->insert_id();
         }
 
         if ($default) {

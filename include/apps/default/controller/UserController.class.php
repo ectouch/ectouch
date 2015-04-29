@@ -1136,7 +1136,7 @@ class UserController extends CommonController {
             );
 
             if (model('ClipsBase')->add_message($message)) {
-                $data['msg_id'] = mysql_insert_id();
+                $data['msg_id'] = M()->insert_id();
                 $this->model->table('touch_feedback')
                         ->data($data)
                         ->insert();
