@@ -3,10 +3,9 @@
 	ALTER TABLE `ecs_users` ADD COLUMN `apply_sale` int(1) UNSIGNED NOT NULL DEFAULT 0;
 	ALTER TABLE `ecs_users` ADD COLUMN `apply_time` int(11) UNSIGNED NOT NULL DEFAULT 0;
 	
-	INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_ecmoban_password', 'password', '', '', '', 0);
-	INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_signin', 'select', '1,0', '', '0', 1);
-	
-	INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_signin', 'select', '1,0', '', '0', 1);
-	
 	INSERT INTO `ecs_user_rank` VALUES ('100', '分销用户', '0', '0', '100', '1', '1');
+	
+	INSERT INTO `ecs_touch_shop_config` VALUES ('910', '8', 'sms_fenxiao', 'select', '1,0', '', '1', '1');
+
+	INSERT INTO `ecs_touch_shop_config` VALUES ('909', '1', 'fenxiao', 'select', '1,0', '', '1', '1');
 	

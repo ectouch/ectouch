@@ -315,10 +315,6 @@ INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_d
 
 INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (1, 'show_asynclist', 'select', '1,0', '', '0', 1);
 
-INSERT INTO `ecs_touch_shop_config` VALUES ('910', '8', 'sms_fenxiao', 'select', '1,0', '', '1', '1');
-
-INSERT INTO `ecs_touch_shop_config` VALUES ('909', '1', 'fenxiao', 'select', '1,0', '', '1', '1');
-
 -- ----------------------------
 -- 增加短信接口配置项
 -- ----------------------------
@@ -326,6 +322,8 @@ DELETE FROM ecs_touch_shop_config where code = 'sms_ecmoban_user';
 DELETE FROM ecs_touch_shop_config where code = 'sms_ecmoban_password';
 DELETE FROM ecs_touch_shop_config where code = 'sms_signin';
 INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_ecmoban_user', 'text', '', '', '', 0);
+INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_ecmoban_password', 'password', '', '', '', 0);
+INSERT INTO `ecs_touch_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_signin', 'select', '1,0', '', '0', 1);
 
 --
 -- 表的结构 `ecs_touch_user`
