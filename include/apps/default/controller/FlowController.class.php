@@ -1222,7 +1222,7 @@ class FlowController extends CommonController {
                 die(M()->errorMsg());
             }
         } while ($error_no == 1062); // 如果是订单号重复则重新提交数据
-        $new_order_id = mysql_insert_id();
+        $new_order_id = M()->insert_id();
         $order ['order_id'] = $new_order_id;
 
         /* 插入订单商品 */

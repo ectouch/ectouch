@@ -373,7 +373,7 @@ class EcModel {
     
     // 返回最后一次插入数据库的ID号
     function insert_id(){
-        return $this->db->insert_id();
+        return $this->db->lastId();
     }
     
     // 返回错误信息
