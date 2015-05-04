@@ -207,7 +207,7 @@ DROP TABLE IF EXISTS `ecs_touch_goods`;
 CREATE TABLE IF NOT EXISTS `ecs_touch_goods` (
   `goods_id` int(10) unsigned default NULL COMMENT '外键',
   `sales_volume` int(10) unsigned default NULL COMMENT '销量统计',
-  UNIQUE KEY `goods_id` (`goods_id`)
+  PRIMARY KEY `goods_id` (`goods_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
