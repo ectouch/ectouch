@@ -21,13 +21,15 @@ class AuctionController extends AdminController {
      * 拍卖活动列表
      */
     public function index() {
-        $condition['act_type'] = GAT_GROUP_BUY;
-        $list = $this->auction_list();
-        /* 模板赋值 */
+        $condition['act_type'] = GAT_AUCTION;
+        
+        /* 分页 */
         $filter['page'] = '{page}';
         $offset = $this->pageLimit(url('index', $filter), 12);
         $total = $this->model->table('goods_activity')->where($condition)->count();
         $this->assign('page', $this->pageShow($total));
+        /* 模板赋值 */
+        $list = $this->auction_list($offset);
         $this->assign('auction_list', $list['item']);
         $this->assign('ur_here', L('group_buy_list'));
         $this->display();

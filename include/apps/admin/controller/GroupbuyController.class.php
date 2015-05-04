@@ -22,7 +22,13 @@ class GroupbuyController extends AdminController {
      */
     public function index() {
         $condition['act_type'] = GAT_GROUP_BUY;
-        $res = $this->model->table('goods_activity')->field('act_id , act_name, goods_name, end_time ,ext_info')->where($condition)->order('act_id DESC')->select();
+
+        $filter['page'] = '{page}';
+        $offset = $this->pageLimit(url('index', $filter), 12);
+        $total = $this->model->table('goods_activity')->where($condition)->count();
+        $this->assign('page', $this->pageShow($total));
+
+        $res = $this->model->table('goods_activity')->field('act_id , act_name, goods_name, end_time ,ext_info')->where($condition)->order('act_id DESC')->limit($offset)->select();
         foreach ($res as $row) {
             $ext_info = unserialize($row['ext_info']);
             $stat = model('GroupBuyBase')->group_buy_stat($row['act_id'], $ext_info['deposit']);
@@ -60,10 +66,6 @@ class GroupbuyController extends AdminController {
             $list[] = $arr;
         }
         /* 模板赋值 */
-        $filter['page'] = '{page}';
-        $offset = $this->pageLimit(url('index', $filter), 12);
-        $total = $this->model->table('goods_activity')->where($condition)->count();
-        $this->assign('page', $this->pageShow($total));
         $this->assign('list', $list);
         $this->assign('ur_here', L('group_buy_list'));
         $this->display();

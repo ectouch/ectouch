@@ -24,9 +24,10 @@ class TopicController extends AdminController {
         /* 模板赋值 */
         $filter['page'] = '{page}';
         $offset = $this->pageLimit(url('index', $filter), 12);
-        $total = $this->model->table('goods_activity')->where()->count();
-        $list = $this->get_topic_list($offset);
+        $total = $this->model->table('touch_topic')->where()->count();
         $this->assign('page', $this->pageShow($total));
+
+        $list = $this->get_topic_list($offset);
         $this->assign('topic_list', $list);
         $this->assign('ur_here', L('09_topic'));
         $this->assign('action_link', array('text' => L('topic_add'), 'href' => url('add')));

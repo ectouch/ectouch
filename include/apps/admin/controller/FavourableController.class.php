@@ -22,12 +22,14 @@ class FavourableController extends AdminController {
      * 活动列表
      */
     public function index() {
-        $list = $this->favourable_list();
-        /* 模板赋值 */
+        
+        /* 分页 */
         $filter['page'] = '{page}';
         $offset = $this->pageLimit(url('index', $filter), 12);
         $total = $this->model->table('favourable_activity')->where()->count();
         $this->assign('page', $this->pageShow($total));
+        /* 模板赋值 */
+        $list = $this->favourable_list($offset);
         $this->assign('list', $list);
         $this->assign('ur_here', L('favourable_list'));
         $this->display();
@@ -74,12 +76,12 @@ class FavourableController extends AdminController {
      * @return   array
      */
 
-    private function favourable_list() {
+    private function favourable_list($offset = '0, 12') {
         /* 查询 */
         $sql = "SELECT * " .
                 "FROM " . $this->model->pre .
                 "favourable_activity WHERE 1" .
-                " ORDER BY act_id  DESC";
+                " ORDER BY act_id  DESC  LIMIT $offset";
         $res = $this->model->query($sql);
         $list = array();
         foreach ($res as $row) {
