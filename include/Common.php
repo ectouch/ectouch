@@ -924,8 +924,26 @@ function C($name=null, $value=null, $default=null) {
 		// 二维数组设置和获取支持
         $name = explode('.', $name);
         $name[0] = strtoupper($name[0]);
-        if (is_null($value))
-            return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
+        if (is_null($value)){
+                if(isset($_config[$name[0]][$name[1]])){
+                    return $_config[$name[0]][$name[1]];
+                } else if (isset($_config['APP'][$name[0]][$name[1]])) {
+                    return $_config['APP'][$name[0]][$name[1]];
+                } else if (isset($_config['DB'][$name[0]][$name[1]])) {
+                    return $_config['DB'][$name[0]][$name[1]];
+                } else if (isset($_config['TPL'][$name[0]][$name[1]])) {
+                    return $_config['TPL'][$name[0]][$name[1]];
+                } else if (isset($_config['CFG'][$name[0]][$name[1]])) {
+                    return $_config['CFG'][$name[0]][$name[1]];
+                } else if (isset($_config['SESSION'][$name[0]][$name[1]])) {
+                    return $_config['SESSION'][$name[0]][$name[1]];
+                } else if (isset($_config['COOKIE'][$name[0]][$name[1]])) {
+                    return $_config['COOKIE'][$name[0]][$name[1]];
+                }else{
+                    return $default;
+                }
+        }
+            // return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
 		$_config[$name[0]][$name[1]] = is_array($value) ? array_merge($_config[$name[0]][$name[1]], $value) : $value;
         return null;
     }
