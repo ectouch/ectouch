@@ -23,9 +23,6 @@
     <!--{/foreach}-->
     </p>
     <!-- {/if} -->
-    <!-- {if $order.invoice_no}-->
-    <p> <a href="{:url('user/order_tracking', array('order_id'=>$this->_var['order']['order_id']))}" type="button" class="btn btn-info ect-btn-info ect-colorf ect-bg">{$lang.order_tracking}</a> </p>
-    <!--{/if}--> 
   </div>
   {if $order.order_amount gt 0}
 	<section class="ect-padding-lr ect-padding-tb ect-margin-tb ect-margin-bottom0">{$order.pay_online}</section>
@@ -39,7 +36,15 @@
             <h4 class="title"><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}">{$goods.goods_name}{$goods.goods_attr}</a></h4>
           </dt>
           <dd class="dd-price"><b>{$lang.shop_price}{$goods.goods_price} {$lang.number_to}：{$goods.goods_number}</b></dd>
-          <dd class="dd-price"><b >{$lang.ws_subtotal}：<span class="ect-colory">{$goods.subtotal}</span></b></dd>
+          <dd class="dd-price"><b class="pull-left">{$lang.ws_subtotal}：<span class="ect-colory">{$goods.subtotal}</span></b>
+		  	<b class="service">
+		  	<!--{if $goods.aftermarket eq 1}-->
+			<a href="{:url('user/aftermarket_done',array('rec_id'=>$this->_var['goods']['rec_id'],'order_id'=>$this->_var['order']['order_id']))}" >查看申请记录</a>
+			<!--{else}-->
+			<a href="{:url('user/aftermarket',array('rec_id'=>$this->_var['goods']['rec_id'],'order_id'=>$this->_var['order']['order_id']))}" >申请售后</a>
+			<!--{/if}-->
+			</b>
+		  </dd>
         </dl>
       </li>
       <!-- {/foreach} -->
@@ -47,7 +52,7 @@
   </div>
 </section>
 <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center"> {$order.handler} 
-  <!-- {if $order.shipping_id > 0} --><a class="btn btn-info ect-bg-colory" type="button" href="{:url('order_tracking', array('order_id'=>$this->_var['order']['order_id']))}">{$lang.order_tracking}</a><!-- {/if} --> 
+  <!-- {if $order.invoice_no} --><a class="btn btn-info ect-bg-colory" type="button" href="{:url('order_tracking', array('order_id'=>$this->_var['order']['order_id']))}">{$lang.order_tracking}</a><!-- {/if} --> 
 </div>
 <section class="order-detail-info ect-margin-tb" style="margin-bottom:0;">
   <ul>
