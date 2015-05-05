@@ -37,13 +37,7 @@
           </dt>
           <dd class="dd-price"><b>{$lang.shop_price}{$goods.goods_price} {$lang.number_to}：{$goods.goods_number}</b></dd>
           <dd class="dd-price"><b class="pull-left">{$lang.ws_subtotal}：<span class="ect-colory">{$goods.subtotal}</span></b>
-		  	<b class="service">
-		  	<!--{if $goods.aftermarket eq 1}-->
-			<a href="{:url('user/aftermarket_done',array('rec_id'=>$this->_var['goods']['rec_id'],'order_id'=>$this->_var['order']['order_id']))}" >查看申请记录</a>
-			<!--{else}-->
-			<a href="{:url('user/aftermarket',array('rec_id'=>$this->_var['goods']['rec_id'],'order_id'=>$this->_var['order']['order_id']))}" >申请售后</a>
-			<!--{/if}-->
-			</b>
+		  	
 		  </dd>
         </dl>
       </li>
