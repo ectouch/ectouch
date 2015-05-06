@@ -181,7 +181,7 @@ class Page {
             case 1:
                 //$this->firstPage() . $this->prePage() . $this->nowBar() . $this->nextPage() . $this->lastPage();
 
-                return $pager = array('page_first' => $this->firstPage(), 'page_prev' => $this->prePage(), 'page_next' => $this->nextPage(), 'page_last' => $this->lastPage(), 'page_number' => $this->showselect(), 'page' => $this->nowIndex, 'page_count' => $this->totalPage);
+                return $pager = array('page_first' => $this->firstPage(), 'page_prev' => $this->prePage(), 'page_next' => $this->nextPage(), 'page_last' => $this->lastPage(), 'page_number' => $this->showselect(), 'page' => $this->nowIndex, 'page_count' => $this->totalPage , 'count'=>$total);
 //                 $GLOBALS['smarty']->assign('pager', $pager);
                 break;
             case 2:
