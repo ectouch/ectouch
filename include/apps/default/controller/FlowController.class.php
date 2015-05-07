@@ -1207,7 +1207,7 @@ class FlowController extends CommonController {
             $parent_id = 0;
         }
         //分销 start
-        $parent_id = model('Sale')->get_parent_id($parent_id);
+        //$parent_id = model('Sale')->get_parent_id($parent_id);
         $order ['parent_id'] = $parent_id;
 
         /* 插入订单表 */
