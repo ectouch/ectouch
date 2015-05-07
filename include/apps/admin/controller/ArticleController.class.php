@@ -29,7 +29,7 @@ class ArticleController extends AdminController {
         //分页
         $filter['page'] = '{page}';
         $offset = $this->pageLimit(url('index', $filter), 12);
-        $total = model('ArticleBase')->get_article_count(0);
+        $total = model('ArticleBase')->get_article_count('-1,0');
         $this->assign('page', $this->pageShow($total));
         
         $article_list = model('ArticleBase')->get_articleslist($offset);
