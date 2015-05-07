@@ -43,9 +43,6 @@ class UserController extends CommonController {
      * 会员中心欢迎页
      */
     public function index() {
-        // 是否成为分销商
-        $user_info = model('ClipsBase')->get_user_default($this->user_id);
-        $this->assign('user_rank',$user_info['user_rank']);
         // 用户等级
         if ($rank = model('ClipsBase')->get_rank_info()) {
             $this->assign('rank_name', sprintf(L('your_level'), $rank['rank_name']));
