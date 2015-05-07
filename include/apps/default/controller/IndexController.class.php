@@ -21,10 +21,6 @@ class IndexController extends CommonController {
      * 首页信息
      */
     public function index() {
-        // 设置分销商id
-        if (I('sale')){
-            session('sale_id',I('sale'));
-        }
         // 自定义导航栏
         $navigator = model('Common')->get_navigator();
         $this->assign('navigator', $navigator['middle']);

@@ -455,12 +455,4 @@ $_LANG['cfg_range']['sms_signin']['0'] = '不发短信';
 $_LANG['cfg_name']['sms_ecmoban_user'] = '短信接口用户名';
 $_LANG['cfg_name']['sms_ecmoban_password'] = '短信接口密码';
 
-
-$_LANG['cfg_name']['fenxiao'] = '分销';
-$_LANG['cfg_range']['fenxiao']['1'] = '开启';
-$_LANG['cfg_range']['fenxiao']['0'] = '关闭';
-$_LANG['cfg_name']['sms_fenxiao'] = '申请分销时发短信';
-$_LANG['cfg_range']['sms_fenxiao']['1'] = '开启';
-$_LANG['cfg_range']['sms_fenxiao']['0'] = '关闭';
-
 ?>

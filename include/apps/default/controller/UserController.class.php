@@ -1778,19 +1778,8 @@ class UserController extends CommonController {
                 }
             }
             
-
-            
-            // 判断是否为分销商推荐用户
-            if (session('sale_id')){
-                $other['parent_id'] = session('sale_id');
-            }
-            
             if (model('Users')->register($username, $password, $email, $other) !== false) {
-                // 判断是否为分销商推荐用户
-                if (session('sale_id')){
-                    session('sale_id',null);
-                }
-
+                
                 $sel_question = I('post.sel_question');
                 $passwd_answer = I('post.passwd_answer');
                 
@@ -2340,26 +2329,4 @@ class UserController extends CommonController {
             }
         }
     }
-    
-    /**
-     *  申请成为分销商
-     */
-    public function apply_sale(){
-        
-        // 分销商短信验证
-         if(C('sms_fenxiao') > 0 && intval(C('sms_signin')) > 0){
-            $user_info = model('Users')->get_profile($this->user_id);
-            $this->assign('user_info', $user_info);
-            $_SESSION['sms_code'] = $sms_code = md5(mt_rand(1000, 9999));
-            $this->assign('sms_code', $sms_code);
-            $this->display('user_apply_sale.dwt');
-            exit;
-        }else{
-            $time = gmtime();
-            $sql = "update ".M()->pre."users set apply_sale=1 , apply_time = ".$time." where user_id = ".session('user_id');
-            M()->query($sql);
-        }
-        show_message(L('apply_sale_wait'), L('back_user_home_lnk'), url('user/index'), 'info');
-    }
-
 }
