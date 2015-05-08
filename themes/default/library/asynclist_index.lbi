@@ -5,7 +5,7 @@
     <dt>
       <h4 class="title"><a href="{$hot_goods.url}">{$hot_goods.name}</a></h4>
     </dt>
-    <dd class="dd-price"><span class="pull-left"><strong>价格：<b class="ect-colory"><!--{if $hot_goods.promote_price}-->{$hot_goods.promote_price}<!--{else}-->{$hot_goods.shop_price}<!--{/if}--></b></strong> <small class="ect-margin-lr">{$hot_goods.market_price}</del></small></span> <span class="ect-pro-price"> 
+    <dd class="dd-price"><span class="pull-left"><strong>{$lang.sort_price}：<b class="ect-colory"><!--{if $hot_goods.promote_price}-->{$hot_goods.promote_price}<!--{else}-->{$hot_goods.shop_price}<!--{/if}--></b></strong> <small class="ect-margin-lr"><del>{$hot_goods.market_price}</del></small></span> <span class="ect-pro-price"> 
       
       <!--{if $hot_goods.promotion} --> 
       <!-- {foreach from=$hot_goods.promotion item=promotion} --> 
