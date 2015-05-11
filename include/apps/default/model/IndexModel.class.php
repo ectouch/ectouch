@@ -130,7 +130,7 @@ class IndexModel extends CommonModel {
      *  by Leah
      */
     function get_recommend_res() {
-        $cat_recommend_res = $this->query("SELECT c.cat_id, c.cat_name, cr.recommend_type FROM " . $this->pre . "cat_recommend AS cr INNER JOIN " . $this->pre . "category AS c ON cr.cat_id=c.cat_id");
+        $cat_recommend_res = $this->query("SELECT c.cat_id, c.cat_name, cr.recommend_type FROM " . $this->pre . "cat_recommend AS cr INNER JOIN " . $this->pre . "category AS c ON cr.cat_id=c.cat_id AND c.is_show = 1 ORDER BY c.sort_order ASC, c.cat_id ASC");
         if (!empty($cat_recommend_res)) {
             $cat_rec = array();
             foreach ($cat_recommend_res as $cat_recommend_data) {
