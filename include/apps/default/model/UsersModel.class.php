@@ -1773,7 +1773,8 @@ class UsersModel extends BaseModel {
      */
     function get_one_user($aite_id) {
         $sql = 'SELECT user_name FROM ' . $this->pre . 'users WHERE aite_id = "' . $aite_id . '" ';
-        return $this->row($sql);
+        $res = $this->row($sql);
+        return $res['user_name'];
     }
 
     /**

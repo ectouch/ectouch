@@ -1931,8 +1931,8 @@ class UserController extends CommonController {
                     // 获取用户信息
                     $userinfo = $res->get_user_info($openid);
                     // 处理数据
-                    $userinfo['user_name'] = $userinfo['aite_id'] = $type . '_' . $openid; // 添加登录标示
-                    if (model('Users')->get_one_user($userinfo['user_name'])) {
+                    $userinfo['aite_id'] = $type . '_' . $openid; // 添加登录标示
+                    if ($userinfo['user_name'] = model('Users')->get_one_user($userinfo['aite_id'])) {
                         // 已有记录
                         self::$user->set_session($userinfo['user_name']);
                         self::$user->set_cookie($userinfo['user_name']);
@@ -1941,7 +1941,12 @@ class UserController extends CommonController {
                         $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
                         $this->redirect($jump_url);
                     }
-                    $userinfo['email'] = empty($userinfo['email']) ? get_pinyin($userinfo['user_name']) . '@' . get_top_domain() : $userinfo['email'];
+                    $userinfo['user_name'] = $userinfo['nickname'];
+                    if(self::$user->check_user($userinfo['user_name']))  // 重名处理
+                    {
+                      $userinfo['user_name'] = $userinfo['user_name'].rand(1000, 9999);
+                    }
+                    $userinfo['email'] = empty($userinfo['email']) ? $userinfo['user_name'] . '@' . get_top_domain() : $userinfo['email'];
                     // 插入数据库
                     model('Users')->third_reg($userinfo);
                     self::$user->set_session($userinfo['user_name']);
