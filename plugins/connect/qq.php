@@ -186,6 +186,17 @@ class qq {
         );
         return $this->api('user/get_user_info', $params);
     }
+	 /**
+     * 获取用户名
+     *
+     * @param unknown $user_info            
+     * @return Ambigous <multitype:, mixed>
+     */
+	public function get_user_name($userinfo){
+		
+		return $userinfo['nickname'];
+		
+		}
 
     /**
      * 发布分享

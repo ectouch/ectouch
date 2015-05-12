@@ -1932,29 +1932,44 @@ class UserController extends CommonController {
                     $userinfo = $res->get_user_info($openid);
                     // 处理数据
                     $userinfo['aite_id'] = $type . '_' . $openid; // 添加登录标示
-                    if ($userinfo['user_name'] = model('Users')->get_one_user($userinfo['aite_id'])) {
-                        // 已有记录
-                        self::$user->set_session($userinfo['user_name']);
-                        self::$user->set_cookie($userinfo['user_name']);
+					$userinfo['user_name'] = $res->get_user_name($userinfo);
+					//正则匹配
+					$userinfo['user_name'] = preg_replace("/^[a-za-z0-9][u4e00-u9fa5]{5,19}+/","", $userinfo['user_name']);
+					//aite_id 是绑定用户的唯一字段
+					if( model('Users')->get_user_exit($userinfo['aite_id'])>0 ){
+						// 已有记录，查询该记录的用户名
+						$user_name = model('Users')->get_one_user($userinfo['aite_id']);
+                        self::$user->set_session($user_name );
+                        self::$user->set_cookie($user_name );
                         model('Users')->update_user_info();
                         model('Users')->recalculate_price();
                         $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
                         $this->redirect($jump_url);
-                    }
-                    $userinfo['user_name'] = $userinfo['nickname'];
+
+					}
                     if(self::$user->check_user($userinfo['user_name']))  // 重名处理
                     {
                       $userinfo['user_name'] = $userinfo['user_name'].rand(1000, 9999);
                     }
-                    $userinfo['email'] = empty($userinfo['email']) ? $userinfo['user_name'] . '@' . get_top_domain() : $userinfo['email'];
+                    $userinfo['email'] = empty($userinfo['email']) ? preg_replace('/([\x{4e00}-\x{9fa5}]){1}/u','',get_pinyin($userinfo['user_name'])) . '@' . get_top_domain() : $userinfo['email'];
                     // 插入数据库
-                    model('Users')->third_reg($userinfo);
-                    self::$user->set_session($userinfo['user_name']);
-                    self::$user->set_cookie($userinfo['user_name']);
-                    model('Users')->update_user_info();
-                    model('Users')->recalculate_price();
-                    $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
-                    $this->redirect($jump_url);
+                    if( model('Users')->third_reg($userinfo)){
+						self::$user->set_session($userinfo['user_name']);
+						self::$user->set_cookie($userinfo['user_name']);
+						
+						model('Users')->update_user_info();
+						model('Users')->recalculate_price();
+						$jump_url = empty($this->back_act) ? url('index') : $this->back_act;
+						$this->redirect($jump_url);
+						}
+						else{
+							//插入数据失败
+							$_SESSION['login_fail']++;
+							 show_message(L('parm_error'), L('relogin_lnk'), url('login', array(
+								'referer' => urlencode($this->back_act)
+									)), 'error');
+							}
+                    
                 }
             } else {
                 show_message(L('process_false'), L('relogin_lnk'), url('login', array(

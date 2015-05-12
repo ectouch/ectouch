@@ -169,7 +169,21 @@ class sina {
         );
         return $this->api('users/show', $params);
     }
-
+    /**
+     * 获取用户名
+     *
+     * @param unknown $user_info            
+     * @return Ambigous <multitype:, mixed>
+     */
+	public function get_user_name($userinfo){
+		
+		if($userinfo['screen_name'] != ''){
+			return $userinfo['screen_name'];
+			}
+			else{
+				return $userinfo['name'];
+			}
+		}
     /**
      * 发布微博
      *

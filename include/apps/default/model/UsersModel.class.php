@@ -1771,12 +1771,29 @@ class UsersModel extends BaseModel {
      * @param type $aite_id
      * @return type 
      */
-    function get_one_user($aite_id) {
-        $sql = 'SELECT user_name FROM ' . $this->pre . 'users WHERE aite_id = "' . $aite_id . '" ';
+    function get_user_exit($aite_id) {
+		$sql = 'SELECT COUNT(*) as count ' .
+                'FROM ' . $this->pre . 'users AS u ' .
+				'LEFT JOIN ' .$this->pre. 'touch_user_info AS tu ON u.user_id = tu.user_id ' .
+                ' WHERE tu.aite_id = "'.$aite_id.'"';
+        $res = $this->row($sql);
+        return $res['count'];
+    }
+	/**
+     * 检查该用户用户名称
+     * @param type $aite_id
+     * @return type 
+     */
+	function get_one_user($aite_id){
+		$sql = 'SELECT user_name ' .
+                'FROM ' . $this->pre . 'users AS u ' .
+				'LEFT JOIN ' .$this->pre. 'touch_user_info AS tu ON u.user_id = tu.user_id ' .
+                ' WHERE tu.aite_id = "'.$aite_id.'"';
         $res = $this->row($sql);
         return $res['user_name'];
-    }
-
+		
+	}
+	
     /**
      * 插入第三方登录信息到数据库 
      * @param type $info
@@ -1787,12 +1804,9 @@ class UsersModel extends BaseModel {
         $password = time();
         $email = $info['email'];
         if ($this->register($username, $password, $email) !== false) {
-            $uid = $_SESSION['user_id'];
-            $sql = "update " . $this->pre . "users set aite_id='".$info['aite_id']."' where user_id='$uid'";
-            $this->query($sql);
             // 更新附表
             $this->table = "touch_user_info";
-            $touch_data['user_id'] = $uid;
+            $touch_data['user_id'] = $_SESSION['user_id'];
             $touch_data['aite_id'] = $info['aite_id'];
             $this->insert($touch_data);
             return true;
