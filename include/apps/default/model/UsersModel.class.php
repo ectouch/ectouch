@@ -12,7 +12,6 @@
  * Licensed ( http://www.ectouch.cn/docs/license.txt )
  * ----------------------------------------------------------------------------
  */
-
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
@@ -167,7 +166,7 @@ class UsersModel extends BaseModel {
             if (!empty($register_points)) {
                 model('ClipsBase')->log_account_change($_SESSION['user_id'], 0, 0, C('register_points'), C('register_points'), L('register_points'));
             }
-            
+
             //定义other合法的变量数组
             $other_key_array = array('msn', 'qq', 'office_phone', 'home_phone', 'mobile_phone', 'parent_id');
             $update_data['reg_time'] = local_strtotime(local_date('Y-m-d H:i:s'));
@@ -1294,8 +1293,8 @@ class UsersModel extends BaseModel {
                     $row['status'] = L('not_use');
                 }
             } else {
-                $url = url('user/order_detail', array('order_id'=>$row['order_id']));
-                $row['status'] = '<a href="'.$url.'" >' . L('had_use') . '</a>';
+                $url = url('user/order_detail', array('order_id' => $row['order_id']));
+                $row['status'] = '<a href="' . $url . '" >' . L('had_use') . '</a>';
             }
 
             $row['use_startdate'] = local_date(C('date_format'), $row['use_start_date']);
@@ -1659,9 +1658,9 @@ class UsersModel extends BaseModel {
     function update_order($order_id, $order) {
         $this->table = 'order_info';
         $condition['order_id'] = $order_id;
-        
+
         $res = $this->query('DESC ' . $this->pre . $this->table);
-        
+
         while ($row = mysql_fetch_row($res)) {
             $field_names[] = $row[0];
         }
@@ -1728,10 +1727,9 @@ class UsersModel extends BaseModel {
             } else {
                 setcookie('ecshop_affiliate_uid', '', 1);
             }
-        }
-        elseif($_SESSION['user_id'] !== 0){
+        } elseif ($_SESSION['user_id'] !== 0) {
             //推荐 by ecmoban
-            $reg_info = $this->model->table('users')->field('reg_time, parent_id')->where('user_id = '.$_SESSION['user_id'])->find();
+            $reg_info = $this->model->table('users')->field('reg_time, parent_id')->where('user_id = ' . $_SESSION['user_id'])->find();
             //推荐信息
             $config = unserialize(C('affiliate'));
             if (!empty($config['config']['expire'])) {
@@ -1747,7 +1745,7 @@ class UsersModel extends BaseModel {
                 //有效时间
                 $eff_time = 3600 * $config['config']['expire'] * $c;
                 //有效时间内
-                if(gmtime() - $reg_info['reg_time'] <= $eff_time){
+                if (gmtime() - $reg_info['reg_time'] <= $eff_time) {
                     return $reg_info['parent_id'];
                 }
             }
@@ -1755,6 +1753,7 @@ class UsersModel extends BaseModel {
 
         return 0;
     }
+
     /**
      * 检查是否为第三方用户
      * @param type $user_id
@@ -1766,34 +1765,21 @@ class UsersModel extends BaseModel {
         $res = $this->row($sql);
         return $res['count'];
     }
+
     /**
-     * 检查该用户是否启动过第三方登录 
-     * @param type $aite_id
-     * @return type 
-     */
-    function get_user_exit($aite_id) {
-		$sql = 'SELECT COUNT(*) as count ' .
-                'FROM ' . $this->pre . 'users AS u ' .
-				'LEFT JOIN ' .$this->pre. 'touch_user_info AS tu ON u.user_id = tu.user_id ' .
-                ' WHERE tu.aite_id = "'.$aite_id.'"';
-        $res = $this->row($sql);
-        return $res['count'];
-    }
-	/**
      * 检查该用户用户名称
      * @param type $aite_id
      * @return type 
      */
-	function get_one_user($aite_id){
-		$sql = 'SELECT user_name ' .
+    function get_one_user($aite_id) {
+        $sql = 'SELECT user_name ' .
                 'FROM ' . $this->pre . 'users AS u ' .
-				'LEFT JOIN ' .$this->pre. 'touch_user_info AS tu ON u.user_id = tu.user_id ' .
-                ' WHERE tu.aite_id = "'.$aite_id.'"';
+                'LEFT JOIN ' . $this->pre . 'touch_user_info AS tu ON u.user_id = tu.user_id ' .
+                ' WHERE tu.aite_id = "' . $aite_id . '"';
         $res = $this->row($sql);
         return $res['user_name'];
-		
-	}
-	
+    }
+
     /**
      * 插入第三方登录信息到数据库 
      * @param type $info
@@ -1825,22 +1811,22 @@ class UsersModel extends BaseModel {
         $condition['user_name'] = $user_name;
         return $this->count($condition);
     }
-	
-	 /**
+
+    /**
      * 获取订单商品数量
      * @return type
      */
     function get_order_goods_count($order_id) {
-    
+
         $sql = "SELECT  COUNT(*) as count " .
-            "FROM " . $this->pre . "order_goods AS o " .
-            "LEFT JOIN " . $this->pre . "products AS p ON o.product_id = p.product_id " .
-            "LEFT JOIN " . $this->pre . "goods AS g ON o.goods_id = g.goods_id " .
-            "WHERE o.order_id = '$order_id' ";
+                "FROM " . $this->pre . "order_goods AS o " .
+                "LEFT JOIN " . $this->pre . "products AS p ON o.product_id = p.product_id " .
+                "LEFT JOIN " . $this->pre . "goods AS g ON o.goods_id = g.goods_id " .
+                "WHERE o.order_id = '$order_id' ";
         $res = $this->row($sql);
         return $res['count'];
     }
-    
+
     /**
      * 查询会员账户明细
      * @access  public
@@ -1850,19 +1836,19 @@ class UsersModel extends BaseModel {
      * @return  array
      */
     public function get_account_detail($user_id, $num, $start) {
-        
+
         // 获取余额记录
         $account_log = array();
-        
+
         $sql = 'SELECT * FROM ' . $this->pre . "account_log WHERE user_id = " . $user_id . ' AND user_money <> 0' .
-        " ORDER BY log_id DESC limit " . $start . ',' . $num;
+                " ORDER BY log_id DESC limit " . $start . ',' . $num;
         $res = $this->query($sql);
-        
+
         if (empty($res)) {
             return array();
             exit;
         }
-        
+
         foreach ($res as $k => $v) {
             $res[$k]['change_time'] = local_date(C('date_format'), $v['change_time']);
             $res[$k]['type'] = $v['user_money'] > 0 ? L('account_inc') : L('account_dec');
@@ -1873,10 +1859,8 @@ class UsersModel extends BaseModel {
             $res[$k]['short_change_desc'] = sub_str($v['change_desc'], 60);
             $res[$k]['amount'] = $v['user_money'];
         }
-        
+
         return $res;
-        
-       
     }
 
 }
