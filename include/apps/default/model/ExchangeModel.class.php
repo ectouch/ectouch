@@ -50,7 +50,7 @@ class ExchangeModel extends BaseModel {
         foreach ($res as $row) {
             $arr[$row['goods_id']]['goods_id'] = $row['goods_id'];
             if ($display == 'grid') {
-                $arr[$row['goods_id']]['goods_name'] = $GLOBALS['_CFG']['goods_name_length'] > 0 ? sub_str($row['goods_name'], $GLOBALS['_CFG']['goods_name_length']) : $row['goods_name'];
+                $arr[$row['goods_id']]['goods_name'] = C('goods_name_length') > 0 ? sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
             } else {
                 $arr[$row['goods_id']]['goods_name'] = $row['goods_name'];
             }
@@ -115,11 +115,11 @@ class ExchangeModel extends BaseModel {
 
             /* 修正重量显示 */
             $row['goods_weight'] = (intval($row['goods_weight']) > 0) ?
-                    $row['goods_weight'] . $GLOBALS['_LANG']['kilogram'] :
-                    ($row['goods_weight'] * 1000) . $GLOBALS['_LANG']['gram'];
+                    $row['goods_weight'] . L('kilogram') :
+                    ($row['goods_weight'] * 1000) . L('gram');
 
             /* 修正上架时间显示 */
-            $row['add_time'] = local_date($GLOBALS['_CFG']['date_format'], $row['add_time']);
+            $row['add_time'] = local_date(C('date_format'), $row['add_time']);
 
             /* 修正商品图片 */
             $row['goods_img'] = get_image_path($goods_id, $row['goods_img']);

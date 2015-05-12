@@ -489,7 +489,7 @@ class GoodsModel extends BaseModel {
             if (!in_array($row['goods_id'], $goodsId)) {
                 $arr[$row['goods_id']]['goods_id'] = $row['goods_id'];
                 $arr[$row['goods_id']]['goods_name'] = $row['goods_name'];
-                $arr[$row['goods_id']]['short_name'] = $GLOBALS['_CFG']['goods_name_length'] > 0 ?
+                $arr[$row['goods_id']]['short_name'] = C('goods_name_length') > 0 ?
                         sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
                 $arr[$row['goods_id']]['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
                 $arr[$row['goods_id']]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);

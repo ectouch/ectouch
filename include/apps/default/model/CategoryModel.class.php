@@ -319,8 +319,8 @@ class CategoryModel extends BaseModel {
             $goods[$idx]['name'] = $row['goods_name'];
             $goods[$idx]['brief'] = $row['goods_brief'];
             $goods[$idx]['market_price'] = price_format($row['market_price']);
-            $goods[$idx]['short_name'] = $GLOBALS['_CFG']['goods_name_length'] > 0 ?
-                    sub_str($row['goods_name'], $GLOBALS['_CFG']['goods_name_length']) : $row['goods_name'];
+            $goods[$idx]['short_name'] = C('goods_name_length') > 0 ?
+                    sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
             $goods[$idx]['shop_price'] = price_format($row['shop_price']);
             $goods[$idx]['thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
             $goods[$idx]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);
