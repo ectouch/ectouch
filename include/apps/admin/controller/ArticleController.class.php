@@ -52,7 +52,7 @@ class ArticleController extends AdminController {
             /* 数据验证 */
             $msg = Check::rule(array(
                         array(Check::must($data['title']), L('no_title')),
-                        array(Check::must($data['cat_id']), L('cat')),
+                        array(Check::must($data['cat_id']), L('no_select_act')),
                         array(Check::must($data['is_open']), L('is_open')),
             ));
             /* 提示信息 */
@@ -85,7 +85,7 @@ class ArticleController extends AdminController {
                 $this->model->table('touch_article')->data($data)->where('article_id=' . $id)->update();
             }
             clear_all_files();
-            $this->message(L('articleedit_succeed'), url('index'));
+            $this->message(sprintf(L('articleedit_succeed'),$touch_result['title']), url('index'));
         }
         $article = $this->model->table('touch_article')->field('*')->where(array('article_id' => $id))->find();
         $article['content'] = html_out($article['content']);

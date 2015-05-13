@@ -31,7 +31,7 @@
                 </div></td>
             </tr>
             <!-- {else} -->
-            <input type="hidden" name="data[article_cat]" value="-1" />
+            <input type="hidden" name="data[cat_id]" value="-1" />
             <!-- {/if} -->
             <tr>
               <td class="narrow-label">{$lang['is_open']}</td>
