@@ -654,6 +654,10 @@ class UserController extends CommonController {
             // 过滤掉当前支付方式和余额支付方式
             if (is_array($payment_list)) {
                 foreach ($payment_list as $key => $payment) {
+                    // 兼容过滤ecjia支付方式
+                    if (substr($payment['pay_code'], 0 , 4) == 'pay_') {
+                        unset($payment_list[$key]);
+                    }               
                     if ($payment['pay_id'] == $order['pay_id'] || $payment['pay_code'] == 'balance') {
                         unset($payment_list[$key]);
                     }

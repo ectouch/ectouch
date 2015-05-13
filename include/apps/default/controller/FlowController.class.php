@@ -478,8 +478,12 @@ class FlowController extends CommonController {
         $condition = "`session_id` = '" . SESS_ID . "' AND `extension_code` != 'package_buy' AND `is_shipping` = 0";
         $shipping_count = $this->model->table('cart')->field('count(*)')->where($condition)->getOne();
         foreach ($shipping_list as $key => $val) {
+            // 兼容过滤ecjia配送方式
+            if (substr($val['shipping_code'], 0 , 5) == 'ship_') {
+                unset($shipping_list[$key]);
+            }
             $shipping_cfg = unserialize_config($val ['configure']);
-            $shipping_fee = ($shipping_count == 0 and $cart_weight_price ['free_shipping'] == 1) ? 0 : shipping_fee($val ['shipping_code'], unserialize($val ['configure']), $cart_weight_price ['weight'], $cart_weight_price ['amount'], $cart_weight_price ['number']);
+            $shipping_fee = ($shipping_count == 0 and $cart_weight_price ['free_shipping'] == 1) ? 0 : shipping_fee($val['shipping_code'], unserialize($val ['configure']), $cart_weight_price ['weight'], $cart_weight_price ['amount'], $cart_weight_price ['number']);
 
             $shipping_list [$key] ['format_shipping_fee'] = price_format($shipping_fee, false);
             $shipping_list [$key] ['shipping_fee'] = $shipping_fee;
@@ -541,6 +545,10 @@ class FlowController extends CommonController {
             foreach ($payment_list as $key => $payment) {
                 if ($payment ['is_cod'] == '1') {
                     $payment_list [$key] ['format_pay_fee'] = '<span id="ECS_CODFEE">' . $payment ['format_pay_fee'] . '</span>';
+                }
+                // 兼容过滤ecjia支付方式
+                if (substr($payment['pay_code'], 0 , 4) == 'pay_') {
+                    unset($payment_list[$key]);
                 }
                 /* 如果有易宝神州行支付 如果订单金额大于300 则不显示 */
                 if ($payment ['pay_code'] == 'yeepayszx' && $total ['amount'] > 300) {

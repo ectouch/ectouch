@@ -925,7 +925,7 @@ class UsersModel extends BaseModel {
             $payment_info = Model('Order')->payment_info($order['pay_id']);
 
             //无效支付方式
-            if ($payment_info === false) {
+            if ($payment_info === false || substr($payment_info['pay_code'], 0 , 4) == 'pay_') {
                 $order['pay_online'] = '';
             } else {
                 //取得支付信息，生成支付代码
