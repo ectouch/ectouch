@@ -119,7 +119,8 @@ class ExchangeModel extends BaseModel {
                     ($row['goods_weight'] * 1000) . L('gram');
 
             /* 修正上架时间显示 */
-            $row['add_time'] = local_date(C('date_format'), $row['add_time']);
+            $date_format = C('date_format');
+            $row['add_time'] = local_date($date_format, $row['add_time']);
 
             /* 修正商品图片 */
             $row['goods_img'] = get_image_path($goods_id, $row['goods_img']);

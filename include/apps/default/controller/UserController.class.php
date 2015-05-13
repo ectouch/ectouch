@@ -235,60 +235,63 @@ class UserController extends CommonController {
         $count = $this->model->table('account_log')->field('COUNT(*)')->where($where)->getOne();
         $this->pageLimit(url('user/account_detail'), $size);
         $this->assign('pager', $this->pageShow($count));
-
-        $account_detail = model('Users')->get_account_detail($this->user_id, $size, ($page - 1) * $size);
-
+        
+        $account_detail = model('Users')->get_account_detail($this->user_id, $size, ($page-1)*$size);
+        
         $this->assign('title', L('label_user_surplus'));
         $this->assign('surplus_amount', price_format($surplus_amount, false));
         $this->assign('account_log', $account_detail);
         $this->display('user_account_detail.dwt');
     }
+    
 
     /**
      *  会员充值和提现申请记录 
      */
-    public function account_log() {
-
+    public function  account_log(){
+    
         $size = I(C('page_size'), 5);
         $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
-        $count = $this->model->table('user_account')->field('COUNT(*)')->where("user_id = $this->user_id AND process_type " . db_create_in(array(SURPLUS_SAVE, SURPLUS_RETURN)))->getOne();
+        $count = $this->model->table('user_account')->field('COUNT(*)')->where("user_id = $this->user_id AND process_type ". db_create_in(array(SURPLUS_SAVE, SURPLUS_RETURN)))->getOne();
         $this->pageLimit(url('user/account_log'), $size);
-        $this->assign('pager', $this->pageShow($count));
-
+        $this->assign('pager', $this->pageShow($count));    
+    
         //获取剩余余额
         $surplus_amount = model('ClipsBase')->get_user_surplus($this->user_id);
-        if (empty($surplus_amount)) {
+        if (empty($surplus_amount))
+        {
             $surplus_amount = 0;
         }
         //获取余额记录
-        $account_log = model('ClipsBase')->get_account_log($this->user_id, $size, ($page - 1) * $size);
-
+        $account_log = model('ClipsBase')->get_account_log($this->user_id, $size, ($page-1)*$size);
+    
         //模板赋值
         $this->assign('surplus_amount', price_format($surplus_amount, false));
-        $this->assign('account_log', $account_log);
+        $this->assign('account_log',    $account_log);
         $this->assign('title', L('label_user_surplus'));
         $this->display('user_account_log.dwt');
     }
-
+    
     /**
      *  删除会员余额 
      */
-    public function cancel() {
-
-        $id = I('get.id', 0);
-        if ($id == 0 || $this->user_id == 0) {
-            ecs_header("Location: " . url('User/account_log'));
+    public function cancel(){
+    
+        $id = I('get.id',0);
+        if ($id == 0 || $this->user_id == 0)
+        {
+            ecs_header("Location: ".url('User/account_log'));
             exit;
         }
-
+    
         $result = model('ClipsBase')->del_user_account($id, $this->user_id);
-        ecs_header("Location: " . url('User/account_log'));
+        ecs_header("Location: ".url('User/account_log'));
     }
-
+    
     /**
      *  会员退款申请界面 
      */
-    public function account_raply() {
+    public function account_raply(){
         // 获取剩余余额
         $surplus_amount = model('ClipsBase')->get_user_surplus($this->user_id);
         if (empty($surplus_amount)) {
@@ -298,186 +301,206 @@ class UserController extends CommonController {
         $this->assign('title', L('label_user_surplus'));
         $this->display('user_account_raply.dwt');
     }
-
+    
     /**
      *  会员预付款界面 
      */
-    public function account_deposit() {
+    public function account_deposit(){
         $this->assign('title', L('label_user_surplus'));
         $surplus_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-        $account = model('ClipsBase')->get_surplus_info($surplus_id);
-
+        $account    = model('ClipsBase')->get_surplus_info($surplus_id);
+    
         $this->assign('payment', model('ClipsBase')->get_online_payment_list(false));
-        $this->assign('order', $account);
+        $this->assign('order',   $account);
         $this->display('user_account_deposit.dwt');
     }
-
+    
     /**
      *  对会员余额申请的处理 
      */
-    public function act_account() {
+    public function act_account()
+    {
         $amount = isset($_POST['amount']) ? floatval($_POST['amount']) : 0;
-        if ($amount <= 0) {
+        if ($amount <= 0)
+        {
             show_message($_LANG['amount_gt_zero']);
         }
-
+    
         /* 变量初始化 */
         $surplus = array(
-            'user_id' => $this->user_id,
-            'rec_id' => !empty($_POST['rec_id']) ? intval($_POST['rec_id']) : 0,
+            'user_id'      => $this->user_id,
+            'rec_id'       => !empty($_POST['rec_id'])      ? intval($_POST['rec_id'])       : 0,
             'process_type' => isset($_POST['surplus_type']) ? intval($_POST['surplus_type']) : 0,
-            'payment_id' => isset($_POST['payment_id']) ? intval($_POST['payment_id']) : 0,
-            'user_note' => isset($_POST['user_note']) ? trim($_POST['user_note']) : '',
-            'amount' => $amount
+            'payment_id'   => isset($_POST['payment_id'])   ? intval($_POST['payment_id'])   : 0,
+            'user_note'    => isset($_POST['user_note'])    ? trim($_POST['user_note'])      : '',
+            'amount'       => $amount
         );
-
+    
         /* 退款申请的处理 */
-        if ($surplus['process_type'] == 1) {
+        if ($surplus['process_type'] == 1)
+        {
             /* 判断是否有足够的余额的进行退款的操作 */
             $sur_amount = model('ClipsBase')->get_user_surplus($this->user_id);
-            if ($amount > $sur_amount) {
+            if ($amount > $sur_amount)
+            {
                 $content = L('surplus_amount_error');
                 show_message($content, L('back_page_up'), '', 'info');
             }
-
+    
             //插入会员账目明细
-            $amount = '-' . $amount;
+            $amount = '-'.$amount;
             $surplus['payment'] = '';
-            $surplus['rec_id'] = model('ClipsBase')->insert_user_account($surplus, $amount);
-
+            $surplus['rec_id']  = model('ClipsBase')->insert_user_account($surplus, $amount);
+    
             /* 如果成功提交 */
-            if ($surplus['rec_id'] > 0) {
+            if ($surplus['rec_id'] > 0)
+            {
                 $content = L('surplus_appl_submit');
                 show_message($content, L('back_account_log'), url('User/account_log'), 'info');
-            } else {
+            }
+            else
+            {
                 $content = $L('process_false');
                 show_message($content, L('back_page_up'), '', 'info');
             }
         }
-        /* 如果是会员预付款，跳转到下一步，进行线上支付的操作 */ else {
-            if ($surplus['payment_id'] <= 0) {
+        /* 如果是会员预付款，跳转到下一步，进行线上支付的操作 */
+        else
+        {
+            if ($surplus['payment_id'] <= 0)
+            {
                 show_message(L('select_payment_pls'));
             }
-
-
+    
+    
             //获取支付方式名称
             $payment_info = array();
             $payment_info = model('Order')->payment_info($surplus['payment_id']);
             $surplus['payment'] = $payment_info['pay_name'];
-
-            if ($surplus['rec_id'] > 0) {
+    
+            if ($surplus['rec_id'] > 0)
+            {
                 //更新会员账目明细
                 $surplus['rec_id'] = model('ClipsBase')->update_user_account($surplus);
-            } else {
+            }
+            else
+            {
                 //插入会员账目明细
                 $surplus['rec_id'] = model('ClipsBase')->insert_user_account($surplus, $amount);
             }
-
+    
             //取得支付信息，生成支付代码
             $payment = unserialize_config($payment_info['pay_config']);
-
+    
             //生成伪订单号, 不足的时候补0
             $order = array();
-            $order['order_sn'] = $surplus['rec_id'];
-            $order['user_name'] = $_SESSION['user_name'];
+            $order['order_sn']       = $surplus['rec_id'];
+            $order['user_name']      = $_SESSION['user_name'];
             $order['surplus_amount'] = $amount;
-
+    
             //计算支付手续费用
             $payment_info['pay_fee'] = pay_fee($surplus['payment_id'], $order['surplus_amount'], 0);
-
+    
             //计算此次预付款需要支付的总金额
-            $order['order_amount'] = $amount + $payment_info['pay_fee'];
-
+            $order['order_amount']   = $amount + $payment_info['pay_fee'];
+    
             //记录支付log
-            $order['log_id'] = model('ClipsBase')->insert_pay_log($surplus['rec_id'], $order['order_amount'], $type = PAY_SURPLUS, 0);
-
+            $order['log_id'] = model('ClipsBase')->insert_pay_log($surplus['rec_id'], $order['order_amount'], $type=PAY_SURPLUS, 0);
+    
             /* 调用相应的支付方式文件 */
             include_once (ROOT_PATH . 'plugins/payment/' . $payment_info ['pay_code'] . '.php');
-
+    
             /* 取得在线支付方式的支付按钮 */
             $pay_obj = new $payment_info ['pay_code'] ();
             $payment_info['pay_button'] = $pay_obj->get_code($order, $payment);
-
+    
             /* 模板赋值 */
             $this->assign('payment', $payment_info);
             $this->assign('pay_fee', price_format($payment_info['pay_fee'], false));
-            $this->assign('amount', price_format($amount, false));
-            $this->assign('order', $order);
+            $this->assign('amount',  price_format($amount, false));
+            $this->assign('order',   $order);
             $this->display('user_act_account.dwt');
         }
     }
-
+    
     /**
      * 会员通过帐目明细列表进行再付款的操作
      */
-    public function pay() {
+    public function pay()
+    {
         //变量初始化
-        $surplus_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        $surplus_id = isset($_GET['id'])  ? intval($_GET['id'])  : 0;
         $payment_id = isset($_GET['pid']) ? intval($_GET['pid']) : 0;
-
-        if ($surplus_id == 0) {
-            ecs_header("Location: " . url('User/account_log'));
+    
+        if ($surplus_id == 0)
+        {
+            ecs_header("Location: ".url('User/account_log'));
             exit;
         }
-
+    
         //如果原来的支付方式已禁用或者已删除, 重新选择支付方式
-        if ($payment_id == 0) {
-            ecs_header("Location: " . url('User/account_deposit', array('id' => $surplus_id)));
+        if ($payment_id == 0)
+        {
+            ecs_header("Location: " . url('User/account_deposit',array('id'=>$surplus_id)));
             exit;
         }
-
+    
         //获取单条会员帐目信息
         $order = array();
         $order = model('ClipsBase')->get_surplus_info($surplus_id);
-
+    
         //支付方式的信息
         $payment_info = array();
         $payment_info = model('Order')->payment_info($payment_id);
-
+    
         /* 如果当前支付方式没有被禁用，进行支付的操作 */
-        if (!empty($payment_info)) {
+        if (!empty($payment_info))
+        {
             //取得支付信息，生成支付代码
             $payment = unserialize_config($payment_info['pay_config']);
-
+    
             //生成伪订单号
             $order['order_sn'] = $surplus_id;
-
+    
             //获取需要支付的log_id
             $order['log_id'] = model('ClipsBase')->get_paylog_id($surplus_id, $pay_type = PAY_SURPLUS);
-
-            $order['user_name'] = $_SESSION['user_name'];
+    
+            $order['user_name']      = $_SESSION['user_name'];
             $order['surplus_amount'] = $order['amount'];
-
+    
             //计算支付手续费用
             $payment_info['pay_fee'] = pay_fee($payment_id, $order['surplus_amount'], 0);
-
+    
             //计算此次预付款需要支付的总金额
-            $order['order_amount'] = $order['surplus_amount'] + $payment_info['pay_fee'];
-
+            $order['order_amount']   = $order['surplus_amount'] + $payment_info['pay_fee'];
+    
             //如果支付费用改变了，也要相应的更改pay_log表的order_amount
-            $order_amount = M()->getOne("SELECT order_amount FROM " . M()->pre . 'pay_log' . " WHERE log_id = '$order[log_id]'");
+            $order_amount = M()->getOne("SELECT order_amount FROM " .M()->pre . 'pay_log'." WHERE log_id = '$order[log_id]'");
             $this->model->table('order_goods')->field('COUNT(*)')->where("order_id = '$order[order_id]' " . " AND is_real = 1")->getOne();
-            if ($order_amount <> $order['order_amount']) {
-                M()->query("UPDATE " . M()->pre . "pay_log SET order_amount = '$order[order_amount]' WHERE log_id = '$order[log_id]'");
+            if ($order_amount <> $order['order_amount'])
+            {
+                M()->query("UPDATE " .M()->pre . "pay_log SET order_amount = '$order[order_amount]' WHERE log_id = '$order[log_id]'");
             }
-
+    
             /* 调用相应的支付方式文件 */
             include_once (ROOT_PATH . 'plugins/payment/' . $payment_info ['pay_code'] . '.php');
             /* 取得在线支付方式的支付按钮 */
             $pay_obj = new $payment_info['pay_code']();
             $payment_info['pay_button'] = $pay_obj->get_code($order, $payment);
-
+    
             /* 模板赋值 */
             $this->assign('payment', $payment_info);
-            $this->assign('order', $order);
+            $this->assign('order',   $order);
             $this->assign('pay_fee', price_format($payment_info['pay_fee'], false));
-            $this->assign('amount', price_format($order['surplus_amount'], false));
+            $this->assign('amount',  price_format($order['surplus_amount'], false));
             $this->display('user_act_account.dwt');
         }
-        /* 重新选择支付方式 */ else {
-
+        /* 重新选择支付方式 */
+        else
+        {
+    
             $this->assign('payment', model('ClipsBase')->get_online_payment_list());
-            $this->assign('order', $order);
+            $this->assign('order',   $order);
             $this->display('user_account_deposit.dwt');
         }
     }
@@ -646,10 +669,10 @@ class UserController extends CommonController {
         $order['shipping_status'] = L('ss.' . $order['shipping_status']);
         // 如果是银行汇款或货到付款 则显示支付描述
         $payment = model('Order')->payment_info($order ['pay_id']);
-        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'cod') {
-            $this->assign('pay_desc', $payment['pay_desc']);
+        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'cod'){
+            $this->assign('pay_desc',$payment['pay_desc']);
         }
-
+		
         $this->assign('title', L('order_detail'));
         $this->assign('order', $order);
         $this->assign('goods_list', $goods_list);
@@ -1228,7 +1251,7 @@ class UserController extends CommonController {
             $this->assign('goods', $goods);
         }
         $shopurl = __URL__ . '/?u=' . $this->user_id;
-
+        
         $this->assign('shopurl', $shopurl);
         $this->assign('domain', __HOST__);
         $this->assign('shopdesc', C('shop_desc'));
@@ -1236,13 +1259,13 @@ class UserController extends CommonController {
         $this->assign('share', $share);
         $this->display('user_share.dwt');
     }
-
+    
     /**
      * 生成二维码
      */
-    public function create_qrcode() {
+    public function create_qrcode(){
         $value = I('get.value');
-        if ($value) {
+        if($value){
             // 二维码
             // 纠错级别：L、M、Q、H
             $errorCorrectionLevel = 'L';
@@ -1377,7 +1400,7 @@ class UserController extends CommonController {
         }
         $this->assign('goods_attr', $goods_attr);
         $this->assign('goods', model('ClipsBase')->get_goodsinfo($goods_id));
-        $this->assign('title', L('label_booking'));
+	$this->assign('title', L('label_booking'));
         $this->display('user_add_booking.dwt');
     }
 
@@ -1645,7 +1668,7 @@ class UserController extends CommonController {
             $this->assign('enabled_captcha', 1);
             $this->assign('rand', mt_rand());
         }
-
+		
         $this->assign('step', I('get.step'));
         $this->assign('anonymous_buy', C('anonymous_buy'));
         $this->assign('title', L('login'));
@@ -1733,68 +1756,74 @@ class UserController extends CommonController {
             } else {
                 ECTouch::err()->show(L('sign_up'), url('register'));
             }
-
-
-
-
-            /* 把新注册用户的扩展信息插入数据库 */
+            
+            
+          
+            
+            /*把新注册用户的扩展信息插入数据库*/
             $sql = 'SELECT id,is_need,reg_field_name FROM ' . M()->pre . 'reg_fields' . ' WHERE display = 1 ORDER BY dis_order, id';   //读出所有自定义扩展字段的id
             $fields_arr = M()->query($sql);
             $extend_field_str = '';    //生成扩展字段的内容字符串
-            foreach ($fields_arr AS $val) {
+            foreach ($fields_arr AS $val)
+            {
                 $extend_field_index = 'extend_field' . $val['id'];
-                if (empty($_POST[$extend_field_index])) {
-                    if ($val['is_need'] == 1) {
-                        show_message($val['reg_field_name'] . L('can_not_empty'), L('register_back'), url('register'), 'error');
+                if(empty($_POST[$extend_field_index]))
+                {
+                    if ($val['is_need']==1){
+                        show_message($val['reg_field_name'].L('can_not_empty'), L('register_back'), url('register'), 'error');
                     }
                 }
             }
-
+            
             if (model('Users')->register($username, $password, $email, $other) !== false) {
-
+                
                 $sel_question = I('post.sel_question');
                 $passwd_answer = I('post.passwd_answer');
-
+                
                 // 写入密码提示问题和答案
                 if (!empty($passwd_answer) && !empty($sel_question)) {
                     $where_up['user_id'] = $_SESSION['user_id'];
                     $data_up['passwd_question'] = $sel_question;
                     $data_up['passwd_answer'] = $passwd_answer;
                     $this->model->table('users')
-                            ->data($data_up)
-                            ->where($where_up)
-                            ->update();
+                    ->data($data_up)
+                    ->where($where_up)
+                    ->update();
                 }
-
-                /* 把新注册用户的扩展信息插入数据库 */
+                
+                /*把新注册用户的扩展信息插入数据库*/
                 $sql = 'SELECT id,is_need,reg_field_name FROM ' . M()->pre . 'reg_fields' . ' WHERE  display = 1 ORDER BY dis_order, id';   //读出所有自定义扩展字段的id
                 $fields_arr = M()->query($sql);
-
+                
                 $extend_field_str = '';    //生成扩展字段的内容字符串
-                foreach ($fields_arr AS $val) {
+                foreach ($fields_arr AS $val)
+                {
                     $extend_field_index = 'extend_field' . $val['id'];
-                    if (!empty($_POST[$extend_field_index])) {
+                    if(!empty($_POST[$extend_field_index]))
+                    {
                         $temp_field_content = strlen($_POST[$extend_field_index]) > 100 ? mb_substr($_POST[$extend_field_index], 0, 99) : $_POST[$extend_field_index];
                         $extend_field_str .= " ('" . $_SESSION['user_id'] . "', '" . $val['id'] . "', '" . $temp_field_content . "'),";
-                    } else {
-                        if ($val['is_need'] == 1) {
-                            show_message($val['reg_field_name'] . L('can_not_empty'), L('register_back'), url('register'), 'error');
+                    }else {
+                        if ($val['is_need']==1){
+                            show_message($val['reg_field_name'].L('can_not_empty'), L('register_back'), url('register'), 'error');
                         }
                     }
                 }
                 $extend_field_str = substr($extend_field_str, 0, -1);
-
-                if ($extend_field_str) {      //插入注册扩展数据
-                    $sql = 'INSERT INTO ' . M()->pre . 'reg_extend_info' . ' (`user_id`, `reg_field_id`, `content`) VALUES' . $extend_field_str;
+                
+                if ($extend_field_str)      //插入注册扩展数据
+                {
+                    $sql = 'INSERT INTO '. M()->pre . 'reg_extend_info' . ' (`user_id`, `reg_field_id`, `content`) VALUES' . $extend_field_str;
                     M()->query($sql);
                 }
-
+                
                 /* 写入密码提示问题和答案 */
-                if (!empty($passwd_answer) && !empty($sel_question)) {
+                if (!empty($passwd_answer) && !empty($sel_question))
+                {
                     $sql = 'UPDATE ' . M()->pre . 'users' . " SET `passwd_question`='$sel_question', `passwd_answer`='$passwd_answer'  WHERE `user_id`='" . $_SESSION['user_id'] . "'";
                     M()->query($sql);
                 }
-
+                
                 // 判断是否需要自动发送注册邮件
                 if (C('member_email_validate') && C('send_verify_email')) {
                     model('Users')->send_regiter_hash($_SESSION['user_id']);
@@ -1812,20 +1841,20 @@ class UserController extends CommonController {
             }
             exit();
         }
-
+        
         /* 取出注册扩展字段 */
         $sql = 'SELECT * FROM ' . M()->pre . 'reg_fields' . ' WHERE type < 2 AND display = 1 ORDER BY dis_order, id';
         $extend_info_list = M()->query($sql);
-        foreach ($extend_info_list as $key => $val) {
-            if ($val['id'] >= 100) {
+        foreach ($extend_info_list as $key=>$val){
+            if($val['id'] >= 100){
                 unset($extend_info_list[$key]);
             }
         }
         $this->assign('extend_info_list', $extend_info_list);
 
-        // 密码提示问题
+         // 密码提示问题
         $this->assign('password_question', L('passwd_questions'));
-
+        
         // 注册页面显示
 
         if (empty($this->back_act) && isset($GLOBALS['_SERVER']['HTTP_REFERER'])) {
@@ -1848,10 +1877,10 @@ class UserController extends CommonController {
 
         $this->assign('title', L('register'));
         $this->assign('back_act', $this->back_act);
-
+        
         /* 是否关闭注册 */
         $this->assign('shop_reg_closed', C('shop_reg_closed'));
-
+        
         $this->display('user_register.dwt');
     }
 
@@ -1903,39 +1932,28 @@ class UserController extends CommonController {
                     $userinfo = $res->get_user_info($openid);
                     // 处理数据
                     $userinfo['aite_id'] = $type . '_' . $openid; // 添加登录标示
-                    //aite_id 是绑定用户的唯一字段
-                    $user_name = model('Users')->get_one_user($userinfo['aite_id']);
-                    if ($user_name) {
-                        // 已有记录，查询该记录的用户名
-                        self::$user->set_session($user_name);
-                        self::$user->set_cookie($user_name);
-                        model('Users')->update_user_info();
-                        model('Users')->recalculate_price();
-                        $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
-                        $this->redirect($jump_url);
-                    }
-                    //正则匹配昵称
-                    $userinfo['user_name'] = preg_replace("/^[a-za-z0-9][u4e00-u9fa5]{5,19}+/", "", $res->get_user_name($userinfo));
-                    if (self::$user->check_user($userinfo['user_name'])) {  // 重名处理
-                        $userinfo['user_name'] = $userinfo['user_name'] . rand(1000, 9999);
-                    }
-                    $userinfo['email'] = empty($userinfo['email']) ? substr($openid, 0, 7) . '@' . get_top_domain() : $userinfo['email'];
-                    // 插入数据库
-                    if (model('Users')->third_reg($userinfo)) {
+                    if ($userinfo['user_name'] = model('Users')->get_one_user($userinfo['aite_id'])) {
+                        // 已有记录
                         self::$user->set_session($userinfo['user_name']);
                         self::$user->set_cookie($userinfo['user_name']);
-
                         model('Users')->update_user_info();
                         model('Users')->recalculate_price();
                         $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
                         $this->redirect($jump_url);
-                    } else {
-                        //插入数据失败
-                        $_SESSION['login_fail']++;
-                        show_message(L('parm_error'), L('relogin_lnk'), url('login', array(
-                            'referer' => urlencode($this->back_act)
-                                )), 'error');
                     }
+                    $userinfo['user_name'] = substr($openid, -6);
+                    if(self::$user->check_user($userinfo['user_name'])) {
+                        $userinfo['user_name'] = $userinfo['user_name'].rand(1000, 9999); // 重名处理
+                    }
+                    $userinfo['email'] = empty($userinfo['email']) ? $userinfo['user_name'] . '@' . get_top_domain() : $userinfo['email'];
+                    // 插入数据库
+                    model('Users')->third_reg($userinfo);
+                    self::$user->set_session($userinfo['user_name']);
+                    self::$user->set_cookie($userinfo['user_name']);
+                    model('Users')->update_user_info();
+                    model('Users')->recalculate_price();
+                    $jump_url = empty($this->back_act) ? url('index') : $this->back_act;
+                    $this->redirect($jump_url);
                 }
             } else {
                 show_message(L('process_false'), L('relogin_lnk'), url('login', array(
@@ -2307,5 +2325,4 @@ class UserController extends CommonController {
             }
         }
     }
-
 }

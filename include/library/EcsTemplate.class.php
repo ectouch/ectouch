@@ -911,7 +911,8 @@ class EcsTemplate {
             $source = preg_replace($pattern, $replacement, $source);
 
             /* 检查有无动态库文件，如果有为其赋值 */
-            $dyna_libs = model('Common')->get_dyna_libs(C('template'), $this->_current_file);
+            $template = C('template');
+            $dyna_libs = model('Common')->get_dyna_libs($template, $this->_current_file);
             if ($dyna_libs) {
                 foreach ($dyna_libs AS $region => $libs) {
                     $pattern = '/<!--\\s*TemplateBeginEditable\\sname="' . $region . '"\\s*-->(.*?)<!--\\s*TemplateEndEditable\\s*-->/s';
