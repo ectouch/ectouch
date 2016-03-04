@@ -37,14 +37,14 @@ date_default_timezone_set(C('DEFAULT_TIMEZONE'));
 defined('DEBUG') or define('DEBUG', C('DEBUG'));
 /* 版本信息 */
 load_file(ROOT_PATH . 'data/version.php');
-/* 错误和异常处理 */
-register_shutdown_function('fatalError');
 
 /* 错误等级 */
 if (DEBUG) {
+    /* 错误和异常处理 */
+    register_shutdown_function('fatalError');
     @ini_set("display_errors", 1);
     error_reporting(E_ALL ^ E_NOTICE); // 除了notice提示，其他类型的错误都报告
-	debug(); // system 运行时间，占用内存开始计算
+    debug(); // system 运行时间，占用内存开始计算
 } else {
     @ini_set("display_errors", 0);
     error_reporting(0); // 把错误报告，全部屏蔽
