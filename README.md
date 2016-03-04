@@ -62,6 +62,10 @@ MySQL扩展库
 * 技术支持论坛          http://bbs.ecmoban.com
 * 上海商创网络科技      http://www.ecmoban.com
 
+## 常见问题整理
+
+http://bbs.ecmoban.com/thread-28767-1-1.html
+
 ## 功能预览
 
 ![image](http://ectouch.cn/data/assets/qrcode.png)
