@@ -2388,6 +2388,19 @@ function get_editable_libs($curr_template, $curr_page_libs) {
 }
 
 /**
+ * 过滤用户输入的基本数据，防止script攻击
+ *
+ * @access      public
+ * @return      string
+ */
+function compile_str($str)
+{
+    $arr = array('<' => '＜', '>' => '＞','"'=>'”',"'"=>'’');
+
+    return strtr($str, $arr);
+}
+
+/**
  * 默认返回 model('Base')->model  用来直接使用ecModel的方法
  * @param string $model
  */

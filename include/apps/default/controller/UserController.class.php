@@ -1688,6 +1688,13 @@ class UserController extends CommonController {
         if (IS_POST) {
             $enabled_sms = isset($_POST['enabled_sms']) ? intval($_POST['enabled_sms']) : 0;
             $this->back_act = isset($_POST['back_act']) ? in($_POST['back_act']) : '';
+            $other['msn'] = isset($_POST['extend_field1']) ? $_POST['extend_field1'] : '';
+            $other['qq'] = isset($_POST['extend_field2']) ? $_POST['extend_field2'] : '';
+            $other['office_phone'] = isset($_POST['extend_field3']) ? $_POST['extend_field3'] : '';
+            $other['home_phone'] = isset($_POST['extend_field4']) ? $_POST['extend_field4'] : '';
+            $other['mobile_phone'] = isset($_POST['extend_field5']) ? $_POST['extend_field5'] : '';
+            $sel_question = empty($_POST['sel_question']) ? '' : compile_str($_POST['sel_question']);
+            $passwd_answer = isset($_POST['passwd_answer']) ? compile_str(trim($_POST['passwd_answer'])) : '';
 
             // 邮箱注册处理
             if (0 == $enabled_sms) {
@@ -1695,7 +1702,6 @@ class UserController extends CommonController {
                 $username = isset($_POST['username']) ? in($_POST['username']) : '';
                 $email = isset($_POST['email']) ? in($_POST['email']) : '';
                 $password = isset($_POST['password']) ? in($_POST['password']) : '';
-                $other = array();
 
                 // 验证码检查
                 if (intval(C('captcha')) & CAPTCHA_REGISTER) {
@@ -1726,12 +1732,10 @@ class UserController extends CommonController {
                 if (strpos($password, ' ') > 0) {
                     show_message(L('passwd_balnk'));
                 }
-            }             // 手机号注册处理
-            elseif (1 == $enabled_sms) {
+            } elseif (1 == $enabled_sms) {
                 $username = isset($_POST['mobile']) ? in($_POST['mobile']) : '';
                 $password = isset($_POST['mobile_code']) ? in($_POST['mobile_code']) : '';
                 $sms_code = isset($_POST['sms_code']) ? in($_POST['sms_code']) : '';
-                $other['mobile_phone'] = $username;
 
                 if (empty($username)) {
                     show_message(L('msg_mobile_blank'), L('register_back'), url('register'), 'error');
@@ -1747,58 +1751,21 @@ class UserController extends CommonController {
 
                 // 验证手机号重复
                 $where['mobile_phone'] = $username;
-                $user_id = $this->model->table('users')
-                        ->field('user_id')
-                        ->where($where)
-                        ->getOne();
+                $user_id = $this->model->table('users')->field('user_id')->where($where)->getOne();
                 if ($user_id) {
                     show_message(L('msg_mobile_exists'), L('register_back'), url('register'), 'error');
                 }
-
                 // 设置一个默认的邮箱
                 $email = $username . '@qq.com';
             } else {
                 ECTouch::err()->show(L('sign_up'), url('register'));
             }
             
-            
-          
-            
-            /*把新注册用户的扩展信息插入数据库*/
-            $sql = 'SELECT id,is_need,reg_field_name FROM ' . M()->pre . 'reg_fields' . ' WHERE display = 1 ORDER BY dis_order, id';   //读出所有自定义扩展字段的id
-            $fields_arr = M()->query($sql);
-            $extend_field_str = '';    //生成扩展字段的内容字符串
-            foreach ($fields_arr AS $val)
-            {
-                $extend_field_index = 'extend_field' . $val['id'];
-                if(empty($_POST[$extend_field_index]))
-                {
-                    if ($val['is_need']==1){
-                        show_message($val['reg_field_name'].L('can_not_empty'), L('register_back'), url('register'), 'error');
-                    }
-                }
-            }
-            
             if (model('Users')->register($username, $password, $email, $other) !== false) {
-                
-                $sel_question = I('post.sel_question');
-                $passwd_answer = I('post.passwd_answer');
-                
-                // 写入密码提示问题和答案
-                if (!empty($passwd_answer) && !empty($sel_question)) {
-                    $where_up['user_id'] = $_SESSION['user_id'];
-                    $data_up['passwd_question'] = $sel_question;
-                    $data_up['passwd_answer'] = $passwd_answer;
-                    $this->model->table('users')
-                    ->data($data_up)
-                    ->where($where_up)
-                    ->update();
-                }
-                
                 /*把新注册用户的扩展信息插入数据库*/
                 $sql = 'SELECT id,is_need,reg_field_name FROM ' . M()->pre . 'reg_fields' . ' WHERE  display = 1 ORDER BY dis_order, id';   //读出所有自定义扩展字段的id
                 $fields_arr = M()->query($sql);
-                
+
                 $extend_field_str = '';    //生成扩展字段的内容字符串
                 foreach ($fields_arr AS $val)
                 {
@@ -1806,40 +1773,29 @@ class UserController extends CommonController {
                     if(!empty($_POST[$extend_field_index]))
                     {
                         $temp_field_content = strlen($_POST[$extend_field_index]) > 100 ? mb_substr($_POST[$extend_field_index], 0, 99) : $_POST[$extend_field_index];
-                        $extend_field_str .= " ('" . $_SESSION['user_id'] . "', '" . $val['id'] . "', '" . $temp_field_content . "'),";
-                    }else {
-                        if ($val['is_need']==1){
-                            show_message($val['reg_field_name'].L('can_not_empty'), L('register_back'), url('register'), 'error');
-                        }
+                        $extend_field_str .= " ('" . $_SESSION['user_id'] . "', '" . $val['id'] . "', '" . compile_str($temp_field_content) . "'),";
                     }
                 }
                 $extend_field_str = substr($extend_field_str, 0, -1);
-                
+
                 if ($extend_field_str)      //插入注册扩展数据
                 {
                     $sql = 'INSERT INTO '. M()->pre . 'reg_extend_info' . ' (`user_id`, `reg_field_id`, `content`) VALUES' . $extend_field_str;
                     M()->query($sql);
                 }
-                
-                /* 写入密码提示问题和答案 */
+
+                // 写入密码提示问题和答案
                 if (!empty($passwd_answer) && !empty($sel_question))
                 {
                     $sql = 'UPDATE ' . M()->pre . 'users' . " SET `passwd_question`='$sel_question', `passwd_answer`='$passwd_answer'  WHERE `user_id`='" . $_SESSION['user_id'] . "'";
                     M()->query($sql);
                 }
-                
                 // 判断是否需要自动发送注册邮件
                 if (C('member_email_validate') && C('send_verify_email')) {
                     model('Users')->send_regiter_hash($_SESSION['user_id']);
                 }
                 $ucdata = empty(self::$user->ucdata) ? "" : self::$user->ucdata;
-                show_message(sprintf(L('register_success'), $username . $ucdata), array(
-                    L('back_up_page'),
-                    L('profile_lnk')
-                        ), array(
-                    $this->back_act,
-                    url('index')
-                        ), 'info');
+                show_message(sprintf(L('register_success'), $username . $ucdata), array(L('back_up_page'), L('profile_lnk')), array($this->back_act, url('index')), 'info');
             } else {
                 ECTouch::err()->show(L('sign_up'), url('register'));
             }

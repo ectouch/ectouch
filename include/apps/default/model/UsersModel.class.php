@@ -459,6 +459,7 @@ class UsersModel extends BaseModel {
      */
     function get_consignee_list($user_id, $id = 0, $num = 10, $start = 0) {
         if ($id) {
+            $where['user_id'] = $user_id;
             $where['address_id'] = $id;
             $this->table = 'user_address';
             return $this->find($where);
