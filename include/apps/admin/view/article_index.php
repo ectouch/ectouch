@@ -1,12 +1,11 @@
 {include file="pageheader"}
 <table cellspacing='1' cellpadding='3' id='list-table' class="table table-bordered table-striped table-hover">
   <tr>
-    <th class="text-center" width="15%">
-      <a href="javascript:listTable.sort('article_id'); ">{$lang['article_id']}</a>{$sort_article_id}</th>
-    <th class="text-center" width="20%"><a href="javascript:listTable.sort('title'); ">{$lang['title']}</a>{$sort_title}</th>
-    <th class="text-center" width="15%"><a href="javascript:listTable.sort('cat_id'); ">{$lang['cat']}</a>{$sort_cat_id}</th>
-    <th class="text-center" width="15%"><a href="javascript:listTable.sort('is_open'); ">{$lang['is_open']}</a>{$sort_is_open}</th>
-    <th class="text-center" width="15%"><a href="javascript:listTable.sort('add_time'); ">{$lang['add_time']}</a>{$sort_add_time}</th>
+    <th class="text-center" width="15%">{$lang['article_id']}</th>
+    <th class="text-center" width="20%">{$lang['title']}</th>
+    <th class="text-center" width="15%">{$lang['cat']}</th>
+    <th class="text-center" width="15%">{$lang['is_open']}</th>
+    <th class="text-center" width="15%">{$lang['add_time']}</th>
     <th class="text-center" width="15%">{$lang['handler']}</th>
   </tr>
   {loop $article_list $key $list}
