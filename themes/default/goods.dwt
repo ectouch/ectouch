@@ -12,13 +12,12 @@
     </div>
     <div class="bd">
       <ul id="Gallery">
-        <li><a href="{$goods.goods_img}"><img src="{$goods.goods_img}" alt="{$goods.goods_name}" /></a></li>
         <!--{if $pictures}--> 
         <!-- {foreach from=$pictures item=picture name=no}--> 
-        <!-- {if $smarty.foreach.no.iteration > 1}  -->
         <li><a href="{$picture.img_url}"><img src="{$picture.img_url}" alt="{$picture.img_desc}" /></a></li>
-        <!-- {/if}--> 
-        <!--{/foreach}--> 
+        <!--{/foreach}-->
+        <!--{else}-->
+        <li><a href="{$goods.goods_img}"><img src="{$goods.goods_img}" alt="{$goods.goods_name}" /></a></li>
         <!--{/if}-->
       </ul>
     </div>
@@ -29,18 +28,54 @@
     <section class="ect-margin-tb ect-margin-lr goods-title">
       <h4 class="title pull-left">{$goods.goods_style_name}</h4>
       <span class="pull-right text-center <!--{if $sc eq 1}-->ect-colory<!--{/if}--> ect-padding-lr" onClick="collect({$goods.goods_id})" id='ECS_COLLECT'> <i class="fa <!--{if $sc eq 1}-->fa-heart<!--{else}-->fa-heart-o<!--{/if}-->"></i><br>
-      {$lang.btn_collect} </span> </section>
-    <section class="ect-margin-tb ect-margin-lr ">
-      <p><span class="pull-left">{$lang.amount}：<b class="ect-colory" id="ECS_GOODS_AMOUNT"></b></span><span class="pull-right">{$lang.sort_sales}：{$sales_count} {$lang.piece}</span></p>
-      <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销-->{$lang.promote_price}<!--{else}-->{$lang.shop_price}<!--{/if}--><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--> 
-        {$goods.promote_price}  
-        <!--{else}--> 
-        {$goods.shop_price_formated} 
-        <!--{/if}--> <small> <del><!-- {if $cfg.show_marketprice} 市场价格-->{$goods.market_price} <!-- {/if} --></del></small>
-	  </p>
-	  <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--><strong id="leftTime" class="price">{$lang.please_waiting}</strong><!--{/if}--></p>
-		 
+      {$lang.btn_collect} </span>
     </section>
+    
+    <section class="ect-margin-tb ect-margin-lr">
+      <!-- {if $cfg.show_goodssn} 显示商品货号-->
+      <p>
+        {$lang.goods_sn} {$goods.goods_sn}
+      </p>
+      <!-- {/if} -->
+      <!-- {if $goods.goods_brand neq "" and $cfg.show_brand} 显示商品品牌-->
+      <p>
+        {$lang.goods_brand} <a href="{$goods.goods_brand_url}" >{$goods.goods_brand}</a>
+      </p>
+      <!-- {/if} -->
+      <p>
+        {$lang.amount}：<b class="ect-colory" id="ECS_GOODS_AMOUNT"></b>
+      </p>
+      <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销-->{$lang.promote_price}<!--{else}-->{$lang.shop_price}<!--{/if}--><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--> 
+        {$goods.promote_price}
+        <!--{else}-->
+        {$goods.shop_price_formated}
+        <!--{/if}-->
+      </p>
+      <!-- {if $cfg.show_marketprice} 市场价格-->
+      <p>
+        {$lang.market_price}
+        <small> <del>{$goods.market_price}</del></small>
+      </p>
+      <!-- {/if} -->
+      <p>
+        {$lang.sort_sales}：{$sales_count} {$lang.piece}
+      </p>
+      <!-- {if $goods.goods_number neq "" and $cfg.show_goodsnumber} 商品库存-->
+      <p>
+        {$lang.goods_number}
+        <!-- {if $goods.goods_number eq 0} -->
+        {$lang.stock_up}
+        <!-- {else} -->
+        {$goods.goods_number} {$goods.measure_unit}
+        <!-- {/if} -->
+      </p>
+      <!-- {/if} -->
+      <!-- {if $cfg.show_goodsweight} 商品重量-->
+      <p>{$lang.goods_weight} {$goods.goods_weight}</p>
+      <!-- {/if} -->
+      <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--><strong id="leftTime" class="price">{$lang.please_waiting}</strong><!--{/if}--></p>
+    </section>
+
     <!-- {if $promotion} 优惠活动 -->
     <section class="ect-margin-tb ect-margin-bottom0 ect-padding-tb goods-promotion ect-padding-lr ">
       <h5><b>{$lang.activity}：</b></h5>
