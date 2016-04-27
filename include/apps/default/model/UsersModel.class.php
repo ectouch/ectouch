@@ -1791,7 +1791,7 @@ class UsersModel extends BaseModel {
         if ($this->register($username, $password, $email) !== false) {
             // 更新附表
             $this->table = "touch_user_info";
-            $touch_data['user_id'] = $uid;
+            $touch_data['user_id'] = $_SESSION['user_id'];
             $touch_data['aite_id'] = $info['aite_id'];
             $this->insert($touch_data);
             return true;
