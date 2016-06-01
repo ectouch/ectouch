@@ -245,7 +245,12 @@ class EcsTemplate {
                 $source = str_replace('%%%SMARTYSP' . $curr_sp . '%%%', '<?php echo \'' . str_replace("'", "\'", $sp_match[1][$curr_sp]) . '\'; ?>' . "\n", $source);
             }
         }
-        return preg_replace("/{([^\}\{\n]*)}/e", "\$this->select('\\1');", $source);
+        if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
+            return preg_replace("/{([^\}\{\n]*)}/e", "\$this->select('\\1');", $source);
+        } else {
+            $template = $this;
+            return preg_replace_callback("/{([^\}\{\n]*)}/", function($r) use(&$template){return $template->select($r[1]);}, $source);
+        }
     }
 
     /**
@@ -413,7 +418,11 @@ class EcsTemplate {
                 case 'insert' :
                     $t = $this->get_para(substr($tag, 7), false);
 
-                    $out = "<?php \n" . '$k = ' . preg_replace("/(\'\\$[^,]+)/e", "stripslashes(trim('\\1','\''));", var_export($t, true)) . ";\n";
+                    if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
+                        $out = "<?php \n" . '$k = ' . preg_replace("/(\'\\$[^,]+)/e" , "stripslashes(trim('\\1','\''));", var_export($t, true)) . ";\n";
+                    } else {
+                        $out = "<?php \n" . '$k = ' . preg_replace_callback("/(\'\\$[^,]+)/", function($r){return stripcslashes(trim($r[1], '\''));}, var_export($t, true)) . ";\n";
+                    }
                     $out .= 'echo $this->_echash . $k[\'name\'] . \'|\' . serialize($k) . $this->_echash;' . "\n?>";
 
                     return $out;
@@ -470,7 +479,11 @@ class EcsTemplate {
      */
     function get_val($val) {
         if (strrpos($val, '[') !== false) {
-            $val = preg_replace("/\[([^\[\]]*)\]/eis", "'.'.str_replace('$','\$','\\1')", $val);
+            if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
+                $val = preg_replace("/\[([^\[\]]*)\]/eis", "'.'.str_replace('$','\$','\\1')", $val);
+            } else {
+                $val = preg_replace_callback("/\[([^\[\]]*)\]/is", function($r){return '.' . $r[1];}, $val);
+            }
         }
 
         if (strrpos($val, '|') !== false) {
@@ -906,9 +919,14 @@ class EcsTemplate {
          */
         if ($file_type == '.dwt') {
             /* 将模板中所有library替换为链接 */
-            $pattern = '/<!--\s#BeginLibraryItem\s\"\/(.*?)\"\s-->.*?<!--\s#EndLibraryItem\s-->/se';
-            $replacement = "'{include file='.strtolower('\\1'). '}'";
-            $source = preg_replace($pattern, $replacement, $source);
+            if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
+                $pattern     = '/<!--\s#BeginLibraryItem\s\"\/(.*?)\"\s-->.*?<!--\s#EndLibraryItem\s-->/se';
+                $replacement = "'{include file='.strtolower('\\1'). '}'";
+                $source      = preg_replace($pattern, $replacement, $source);
+            } else {
+                $pattern     = '/<!--\s#BeginLibraryItem\s\"\/(.*?)\"\s-->.*?<!--\s#EndLibraryItem\s-->/s';
+                $source      = preg_replace_callback($pattern, function($r){return '{include file=' . strtolower($r[1]). '}';}, $source);
+            }
 
             /* 检查有无动态库文件，如果有为其赋值 */
             $template = C('template');
