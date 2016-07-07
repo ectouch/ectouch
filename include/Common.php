@@ -659,7 +659,11 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
  */
 function parse_name($name, $type=0) {
     if ($type) {
-        return ucfirst(preg_replace("/_([a-zA-Z])/e", "strtoupper('\\1')", $name));
+        if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
+            return ucfirst(preg_replace("/_([a-zA-Z])/e", "strtoupper('\\1')", $name));
+        } else {
+            return include(ROOT_PATH . 'include' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'base_common_parse_name.php');
+        }        
     } else {
         return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
     }
