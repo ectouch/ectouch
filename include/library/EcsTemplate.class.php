@@ -248,7 +248,7 @@ class EcsTemplate {
         if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
             return preg_replace("/{([^\}\{\n]*)}/e", "\$this->select('\\1');", $source);
         } else {
-            return include(ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_fetch_str.php');
+            return include(ROOT_PATH . 'include' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_fetch_str.php');
         }
     }
 
@@ -420,7 +420,7 @@ class EcsTemplate {
                     if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
                         $out = "<?php \n" . '$k = ' . preg_replace("/(\'\\$[^,]+)/e" , "stripslashes(trim('\\1','\''));", var_export($t, true)) . ";\n";
                     } else {
-                        include(ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_select.php');
+                        include(ROOT_PATH . 'include' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_select.php');
                     }
                     $out .= 'echo $this->_echash . $k[\'name\'] . \'|\' . serialize($k) . $this->_echash;' . "\n?>";
 
@@ -481,7 +481,7 @@ class EcsTemplate {
             if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
                 $val = preg_replace("/\[([^\[\]]*)\]/eis", "'.'.str_replace('$','\$','\\1')", $val);
             } else {
-                include(ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_get_val.php');
+                include(ROOT_PATH . 'include' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_get_val.php');
             }
         }
 
@@ -923,7 +923,7 @@ class EcsTemplate {
                 $replacement = "'{include file='.strtolower('\\1'). '}'";
                 $source      = preg_replace($pattern, $replacement, $source);
             } else {
-                include(ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_smarty_prefilter_preCompile.php');
+                include(ROOT_PATH . 'include' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_smarty_prefilter_preCompile.php');
             }
 
             /* 检查有无动态库文件，如果有为其赋值 */
