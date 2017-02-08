@@ -7,6 +7,8 @@ namespace app\modules\console;
  */
 class Module extends \yii\base\Module
 {
+    public $layout = 'dashboard';
+
     /**
      * @inheritdoc
      */

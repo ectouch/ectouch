@@ -9,6 +9,8 @@ use yii\web\Controller;
  */
 class AuthController extends Controller
 {
+    public $layout = 'admin';
+
     /**
      * Renders the login view for the module
      * @return string
