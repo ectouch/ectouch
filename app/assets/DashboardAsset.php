@@ -4,14 +4,14 @@ namespace app\assets;
 
 use yii\web\AssetBundle;
 
-class AppAsset extends AssetBundle
+class DashboardAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/app.css',
+        'css/dashboard.css',
     ];
     public $js = [
-        'js/app.js',
+        'js/dashboard.js',
     ];
 }
