@@ -1,7 +1,9 @@
 <?php
 
 $params = require(__DIR__ . '/app.php');
-$routes = require(dirname(__DIR__) . '/routes/web.php');
+$routes_web = require(dirname(__DIR__) . '/routes/web.php');
+$routes_api = require(dirname(__DIR__) . '/routes/api.php');
+$routes = array_merge($routes_web, $routes_api);
 
 $config = [
     'id' => 'basic',
