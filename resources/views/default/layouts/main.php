@@ -1,7 +1,9 @@
 <?php
 
+use app\assets\AppAsset;
 use yii\helpers\Html;
 
+AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -12,11 +14,7 @@ use yii\helpers\Html;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
-
     <?php $this->head() ?>
-
-    <?= Html::cssFile('@web/css/app.css') ?>
-
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -28,9 +26,6 @@ use yii\helpers\Html;
 </div>
 
 <?php $this->endBody() ?>
-
-<?= Html::jsFile('@web/js/app.js') ?>
-
 </body>
 </html>
 <?php $this->endPage() ?>
