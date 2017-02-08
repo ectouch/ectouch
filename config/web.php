@@ -6,7 +6,7 @@ $routes_api = require(dirname(__DIR__) . '/routes/api.php');
 $routes = array_merge($routes_web, $routes_api);
 
 $config = [
-    'id' => 'basic',
+    'id' => 'ectouch',
     'basePath' => dirname(__DIR__) . '/app',
     'viewPath' => dirname(__DIR__) . '/resources/views/default',
     'runtimePath' => dirname(__DIR__) . '/storage/framework',
