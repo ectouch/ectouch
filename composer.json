@@ -1,0 +1,63 @@
+{
+    "name": "ectouch/ectouch",
+    "description": "ectouch open-source e-commerce system.",
+    "keywords": ["ectouch", "ecshop", "ecmall", "wemall"],
+    "homepage": "https://www.ectouch.cn/",
+    "type": "project",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "carson",
+            "email": "docxcn@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ectouch/ectouch/issues?state=open",
+        "forum": "http://www.ectouch.cn/forum/",
+        "wiki": "http://www.ectouch.cn/wiki/",
+        "irc": "irc://irc.freenode.net/ectouch",
+        "source": "https://github.com/ectouch/ectouch"
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "~2.0.5",
+        "yiisoft/yii2-bootstrap": "~2.0.0",
+        "yiisoft/yii2-swiftmailer": "~2.0.0"
+    },
+    "require-dev": {
+        "yiisoft/yii2-debug": "~2.0.0",
+        "yiisoft/yii2-gii": "~2.0.0",
+        "yiisoft/yii2-faker": "~2.0.0",
+
+        "codeception/base": "^2.2.3",
+        "codeception/verify": "~0.3.1",
+        "codeception/specify": "~0.4.3"
+    },
+    "config": {
+        "process-timeout": 1800
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "yii\\composer\\Installer::postCreateProject"
+        ]
+    },
+    "extra": {
+        "yii\\composer\\Installer::postCreateProject": {
+            "setPermission": [
+                {
+                    "storage": "0777",
+                    "public/assets": "0777",
+                    "yii": "0755"
+                }
+            ],
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        },
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
