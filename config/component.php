@@ -7,4 +7,7 @@ return [
     'ecapi' => [
         'class' => 'app\modules\ecapi\Module',
     ],
+    'apidoc' => [
+        'class' => 'app\modules\apidoc\Module',
+    ],
 ];
