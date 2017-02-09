@@ -9,6 +9,19 @@ class SiteController extends Controller
 {
 
     /**
+     * @inheritdoc
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+                'view' => '@app/exceptions/error'
+            ],
+        ];
+    }
+
+    /**
      * Displays homepage.
      *
      * @return string
