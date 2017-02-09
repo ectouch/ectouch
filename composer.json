@@ -48,7 +48,7 @@
                 {
                     "storage": "0777",
                     "public/assets": "0777",
-                    "yii": "0755"
+                    "artisan": "0755"
                 }
             ],
             "generateCookieValidationKey": [
