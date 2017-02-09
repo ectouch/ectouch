@@ -7,30 +7,29 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '管理登录';
+$this->title = 'ECTouch管理中心';
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
-
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
-                <?= $form->field($model, 'password')->passwordInput() ?>
-
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
-
-                <div style="color:#999;margin:1em 0">
-                    如果您忘记密码，请<?= Html::a('点此重置', ['forgot']) ?>。
-                </div>
-
-                <div class="form-group">
-                    <?= Html::submitButton('登录', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
-        </div>
-    </div>
-</div>
+<div class="login">
+		<div class="login-con">
+			<header>
+				<div class="login-header"><?= Html::encode($this->title) ?></div>
+			</header>
+			<section>
+        <?php $form = ActiveForm::begin(['id' => 'login-form', 'fieldConfig' => ['template' => "{error}\n{input}"]]); ?>
+				<div class="login-input">
+					<?= $form->field($model, 'username')->textInput(['autofocus' => true, 'placeholder' => '管理员用户名']) ?>
+					<?= $form->field($model, 'password')->passwordInput(['placeholder' => '管理员密码']) ?>
+					<div class="user-info">
+						<div class="save">
+              <?= $form->field($model, 'rememberMe')->checkbox() ?>
+						</div>
+						<div class="forget">
+							<?= Html::a('忘记密码？', ['forgot']) ?>
+						</div>
+					</div>
+					<?= Html::submitButton('登录管理中心', ['class' => 'btn btn-primary mange', 'name' => 'login-button']) ?>
+				</div>
+				<?php ActiveForm::end(); ?>
+			</section>
+		</div>
+	</div>	
