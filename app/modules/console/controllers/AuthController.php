@@ -2,7 +2,11 @@
 
 namespace app\modules\console\controllers;
 
+use Yii;
 use yii\web\Controller;
+use app\modules\console\models\LoginForm;
+use app\modules\console\models\PasswordResetRequestForm;
+use app\modules\console\models\ResetPasswordForm;
 
 /**
  * Auth controller for the `console` module
