@@ -53,7 +53,7 @@ $config = [
             'rules' => $routes,
         ],
     ],
-    'modules' => require(__DIR__ . '/module.php'),
+    'modules' => require(__DIR__ . '/component.php'),
     'params' => $params,
 ];
 
