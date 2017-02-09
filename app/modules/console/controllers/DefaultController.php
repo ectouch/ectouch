@@ -17,7 +17,7 @@ class DefaultController extends Controller
     {
         $isGuest = isset($_SESSION['ADMIN_ID']) ? 1 : 0;
         if(! $isGuest){
-            // $this->redirect(['auth/login']);
+            $this->redirect(['auth/login']);
         }
         return $this->render('index');
     }
