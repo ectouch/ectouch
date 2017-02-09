@@ -66,8 +66,8 @@ class AdminUser extends ActiveRecord implements IdentityInterface
             [['last_ip'], 'string', 'max' => 15],
             [['lang_type'], 'string', 'max' => 50],
             
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            // ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            // ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
     }
 
@@ -76,7 +76,8 @@ class AdminUser extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['user_id' => $id, 'status' => self::STATUS_ACTIVE]);
+        // return static::findOne(['user_id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['user_id' => $id]);
     }
 
     /**
@@ -95,7 +96,8 @@ class AdminUser extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['user_name' => $username, 'status' => self::STATUS_ACTIVE]);
+        // return static::findOne(['user_name' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['user_name' => $username]);
     }
 
     /**
@@ -112,7 +114,7 @@ class AdminUser extends ActiveRecord implements IdentityInterface
 
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+            // 'status' => self::STATUS_ACTIVE,
         ]);
     }
 
