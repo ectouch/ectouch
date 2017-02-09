@@ -1,30 +1,36 @@
-<div class="login-bg">
-  <header>
-    <div class="login-header"> ECTouch管理中心 </div>
-  </header>
-  <section>
-    <form method="post" action="privilege.php" name='theForm' onsubmit="return validate()">
-      <div class="login-con">
-        <input name="username" type="text" placeholder="管理员用户名">
-        <input name="password" type="password" placeholder="管理员密码" class="login_password">
-                <div class="login-con-code">
-          <input name="captcha" type="text" placeholder="验证码">
-          <img src="index.php?act=captcha&849328316" onclick="this.src='index.php?act=captcha&'+Math.random();" title="看不清？点击更换另一个验证码。" class="cursor" />
+<?php
+
+/* @var $this yii\web\View */
+/* @var $form yii\bootstrap\ActiveForm */
+/* @var $model \common\models\LoginForm */
+
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+
+$this->title = '管理登录';
+?>
+<div class="site-login">
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <div class="row">
+        <div class="col-lg-5">
+            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+
+                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+
+                <?= $form->field($model, 'password')->passwordInput() ?>
+
+                <?= $form->field($model, 'rememberMe')->checkbox() ?>
+
+                <div style="color:#999;margin:1em 0">
+                    如果您忘记密码，请<?= Html::a('点此重置', ['forgot']) ?>。
+                </div>
+
+                <div class="form-group">
+                    <?= Html::submitButton('登录', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                </div>
+
+            <?php ActiveForm::end(); ?>
         </div>
-                <div style="overflow:hidden;">
-          <div class="checkboxes pull-left">
-            <label class="label_check" for="checkbox-06">
-              <input name="remember" id="checkbox-06" value="1" type="checkbox"> 请保存我这次的登录信息。            </label>
-          </div>
-          <span class="pull-right"><a href="get_password.php?act=forget_pwd">您忘记了密码吗?</a></span>
-        </div>
-        <button class="btn ect-btn-login ect-clear" onClick="this.submit">进入管理中心</button>
-      </div>
-      <input type="hidden" name="act" value="signin" />
-    </form>
-  </section>
+    </div>
 </div>
-<footer>
-  <div class="login-footer"></div>
-</footer>
-<div class="passport-bg"></div>
