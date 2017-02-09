@@ -11,14 +11,6 @@ use Parsedown;
  */
 class DefaultController extends Controller
 {
-    
-    private $modulePath;
-
-    public function init(){
-        parent::init();
-
-        $this->modulePath = dirname(__DIR__);
-    }
 
     /**
      * Renders the index view for the module
@@ -26,13 +18,12 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $basePath = $this->modulePath . '/markdown/';
-        $markfile = Yii::$app->request->get('detail');
-        $markfile = empty($markfile) ? 'READMD.md' : 'api/' . $markfile;
+        $basePath = dirname(__DIR__) . '/markdown/';
+        $detail = Yii::$app->request->get('detail');
+        $basePath .= empty($detail) ? 'READMD.md' : 'api/' . $detail;
 
-        $data = $basePath . $markfile;
-        if (file_exists($data)) {
-            $content = file_get_contents($data);
+        if (file_exists($basePath)) {
+            $content = file_get_contents($basePath);
         } else {
             $content = 'Please wait.';
         }
