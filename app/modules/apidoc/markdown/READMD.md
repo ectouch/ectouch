@@ -36,14 +36,14 @@ ECTouch的API是基于HTTP协议来调用的，开发者应用可以根据ECTouc
 
 #### 基本特性
 
-- 服务端采用tp框架版本，运用api机制来实现跨产品和跨终端产品的研发和发布。
-- 客户端采用vue.js版本进行产品需求研发。
+- 服务端采用Yii2框架版本，运用api机制来实现跨产品和跨终端产品的研发和发布。
+- 客户端推荐采用vue.js框架进行产品需求研发。
 
 #### 架构及依赖包
 
 - php采用composer安装依赖，配置文件composer.json
 - 静态资源采用bower安装依赖，配置文件bower.json和.bowerrc
-- 本地打包工具采用gulpfile，配置文件gulpfile.js
+- 本地打包工具采用webpack & mix，配置文件webpack.mix.js
 - 前端资源依赖nodejs，配置文件package.json
 - 初始的目录结构如下：
 
