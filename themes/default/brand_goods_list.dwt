@@ -1,14 +1,18 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
-<div class="con">
-<div style="height:7.2em;"></div>
-  <header>
-    <nav class="ect-nav ect-bg icon-write">
-      <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem -->
-    </nav>
-  </header>
-<!-- #BeginLibraryItem "/library/goods_list_brand.lbi" --><!-- #EndLibraryItem -->
-</div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> 
+<link rel="stylesheet" href="__TPL__/css/brand_list.css">
+    <div class="con">
+        <div class="group-logo">
+            <img src="{$brand_info.brand_banner}" alt="" />
+            <ul>
+                <li><p id="all">{$brand_goods_count}</p><span>全部商品</span></li>
+                <li><p id="new">{$brand_goods_new}</p><span>新品</span></li>
+                <li><p id="prom">{$brand_goods_hot}</p><span>热销</span></li>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <!-- #BeginLibraryItem "/library/goods_list_brand.lbi" --><!-- #EndLibraryItem -->
+    </div>
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem --> 
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript">
 <!--{if $show_asynclist}-->

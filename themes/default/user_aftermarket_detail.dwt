@@ -1,0 +1,109 @@
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+	<h3 class="box-flex">{$title}</h3>
+	<a class="" href="javascript:;"><i class="iconfont icon-pailie j-nav-box"></i></a>
+</header>
+<div class="j-nav-content">
+	<ul class="dis-box new-footer-box">
+		<li class="box-flex">
+			<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+		</li>
+		<li class="box-flex">
+			<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+	</ul>
+</div>
+
+<body class="iscroll">
+	<div id="page">
+		<div class="panel-body" id="panel-body">
+			<div class="m_msg J_Status show">
+				<div class="msg-item msg-lst">
+					<div class="msg-info m-top10"> <s class="arrow"></s>
+						<div class="dis-box">
+							<a  href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}" target="_blank"><div class="n-detail-box"><img src="{$goods.goods_thumb}"></div></a>
+							<dl class="box-flex n-aft-detail-box">
+								<dt>
+                        <h4><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}">{$goods.goods_name}{$goods.goods_attr}</a></h4>
+                      </dt>
+								<dd class="dd-price"><b>{$lang.shop_price}{$goods.goods_price} {$lang.number_to}：{$goods.goods_number}</b></dd>
+								<dd class="dd-price"><b class="pull-left">{$lang.ws_subtotal}：<span class="ect-colory">{$goods.subtotal}</span></b></dd>
+							</dl>
+						</div>
+						<div class="cutoff-line"></div>
+						<div class="desc">
+							<div class="desc-i">{$lang.aftermarket_type}：<span>{$return.service_name}</span></div>
+							<div class="desc-i">{$lang.aftermarket_status}：<b>{$return.return_status}</b></div>
+							<div class="desc-i">{$lang.refund_status}：<b>{$return.refund_status}</b></div>
+							<div class="desc-i">{$lang.aftermarket_number}：<span>{$return.service_sn}</span> </div>
+							<div class="desc-i">{$lang.order_addtime}：<span>{$return.formated_add_time}</span></div>
+							<div class="cutoff-line cutoff-line2"></div>
+							<div class="additional"> {$lang.return_num}：<b>{$goods.back_num}</b>: {$lang.should_return}：<b class="ect-colory">{$return.formated_should_return}</b> </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="m_msg J_Status show">
+				<div class="msg-item msg-lst" style="left: 0px; opacity: 1;">
+
+					<div class="filter-btn dis-box">
+						<!--{if $return.handler}-->
+						<div type="button" class="btn-cart n-but-ls box-flex n-iphone5-top1 j-goods-attr j-show-div">{$return.handler}</div>
+						<!--{/if}-->
+						<a href="{:url('user/aftermarket_done', array('rec_id'=>$this->_var['return']['rec_id']))}" type="button" class="btn-submit box-flex n-iphone5-top1 j-goods-attr j-show-div">{$lang.aftermarket_action}</a>
+					</div>
+
+				</div>
+			</div>
+
+			<!--{if $return.back_shipping_name}-->
+			<div class="m_msg J_Status show">
+				<div style="left: 0px; opacity: 1;" class="msg-item msg-lst">
+					<div class="msg-info">
+						<div class="title">买家寄出</div>
+						<div class="desc">
+							<div class="desc-i">{$lang.shipping_method}：<span>{$return.back_shipping_name}</span></div>
+							<div class="desc-i">{$lang.shipping_number}：<span>{$return.back_invoice_no}</span></div>
+						</div>
+						<div class="cutoff-line cutoff-line2"></div>
+						<div class="title">商家寄出</div>
+						<div class="desc">
+							<div class="desc-i">{$lang.shipping_method}：<span>{$return.out_shipping_name}</span></div>
+							<div class="desc-i">{$lang.shipping_number}：<span>{$return.out_invoice_no}</span></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--{/if}-->
+
+			<!--{if $return.cert}-->
+			<div class="m_msg conversation">
+				<div class="msg-item  msg-itm-img">
+					<div class="p-info">
+						<div class="title">{$lang.cert_img}</div>
+						<div class="p-img">
+							<ul>
+								<!-- {foreach from=$return.cert item=cert} -->
+								<li> <img src="{$cert.img_url}"></li>
+								<!-- {/foreach} -->
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--{/if}-->
+		</div>
+
+	</div>
+	<div id="mask"></div>
+	<div id="popup" class="bottom-side"></div>
+	<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+	<!-- #EndLibraryItem -->
+	<!-- #BeginLibraryItem "/library/new_page_footer.lbi" -->
+	<!-- #EndLibraryItem -->
+	<script type="text/javascript" src="__PUBLIC__/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/js/jquery.json.js"></script>
+</body>

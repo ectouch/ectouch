@@ -1,0 +1,72 @@
+{include file="pageheader"}
+<div class="container-fluid" style="padding:0">
+	<div class="row" style="margin:0">
+	  <div class="col-md-12 col-sm-12 col-lg-12" style="padding:0;">
+		<div class="panel panel-default">
+			<div class="panel-heading">自动回复</div>
+        <div class="explanation" id="explanation">
+          <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+          <ul>
+            <li>二、消息自动回复：当用户输入任意消息，匹配不到功能扩展即系统已有关键词时或者没有在关键词自动回复里的规则关键词，则默认回复一条 消息提示。（可以为空）例如：对不起！你输入的关键词不存在，建议你咨询相关客服。</li>
+            <li>★ 消息自动回复，可以配合关键词自动回复灵活使用。回复提示用户输入系统已有关键词。</li>
+          </ul>
+        </div>
+			<div class="panel-body">
+			     <ul class="nav nav-tabs" role="tablist" id="myTab">
+			         <li><a href="{url('reply_subscribe')}">关注自动回复</a></li>
+			         <li class="active"><a href="{url('reply_msg')}">消息自动回复</a></li>
+			         <li><a href="{url('reply_keywords')}">关键词自动回复</a></li>
+			     </ul>
+			</div>
+
+			<div class="panel-body">
+                <form action="{url('reply_msg')}" method="post">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                      <ul class="nav nav-pills" role="tablist">
+                        <li role="presentation"><a href="javascript:;" class="glyphicon glyphicon-pencil ectouch-fs18" title="文字"></a></li>
+                        <li role="presentation"><a href="{url('auto_reply', array('type'=>'image'))}" class="glyphicon glyphicon-picture ectouch-fs18 fancybox fancybox.iframe" title="图片"></a></li>
+                        <li role="presentation"><a href="{url('auto_reply', array('type'=>'voice'))}" class="glyphicon glyphicon-volume-up ectouch-fs18 fancybox fancybox.iframe"  title="语音"></a></li>
+                        <li role="presentation"><a href="{url('auto_reply', array('type'=>'video'))}" class="glyphicon glyphicon-film ectouch-fs18 fancybox fancybox.iframe"  title="视频"></a></li>
+                      </ul>
+                      </div>
+                      <div class="panel-body" style="padding:0;">
+                        <div {if $msg['media_id']}class="hidden"{/if}><textarea name="content" class="form-control" placeholder="文本内容" rows="6">{if $msg['content']}{$msg['content']}{/if}</textarea></div>
+                        <div class="{if empty($msg) || $msg['content']}hidden{/if} col-xs-6 col-md-3 thumbnail content" style="border:none;">
+                            {if $msg['media']}
+                                {if $msg['media']['type'] == 'voice'}
+                                    <input type='hidden' name='media_id' value="{$msg['media_id']}"><img src='__PUBLIC__/images/voice.png' class='img-rounded' /><span class='help-block'>{$msg['media']['file_name']}</span>
+                                {elseif $msg['media']['type'] == 'video'}
+                                    <input type='hidden' name='media_id' value="{$msg['media_id']}"><img src='__PUBLIC__/images/video.png' class='img-rounded' /><span class='help-block'>{$msg['media']['file_name']}</span>
+                                {else}
+                                    <input type='hidden' name='media_id' value="{$msg['media_id']}"><img src="{$msg['media']['file']}" class='img-rounded' />
+                                {/if}
+                            {/if}
+                        </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                    <input type="hidden" name="content_type" value="text" />
+                    <input type="submit" class="btn btn-primary" name="submit" value="保存" />
+                    <input type="reset" class="btn btn-default" name="reset" value="清除内容" />
+                  </div>
+                </form>
+            </div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+    $(".nav-pills li").click(function(){
+        var index = $(this).index();
+        var tab = $(this).parent().parent(".panel-heading").siblings(".panel-body");
+        if(index == 0){
+    	    tab.find("div").addClass("hidden");
+            tab.find("div").eq(index).removeClass("hidden");
+            $("input[name=content_type]").val("text");
+        }
+    });
+})
+</script>
+{include file="pagefooter"}

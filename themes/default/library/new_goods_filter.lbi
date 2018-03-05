@@ -1,0 +1,92 @@
+<div id="j-filter-div" class="j-filter-div filter-div ts-5 c-filter-div">
+	<div class="mask-filter-div"></div>
+	<section class="close-filter-div j-close-filter-div">
+		<div class="close-f-btn">
+			<i class="iconfont icon-fanhui"></i>
+			<span>关闭</span>
+		</div>
+	</section>
+	<section class="con-filter-div">
+		<form class="hold-height" method="post" id="form" action="{:url('category/index')}">
+		<input type="hidden" name="id" class="cat" value="{$id}" />
+		<div class="swiper-wrapper">
+			<div class="swiper-slide">
+				<div class="price-range padding-all m-top08">
+					<label>{$lang.sort_price}</label>
+					<div class="price-slider">
+						<div id="slider-range" class="slider"></div>
+						<div class="slider-info">
+							<span id="slider-range-amount"></span>
+						</div>
+					</div>
+					<input type="hidden" id="min" name="price_min" value="{$price_min}" />
+					<input type="hidden" id="max" name="price_max" value="{$price_max}" />
+				</div>
+				<div class="select-two">
+					<a class="select-title padding-all j-menu-select">
+						<label class="fl">{$lang.brand}</label>
+						<span class="fr t-jiantou j-t-jiantou jian001" id="j-t-jiantou"><em class="fl">
+						<!--{foreach from=$brands item=brand name=brand}--> 
+						<!--{if $brand.brand_id == $brand_id}--> 
+						{$brand.brand_name}
+						<!--{/if}--> 
+						<!--{/foreach}-->
+						</em><i class="iconfont icon-jiantou tf-180 ts-2"></i></span>
+					</a>
+					<ul class="j-sub-menu padding-all j-get-one" data-istrue="true">
+						<!--{foreach from=$brands item=brand name=brands}-->
+						<li class="ect-select" data-attr="{$brand.brand_id}">
+							<label class="ts-1">{$brand.brand_name|escape:html}<i class="fr iconfont icon-gou ts-1"></i></label>
+						</li>
+						<!--{/foreach}-->
+						<input type="hidden" name="brand" value="{$brand_id}" />
+					</ul>
+					<!--{foreach from=$filter_attr_list item=filter name=filter}-->
+					<a class="select-title padding-all j-menu-select" id="filter_attr_25544">
+						<label class="fl">{$filter.filter_attr_name}</label>
+						<span class="fr t-jiantou j-t-jiantou"><em class="fl">
+						<!--{foreach from=$filter.attr_list item=attr name=attr}--> 
+						<!--{if $attr.selected}--> 
+						{$attr.attr_value} 
+						<!--{/if}--> 
+						<!--{/foreach}-->
+						</em><i class="iconfont icon-jiantou tf-180 ts-2"></i></span>
+					</a>
+					<ul class="j-sub-menu padding-all j-get-one j-sub-menu-attr">
+						<!--{foreach from=$filter.attr_list item=attr name=attr}-->
+						<li class="ect-select <!--{if $attr.selected}-->active<!--{/if}-->" data-attr="{$attr.attr_value}">
+							<label class="ts-1 <!--{if $attr.selected}-->active<!--{/if}--> " id="brand_{$attr.attr_id}" value="{$attr.attr_id}">{$attr.attr_value|escape:html}<i class="fr iconfont icon-gou ts-1"></i></label>
+						</li>
+						<!--{/foreach}-->						
+					</ul>
+					<!--{/foreach}-->
+					<input type="hidden" id="filter_attr" name="filter_attr" value="{$filter_attr}" />
+				</div>
+				<div class="ect-button-more dis-box padding-all">
+					<a class="box-flex btn-reset j-filter-reset" onclick="javascript:clear_filter();">清空选项</a>
+					<button type="submit" class="box-flex btn-submit">确定</button>
+				</div>
+			</div>
+		</div>
+		</form>
+	</section>
+</div>
+
+<script type="text/javascript">
+function clear_filter(){
+ $(".touchweb-com_listType .range").text("全部");
+	$(".touchweb-com_listType input").each(function() {
+		if($(this).attr('class') != 'cat'){ 
+			$(this).val("");
+		}
+	});
+	$(".ui-slider-handle").css("left","0");
+	$(".ui-slider-range").css({left:0,width:0});
+	$("#slider-range-amount").html(0);
+	$("#min ,#max").val(0);
+	$('input[name="brand"]').val(0);
+	$("#filter_attr").val(0);
+}
+
+
+</script>

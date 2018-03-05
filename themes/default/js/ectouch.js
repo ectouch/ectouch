@@ -239,3 +239,35 @@ $(function() {
     var window_height = $(window).height() / 3;
     user_tab_height.css("min-height", window_height);
 });
+
+
+$('.menu-tab ul li').click(function() {
+	$(this).addClass("selected").siblings().removeClass('selected');
+	$('.menu-cont-list').hide().eq($('.menu-tab ul li').index(this)).show();
+});
+
+/*修改密码验证*/
+function editPassword() {
+    var new_password = $("#new_password").val(); //获取
+	var comfirm_password = $("#comfirm_password").val();
+	if(new_password != comfirm_password){
+		alert('两次输入的密码不一致');
+		return false;
+	}
+	
+}
+
+/*設置默認收貨地址*/
+function edit_address_info(address_id) {
+	var url = 'index.php?m=default&c=user&a=edit_address_info';
+	$.get(url, {'id':address_id}, function(data){
+		if(1 == data.status){
+			location.reload();				
+		}
+		else{
+			alert("删除失败");
+		}
+	}, 'json');
+	return false;
+
+}

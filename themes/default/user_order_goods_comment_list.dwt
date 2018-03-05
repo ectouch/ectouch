@@ -1,0 +1,24 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<div class="con">
+	<div class="ect-bg">
+		<header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write ect-bg">
+			<a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$title}</span>
+			<a href="javascript:;" onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a>
+		</header>
+		<nav class="ect-nav ect-nav-list" style="display:none;">
+			<!-- #BeginLibraryItem "/library/page_menu.lbi" -->
+			<!-- #EndLibraryItem -->
+		</nav>
+	</div>
+	<!-- #BeginLibraryItem "/library/order_comments_list.lbi" -->
+	<div id="ECS_COMMENT"> {* ECSHOP 提醒您：动态载入order_comments_list.lbi，显示评论列表和评论表单 *}{insert name='comments' type=$type id=$id}</div>
+	<!-- #EndLibraryItem -->
+</div>
+<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+<!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" -->
+<!-- #EndLibraryItem -->
+</body>
+
+</html>

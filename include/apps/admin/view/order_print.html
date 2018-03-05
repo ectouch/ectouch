@@ -1,0 +1,56 @@
+</p><style type="text/css">body,td { font-size:13px; }</style><p>
+
+
+<h1 align="center">{$lang[order_info]}</h1><table width="100%" cellpadding="1"><tbody><tr class="firstRow"><td width="8%">{$lang[print_buy_name]}</td><td>{if $order[user_name]}{$order[user_name]}{else}{$lang[anonymous]}{/if}<!-- 购货人姓名 --></td><td align="right">{$lang[label_order_time]}</td><td>{$order[order_time]}<!-- 下订单时间 --></td><td align="right">{$lang[label_payment]}</td><td>{$order[pay_name]}<!-- 支付方式 --></td><td align="right">{$lang[print_order_sn]}</td><td>{$order[order_sn]}<!-- 订单号 --></td></tr><tr><td>{$lang[label_pay_time]}</td><td>{$order[pay_time]}</td><!-- 付款时间 --><td align="right">{$lang[label_shipping_time]}</td><td>{$order[shipping_time]}<!-- 发货时间 --></td><td align="right">{$lang[label_shipping]}</td><td>{$order[shipping_name]}<!-- 配送方式 --></td><td align="right">{$lang[label_invoice_no]}</td><td>{$order[invoice_no]} <!-- 发货单号 --></td></tr><tr><td>{$lang[label_consignee_address]}</td><td colspan="7">{$order[region]}&nbsp;{$order[address]}&nbsp;<!-- 收货人地址 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{$lang[label_consignee]}{$order[consignee]}&nbsp;<!-- 收货人姓名 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[zipcode]}{$lang[label_zipcode]}{$order[zipcode]}&nbsp;{/if}<!-- 邮政编码 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[tel]}{$lang[label_tel]}{$order[tel]}&nbsp; {/if}<!-- 联系电话 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[mobile]}{$lang[label_mobile]}{$order[mobile]}{/if}<!-- 手机号码 --></td></tr></tbody></table><table width="100%" border="1" style="border-collapse:collapse;border-color:#000;"><tbody><tr align="center" class="firstRow"><td bgcolor="#cccccc">{$lang[goods_name]} &nbsp;<!-- 商品名称 --></td><td bgcolor="#cccccc">{$lang[goods_sn]} &nbsp; &nbsp;<!-- 商品货号 --></td><td bgcolor="#cccccc">{$lang[goods_attr]} &nbsp;<!-- 商品属性 --></td><td bgcolor="#cccccc">{$lang[goods_price]} <!-- 商品单价 --></td><td bgcolor="#cccccc">{$lang[goods_number]}<!-- 商品数量 --></td><td bgcolor="#cccccc">{$lang[subtotal]} &nbsp; &nbsp;<!-- 价格小计 --></td></tr><!-- {foreach from=$goods_list item=goods key=key} --><tr><td>&nbsp;{$goods[goods_name]}<!-- 商品名称 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{$order[goods_name]}
+
+<!-- &nbsp; &nbsp; &nbsp; &nbsp;{if $goods[parent_id] > 0}{$lang[remark_fittings]}{/if}</td><td>&nbsp;{$order[goods_name]}  商品货号 </td><td> 商品属性 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;<!-- {foreach $goods_attr[$key] $attr} -->
+ &nbsp; &nbsp; &nbsp; &nbsp;<!-- {if $attr[name]} --> {$attr[name]}:{$attr[value]} <!-- {/if} -->
+ &nbsp; &nbsp; &nbsp; &nbsp;<!-- {/foreach} --></td><td align="right">{$order[goods_price]}&nbsp;<!-- 商品单价 --></td><td align="right">{$order[goods_number]}&nbsp;<!-- 商品数量 --></td><td align="right">{$goods[formated_subtotal]}&nbsp;<!-- 商品金额小计 --></td></tr><!-- {/foreach} --><tr><!-- 发票抬头和发票内容 --><td colspan="4">{if $order[inv_payee]}
+ &nbsp; &nbsp; &nbsp; &nbsp;{$lang[label_inv_payee]}{$order[inv_payee]}&nbsp;&nbsp;&nbsp;
+ &nbsp; &nbsp; &nbsp; &nbsp;{$lang[label_inv_content]}{$order[inv_content]}
+ &nbsp; &nbsp; &nbsp; &nbsp;{/if}</td><!-- 商品总金额 --><td colspan="2" align="right">{$lang[label_goods_amount]}{$order[goods_amount]}</td></tr></tbody></table><table width="100%" border="0"><tbody><tr align="right" class="firstRow"><td>{if $order[discount] > 0}- {$lang[label_discount]}{$order[formated_discount]}{/if}{if $order[pack_name] and $order[pack_fee] != 0.00}
+ &nbsp; &nbsp; &nbsp; &nbsp; <!-- 包装名称包装费用 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;+ {$lang[label_pack_fee]}{$order[formated_pack_fee]}
+ &nbsp; &nbsp; &nbsp; &nbsp;{/if}
+ 
+ 
+ 
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[card_name] and $order[card_fee] != 0.00}<!-- 贺卡名称以及贺卡费用 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;+ {$lang[label_card_fee]}{$order[formated_card_fee]}
+ &nbsp; &nbsp; &nbsp; &nbsp;{/if}
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[pay_fee] != 0.00}<!-- 支付手续费 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;+ {$lang[label_pay_fee]}{$order[formated_pay_fee]}
+ &nbsp; &nbsp; &nbsp; &nbsp;{/if}
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[shipping_fee] != 0.00}<!-- 配送费用 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;+ {$lang[label_shipping_fee]}{$order[formated_shipping_fee]}
+ &nbsp; &nbsp; &nbsp; &nbsp;{/if}
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[insure_fee] != 0.00}<!-- 保价费用 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;+ {$lang[label_insure_fee]}{$order[formated_insure_fee]}
+ &nbsp; &nbsp; &nbsp; &nbsp;{/if}
+ 
+ 
+ 
+ &nbsp; &nbsp; &nbsp; &nbsp;<!-- 订单总金额 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;= {$lang[label_order_amount]}{$order[formated_total_fee]}</td></tr><tr align="right"><td><!-- 如果已付了部分款项, 减去已付款金额 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[money_paid] != 0.00}- {$lang[label_money_paid]}{$order[formated_money_paid]}{/if}
+
+ &nbsp; &nbsp; &nbsp; &nbsp;<!-- 如果使用了余额支付, 减去已使用的余额 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[surplus] != 0.00}- {$lang[label_surplus]}{$order[formated_surplus]}{/if}
+
+ &nbsp; &nbsp; &nbsp; &nbsp;<!-- 如果使用了积分支付, 减去已使用的积分 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[integral_money] != 0.00}- {$lang[label_integral]}{$order[formated_integral_money]}{/if}
+
+ &nbsp; &nbsp; &nbsp; &nbsp;<!-- 如果使用了红包支付, 减去已使用的红包 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;{if $order[bonus] != 0.00}- {$lang[label_bonus]}{$order[formated_bonus]}{/if}
+
+ &nbsp; &nbsp; &nbsp; &nbsp;<!-- 应付款金额 -->
+ &nbsp; &nbsp; &nbsp; &nbsp;= {$lang[label_money_dues]}{$order[goods_amount]}</td></tr></tbody></table><p>{if $order[to_buyer]}{/if}
+ &nbsp; &nbsp;{if $order[invoice_note]}{/if}
+ &nbsp; &nbsp;{if $order[pay_note]}{/if}</p><table width="100%" border="0"><tbody><tr class="firstRow"><!-- 给购货人看的备注信息 --><td>{$lang[label_to_buyer]}{$order[to_buyer]}</td></tr><tr><!-- 发货备注 --><td>{$lang[label_invoice_note]} {$order[invoice_note]}</td></tr><tr><!-- 支付备注 --><td>{$lang[pay_note]} {$order[pay_note]}</td></tr><tr><!-- 网店名称, 网店地址, 网店URL以及联系电话 --><td>{$shop_name}（{$shop_url}）
+ &nbsp; &nbsp; &nbsp; &nbsp;{$lang[label_shop_address]}{$shop_address}&nbsp;&nbsp;{$lang[label_service_phone]}{$service_phone}</td></tr><tr align="right"><!-- 订单操作员以及订单打印的日期 --><td>{$lang[label_print_time]}{$print_time}&nbsp;&nbsp;&nbsp;{$lang[action_user]}{$action_user}</td></tr></tbody></table>

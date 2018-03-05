@@ -1,40 +1,70 @@
-<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
 <div class="con">
-  <div class="ect-bg">
-    <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write ect-bg"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$title}</span> <a href="javascript:;"  onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a></header>
-    <nav class="ect-nav ect-nav-list" style="display:none;"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
-  </div>
-  <div class="goods-info ect-padding-tb">
-  	<!--商品描述-->
-      <section class="user-tab ect-border-bottom0">
-        <div id="is-nav-tabs" style="height:3.15em; display:none;"></div>
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs text-center">
-          <li class="col-xs-6 active"><a href="#one" role="tab" data-toggle="tab">{$lang.goods_brief}</a></li>
-          <li class="col-xs-6"><a href="#two" role="tab" data-toggle="tab">{$lang.goods_attr}</a></li>
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <div class="tab-pane tab-info active" id="one"> {$goods.goods_desc}</div>
-          <div class="tab-pane tab-att" id="two">
-            <table width="100%" border="0" cellpadding="3" cellspacing="1" bgcolor="#dddddd">
-              <!-- {foreach from=$properties item=property_group key=key} -->
-              <tr>
-                <th colspan="2" bgcolor="#FFFFFF">{$key|escape}</th>
-              </tr>
-              <!-- {foreach from=$property_group item=property} -->
-              <tr>
-                <td bgcolor="#FFFFFF" align="left" width="30%" class="f1">[{$property.name|escape:html}]</td>
-                <td bgcolor="#FFFFFF" align="left" width="70%">{$property.value}</td>
-              </tr>
-              <!-- {/foreach}--> 
-              <!-- {/foreach}-->
-            </table>
-          </div>
-        </div>
-      </section>
-  </div>
-  <footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
-</div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->  
-</body></html>
+		<div id="n-goods" class="goods-info of-hidden ect-tab b-color-f j-goods-info j-ect-tab ts-3" style="margin-bottom: 6.4rem;margin-top:0.2rem;">
+			<div class="hd j-tab-title tab-title b-color-f of-hidden">
+				<ul class="dis-box">
+					<li class="box-flex active">{$lang.goods_brief}</li>
+					<li class="box-flex">规格参数</li>
+				</ul>
+			</div>
+			<div id="j-tab-con" class="b-color-f m-top1px tab-con ">
+				<div class="swiper-wrapper swiper-no-swiping">
+					<section class="swiper-slide ">
+						<div class="padding-all">
+						<!--{if $goods.goods_desc}-->
+							{$goods.goods_desc}
+							<!--{else}-->
+							<div class="no-div-message">
+			<i class="iconfont icon-biaoqingleiben"></i>
+			<p>亲，此处没有内容～！</p>
+		</div>
+							<!--{/if}-->
+						
+						</div>
+					</section>
+					<section class="swiper-slide goods-info-attr swiper-no-swiping">
+					<!--{if $properties}-->
+							<ul class="t-remark">
+							<!-- {foreach from=$properties item=property_group key=key} -->
+								<!-- {foreach from=$property_group item=property} -->
+									<li class="of-hidden"><span class="fl">[{$property.name|escape:html}]</span><span class="fr">{$property.value}</span></li>
+								<!-- {/foreach}--> 
+							<!-- {/foreach}-->
+						</ul>
+							<!--{else}-->
+							<div class="no-div-message">
+			<i class="iconfont icon-biaoqingleiben"></i>
+			<p>亲，此处没有内容～！</p>
+		</div>
+							<!--{/if}-->
+						
+					</section>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--引用js-->
+		<script>
+			/*切换*/
+			var tabsSwiper = new Swiper('#j-tab-con', {
+				speed: 100,
+				noSwiping: true,
+				autoHeight: true,
+				onSlideChangeStart: function() {
+					$(".j-tab-title .active").removeClass('active')
+					$(".j-tab-title li").eq(tabsSwiper.activeIndex).addClass('active')
+				}
+			})
+			$(".j-tab-title li").on('touchstart mousedown', function(e) {
+				e.preventDefault()
+				$(".j-tab-title .active").removeClass('active')
+				$(this).addClass('active')
+				tabsSwiper.slideTo($(this).index())
+			})
+			$(".j-tab-title li").click(function(e) {
+				e.preventDefault()
+			})
+			
+		</script>
+	</body>
+
+</html>

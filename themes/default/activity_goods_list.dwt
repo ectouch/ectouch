@@ -8,7 +8,7 @@
   </header>
 <!-- #BeginLibraryItem "/library/goods_list_act.lbi" --><!-- #EndLibraryItem -->
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript">
 <!--{if $show_asynclist}-->

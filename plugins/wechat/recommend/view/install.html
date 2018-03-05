@@ -1,0 +1,82 @@
+<form action="{url('edit')}" method="post" class="form-horizontal" role="form">
+<table class="table table-hover ectouch-table">
+    <tr>
+        <td width="200">功能名称</td>
+        <td><div class="col-md-4">{$config['name']}</div></td>
+    </tr>
+    <tr>
+        <td width="200">关键词</td>
+        <td><div class="col-md-4">{$config['command']}</div></td>
+    </tr>
+    <tr>
+        <td width="200">扩展词</td>
+        <td>
+            <div class="col-md-4">
+                <input type="text" name="data[keywords]" class="form-control" value="{$config['keywords']}" />
+                <p class="help-block">多个变形词，请用“,”隔开</p>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td width="200">功能说明</td>
+        <td><div class="col-md-10">微信用户输入任意关键词，不是系统已有关键词（系统默认关键词优先） 可以搜索网站所有上架商品名称含有此关键词的，如果有则默认推荐给用户四条，如果没有搜索到对应商品，则随机推荐一条精品推荐属性商品。</div></td>
+    </tr>
+    <tr>
+        <td width="200">积分赠送</td>
+        <td>
+            <div class="col-md-4 col-sm-4">
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary {if $config['config']['point_status']}active{/if}">
+                        <input type="radio" name="cfg_value[point_status]" {if $config['config']['point_status']}checked{/if} value="1" />开启
+                    </label>
+                    <label class="btn btn-primary {if empty($config['config']['point_status'])}active{/if}">
+                        <input type="radio" name="cfg_value[point_status]" {if empty($config['config']['point_status'])}checked{/if} value="0" />关闭
+                    </label>
+                </div>
+           </div>
+        </td>
+    </tr>
+    <tr>
+        <td width="200">积分值</td>
+        <td>
+            <div class="col-md-4 col-sm-4">
+                <input type="text" name="cfg_value[point_value]" class="form-control" value="{$config['config']['point_value']}" />
+           </div>
+        </td>
+    </tr>
+   <tr>
+        <td width="200">有效次数</td>
+        <td>
+            <div class="col-md-4 col-sm-4">
+                <input type="text" name="cfg_value[point_num]" class="form-control" value="{$config['config']['point_num']}" />
+           </div>
+        </td>
+    </tr>
+    <tr>
+        <td width="200">时间间隔</td>
+        <td>
+            <div class="col-md-4 col-sm-4">
+                <select name="cfg_value[point_interval]" class="form-control">
+                        <option value="86400" {if $config['config']['point_interval'] == 86400}selected{/if}>24小时</option>
+                        <option value="3600" {if $config['config']['point_interval'] == 3600}selected{/if}>1小时</option>
+                        <option value="60" {if $config['config']['point_interval'] == 60}selected{/if}>1分钟</option>
+                </select>
+           </div>
+        </td>
+    </tr>                                     
+    <tr>
+        <td></td>
+        <td>
+            <div class="col-md-4">
+                <input type="hidden" name="data[command]" value="{$config['command']}" />
+                <input type="hidden" name="data[name]" value="{$config['name']}" />
+                <input type="hidden" name="data[author]" value="{$config['author']}">
+                <input type="hidden" name="data[website]" value="{$config['website']}">
+                <input type="hidden" name="handler" value="{$config['handler']}">
+                <input type="submit" name="submit" class="btn btn-primary" value="确认" />
+                <input type="reset" name="reset" class="btn btn-default" value="重置" />
+            </div>
+        </td>
+    </tr>
+</table>
+</form>

@@ -1,46 +1,67 @@
-<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
-<ul class="nav nav-tabs" role="tablist">
-    <li><a href="{:url('User/account_detail')}" >{$lang.add_surplus_log}</a></li>
-    <li><a href="{:url('User/account_log')}" >{$lang.view_application}</a></li>
-	<li><a href="{:url('User/account_deposit')}" >{$lang.surplus_type_0}</a></li>
-	<li class="active"><a href="{:url('User/account_raply')}" >{$lang.surplus_type_1}</a></li>
-  </ul>
-<form action="{:url('user/act_account')}" method="post" name="theForm" >
-  <div class="ect-bg-colorf flow-consignee">
-    <ul class="o-info">
-      <li>
-        <div class="input-text"><b class="pull-left">{$lang.repay_money}：</b><span>
-          <input name="amount" placeholder="{$lang.repay_money}" type="text" class="inputBg_touch" value="" />
-          </span></div>
-      </li>
-     
-      <li class="input-text"><b class="pull-left">{$lang.process_notic}：</b>
-        <textarea name="user_note" placeholder="{$lang.process_notic}" type="text">{$order.user_note|escape}</textarea>
-      </li>
-    </ul>
-  </div>
-  <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center">
-  <input type="hidden" name="surplus_type" value="1" />
-    <input type="submit" name="submit"  class="btn btn-info"  value="{$lang.submit_request}"/>
-    <input type="reset" name="submit"  class="btn btn-info ect-bg-colory"  value="{$lang.button_reset}"/>
-  </div>
-</form>
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<div class="con">
+	<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+		<h3 class="box-flex">用户提现</h3>
+		<p><i class="iconfont icon-pailie j-nav-box"></i></p>
+	</header>
+	<div class="j-nav-content">
+		<ul class="dis-box new-footer-box">
+		<li class="box-flex">
+			<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+		</li>
+		<li class="box-flex">
+			<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+	</ul>
+	</div>
+	<form action="{:url('user/act_account')}" method="post" name="theForm" onsubmit="return check_form()">
+		<div class="user-recharge b-color-f m-top10">
+			<section class="m-top1px margin-lr">
+				<div class="text-all dis-box j-text-all">
+					<label class="t-remark">{$lang.repay_money}</label>
+					<div class="box-flex input-text">
+						<input name="amount" placeholder="{$lang.repay_money}" type="text" class="j-input-text" value="{$order.amount|escape}" />
+					</div>
+				</div>
+			</section>
+			<section class="m-top1px padding-tb margin-lr " style="padding-bottom:0;">
+				<div class="f-c-select-msg">
+					<label class="t-remark">{$lang.process_notic}<span class="t-remark">（50字）</span></label>
+					<div class="text-area12 m-top04">
+						<input name="user_note" placeholder="{$lang.process_notic}" type="text" class="j-input-text" value="{$order.user_note|escape}" />
+					</div>
+				</div>
+			</section>
+		</div>
+		<div class="padding-all">
+			<input type="hidden" name="surplus_type" value="1" />
+			<button name="submit" type="submit" class="btn-submit" value="{$lang.submit_request}">{$lang.submit_request}</button>
+		</div>
+	</form>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
-<script type="text/javascript" src="__PUBLIC__/js/region.js"></script> 
-<script type="text/javascript" src="__PUBLIC__/js/shopping_flow.js"></script> 
+
+</div>
+<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+<!-- #EndLibraryItem -->
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" -->
+<!-- #EndLibraryItem -->
+<script type="text/javascript" src="__PUBLIC__/script/region.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/shopping_flow.js"></script>
 <script type="text/javascript">
-	region.isAdmin = false;
-	{foreach from=$lang.flow_js item=item key=key}
-	var {$key} = "{$item}";
-	{/foreach}
-	{literal}
-	onload = function() {
-	      if (!document.all)
-	      {
-	        document.forms['theForm'].reset();
-	      }
+	function check_form(){
+		var amount = $("input[name='amount']").val();
+		var user_note = $("input[name='user_note']").val();
+		if(amount <= 0 || user_note == ''){	
+			 alert("请输入正确的提现金额或账号");
+             return false;
+		}
 	}
-	{/literal}
 </script>
-</body></html>
+
+</body>
+
+</html>

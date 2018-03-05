@@ -1,0 +1,12 @@
+@import url(dialog.css);
+/*selectarea*/
+.ui-dialog {box-sizing:border-box; }
+.ui-scroller{position: relative;height:15rem;width: 100%; min-width: 320px;font-size: 1.5rem;font-weight: normal;}
+.ui-scroller>div{width: 46%;display: inline-block;position:relative;height: 15rem;overflow: hidden;box-sizing:border-box;}
+.ui-scroller dl{position: absolute;width: 100%;margin: 0;top:30px;}
+.ui-scroller dd{padding;0;margin:0;overflow: hidden; font-size:1.5rem text-overflow:ellipsis;width:100%; height:50px; line-height: 50px;}
+.ui-scroller dd.focus{}
+.ui-scroller{-webkit-mask: -webkit-gradient(linear,0% 30%,0% 100%,from(rgba(222,187,71,1)),to(rgba(36,142,36,0)));}
+.ui-scroller-mask{-webkit-mask: -webkit-gradient(linear,0% 30%,0% 0%,from(rgba(222,187,71,1)),to(rgba(36,142,36,0)));}
+.ui-scroller p{position: absolute;top:50px;height:50px;width: 100%;margin: 0;z-index: -1;border:1px solid #F6F6F9;border-left:none;border-right:none;}
+.ui-scroller .ui-dialog-action{margin-top: 10px;}

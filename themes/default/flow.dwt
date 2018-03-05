@@ -1,4 +1,5 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+
 <!-- {if $step eq "cart"} 购物车列表-->
 <!-- #BeginLibraryItem "/flow_cart.dwt" --><!-- #EndLibraryItem -->
 <!-- {/if} -->
@@ -17,9 +18,10 @@
 
 <!-- {if $step eq "consignee"} 开始收货人信息填写界面 -->
 <!-- #BeginLibraryItem "/flow_consignee.dwt" --><!-- #EndLibraryItem -->
-<!-- {/if} --> 
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> 
-<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<!-- {/if} -->
+
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
 <script type="text/javascript" src="__PUBLIC__/js/shopping_flow.js"></script>
 
 <script>
@@ -40,8 +42,8 @@ function change_goods_number(type, id)
 		rec_id : id,goods_number : goods_number
 	}, function(data) {
 		change_goods_number_response(data,id);
-	}, 'json');  
-} 
+	}, 'json');
+}
 // 处理返回信息并显示
 function change_goods_number_response(result,id)
 {
@@ -58,7 +60,7 @@ function change_goods_number_response(result,id)
 		alert(result.message);
 		var goods_number = document.getElementById('back_number'+id).value;
  		document.getElementById('goods_number'+id).value = goods_number;
-	}                
+	}
 }
 
 	/*点击下拉手风琴效果*/
@@ -66,11 +68,11 @@ function change_goods_number_response(result,id)
 	$(".checkout-select a").click(function(){
 		if(!$(this).hasClass("select")){
 			$(this).addClass("select");
-		}else{	
+		}else{
 			$(this).removeClass("select");
 		}
 	});
-	
+
 </script>
 
 </body>

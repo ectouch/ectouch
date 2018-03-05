@@ -1,0 +1,88 @@
+
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<ul style="padding:0; margin: 0; list-style-type:none; color: #CC0000;">
+  <li style="border: 1px solid #CC0000; background: #FFFFCC; padding: 10px; margin-bottom: 5px;" >{$order_info}</li>
+</ul>
+<!-- 订单列表 -->
+<form method="post" action="order.php?act=operate" name="listForm" onsubmit="return check()">
+  <div class="list-div" id="listDiv">
+
+<table cellpadding="3" cellspacing="1">
+  <tr>
+    <th>
+      <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" /><a href="javascript:listTable.sort('order_sn', 'DESC'); ">{$lang.service_sn}</a>{$sort_order_sn}
+    </th>
+    <th><a href="#">{$lang.service_type_name}</a>{$sort_order_time}</th>
+    <th><a href="#">{$lang.apply_time}</a>{$sort_order_time}</th>
+    <th><a href="#">{$lang.should_returns}</a>{$sort_total_fee}</th>
+    <th><a href="#">{$lang.real_returns}</a>{$sort_total_fee}</th>
+    <th><a href="#">{$lang.return_nums}</a>{$sort_total_fee}</th>
+    <!--<th><a href="#">{$lang.consignee}</a>{$sort_consignee}</th>-->
+    <!--<th><a href="#">签收时间</a>{$sort_total_fee}</th>-->
+    <th><a href="#">{$lang.all_status}</a>{$sort_total_fee}</th>
+    <th><a href="#">{$lang.buyer}</a>{$sort_total_fee}</th>
+    <!--<th><a href="#">{$lang.is_check}</a>{$sort_total_fee}</th>-->
+    <th>{$lang.handler}</th>
+  <tr>
+  {foreach from=$order_list item=order key=okey}
+  <tr>
+    <td valign="top" nowrap="nowrap"><input type="checkbox" name="checkboxes" class="checkboxes" value="{$order.service_sn}" /><a href="aftermarket.php?act=aftermarket_info&ret_id={$order.ret_id}&rec_id={$order.rec_id}" id="order_{$okey}">{$order.service_sn}{if $order.extension_code eq "group_buy"}<br /><div align="center">{$lang.group_buy}</div>{elseif $order.extension_code eq "exchange_goods"}<br /><div align="center">{$lang.exchange_goods}</div>{/if}</a></td>
+    
+    <td>{$order.service_type}</td>
+    <td>{$order.add_time}</td>
+    <td align="left" valign="top"><a href="mailto:{$order.email}">{$order.should_return}</a></td>
+    <td align="right" valign="top" nowrap="nowrap">{$order.actual_return}</td>
+    <td align="right" valign="top" nowrap="nowrap">{$order.back_num}</td>
+    <!--<td align="right" valign="top" nowrap="nowrap">{$order.consignee|escape}</a>{if $order.tel} [TEL: {$order.tel|escape}]{/if} <br />{$order.address|escape}</td>-->
+    <!-- <td align="right" valign="top" nowrap="nowrap">{$order.sign_time}</td>-->
+    <td align="center" valign="top" nowrap="nowrap">
+        {$lang.rf[$order.return_status]},{$lang.ff[$order.refund_status]}
+    </td> 
+    <td align="center" valign="top" nowrap="nowrap">{$order.apply_user}</td>
+    <!--<td align="center" valign="top" nowrap="nowrap"><img src="images/{if $order.is_check}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'check_service', {$order.ret_id})" /></td>-->
+    <td align="center" valign="top"  nowrap="nowrap">
+     <a href="aftermarket.php?act=aftermarket_info&ret_id={$order.ret_id}&rec_id={$order.rec_id}">{$lang.detail}</a>
+     {if $order.can_remove}
+     <br /><a href="javascript:;" onclick="listTable.remove({$order.order_id}, remove_confirm, 'remove_order')">{$lang.remove}</a>
+     {/if}
+    </td>
+  </tr>
+  {/foreach}
+</table>
+</div>
+</form>
+<script language="JavaScript">
+{literal}
+
+    onload = function()
+    {
+        // 开始检查订单
+        startCheckOrder();
+    }
+
+    function check()
+    {
+      var snArray = new Array();
+      var eles = document.forms['listForm'].elements;
+      for (var i=0; i<eles.length; i++)
+      {
+        if (eles[i].tagName == 'INPUT' && eles[i].type == 'checkbox' && eles[i].checked && eles[i].value != 'on')
+        {
+          snArray.push(eles[i].value);
+        }
+      }
+      if (snArray.length == 0)
+      {
+        return false;
+      }
+      else
+      {
+        eles['order_id'].value = snArray.toString();
+        return true;
+      }
+    }
+</script>
+{/literal}
+
+{include file="pagefooter.htm"}

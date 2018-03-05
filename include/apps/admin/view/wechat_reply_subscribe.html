@@ -1,0 +1,85 @@
+{include file="pageheader"}
+<div class="container-fluid" style="padding:0">
+	<div class="row" style="margin:0">
+	  <div class="col-md-12 col-sm-12 col-lg-12" style="padding:0;">
+		<div class="panel panel-default">
+			<div class="panel-heading">自动回复</div>
+        <div class="explanation" id="explanation">
+          <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+          <ul>
+            <li>自动回复的类型 共分三种：关注自动回复、消息自动回复、关键词自动回复。回复内容可以设置为文字，图片，语音，视频。文本消息回复内容可以直接填写，长度限制1024字节（大约200字，含标点以及其他特殊字符），其他素材需要先在素材管理中添加。</li>
+            <li>一、关注自动回复：即用户首次关注，自动回复的消息，重新关注也回复。例如：欢迎关注微信公众号！</li>
+            <li>★ 关注自动回复，不支持图文消息素材。</li>
+          </ul>
+        </div>
+			<div class="panel-body">
+			     <ul class="nav nav-tabs" role="tablist" id="myTab">
+			         <li class="active"><a href="{url('reply_subscribe')}">关注自动回复</a></li>
+			         <li><a href="{url('reply_msg')}">消息自动回复</a></li>
+			         <li><a href="{url('reply_keywords')}">关键词自动回复</a></li>
+			     </ul>
+			</div>
+
+			<div class="panel-body">
+              <form action="{url('reply_subscribe')}" method="post">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                      <ul class="nav nav-pills" role="tablist">
+                        <li role="presentation"><a href="javascript:;" class="glyphicon glyphicon-pencil ectouch-fs18" title="文字"></a></li>
+                        <li role="presentation"><a href="{url('auto_reply', array('type'=>'image'))}" class="glyphicon glyphicon-picture ectouch-fs18 fancybox fancybox.iframe" title="图片" "></a></li>
+                        <li role="presentation"><a href="{url('auto_reply', array('type'=>'voice'))}" class="glyphicon glyphicon-volume-up ectouch-fs18 fancybox fancybox.iframe"  title="语音" "></a></li>
+                        <li role="presentation"><a href="{url('auto_reply', array('type'=>'video'))}" class="glyphicon glyphicon-film ectouch-fs18 fancybox fancybox.iframe"  title="视频" "></a></li>
+                      </ul>
+                      </div>
+                      <div class="panel-body" style="padding:0;">
+                        <div {if $subscribe['media_id']}class="hidden"{/if}><textarea name="content" placeholder="文本内容" rows="6" class="form-control" onKeyDown="textCounter(content,remLen,600);" onKeyUp="textCounter(content,remLen,600);">{if $subscribe['content']}{$subscribe['content']}{/if}</textarea>
+                        <div style="text-align:right; padding:3px;">您还可以输入<input name="remLen" type="text" value="600" size="5" readonly="readonly" style="border:none; text-align:center;">个字符</div></div>
+                        <div class="{if empty($subscribe) || $subscribe['content']}hidden{/if} col-xs-6 col-md-3 thumbnail content" style="border:none;">
+                            {if $subscribe['media']}
+                                {if $subscribe['media']['type'] == 'voice'}
+                                    <input type='hidden' name='media_id' value="{$subscribe['media_id']}"><img src='__PUBLIC__/images/voice.png' class='img-rounded' /><span class='help-block'>{$subscribe['media']['file_name']}</span>
+                                {elseif $subscribe['media']['type'] == 'video'}
+                                    <input type='hidden' name='media_id' value="{$subscribe['media_id']}"><img src='__PUBLIC__/images/video.png' class='img-rounded' /><span class='help-block'>{$subscribe['media']['file_name']}</span>
+                                {else}
+                                    <input type='hidden' name='media_id' value="{$subscribe['media_id']}"><img src="{$subscribe['media']['file']}" class='img-rounded' />
+                                {/if}
+                            {/if}
+                        </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                    <input type="hidden" name="content_type" value="text" />
+                    <input type="submit" class="btn btn-primary" name="submit" value="保存" />
+                    <input type="reset" class="btn btn-default" name="reset" value="清除内容" />
+                  </div>
+                </form>
+            </div>
+		</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+    $(".nav-pills li").click(function(){
+        var index = $(this).index();
+        var tab = $(this).parent().parent(".panel-heading").siblings(".panel-body");
+        if(index == 0){
+    	    tab.find("div").addClass("hidden");
+            tab.find("div").eq(index).removeClass("hidden");
+            $("input[name=content_type]").val("text");
+        }
+    });
+})
+
+// 函数，3个参数，表单名字，表单域元素名，限制字符
+function textCounter(field, countfield, maxlimit) {
+  if (field.value.length > maxlimit){
+    //如果元素区字符数大于最大字符数，按照最大字符数截断
+    field.value = field.value.substring(0, maxlimit);
+  }else{
+    //在记数区文本框内显示剩余的字符数
+    countfield.value = maxlimit - field.value.length;
+  }
+}
+</script>
+{include file="pagefooter"}

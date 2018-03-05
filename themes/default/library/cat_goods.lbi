@@ -1,0 +1,22 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--循环分类下商品 begin-->
+<!--{if $cat_best}-->
+<!-- {foreach name=cat_best from=$cat_best item=cat_best}-->
+<div class="index-more-icon"><span>{$cat_best.cat_name}</span></div>
+
+    <!-- {foreach name=cat_goods from=$cat_best.goods_list item=cat_goods }--> 
+    <div class="single_item">
+    {if $smarty.foreach.cat_goods.iteration % 2 == 0}
+    <li class="fr" style="background-color: #FFFFFF;">
+    {else}
+    <li class="fl" style="background-color: #FFFFFF;">
+    {/if}
+      <a href="{$cat_goods.url}"><img src="{$cat_goods.goods_thumb}" alt="{$cat_goods.goods_name}" /></a>
+      <a href="{$cat_goods.url}"><p>{$cat_goods.goods_name}</p></a>
+      <span><!--{if $cat_goods.promote_price}-->{$cat_goods.promote_price}<!--{else}-->{$cat_goods.shop_price}<!--{/if}--></span>
+    </li>
+    </div>
+    <!--{/foreach}-->
+<!--{/foreach}--> 
+<!-- {/if}-->
+<!--循环分类下商品end-->

@@ -1,319 +1,875 @@
-<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+
+
 <div class="con">
-  <div class="ect-bg">
-    <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write ect-bg"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$title}</span> <a href="javascript:;"  onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a></header>
-    <nav class="ect-nav ect-nav-list" style="display:none;"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
-  </div>
-  <!--商品图片相册-->
-  <div id="focus" class="focus goods-focus ect-padding-lr ect-margin-tb">
-    <div class="hd">
-      <ul>
-      </ul>
-    </div>
-    <div class="bd">
-      <ul id="Gallery">
-        <!--{if $pictures}--> 
-        <!-- {foreach from=$pictures item=picture name=no}--> 
-        <li><a href="{$picture.img_url}"><img src="{$picture.img_url}" alt="{$picture.img_desc}" /></a></li>
-        <!--{/foreach}-->
-        <!--{else}-->
-        <li><a href="{$goods.goods_img}"><img src="{$goods.goods_img}" alt="{$goods.goods_name}" /></a></li>
-        <!--{/if}-->
-      </ul>
-    </div>
-  </div>
-  <!--商品属性介绍-->
-  <div class="goods-info ect-padding-tb"> 
-    <!--商品描述-->
-    <section class="ect-margin-tb ect-margin-lr goods-title">
-      <h4 class="title pull-left">{$goods.goods_style_name}</h4>
-      <span class="pull-right text-center <!--{if $sc eq 1}-->ect-colory<!--{/if}--> ect-padding-lr" onClick="collect({$goods.goods_id})" id='ECS_COLLECT'> <i class="fa <!--{if $sc eq 1}-->fa-heart<!--{else}-->fa-heart-o<!--{/if}-->"></i><br>
-      {$lang.btn_collect} </span>
-    </section>
-    
-    <section class="ect-margin-tb ect-margin-lr">
-      <!-- {if $cfg.show_goodssn} 显示商品货号-->
-      <p>
-        {$lang.goods_sn} {$goods.goods_sn}
-      </p>
-      <!-- {/if} -->
-      <!-- {if $goods.goods_brand neq "" and $cfg.show_brand} 显示商品品牌-->
-      <p>
-        {$lang.goods_brand} <a href="{$goods.goods_brand_url}" >{$goods.goods_brand}</a>
-      </p>
-      <!-- {/if} -->
-      <p>
-        {$lang.amount}：<b class="ect-colory" id="ECS_GOODS_AMOUNT"></b>
-      </p>
-      <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销-->{$lang.promote_price}<!--{else}-->{$lang.shop_price}<!--{/if}--><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--> 
-        {$goods.promote_price}
-        <!--{else}-->
-        {$goods.shop_price_formated}
-        <!--{/if}-->
-      </p>
-      <!-- {if $cfg.show_marketprice} 市场价格-->
-      <p>
-        {$lang.market_price}
-        <small> <del>{$goods.market_price}</del></small>
-      </p>
-      <!-- {/if} -->
-      <p>
-        {$lang.sort_sales}：{$sales_count} {$lang.piece}
-      </p>
-      <!-- {if $goods.goods_number neq "" and $cfg.show_goodsnumber} 商品库存-->
-      <p>
-        {$lang.goods_number}
-        <!-- {if $goods.goods_number eq 0} -->
-        {$lang.stock_up}
-        <!-- {else} -->
-        {$goods.goods_number} {$goods.measure_unit}
-        <!-- {/if} -->
-      </p>
-      <!-- {/if} -->
-      <!-- {if $cfg.show_goodsweight} 商品重量-->
-      <p>{$lang.goods_weight} {$goods.goods_weight}</p>
-      <!-- {/if} -->
-      <p><!--{if $goods.is_promote and $goods.gmt_end_time } 促销--><strong id="leftTime" class="price">{$lang.please_waiting}</strong><!--{/if}--></p>
-    </section>
+	<div class="goods" style="margin-bottom: 0rem;">
+	<!--style="margin-bottom: 50px;"-->
+			<div class="goods-box">
+					{if !$subscribe}
+						<div class="ect-header-banner dis-box">
+							<div class="box-flex">
+								<div class="ect-header-text fl">
+									<h4>欢迎进入<span class="color-red">微商城</span></h4>
+									<p>关注公众号,享专属服务</p>
+								</div>
+							</div>
+							<a class="btn-submit1 j-ewm-box" href="javascript:;">立即关注</a>
+						</div>
+						<div class="index-weixin-box">
+							<div><img src="__TPL__/statics/img/ewm.png"></div>
+							<p class="text-c">长按二维码关注公众微信</p>
+						</div>
+						<div class="index-bg-box"></div>
+						{/if}
+					<header class="dis-box header-menu-1 b-color color-whie goods-fixed ts-3">
+					<a class="" href="javascript:history.go(-1)">
+						<div class="goods-left-jiat"><i class="iconfont icon-jiantou is-con"></i></div>
+					</a>
+					<div class="box-flex">
+						<ul class="dis-box goods-header-nav-box">
+							<li class="box-flex"><a class="hover" href="javascript:;"><label>商品</label></a></li>
+							<li class="box-flex"><a href="#n-goods"><label>详情</label></a></li>
+							<li class="box-flex"><a href="{:url('goods/comment_list',array('id'=>$this->_var['goods']['goods_id']))}"><label>评价</label></a></li>
+						</ul>
+					</div>
+					<a class="" href="javascript:;">
+						<div class="goods-left-jiat"><i class="iconfont icon-gengduo j-nav-box is-con"></i></div>
+					</a>
+					<div class="goods-nav ts-3">
+						<ul class="goods-nav-box">
+						    <a href="{:url('index/index')}">
+								<li><i class="iconfont icon-home j-nav-box"></i>首页</li>
+							</a>
+							<a href="{:url('user/msg_list')}">
+								<li><i class="iconfont icon-xiaoxi1 j-nav-box"></i>消息</li>
+							</a>
+							<a href="{:url('user/index')}">
+								<li><i class="iconfont icon-geren j-nav-box"></i>用户中心</li>
+							</a>
+							<a href="{:url('user/order_list')}">
+								<li style="border:none"><i class="iconfont icon-quanbudingdan j-nav-box"></i>全部订单</li>
+							</a>
+						</ul>
+					</div>
+				</header>
+			</div>
+		<!--商品图片相册-->
+		<div class="goods-photo n-j-show-goods-img">
+			<div class="hd">
+				<ul>
+				</ul>
+			</div>
+			<span class="goods-num" id="goods-num"><span id="g-active-num"></span>/<span id="g-all-num"></span></span>
+			<ul class="swiper-wrapper">
+				<!--{if $pictures}-->
+				<!-- {foreach from=$pictures item=picture name=no}-->
+				<li class="swiper-slide tb-lr-center"><div class="of-hidden" id="img-photo-box"><img id="img-photo-box" src="{$picture.img_url}" alt="{$picture.img_desc}" /></div></li>
+				<!--{/foreach}-->
+				<!--{else}-->
+				<li class="swiper-slide tb-lr-center"><div class="of-hidden" id="img-photo-box"><img id="img-photo-box" src="{$goods.goods_img}" alt="{$goods.goods_name}" /></div></li>
+				<!--{/if}-->
+			</ul>
+			<div class="swiper-pagination"></div>
+		</div>
+		<!--商品属性介绍-->
+		<div class="goods-info">
+			<!--商品描述-->
+			<section class="goods-title b-color-f padding-all ">
+				<div class="dis-box">
+					<h3 class="box-flex">{$goods.goods_style_name}</h3>
+					<!--点击收藏-->
+					<span class="heart j-heart <!--{if $sc eq 1}-->active<!--{/if}-->" onClick="collect({$goods.goods_id})" id='ECS_COLLECT'><i class="ts-2"></i><em class="ts-2">{$lang.btn_collect}</em></span>
+				</div>
+			</section>
 
-    <!-- {if $promotion} 优惠活动 -->
-    <section class="ect-margin-tb ect-margin-bottom0 ect-padding-tb goods-promotion ect-padding-lr ">
-      <h5><b>{$lang.activity}：</b></h5>
-      <p class="ect-border-top ect-margin-tb"> 
-        <!-- {foreach from=$promotion item=item key=key} 优惠活动--> 
-        <!-- {if $item.type eq "snatch"} --> 
-        <a href="{$item.url}" title="{$lang.snatch}"><i class="label tbqb">{$lang.snatch_act}</i> [{$lang.snatch}]<i class="pull-right fa fa-angle-right"></i></a>
-        <!-- {elseif $item.type eq "group_buy"} --> 
-        <a href="{$item.url}" title="{$lang.group_buy}"><i class="label tuan">{$lang.group_buy_act}</i> [{$lang.group_buy}]<i class="pull-right fa fa-angle-right"></i></a> 
-        <!-- {elseif $item.type eq "auction"} --> 
-        <a href="{$item.url}" title="{$lang.auction}"><i class="label pm">{$lang.auction_act}</i> [{$lang.auction}]<i class="pull-right fa fa-angle-right"></i></a>
-        <!-- {elseif $item.type eq "favourable"} --> 
-        <a href="{$item.url}" title="{$lang.$item.type} {$item.act_name}{$item.time}"> 
-        <!--{if $item.act_type eq 0}--> 
-        <i class="label mz">{$lang.favourable_mz}</i> 
-        <!--{elseif $item.act_type eq 1}--> 
-        <i class="label mj">{$lang.favourable_mj}</i> 
-        <!--{elseif $item.act_type eq 2}--> 
-        <i class="label zk">{$lang.favourable_zk}</i> 
-        <!--{/if}-->{$item.act_name} <i class="pull-right fa fa-angle-right"></i></a> 
-        <!-- {/if} --> 
-        <!-- {/foreach} --> 
-      </p>
-    </section>
-    <!-- {/if} --> 
-    <!--商品评价-->
-    
-    <form action="javascript:addToCart({$goods.goods_id})" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY" >
-      <section class="ect-padding-lr ect-padding-tb goods-option">
-        <div class="goods-optionc"> 
-          <!-- {foreach name=spec from=$specification item=spec key=spec_key} -->
-          <div class="goods-option-con"> <span>{$spec.name}：</span>
-            <div class="goods-option-conr"> 
-              <!-- {* 判断属性是复选还是单选 *} --> 
-              <!-- {if $spec.attr_type eq 1} --> 
-              <!-- {if $cfg.goodsattr_style eq 1} --> 
-              <!-- {foreach from=$spec.values item=value key=key} -->
-              <input type="radio" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" {if $key eq 0}checked{/if} onclick="changePrice()" />
-              <label for="spec_value_{$value.id}">{$value.label}</label>
-              <!-- {/foreach} -->
-              <input type="hidden" name="spec_list" value="{$key}" />
-              <!-- {else} -->
-              <select name="spec_{$spec_key}" onchange="changePrice()">
-                <!-- {foreach from=$spec.values item=value key=key} -->
-                <option label="{$value.label}" value="{$value.id}">{$value.label} {if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if}{if $value.price neq 0}{$value.format_price}{/if}</option>
-                <!-- {/foreach} -->
-              </select>
-              <input type="hidden" name="spec_list" value="{$key}" />
-              <!-- {/if} --> 
-              <!-- {else} --> 
-              <!-- {foreach from=$spec.values item=value key=key} -->
-              <input type="checkbox" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" onclick="changePrice()" />
-              <label for="spec_value_{$value.id}">{$value.label} [{if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if} {$value.format_price|abs}]</label>
-              <!-- {/foreach} --> 
-              <!-- {/if} --> 
-            </div>
-          </div>
-          <!-- {/foreach} --> 
-        </div>
-        <div class="goods-num"> <span class="pull-left">{$lang.number}：</span> 
-          <!-- {if $goods.goods_id gt 0 && $goods.is_gift eq 0 && $goods.parent_id eq 0} 普通商品可修改数量 -->
-          <div class="input-group pull-left wrap"><span class="input-group-addon sup" onClick="changePrice('1')">-</span>
-            <input type="text" class="form-contro form-num"  name="number" id="goods_number" autocomplete="off" value="1" onFocus="back_goods_number()"  onblur="changePrice('2')"/>
-            <span class="input-group-addon plus" onClick="changePrice('3')">+</span></div>
-          <!-- {else} -->
-          <input type="text" class="form-contro form-num" readonly value="{$goods.goods_number} "/>
-          <!-- {/if} --> 
-        </div>
-      </section>
-      <section class="goods-more-a"> 
-      <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/info',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_brief}</span> <span class="pull-right"><i class="fa fa-chevron-right"></i></span></a> 
-      <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/comment_list',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_comment}</span> <span class="pull-right"><span class="ect-color">{$comments.count}</span>{$lang.comment_num} <span class="ect-color">{$comments.favorable}%</span>{$lang.favorable_comment} <i class="fa fa-chevron-right"></i></span></a> 
-      </section>
-      <div class="ect-padding-lr ect-padding-tb goods-submit">
-        <div><a type="botton" class="btn btn-info ect-btn-info ect-colorf ect-bg" href="javascript:addToCart_quick({$goods.goods_id})">{$lang.buy_now}</a></div>
-      </div>
-      <section class="user-tab ect-border-bottom0" style="display:none;">
-        <div id="is-nav-tabs" style="height:3.15em; display:none;"></div>
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs text-center">
-          <li class="col-xs-4 active"><a href="#one" role="tab" data-toggle="tab">{$lang.goods_brief}</a></li>
-          <li class="col-xs-4"><a href="#two" role="tab" data-toggle="tab">{$lang.goods_attr}</a></li>
-          <li class="col-xs-4"><a href="#three" role="tab" data-toggle="tab">{$lang.user_comment}({$goods.comment_count})</a></li>
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <div class="tab-pane tab-info active" id="one"> {$goods.goods_desc}</div>
-          <div class="tab-pane tab-att" id="two">
-            <table width="100%" border="0" cellpadding="3" cellspacing="1" bgcolor="#dddddd">
-              <!-- {foreach from=$properties item=property_group key=key} -->
-              <tr>
-                <th colspan="2" bgcolor="#FFFFFF">{$key|escape}</th>
-              </tr>
-              <!-- {foreach from=$property_group item=property} -->
-              <tr>
-                <td bgcolor="#FFFFFF" align="left" width="30%" class="f1">[{$property.name|escape:html}]</td>
-                <td bgcolor="#FFFFFF" align="left" width="70%">{$property.value}</td>
-              </tr>
-              <!-- {/foreach}--> 
-              <!-- {/foreach}-->
-            </table>
-          </div>
-          <div class="tab-pane tab-msg" id="three">
-            <ul class="msg">
-              <!-- #BeginLibraryItem "/library/comments.lbi" -->
-              <div id="ECS_COMMENT"> {* ECSHOP 提醒您：动态载入comments_list.lbi，显示评论列表和评论表单 *}{insert name='comments' type=$type id=$id}</div>
-              <!-- #EndLibraryItem -->
-            </ul>
-          </div>
-        </div>
-      </section>
-    </form>
-  </div>
-  <div class="goods-related ect-padding-lr ect-padding-tb">
-    <p><strong>{$lang.releate_goods}：</strong></p>
-    <!-- 本例主要代码 Start ================================ -->
-    <div id="picScroll" class="picScroll">
-      <div class="hd">
-        <ul>
-        </ul>
-      </div>
-      <div class="bd">
-        <ul>
-          <!--{foreach from=$related_goods item=goods name=goods}-->
-          <li><a href="{$goods.url}"><img _src="{$goods.goods_thumb}" src="{$goods.goods_thumb}" /></a>
-            <p class="ect-color"> 
-              <!--{if $goods.promote_price}--> 
-              {$goods.formated_promote_price}
-              <!--{else}--> 
-              {$goods.shop_price}
-              <!--{/if}--> 
-            </p>
-            <p class="text-left">{$goods.short_name}</p>
-          </li>
-          <!--{if $smarty.foreach.goods.iteration%3 eq 0}--></ul><ul><!--{/if}-->
-          <!--{/foreach}-->
-        </ul>
-      </div>
-    </div>
-    
-    <!-- 本例主要代码 End ================================ --> 
-  </div>
-  <footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
+			<section class="goods-price padding-all b-color-f">
+				<p class="p-price">
+					<span class="t-first">
+						<!--{if $goods.is_promote and $goods.gmt_end_time } 促销-->
+						{$goods.promote_price}
+						<!--{else}-->
+						{$goods.shop_price_formated}
+						<!--{/if}-->
+					</span>
+					<em class="em-promotion">积分可抵现</em>
+				</p>
+				<!--{if goods.is__promote and $goods.gmt_end_time } 促销-->
+
+				<!--{else}-->
+				<p class="p-market"style="color:red;">
+					会员等级价格 {$goods.rank_price_formated}
+				</p>
+				<!--{/if}-->
+				<!-- {if $cfg.show_marketprice} 市场价格-->
+				<p class="p-market">
+					市场价 <del>{$goods.market_price}</del>
+				</p>
+				<!-- {/if} -->
+				<p class=" dis-box g-p-tthree m-top04">
+					<span class="box-flex text-left">{$lang.sort_sales}：{$sales_count}</span>
+					<span class="box-flex text-right">库存: {$goods.goods_number}</span>
+				</p>
+			</section>
+			<!-- {if $promotion} 优惠活动 -->
+			<section class="ect-margin-tb ect-margin-bottom0 ect-padding-tb goods-promotion ect-padding-lr n-activity-list b-color-f">
+				<h5>{$lang.activity}</h5>
+				<p class="ect-border-top ect-margin-tb">
+					<!-- {foreach from=$promotion item=item key=key} 优惠活动-->
+					<!-- {if $item.type eq "snatch"} -->
+					<a href="{$item.url}" title="{$lang.snatch}"><i class="label tbqb">{$lang.snatch_act}</i> [{$lang.snatch}]<i class="pull-right fa fa-angle-right"></i></a>
+					<!-- {elseif $item.type eq "group_buy"} -->
+					<a href="{$item.url}" title="{$lang.group_buy}"><i class="label tuan">{$lang.group_buy_act}</i> [{$lang.group_buy}]{$item.time}<i class="pull-right fa fa-angle-right"></i></a>
+					<!-- {elseif $item.type eq "auction"} -->
+					<a href="{$item.url}" title="{$lang.auction}"><i class="label pm">{$lang.auction_act}</i> [{$lang.auction}]<i class="pull-right fa fa-angle-right"></i></a>
+					<!-- {elseif $item.type eq "favourable"} -->
+					<a href="{$item.url}" title="{$lang.$item.type} {$item.act_name}{$item.time}">
+						<!--{if $item.act_type eq 0}-->
+						<i class="label mz">{$lang.favourable_mz}</i>
+						<!--{elseif $item.act_type eq 1}-->
+						<i class="label mj">{$lang.favourable_mj}</i>
+						<!--{elseif $item.act_type eq 2}-->
+						<i class="label zk">{$lang.favourable_zk}</i>
+						<!--{/if}-->{$item.act_name}{$item.time} <i class="pull-right fa fa-angle-right"></i></a>
+					<!-- {/if} -->
+					<!-- {/foreach} -->
+				</p>
+			</section>
+			<!-- {/if} -->
+			<!--商品评价-->
+			<section class="padding-all b-color-f1 goods-service">
+				<div class="dis-box">
+					<div class="box-flex">
+						<div class="dis-box">
+							<p class="box-flex t-goods2">本服务由{$shop_name}提供售后服务与产品支持</p>
+							<i class="iconfont icon-102 goods-min-icon"></i>
+						</div>
+						<div class="dis-box m-top08 g-r-rule goods-service-list">
+							<p class="box-flex t-remark3">
+								<em class="fl em-promotion"><i class="iconfont icon-weibiaoti11"></i></em><span class="fl">正品保证</span></p>
+							<p class="box-flex t-remark3">
+								<em class="fl em-promotion"><i class="iconfont icon-daifukuan"></i></em><span class="fl">货到付款</span></p>
+							<p class="box-flex t-remark3">
+								<em class="fl em-promotion"><i class="iconfont icon-7tianwuliyoutuihuo"></i></em><span class="fl">7天退货</span></p>
+							<p class="box-flex t-remark3">
+								<em class="fl em-promotion"><i class="iconfont icon-taobaojisutuikuan"></i></em><span class="fl">极速达</span></p>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!--优惠数量价格显示 START-->
+			<!--{if $volume_price_list}-->
+			<section class="goods-num-box b-color-f text-c f-05 padding-all">
+				<ul class=" dis-box goods-box-bor">
+					<li class="box-flex goods-bor goods-b-n">优惠数量</li>
+					<li class="box-flex goods-bor goods-b-n">优惠价格</li>
+				</ul>
+				<!-- {foreach from=$volume_price_list item=volume}-->
+				<ul class="dis-box">
+					<li class="box-flex goods-bor">{$volume.number}</li>
+					<li class="box-flex goods-bor">{$volume.price}</li>
+				</ul>
+				<!--{/foreach}-->
+			</section>
+			<!--{/if}-->
+			<!--优惠数量价格显示 END-->
+			<!-- #BeginLibraryItem "/library/goods_fittings.lbi" --><!-- #EndLibraryItem -->
+			<form action="javascript:addToCart({$goods.goods_id})" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
+				<section class="goods-more-a">
+					<!--  <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/info',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_brief}</span> <span class="pull-right"><i class="fa fa-chevron-right"></i></span></a>
+      <a class="ect-padding-lr ect-padding-tb" href="{:url('goods/comment_list',array('id'=>$this->_var['goods']['goods_id']))}"><span class="Text">{$lang.goods_comment}</span> <span class="pull-right"><span class="ect-color">{$comments.count}</span>{$lang.comment_num} <span class="ect-color">{$comments.favorable}%</span>{$lang.favorable_comment} <i class="fa fa-chevron-right"></i></span></a>  -->
+				</section>
+
+				<section class="m-top10 padding-all b-color-f goods-attr j-goods-attr j-show-div">
+					<div class="dis-box">
+						<label class="t-remark g-t-temark">已选</label>
+						<div class="box-flex t-goods1 ">请选择</div>
+						<span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+					</div>
+					<!--商品属性弹出层star-->
+					<div class="mask-filter-div"></div>
+					<div class="show-goods-attr j-filter-show-div ts-3 b-color-1">
+						<section class="s-g-attr-title b-color-1  product-list-small">
+							<div class="product-div">
+								<img src="{$goods.goods_img}" alt="{$goods.goods_name}" class="product-list-img" />
+								<div class="product-text n-right-box">
+									<div class="dis-box">
+										<h4 class="box-flex">{$goods.goods_style_name}</h4>
+										<i class="iconfont icon-guanbi show-div-guanbi"></i>
+									</div>
+									<p><span class="p-price t-first" id="ECS_GOODS_AMOUNT">
+										<!--{if $goods.is_promote and $goods.gmt_end_time } 促销-->
+										{$goods.promote_price}
+										<!--{else}-->
+										{$goods.shop_price_formated}
+										<!--{/if}--></span>
+									</p>
+									<p class="dis-box p-t-remark"><span class="box-flex" id="ECS_PRODUCT_NUMBER">库存:{$goods.goods_number}</span></p>
+								</div>
+							</div>
+						</section>
+						<section class="s-g-attr-con swiper-scroll b-color-f padding-all m-top1px">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide">
+									<!-- {foreach name=spec from=$specification item=spec key=spec_key} -->
+									<h4 class="t-remark">{$spec.name}：</h4>
+									<ul class="select-one  <!-- {if $spec.attr_type eq 1} -->j-get-one<!-- {else} -->j-get-more<!-- {/if} --> m-top10">
+										<!-- {foreach from=$spec.values item=value key=key} -->
+										<li class="ect-select dis-flex fl">
+											<input type="<!-- {if $spec.attr_type eq 1} -->radio<!-- {else} -->checkbox<!-- {/if} -->" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" {if $key eq 0}checked{/if} onclick="changePrice()" />
+											<label class="ts-1 {if $key eq 0}active{/if}" for="spec_value_{$value.id}">{$value.label}</label>
+										</li>
+										<!-- {/foreach} -->
+									</ul>
+									<input type="hidden" name="spec_list" value="{$key}" />
+									<!-- {/foreach} -->
+
+									<h4 class="t-remark">数量</h4>
+									<div class="div-num dis-box m-top08">
+										<a class="num-less" onClick="changePrice('1')"></a>
+										<input class="box-flex" type="text" value="1" onkeyup="value=value.replace(/[^\d]/g,'')" name="number" id="goods_number" onblur="changePrice('2')" autocomplete="off" />
+										<a class="num-plus" onClick="changePrice('3')"></a>
+									</div>
+								</div>
+							</div>
+							<div class="swiper-scrollbar"></div>
+						</section>
+						<section class="ect-button-more dis-box padding-all">
+							<a class="btn-cart box-flex show-div-guanbi n-btn-box"  type="button" onClick="addToCart({$goods.goods_id});">加入购物车</a>
+							<a class="btn-submit box-flex" type="button" onClick="addToCart_quick({$goods.goods_id});">立即购买</a>
+						</section>
+			</form>
+			</div>
+			<!--商品属性弹出层end-->
+			</section>
+			<!--comment-->
+			<section class="m-top10 goods-evaluation">
+				<a href="{:url('goods/comment_list',array('id'=>$this->_var['goods']['goods_id']))}">
+					<div class="dis-box padding-all b-color-f  g-evaluation-title">
+						<label class="t-remark g-t-temark">用户评价</label>
+						<div class="box-flex t-goods1">好评率 <em class="t-first">{$comments.favorable}%</em></div>
+						<div class="t-goods1"><em class="t-first">{$goods.comment_count}</em><span class="t-jiantou">{$comments.count}人评论<i class="iconfont icon-jiantou tf-180"></i></span></div>
+					</div>
+				</a>
+				<div class="m-top1px b-color-f g-evaluation-con">
+					<!--{foreach from=$comment_list item="comment" name="com"}-->
+					<!--{if $smarty.foreach.com.index<5}-->
+					<div class="of-hidden evaluation-list padding-all-1 n-list-pl">
+						<div class="of-hidden">
+							<p class="fl"><span class="grade-star g-star-{$comment.comment_rank} fl"></span><em class="t-remark fl"><!--{if $comment.user_name}-->{$comment.user_name|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></em></p>
+							<p class="fr t-remark">{$comment.add_time}</p>
+						</div>
+						<p class="clear m-top06 t-goods1">{$comment.content}</p>
+						<!-- {if $comment.re_content} -->
+						<p>
+							<font class="f1">{$lang.admin_username}</font>{$comment.re_content}</p>
+						<!-- {/if} -->
+						<p style="display:none;" class="clear m-top08 t-remark">颜色分类：70cm、5144蓝色</p>
+					</div>
+					<!--{/if}-->
+					<!--{/foreach}-->
+					<!--<div class="of-hidden evaluation-list">
+					<div class="of-hidden ">
+						<p class="fl"><span class="grade-star g-star-5 fl"></span><em class="t-remark fl">s****y</em></p>
+						<p class="fr t-remark">2015-08-09 10:46:43</p>
+					</div>
+					<p class="clear m-top10 t-goods1">很好看，大小刚刚好 很好看</p>
+					<p class="clear m-top08 t-remark">颜色分类：70cm、5144蓝色</p>
+					<div class="ect-button-more m-top10 dis-box">
+						<a class="box-flex btn-default">有图评价</a>
+						<a href="{:url('goods/comment_list',array('id'=>$this->_var['goods']['goods_id']))}" class="box-flex btn-default">全部评价</a>
+					</div>
+				</div>-->
+				</div>
+			</section>
+			<!-- <section class="padding-all text-center t-remark2 xiangqing-1 ">
+			<a href="{:url('goods/info',array('id'=>$this->_var['goods']['goods_id']))}" class="j-goodsinfo-div">点击查看商品详情</a>
+		</section> -->
+
+		</div>
+		<!--商品属性弹出层star-->
+		<div class="mask-filter-div"></div>
+		<div class="goods-scoll-bg"></div>
+		<!--加入购物车弹出层 S-->
+		<script type="text/javascript">
+			function showDiv() {
+				document.getElementById('popDiv').style.display = 'block';
+				document.getElementById('hidDiv').style.display = 'block';
+				document.getElementById('cartNum').innerHTML = document.getElementById('goods_number').value;
+				document.getElementById('cartPrice').innerHTML = document.getElementById('ECS_GOODS_AMOUNT').innerHTML;
+			}
+
+			function closeDiv() {
+				document.getElementById('popDiv').style.display = 'none';
+				document.getElementById('hidDiv').style.display = 'none';
+			}
+			/*首页二维码*/
+	$(".j-ewm-box").click(function() {
+		document.addEventListener("touchmove", handler, false);
+		$(".index-bg-box").addClass("active");
+		$(".index-weixin-box").addClass("active");
+	});
+	$(".j-ewm-close").click(function() {
+		document.removeEventListener("touchmove", handler, false);
+		$(".index-bg-box").removeClass("active");
+		$(".index-weixin-box").removeClass("active");
+	});
+	$(".index-bg-box").click(function() {
+		document.removeEventListener("touchmove", handler, false);
+		$(".index-bg-box").removeClass("active");
+		$(".index-weixin-box").removeClass("active");
+	});
+		</script>
+		<div class="tipMask" id="hidDiv" style="display:none"></div>
+
+		<!--加入购物车弹出层 E-->
+
+	</div>
+	<!-- #BeginLibraryItem "/library/new_page_footer_nav.lbi" -->
+	<!-- #EndLibraryItem -->
+
+	<!-- #BeginLibraryItem "/library/new_page_footer.lbi" -->
+	<!-- #EndLibraryItem -->
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
-<script type="text/javascript" src="__TPL__/js/lefttime.js"></script> 
+<div class="n-goods-bg"></div>
+<!-- #BeginLibraryItem "/goods_info.dwt" -->
+<!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+<!-- #EndLibraryItem -->
+<script type="text/javascript" src="__TPL__/js/lefttime.js"></script>
+<script type="text/javascript" src="__PUBLIC__/layer/layer.js"></script>
 <script type="text/javascript">
-document.addEventListener('DOMContentLoaded', function(){Code.photoSwipe('a', '#Gallery');}, false);
-
-
-/*倒计时*/
-var goods_id = {$goods.goods_id};
-var goodsattr_style = 1;
-var goodsId = {$goods_id};
-
-var gmt_end_time = "{$goods.gmt_end_time|default:0}";
-{foreach from=$lang.goods_js item=item key=key}
-var {$key} = "{$item}";
-{/foreach}
-var now_time = {$now_time};
-
-var use_how_oos = {:C('use_how_oos')};
-onload = function(){
+	/*倒计时*/
+	var goods_id = {$goods_id};
+	var goodsattr_style = 1;
+	var gmt_end_time = 0;
+	var day = "天";
+	var hour = "小时";
+	var minute = "分钟";
+	var second = "秒";
+	var end = "结束";
+	var goodsId = {$goods_id};
+	var now_time = {$now_time};
+	var use_how_oos = {:C('use_how_oos')};
+$(function() {
   changePrice(2);
-  fixpng();
+  //fixpng();
   try {onload_leftTime();}
   catch (e) {}
-}
-function back_goods_number(){
- var goods_number = document.getElementById('goods_number').value;
-  document.getElementById('back_number').value = goods_number;
-}
-/**
- * 点选可选属性或改变数量时修改商品价格的函数
- */
-function changePrice(type)
-{
-  var qty = document.forms['ECS_FORMBUY'].elements['number'].value;
-  if(type == 1){qty--; }
-  if(type == 3){qty++; }
-  if(qty <=0 ){ qty=1; }
-  if(!/^[0-9]*$/.test(qty)){ qty = document.getElementById('back_number').value; }
-  document.getElementById('goods_number').value = qty;
-  var attr = getSelectedAttributes(document.forms['ECS_FORMBUY']);
-  $.get('{:url("goods/price")}', {'id':goodsId,'attr':attr,'number':qty}, function(data){
-    changePriceResponse(data);
-  }, 'json');
-}
+});
+
+	function back_goods_number() {
+		var goods_number = document.getElementById('goods_number').value;
+		document.getElementById('back_number').value = goods_number;
+	}
+	/**
+	 * 点选可选属性或改变数量时修改商品价格的函数
+	 */
+	function changePrice(type) {
+		var qty = document.forms['ECS_FORMBUY'].elements['number'].value;
+		//var qty = 0;
+
+		if (type == 1) {
+			qty--;
+		}
+		if (type == 3) {
+			qty++;
+		}
+		if (qty <= 0) {
+			qty = 1;
+		}
+		if (!/^[0-9]*$/.test(qty)) {
+			qty = document.getElementById('back_number').value;
+		}
+		document.getElementById('goods_number').value = qty;
+		var attr = getSelectedAttributes(document.forms['ECS_FORMBUY']);
+		$.get('{:url("goods/price")}', {
+			'id': goodsId,
+			'attr': attr,
+			'number': qty
+		}, function(data) {
+			changePriceResponse(data);
+		}, 'json');
+	}
+	/**
+	 * 接收返回的信息
+	 */
+	function changePriceResponse(res) {
+		if (res.err_msg.length > 0) {
+			alert(res.err_msg);
+		} else {
+			if (document.getElementById('ECS_GOODS_AMOUNT'))
+				document.getElementById('ECS_GOODS_AMOUNT').innerHTML = res.result;
+			if(res.product_number != null){
+			    document.getElementById('ECS_PRODUCT_NUMBER').innerHTML = res.product_number;
+			}
+		}
+	}
 
 
-/**
- * 接收返回的信息
- */
-function changePriceResponse(res){
-  if (res.err_msg.length > 0){
-    alert(res.err_msg);
-  } else {
-    if (document.getElementById('ECS_GOODS_AMOUNT'))
-      document.getElementById('ECS_GOODS_AMOUNT').innerHTML = res.result;
-  }
-}
-<!-- {/literal} -->
-/**
- * 接收返回的信息
- */
-function changePriceResponse(res){
-  if (res.err_msg.length > 0){
-    alert(res.err_msg);
-  } else {
-    if (document.getElementById('ECS_GOODS_AMOUNT'))
-      document.getElementById('ECS_GOODS_AMOUNT').innerHTML = res.result;
-  }
-}
+</script>
+<script>
+	$(function($) {
 
-/*判断user-tab是否距顶，距顶悬浮*/
-var nav_tabs_top = $(".user-tab .nav-tabs").offset().top;//获取nav-tabs距离顶部的位
-function func_scroll(){//定义一个事件效果置
-	var documentTop = $(document).scrollTop();//获取滚动条距离顶部距离
-	if(nav_tabs_top <= documentTop){
-		$(".user-tab").addClass("user-tab-fixed");
-		$("#is-nav-tabs").css("display","block");
-	}else{
-		$(".user-tab").removeClass("user-tab-fixed");
-		$("#is-nav-tabs").css("display","none");		
+		var handler = function(e) { //禁止浏览器默认行为
+			e.preventDefault();
+		};
+
+
+		/*弹出层方式*/
+		$(".j-show-div").click(function() {
+			document.addEventListener("touchmove", handler, false);
+			$(".j-filter-show-div").addClass("show");
+			$(".mask-filter-div").addClass("show");
+		});
+		/*关闭弹出层*/
+		$(".mask-filter-div,.show-div-guanbi").click(function() {
+			document.removeEventListener("touchmove", handler, false);
+			$(".j-filter-show-div").removeClass("show");
+			$(".mask-filter-div").removeClass("show");
+			return false;
+		});
+		/*商品详情相册切换*/
+		var swiper = new Swiper('.goods-photo', {
+			paginationClickable: true,
+			onInit: function(swiper) {
+				document.getElementById("g-active-num").innerHTML = swiper.activeIndex + 1;
+				document.getElementById("g-all-num").innerHTML = swiper.slides.length;
+			},
+			onSlideChangeStart: function(swiper) {
+				document.getElementById("g-active-num").innerHTML = swiper.activeIndex + 1;
+			}
+		});
+	});
+</script>
+
+		<script>
+			$(function() {
+					/*头部导航*/
+
+	$(".j-nav-box").click(function() {
+		$(".j-nav-content").toggleClass("active");
+	});
+
+/*导航弹框*/
+$(".icon-gengduo").click(function() {
+					$(".goods-nav").toggleClass("active");
+				});
+
+
+				$('.goods-header-nav-box li').click(function() {
+					for (var i = 0; i < $('.goods-header-nav-box li').size(); i++) {
+						if (this == $('.goods-header-nav-box li').get(i)) {
+							$('.goods-header-nav-box li').eq(i).children('a').addClass('hover');
+						} else {
+							$('.goods-header-nav-box li').eq(i).children('a').removeClass('hover');
+						}
+					}
+				})
+			});
+		</script>
+		<script type="text/javascript">
+var btn_buy = "确定";
+var is_cancel = "取消";
+var select_spe = "请选择商品属性";
+var select_base = '请选择套餐基本件';
+var select_shop = '请选择套餐商品';
+var data_not_complete = '数据格式不完整';
+var understock = '库存不足，请选择其他商品';
+
+$(function(){
+	//组合套餐tab切换
+	var _tab = $('#cn_b h2');
+	var _con = $('#cn_h blockquote');
+	var _index = 0;
+	_con.eq(0).show().siblings('blockquote').hide();
+	_tab.css('cursor','pointer');
+	_tab.click(function(){
+		_index = _tab.index(this);
+		_tab.eq(_index).removeClass('h2bg').siblings('h2').addClass('h2bg');
+		_con.eq(_index).show().siblings('blockquote').hide();
+	})
+	//选择基本件
+	$('.m_goods_body').click(function(){
+		if($(this).prop('checked')){
+			ec_group_addToCart($(this).attr('item'), {$goods.goods_id}); //基本件(组,主件)
+		}else{
+			ec_group_delInCart($(this).attr('item'), {$goods.goods_id}); //删除基本件(组,主件)
+			display_Price($(this).attr('item'),$(this).attr('item').charAt($(this).attr('item').length-1));
+		}
+	})
+	//变更选购的配件
+	$('.m_goods_list').click(function(){
+		//是否选择主件
+		if(!$(this).parents('table').find('.m_goods_body').prop('checked')){
+			alert(select_base);
+			return false;
+		}
+		if($(this).prop('checked')){
+			ec_group_addToCart($(this).attr('item'), $(this).val(),{$goods.goods_id}); //新增配件(组,配件,主件)
+		}else{
+			ec_group_delInCart($(this).attr('item'), $(this).val(),{$goods.goods_id}); //删除基本件(组,配件,主件)
+			display_Price($(this).attr('item'),$(this).attr('item').charAt($(this).attr('item').length-1));
+		}
+	})
+	//可以购买套餐的最大数量
+	$(".combo_stock").keyup(function(){
+		var group = $(this).parents('form').attr('name');
+		getMaxStock(group);//根据套餐获取该套餐允许购买的最大数
+	});
+})
+
+//允许购买套餐的最大数量
+function getMaxStock(group){
+	var obj = $('input[name="'+group+'_number"]').val();
+	var original = parseInt(Number(obj.val()));
+	var stock = $("."+group).eq(0).attr('stock');
+	//是否是数字
+	if(isNaN(original)){
+		original = 1;
+		obj.val(original);
+	}
+
+	//更新
+	original = (original < 1)?1:original;
+	stock = (stock < 1)?1:stock;
+	if(original > stock){
+		obj.val(stock);
 	}
 }
 
-window.onscroll = function () {
-	 func_scroll();
+//统计套餐价格
+function display_Price(_item,indexTab){
+	var _size = $('.'+_item).size();
+	var _amount_shop_price = 0;
+	var _amount_spare_price = 0;
+	indexTab = indexTab - 1;
+	for(i=0; i<_size; i++){
+		obj = $('.'+_item).eq(i);
+		if(obj.prop('checked')){
+			_amount_shop_price += parseFloat(obj.attr('data')); //原件合计
+			_amount_spare_price += parseFloat(obj.attr('spare')); //优惠合计
+		}
+	}
+	var tip_spare = $('.tip_spare:eq('+indexTab+')');//节省文本
+	if(_amount_spare_price > 0){//省钱显示提示信息
+		tip_spare.show();
+		tip_spare.children('strong').text(_amount_spare_price);
+	}else{
+		tip_spare.hide();
+	}
+	//显示总价
+	$('.combo_price:eq('+indexTab+')').text(_amount_shop_price);
 }
-</script> 
-<script type="text/javascript">
-				TouchSlide({ 
-					slideCell:"#picScroll",
-					titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
-					autoPage:"true", //自动分页
-					pnLoop:"false", // 前后按钮不循环
-					switchLoad:"_src" //切换加载，真实图片路径为"_src" 
-				});
-			</script>
-</body></html>
+
+//处理添加商品到购物车
+function ec_group_addToCart(group,goodsId,parentId){
+  var goods        = new Object();
+  var spec_arr     = new Array();
+  var fittings_arr = new Array();
+  var number       = 1;
+  var quick		   = 0;
+  var group_item   = (typeof(parentId) == "undefined") ? goodsId : parseInt(parentId);
+
+  goods.quick    = quick;
+  goods.spec     = spec_arr;
+  goods.goods_id = goodsId;
+  goods.number   = number;
+  goods.parent   = (typeof(parentId) == "undefined") ? 0 : parseInt(parentId);
+  goods.group = group + '_' + group_item;//组名
+
+  	$.post('{:url("flow/add_to_cart_combo")}', {goods : $.toJSON(goods)}, function(data) {
+		ec_group_addToCartResponse(data);
+	}, 'json');
+
+}
+
+//处理添加商品到购物车的反馈信息
+function ec_group_addToCartResponse(result)
+{
+  if (result.error > 0)
+  {
+    // 如果需要缺货登记，跳转
+    if (result.error == 2)
+    {
+      alert(understock);
+	  cancel_checkboxed(result.group, result.goods_id);//取消checkbox
+    }
+    // 没选规格，弹出属性选择框
+    else if (result.error == 6)
+    {
+      ec_group_openSpeDiv(result.message, result.group, result.goods_id, result.parent);
+    }
+    else
+    {
+      alert(result.message);
+	  cancel_checkboxed(result.group, result.goods_id);//取消checkbox
+    }
+  }
+  else
+  {
+	//处理Ajax数据
+	var group = result.group.substr(0,result.group.lastIndexOf("_"));
+	$("."+group).each(function(index){
+		if($("."+group).eq(index).val()==result.goods_id){
+			//主件显示价格、配件显示基本件+属性价
+			var goods_price = (result.parent > 0) ? (parseFloat(result.fittings_price)+parseFloat(result.spec_price)):result.goods_price;
+			$("."+group).eq(index).attr('data',goods_price);//赋值到文本框data参数
+			$("."+group).eq(index).attr('stock',result.stock);//赋值到文本框stock参数
+			$('.'+group+'_display').eq(index).text(goods_price);//前台显示
+		}
+	});
+	//getMaxStock(group);//根据套餐获取该套餐允许购买的最大数
+	display_Price(group,group.charAt(group.length-1));//显示套餐价格
+  }
+}
+
+//处理删除购物车中的商品
+function ec_group_delInCart(group,goodsId,parentId){
+  var goods        = new Object();
+  var group_item   = (typeof(parentId) == "undefined") ? goodsId : parseInt(parentId);
+
+  goods.goods_id = goodsId;
+  goods.parent   = (typeof(parentId) == "undefined") ? 0 : parseInt(parentId);
+  goods.group = group + '_' + group_item;//组名
+
+  	$.post('{:url("flow/del_in_cart_combo")}', {goods : $.toJSON(goods)}, function(data) {
+		ec_group_delInCartResponse(data);
+	}, 'json');
+}
+
+//处理删除购物车中的商品的反馈信息
+function ec_group_delInCartResponse(result)
+{
+	var group = result.group;
+	if (result.error > 0){
+		alert(data_not_complete);
+	}else if(result.parent == 0){
+		$('.'+group).attr("checked",false);
+	}
+	display_Price(group,group.charAt(group.length-1));//显示套餐价格
+}
+
+//生成属性选择层
+function ec_group_openSpeDiv(message, group, goods_id, parent)
+{
+  var _id = "speDiv";
+  var m = "mask";
+  if (docEle(_id)) document.removeChild(docEle(_id));
+  if (docEle(m)) document.removeChild(docEle(m));
+  //计算上卷元素值
+  var scrollPos;
+  if (typeof window.pageYOffset != 'undefined')
+  {
+    scrollPos = window.pageYOffset;
+  }
+  else if (typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat')
+  {
+    scrollPos = document.documentElement.scrollTop;
+  }
+  else if (typeof document.body != 'undefined')
+  {
+    scrollPos = document.body.scrollTop;
+  }
+
+  var i = 0;
+  var sel_obj = document.getElementsByTagName('select');
+  while (sel_obj[i])
+  {
+    sel_obj[i].style.visibility = "hidden";
+    i++;
+  }
+
+  // 新激活图层
+  var newDiv = document.createElement("div");
+  newDiv.id = _id;
+  newDiv.style.position = "fixed";
+  newDiv.style.zIndex = "10000";
+  //newDiv.style.width = "26rem";
+  //newDiv.style.height = "28rem";
+  //newDiv.style.top = (parseInt(scrollPos + 200)) + "px";
+  newDiv.style.bottom = "0";
+  newDiv.style.left = "0";
+  newDiv.style.right = "0";
+  //newDiv.style.marginLeft = "-13rem";
+  newDiv.style.overflow = "hidden";
+  newDiv.style.background = "#FFF";
+  //newDiv.style.border = "3px solid #59B0FF";
+  newDiv.style.padding = "1.3rem 1.3rem 0rem 1.3rem";
+  newDiv.style.boxSizing = "border-box";
+
+  //生成层内内容
+  newDiv.innerHTML = '<div class="dis-box"><h4 class="n-goods-tit box-flex">' + select_spe + "</h4><a href='javascript:ec_group_cancel_div(\"" + group + "\"," + goods_id + ")' class='box-flex text-right'><i class='iconfont icon-guanbi show-div-guanbi'></i></a></div>";
+
+  for (var spec = 0; spec < message.length; spec++)
+  {
+      newDiv.innerHTML += '<h6 class="n-goods-cont-tit">' +  message[spec]['name'] + '</h6>';
+
+      if (message[spec]['attr_type'] == 1)
+      {
+        for (var val_arr = 0; val_arr < message[spec]['values'].length; val_arr++)
+        {
+          if (val_arr == 0)
+          {
+            newDiv.innerHTML += "<div class='n-goods-list-cont'><input  type='radio' name='spec_" + message[spec]['attr_id'] + "' value='" + message[spec]['values'][val_arr]['id'] + "' id='spec_value_" + message[spec]['values'][val_arr]['id'] + "' checked /><label>" + message[spec]['values'][val_arr]['label'] + '</label><em>(' + message[spec]['values'][val_arr]['format_price'] + ')</em></div>';
+          }
+          else
+          {
+            newDiv.innerHTML += "<div class='n-goods-list-cont'><input  type='radio' name='spec_" + message[spec]['attr_id'] + "' value='" + message[spec]['values'][val_arr]['id'] + "' id='spec_value_" + message[spec]['values'][val_arr]['id'] + "' /><label>" + message[spec]['values'][val_arr]['label'] + '</label><em> (' + message[spec]['values'][val_arr]['format_price'] + ')</em></div>';
+          }
+        }
+        newDiv.innerHTML += "<input type='hidden' name='spec_list' value='" + val_arr + "' />";
+      }
+      else
+      {
+        for (var val_arr = 0; val_arr < message[spec]['values'].length; val_arr++)
+        {
+          newDiv.innerHTML += "<div class='n-goods-list-cont'><input  type='checkbox' name='spec_" + message[spec]['attr_id'] + "' value='" + message[spec]['values'][val_arr]['id'] + "' id='spec_value_" + message[spec]['values'][val_arr]['id'] + "' /><label>" + message[spec]['values'][val_arr]['label'] + '</label><em> (' + message[spec]['values'][val_arr]['format_price'] + ')</em></div>';
+        }
+        newDiv.innerHTML += "<input type='hidden' name='spec_list' value='" + val_arr + "' />";
+      }
+  }
+  newDiv.innerHTML += "<br /><div class='dis-box  b-color-f n-goods-btn'><a class='f6 btn-submit2 box-flex' href='javascript:ec_group_cancel_div(\"" + group + "\"," + goods_id + ")' class='f6' >" + is_cancel + "</a><a href='javascript:ec_group_submit_div(\"" + group + "\"," + goods_id + "," + parent + ")' class='f6 btn-submit box-flex' >" + btn_buy + "</a></div>";
+  document.body.appendChild(newDiv);
+
+
+  // mask图层
+  var newMask = document.createElement("div");
+  newMask.id = m;
+  newMask.style.position = "absolute";
+  newMask.style.zIndex = "9999";
+  newMask.style.width = document.body.scrollWidth + "px";
+  newMask.style.height = document.body.scrollHeight + "px";
+  newMask.style.top = "0px";
+  newMask.style.left = "0px";
+  newMask.style.background = "#000";
+  newMask.style.filter = "alpha(opacity=30)";
+  newMask.style.opacity = "0.40";
+  document.body.appendChild(newMask);
+}
+
+//获取选择属性后，再次提交到购物车
+function ec_group_submit_div(group, goods_id, parentId)
+{
+  var goods        = new Object();
+  var spec_arr     = new Array();
+  var fittings_arr = new Array();
+  var number       = 1;
+  var input_arr      = document.getElementById('speDiv').getElementsByTagName('input'); //by mike
+  var quick		   = 1;
+
+  var spec_arr = new Array();
+  var j = 0;
+
+  for (i = 0; i < input_arr.length; i ++ )
+  {
+    var prefix = input_arr[i].name.substr(0, 5);
+
+    if (prefix == 'spec_' && (
+      ((input_arr[i].type == 'radio' || input_arr[i].type == 'checkbox') && input_arr[i].checked)))
+    {
+      spec_arr[j] = input_arr[i].value;
+      j++ ;
+    }
+  }
+
+  goods.quick    = quick;
+  goods.spec     = spec_arr;
+  goods.goods_id = goods_id;
+  goods.number   = number;
+  goods.parent   = (typeof(parentId) == "undefined") ? 0 : parseInt(parentId);
+  goods.group    = group;//组名
+
+	$.post('{:url("flow/add_to_cart_combo")}', {goods : $.toJSON(goods)}, function(data) {
+		ec_group_addToCartResponse(data);
+	}, 'json');
+  document.body.removeChild(docEle('speDiv'));
+  document.body.removeChild(docEle('mask'));
+
+  var i = 0;
+  var sel_obj = document.getElementsByTagName('select');
+  while (sel_obj[i])
+  {
+    sel_obj[i].style.visibility = "";
+    i++;
+  }
+
+}
+
+//关闭mask和新图层的同时取消选择
+function ec_group_cancel_div(group, goods_id){
+  document.body.removeChild(docEle('speDiv'));
+  document.body.removeChild(docEle('mask'));
+
+  var i = 0;
+  var sel_obj = document.getElementsByTagName('select');
+  while (sel_obj[i])
+  {
+    sel_obj[i].style.visibility = "";
+    i++;
+  }
+  cancel_checkboxed(group, goods_id);//取消checkbox
+}
+
+/*
+*套餐提交到购物车 by mike
+*/
+function addMultiToCart(group,goodsId){
+	var goods     = new Object();
+	var number    = $('input[name="'+group+'_number"]').val();
+
+	goods.group = group;
+	goods.goods_id = goodsId;
+	goods.number = (number < 1) ? 1:number;
+
+	//判断是否勾选套餐
+	if(!$("."+group).is(':checked')){
+		alert(select_shop);
+		return false;
+	}
+
+
+	$.post('{:url("flow/add_to_cart_group")}', {goods : $.toJSON(goods)}, function(data) {
+		addMultiToCartResponse(data);
+	}, 'json');
+}
+
+//回调
+function addMultiToCartResponse(result){
+	if(result.error > 0){
+		alert(result.message);
+	}else{
+		window.location.href = "{:url('flow/cart')}";
+	}
+}
+
+//取消选项
+function cancel_checkboxed(group, goods_id){
+	//取消选择
+	group = group.substr(0,group.lastIndexOf("_"));
+	$("."+group).each(function(index){
+		if($("."+group).eq(index).val()==goods_id){
+			$("."+group).eq(index).attr("checked",false);
+		}
+	});
+}
+
+/*
+//sleep
+function sleep(d){
+	for(var t = Date.now();Date.now() - t <= d;);
+}
+*/
+/*相册控制*/
+	document.getElementById('img-photo-box').style.width = document.body.offsetWidth + 'px';
+	document.getElementById('img-photo-box').style.height = document.body.offsetWidth + 'px';
+	window.onresize = function(){
+		document.getElementById('img-photo-box').style.width = document.body.offsetWidth + 'px';
+	    document.getElementById('img-photo-box').style.height = document.body.offsetWidth + 'px';
+	}
+
+</script>
+
+</body>
+
+</html>

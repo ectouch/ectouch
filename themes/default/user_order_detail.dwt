@@ -5,6 +5,7 @@
     <p>{$lang.order_number}：<span>{$order.order_sn}</span></p>
     <p>{$lang.order_money}：<span>{$order.formated_total_fee}</span></p>
     <p>{$lang.order_addtime}：<span>{$order.formated_add_time}</span></p>
+    <!-- {if $order.invoice_no}--><p>{$lang.consignment}：<span>{$order.invoice_no}</span></p>{/if}
     <!--{if $order.to_buyer}-->
     <p> {$lang.detail_to_buyer}：{$order.to_buyer} </p>
     <!-- {/if} -->
@@ -23,9 +24,10 @@
     <!--{/foreach}-->
     </p>
     <!-- {/if} -->
+    <p style="display:none;"><a href="{:url('user/msg_list', array('order_id'=>$this->_var['order']['order_id']))}">[{$lang.business_message}]</a></p>
   </div>
   {if $order.order_amount gt 0}
-	<section class="ect-padding-lr ect-padding-tb ect-margin-tb ect-margin-bottom0">{$order.pay_online}</section>
+	<section class="ect-padding-tb ect-margin-tb ect-margin-bottom0">{$order.pay_online}</section>
   {/if}
   <div class="ect-pro-list">
     <ul>
@@ -35,18 +37,34 @@
           <dt>
             <h4 class="title"><a href="{:url('goods/index', array('id'=>$this->_var['goods']['goods_id']))}">{$goods.goods_name}{$goods.goods_attr}</a></h4>
           </dt>
-          <dd class="dd-price"><b>{$lang.shop_price}{$goods.goods_price} {$lang.number_to}：{$goods.goods_number}</b></dd>
-          <dd class="dd-price"><b class="pull-left">{$lang.ws_subtotal}：<span class="ect-colory">{$goods.subtotal}</span></b>
-		  	
-		  </dd>
+           <dd class="dd-price"><b>{$goods.goods_attr}</b></dd>
+          <dd class="dd-price"><b>{$lang.ws_subtotal}：<span class="ect-colory">{$goods.subtotal}</span> {$lang.number_to}：{$goods.goods_number}</b></dd>
+          <dd class="dd-price raise-order-box">
+            <!--{if $goods.aftermarket eq 1}-->
+          <b class="service">
+              <a href="{:url('user/aftermarket_done',array('rec_id'=>$this->_var['goods']['rec_id'],'order_id'=>$this->_var['order']['order_id']))}" >查看申请记录</a>
+              <a href="{:url('user/aftermarket_detail',array('ret_id'=>$this->_var['goods']['ret_id']))}" >退换货详情</a>
+          </b>
+          <!--{else}-->
+              <!--{if $goods.service_apply}-->
+              <b class="service"><a href="{:url('user/aftermarket',array('rec_id'=>$this->_var['goods']['rec_id'],'order_id'=>$this->_var['order']['order_id']))}" >申请售后</a></b>
+              <!--{/if}-->
+          <!--{/if}-->
+          
+          </dd>
+
+         
         </dl>
       </li>
       <!-- {/foreach} -->
     </ul>
   </div>
 </section>
-<div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center"> {$order.handler} 
-  <!-- {if $order.invoice_no} --><a class="btn btn-info ect-bg-colory" type="button" href="{:url('order_tracking', array('order_id'=>$this->_var['order']['order_id']))}">{$lang.order_tracking}</a><!-- {/if} --> 
+<div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center"> 
+  {$order.handler}
+    <!-- {if $order.order_tracking}-->
+    <a href="{:url('order_tracking', array('order_id'=>$this->_var['order']['order_id']))}" type="button" class="btn btn-info ect-btn-info ect-colorf ect-bg">{$lang.order_tracking}</a>
+    <!--{/if}-->
 </div>
 <section class="order-detail-info ect-margin-tb" style="margin-bottom:0;">
   <ul>
@@ -55,7 +73,7 @@
     <!-- {if $order.exist_real_goods} -->
     <li>{$lang.detailed_address}：<b>{$order.address}</b></li>
     <!-- {/if}--> 
-    <!-- {if $order.exist_real_goods} -->
+    <!-- {if $order.exist_real_goods && 0} 不显示最佳送货时间 -->
     <li>{$lang.deliver_goods_time}：<b>{$order.best_time}</b></li>
     <!--{/if}-->
     <li class="text-right">
@@ -125,21 +143,21 @@
     <li>
     <form name="payment" method="post" action="{:url('user/edit_payment')}">
       {$lang.change_payment}: <br/>
-      <select name="pay_id" style="margin:6px 0">
+      <select name="pay_id" style="margin:6px 0;float:left">
         <!--{foreach from=$payment_list item=payment}-->
         <option value="{$payment.pay_id}"> {$payment.pay_name}({$lang.pay_fee}:{$payment.format_pay_fee}) </option>
         <!--{/foreach}-->
       </select>
-      <br/>
+  
       <input type="hidden" name="order_id" value="{$order.order_id}" />
-      <input type="submit" name="Submit" class="btn btn-info ect-btn-info ect-colorf ect-bg" value="{$lang.button_submit}" />
+      <input type="submit" name="Submit" style="float:right;width:30%" class="btn btn-info ect-btn-info ect-colorf ect-bg" value="{$lang.button_submit}" />
     </form>  
     </li>
     <!--{/if}-->
   </ul>
 </section>  
 <section class="order-detail-info ect-margin-tb ect-margin-bottom0 user-bottom0">
-  <ul>
+  <ul style="margin-bottom: 2rem;">
    <!-- {if $order.shipping_id > 0} -->
     <li>{$lang.shipping}：<b>{$order.shipping_name}</b></li>
     <!-- {/if} -->
@@ -172,6 +190,5 @@
     <li>{$lang.booking_process}：<b>{$order.how_oos_name}</b></li>
   </ul>
 </section>
-<footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->

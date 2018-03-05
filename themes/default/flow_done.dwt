@@ -10,7 +10,7 @@
         <p class="ect-margin-tb"><!--{if $order.shipping_name}-->{$lang.select_shipping}:<b>{$order.shipping_name}</b><!--{/if}--></p>
         <p class="ect-margin-tb">{$lang.order_amount}: <b>{$total.amount_formated}</b></p>
         <!--{if $virtual_card}-->
-        <div class="alert alert-warning" role="alert" style="height: 100px;">
+        <div class="alert alert-warning" role="alert" style="height: 100%;">
  	    <!--{foreach from=$virtual_card item=vgoods}-->
             <h3 style="color:#2359B1; font-size:15px;">{$vgoods.goods_name}</h3>
             <!--{foreach from=$vgoods.info item=card}-->

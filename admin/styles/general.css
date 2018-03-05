@@ -1,0 +1,73 @@
+/*
+$Id: general.css 13504 2007-11-08 09:51:13Z weberliu $
+*/
+
+body {
+  margin: 0px;
+  padding: 0px;
+  color: #192E32;
+  /*font: 12px "sans-serif", "Arial", "Verdana";*/
+  font-family: '微软雅黑', 'Microsoft Yahei';
+}
+
+p, td, div {
+  font-size: 12px;
+}
+
+th {
+  font-size: 12px;
+}
+
+form {
+  margin: 0px;
+  padding: 0px;
+}
+
+input, textarea, select {
+  /*font: 12px "courier new";*/
+  padding: 7px 5px;
+  border: 1px #B1B1B1 solid;
+  border-radius: 3px;
+
+  font-size: 12px;
+  line-height: 1.42857143;
+  color: #555;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+a:visited {
+  color: #335B64;
+  text-decoration: none;
+}
+
+a:link {
+  color: #335B64;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #EB8A3D;
+  text-decoration: underline;
+}
+
+a:active {
+  color: #EB8A3D;
+  text-decoration: underline;
+}
+
+.clear {
+  clear: both;
+  float: none;
+  font-size: 0px;
+  margin: 0;
+  padding: 0;
+  display:block;
+}
+
+.nowrap {
+  white-space:nowrap;
+}

@@ -1,14 +1,20 @@
-<ul class="pager ect-margin-lr ect-page">
-	  <li class="pull-left"><a href="{$pager.page_prev|default:#}">上一页</a></li>
-	  <!-- {if $pager.page_number} -->
-	  <li class="form-select">
-		<i class="fa fa-sort-desc"></i>
+<!-- {if $pager} -->
+<section class="padding-all">
+<ul class="dis-box">
+	<li class="n-page-but"><a href="{$pager.page_prev|default:#}"><div class="page-but">上一页</div></a></li>
+	  {if $pager.page_number} 
+	<li class="box-flex">
+		<div class="page-num">
 	    <select name="sel_question" onChange="window.location.href=this.value;">
 			<!-- {foreach from=$pager.page_number key=key item=num} -->
 			<option value="{$num}" {if $pager.page == $key}selected{/if} >{$key}/{$pager.page_count}</option>
 			<!-- {/foreach} -->
 		</select>
-	  </li>
-	  <!-- {/if} -->
-	  <li class="pull-right"><a href="{$pager.page_next|default:#}">下一页</a></li>
-</ul> 
+		</div>
+	</li>
+	{/if} 
+	<li class="n-page-but"><a href="{$pager.page_next|default:#}"><div class="page-but">下一页</div></a></li>
+	
+</ul>
+</section>
+<!-- {/if} -->

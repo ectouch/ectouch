@@ -1,0 +1,67 @@
+{include file="pageheader"}
+{if $empower}
+
+
+<style type="text/css">
+    body{    background-color: #F4F6F8;}
+    body,p{margin:0;padding:0;border:0;}
+    ul{width:auto; position:absolute;left:320px; top:284px;overflow:hidden;}
+    ul li{list-style:none;float:left;}
+    p{line-height:24px;color:#414040;font-size:12px;}
+    .certificate{background-image:url(../data/attached/images/license_bg.png);background-position:center;background-repeat:no-repeat;width:829px;height:640px;margin:0 auto;position:relative;}
+    .cont-title{text-align:right;}
+</style>
+<div class="certificate">
+    <ul>
+        <li>
+            <p class="cont-title">授权类型：<br>
+                授权域名：<br>
+                网站名称：<br>
+                授权持有人：<br>
+                授权起始时间：<br>
+                服务起止日期：
+
+
+            </p>
+        </li>
+        <li>
+            <p>{$empower['type']}<br>
+                <a target="blank" href="{$empower['domain']}">{$empower['domain']}</a><br>
+                {$empower['shop_name']}<br>
+                {$empower['name']}<br>
+                {$empower['license_time']}<br>
+                {$empower['service_time']}
+
+            </p>
+
+        </li>
+    </ul>
+
+</div>
+{else}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{$ur_here}</h3>
+    </div>
+    <div class="panel-body">
+        <form action="{url('license')}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+            <table id="general-table" class="table table-hover ectouch-table">
+                <tr>
+                    <td width="200">授权序列号:</td>
+                    <td><div class="col-md-4">
+                            <input type='text' name='license' maxlength="20" id="a" class="form-control input-sm" />
+                        </div></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><div class="col-md-4">
+                            <input type="submit" value="{$lang['button_submit']}" class="btn btn-primary" />
+                            <input type="reset" value="{$lang['button_reset']}" class="btn btn-default" />
+                        </div></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+{/if}
+{include file="pagefooter"}

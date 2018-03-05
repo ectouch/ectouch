@@ -1,0 +1,31 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+	<!--{if $aftermarket_list}-->
+		<div class="ect-pro-list user-order" style="border-bottom:none;">			
+			<ul id="J_ItemList">
+			 <!--{foreach name=aftermarket_list from=$aftermarket_list item=orders}-->
+				<li>
+				<a href="{:url('user/aftermarket_detail', array('ret_id'=>$this->_var['orders']['ret_id']))}"><img src="{$orders.img}" class="pull-left" />
+				<dl>
+				  <dt>
+					<h4 class="title">{$lang.aftermarket_number}：{$orders.service_sn}</h4>
+				  </dt>
+				  <dd>{$lang.order_status}：{$orders.return_status}-{$orders.refund_status}</dd>
+				 <!-- <dd>{$lang.order_total_fee}：<span class="ect-color">{$orders.total_fee}</span></dd>-->
+				  <dd>{$lang.aftermarket_addtime}：{$orders.order_time}</dd>
+				</dl>
+				<i class="pull-right fa fa-angle-right"></i> </a> 
+				</li>
+			<!--{/foreach}-->		
+			</ul>	
+	  </div>
+	    {include file='library/page.lbi '}
+		<!--{else}-->
+			<div class="no-div-message flow-no-cart">
+				<div class="iconfont"><img src="__TPL__/images/not_goods.png"></div>
+				<p>亲，此处还没有内容～！</p>						
+			</div>
+		<!--{/if}-->
+		</div>
+<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body></html>

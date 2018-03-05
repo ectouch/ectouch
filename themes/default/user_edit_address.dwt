@@ -1,77 +1,108 @@
-<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+	<h3 class="box-flex">编辑收货人信息</h3>
+	<p><i class="iconfont icon-pailie j-nav-box"></i></p>
+</header>
+<div class="j-nav-content">
+	<ul class="dis-box new-footer-box">
+		<li class="box-flex">
+			<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+		</li>
+		<li class="box-flex">
+			<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+	</ul>
+</div>
 <form action="{:url('user/edit_address')}" method="post" name="theForm" onsubmit="return checkConsignee(this)">
-  <div class="ect-bg-colorf flow-consignee">
-    <ul>
-      <li>
-        <div class="input-text"><b class="pull-left">{$lang.consignee_name}：</b><span>
-          <input name="consignee" placeholder="{$lang.consignee_name}{$lang.require_field}" type="text" class="inputBg" value="{$consignee.consignee|escape}" />
-          </span></div>
-      </li>
-      <li>
-        <div class="input-text"><b class="pull-left">{$lang.mobile}：</b><span>
-          <input placeholder="{$lang.mobile}{$lang.require_field}" name="mobile" type="text" class="inputBg_touch" value="{$consignee.mobile|escape}" />
-          </span></div>
-      </li>
-      <li>
-        <div class="form-select"> <i class="fa fa-sort"></i>
-          <select name="country" onchange="region.changed(this, 1, 'selProvinces')">
-            <option value="0">{$lang.please_select}{$name_of_region[0]}</option>
-            <!-- {foreach from=$country_list item=country} -->
-            <option value="{$country.region_id}" {if $consignee.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
-            <!-- {/foreach} -->
-          </select>
-        </div>
-        <div class="form-select"> <i class="fa fa-sort"></i>
-          <select name="province" id="selProvinces" onchange="region.changed(this, 2, 'selCities')">
-            <option value="0">{$lang.please_select}{$name_of_region[1]}</option>
-            <!-- {foreach from=$province_list item=province} -->
-            <option value="{$province.region_id}" {if $consignee.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
-            <!-- {/foreach} -->
-          </select>
-        </div>
-        <div class="form-select"> <i class="fa fa-sort"></i>
-          <select name="city" id="selCities" onchange="region.changed(this, 3, 'selDistricts')">
-            <option value="0">{$lang.please_select}{$name_of_region[2]}</option>
-            <!-- {foreach from=$city_list item=city} -->
-            <option value="{$city.region_id}" {if $consignee.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
-            <!-- {/foreach} -->
-          </select>
-        </div>
-        <div class="form-select"> <i class="fa fa-sort"></i>
-          <select name="district" id="selDistricts" {if !$district_list}style="display:none"{/if}>
-            <option value="0">{$lang.please_select}{$name_of_region[3]}</option>
-            <!-- {foreach from=$district_list item=district} -->
-            <option value="{$district.region_id}" {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
-            <!-- {/foreach} -->
-          </select>
-        </div>
-      </li>
-      <li class="input-text"><b class="pull-left">{$lang.detailed_address}：</b>
-        <textarea name="address" placeholder="{$lang.detailed_address}{$lang.require_field}" type="text" >{$consignee.address|escape}</textarea>
-      </li>
-    </ul>
+	<section class="flow-consignee ect-bg-colorf s-user-top onclik-admin">
+		<ul>
+			<li class="dis-box s-xian-box s-user-top-1">
+				<h3 class="profile-left-name text-all-span my-u-title-size">{$lang.consignee_name}：</h3>
+				<div class="box-flex t-goods1 n-pro-name  onelist-hidden"> <input name="consignee" maxlength="10" placeholder="{$lang.consignee_name}{$lang.require_field}" type="text" class="inputBg" value="{$consignee.consignee|escape}" /></div>
+			</li>
+			<li class="dis-box s-xian-box s-user-top-1">
+				<h3 class="profile-left-name text-all-span my-u-title-size">{$lang.mobile}：</h3>
+				<div class="box-flex t-goods1 onelist-hidden n-pro-name"> <input maxlength="11" placeholder="{$lang.mobile}{$lang.require_field}" name="mobile" type="text" class="inputBg_touch" value="{$consignee.mobile|escape}" /></div>
+			</li>
+			<li style="display:none">
+				<div class="input-text"><b class="pull-left">{$lang.city_district}：</b><span>
+			        <select class="n-edit-box" name="country" id="selCountries_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$sn}')">
+			          <option value="0">{$lang.please_select}{$name_of_region[0]}</option>
+			          <!-- {foreach from=$country_list item=country} -->
+			          <option value="{$country.region_id}"{if $country.region_id eq '1'} selected{/if}>{$country.region_name}</option>
+			          <!-- {/foreach} -->
+			        </select>
+			        </span>
+				</div>
+			</li>
+			<li class="dis-box s-xian-box s-user-top-1">
+				<h3 class="profile-left-name text-all-span my-u-title-size">省/直辖市：</h3>
+				<i class="iconfont icon-more n-addr-edit"></i>
+				<select class="n-edit-box box-flex" name="province" id="selProvinces_{$sn}" onchange="region.changed(this, 2, 'selCities_{$sn}')">			   
+		          <option value="0">{$lang.please_select}{$name_of_region[1]}</option>
+		          <!-- {foreach from=$province_list item=province} -->
+		          <option value="{$province.region_id}" {if $consignee.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+		          <!-- {/foreach} -->
+		 
+		       </select>
+			</li>
+			<li class="dis-box s-xian-box s-user-top-1">
+				<h3 class="profile-left-name text-all-span my-u-title-size">城市：</h3>
+					<i class="iconfont icon-more n-addr-edit"></i>
+				<select class="n-edit-box box-flex" name="city" id="selCities_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$sn}')">
+          <option value="0">{$lang.please_select}{$name_of_region[2]}</option>
+          <!-- {foreach from=$city_list item=city} -->
+          <option value="{$city.region_id}" {if $consignee.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+          <!-- {/foreach} -->
+        </select>
+				</div>
+			</li>
+			<li class="dis-box s-xian-box s-user-top-1" id="selDistricts_{$sn}_box" {if !$district_list.$sn}style="" {/if}>
+					<h3 class="profile-left-name text-all-span my-u-title-size">区/县：</h3>
+						<i class="iconfont icon-more n-addr-edit"></i>
+			        <select class="n-edit-box box-flex" name="district" id="selDistricts_{$sn}">
+			        	
+			          <option value="0">{$lang.please_select}{$name_of_region[3]}</option>
+			          <!-- {foreach from=$district_list item=district} -->
+			          <option value="{$district.region_id}" {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+			          <!-- {/foreach} -->
+			        </select>
+				</div>
+			</li>
+			<li class="input-text  s-user-top-1"><b class="pull-left">{$lang.detailed_address}：</b>
+				<textarea name="address" placeholder="{$lang.detailed_address}{$lang.require_field}" type="text">{$consignee.address|escape}</textarea>
+			</li>
+		</ul>
+
+	<div class="ect-button-more dis-box ect-padding-tb">
+		<a href="{:url('user/del_address_list', array('id'=>$this->_var['consignee']['address_id']))}" class="btn-reset box-flex"><div class="btn-reset-lv">{$lang.drop}</div></a>
+		<button type="submit" name="submit" class="btn-submit box-flex">{$lang.confirm_edit}</a>
+		<input name="address_id" type="hidden" value="{$consignee.address_id}" />
   </div>
-  <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center"> <a class="btn btn-info ect-colorf" href="{:url('user/del_address_list', array('id'=>$this->_var['consignee']['address_id']))}" >{$lang.drop}</a>
-    <button type="submit" name="submit"  class="btn btn-info ect-bg-colory">{$lang.confirm_edit}</button>
-    <input name="address_id" type="hidden" value="{$consignee.address_id}" />
-  </div>
+  	</section>
+  
+  
 </form>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
-<script type="text/javascript" src="__PUBLIC__/js/region.js"></script> 
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript" src="__PUBLIC__/script/region.js"></script> 
 <script type="text/javascript" src="__PUBLIC__/js/shopping_flow.js"></script> 
 <script type="text/javascript">
 	region.isAdmin = false;
-	{foreach from=$lang.flow_js item=item key=key}
-	var {$key} = "{$item}";
-	{/foreach}
-	{literal}
-	onload = function() {
-	      if (!document.all)
-	      {
-	        document.forms['theForm'].reset();
-	      }
-	}
-	{/literal}
+          {foreach from=$lang.flow_js item=item key=key}
+          var {$key} = "{$item}";
+          {/foreach}
+
+          {literal}
+          onload = function() {
+            if (!document.all)
+            {
+              document.forms['theForm'].reset();
+            }
+          }
+          {/literal}
 </script>
 </body></html>

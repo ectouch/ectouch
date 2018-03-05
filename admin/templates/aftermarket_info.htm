@@ -1,0 +1,336 @@
+
+
+{include file="pageheader.htm"}
+{insert_scripts files="topbar.js,../js/utils.js,listtable.js,selectzone.js,../js/common.js"}
+<form action="aftermarket.php?act=operate" method="post" name="theForm">
+  <div class="list-div" style="margin-bottom: 5px">
+    <table width="100%" cellpadding="3" cellspacing="1">
+      <tr>
+        <th colspan="4">{$lang.service_order_info}</th>
+      </tr>
+      <tr>
+        <td width="18%"><div align="right"><strong>{$lang.label_service_sn}</strong></div></td>
+        <td width="34%">{$back_order.service_sn}</td>
+        <td><div align="right"><strong>{$lang.label_add_time}</strong></div></td>
+        <td>{$back_order.formated_add_time}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
+        <td>{$back_order.user_name|default:$lang.anonymous}</td>
+        <td><div align="right"><strong>{$lang.label_service_cause}</strong></div></td>
+        <td>{$back_order.return_cause}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>联系人：</strong></div></td>
+        <td>{$back_order.addressee}</td>
+         <td><div align="right"><strong>{$lang.label_claim_type}</strong></div></td>
+        <td>{$back_order.service_name|default:$lang.anonymous}</td>
+      </tr>
+      <tr>
+       <td><div align="right"><strong>联系电话：</strong></div></td>
+        <td>{$back_order.phone}</td>
+        <td><div align="right"><strong>{$lang.label_return_status}</strong></div></td>
+        <td>{$back_order.formated_return_status}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>{$lang.label_return_num}</strong></div></td>
+        <td>{$back_order.back_num|default:$lang.anonymous}</td>
+        <td><div align="right"><strong>{$lang.label_refund_status}</strong></div></td>
+        <td>{$back_order.formated_refund_status}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>{$lang.label_should_return}</strong></div></td>
+        <td>{$back_order.formated_should_return}</td>
+        <td><div align="right"><strong>{$lang.cert_img}</strong></div></td>
+        <td> {if $back_order.cert_img}
+                <a href="aftermarket.php?act=show_cert&rec_id={$back_order.rec_id}" target="_blank"><img src="images/yes.gif" border="0" /></a>
+              {else}
+              <img src="images/no.gif" />  
+             {/if}
+         </td>
+      </tr>
+      <!--{if $service.exchange}-->
+       <tr>
+       <td><div align="right"><strong>退回地址：</strong></div></td>
+        <td>[{$back_order.region}] {$back_order.address|escape}</td>
+        <td><div align="right"><strong>审核状态：</strong></div></td>
+        <td>{$back_order.formated_check_status}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>退回快递：</strong></div></td>
+        <td>{$back_order.back_shipping_name}</td>
+        <td><div align="right"><strong>换出快递：</strong></div></td>
+        <td>{$back_order.out_shipping_name}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>退回单号：</strong></div></td>
+        <td>{$back_order.back_invoice_no}</td>
+        <td><div align="right"><strong>换出单号：</strong></div></td>
+        <td>{$back_order.out_invoice_no}</td>
+      </tr>
+      <!--{else}-->
+     
+     <!--{/if}-->
+      <tr>
+        <th colspan="4">{$lang.order_info}</th>
+      </tr>
+      <tr>
+        <td width="18%"><div align="right"><strong>{$lang.label_order_sn}</strong></div></td>
+        <td width="34%">{$order.order_sn}{if $order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$order.extension_id}">{$lang.group_buy}</a>{elseif $order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{$lang.exchange_goods}</a>{/if}</td>
+        <td width="15%"><div align="right"><strong>{$lang.label_order_status}</strong></div></td>
+        <td>{$order.status}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
+        <td>{$order.user_name|default:$lang.anonymous} {if $order.user_id > 0}[ <a href="" onclick="staticbar();return false;">{$lang.display_buyer}</a> ] [ <a href="user_msg.php?act=add&order_id={$order.order_id}&user_id={$order.user_id}">{$lang.send_message}</a> ]{/if}</td>
+        <td><div align="right"><strong>{$lang.label_order_time}</strong></div></td>
+        <td>{$order.formated_add_time}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>{$lang.label_payment}</strong></div></td>
+        <td>{if $order.pay_id > 0}{$order.pay_name}{else}{$lang.require_field}{/if}({$lang.action_note}: <span onclick="listTable.edit(this, 'edit_pay_note', {$order.order_id})">{if $order.pay_note}{$order.pay_note}{else}N/A{/if}</span>)</td>
+        <td><div align="right"><strong>{$lang.label_pay_time}</strong></div></td>
+        <td>{$order.pay_time}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>{$lang.label_shipping}</strong></div></td>
+        <td>{if $exist_real_goods}{if $order.shipping_id > 0}{$order.shipping_name}{else}{$lang.require_field}{/if}
+          {if $order.insure_fee > 0}（{$lang.label_insure_fee}{$order.formated_insure_fee}）{/if}{/if}</td>
+        <td><div align="right"><strong>{$lang.label_shipping_time}</strong></div></td>
+        <td>{$order.shipping_time}</td>
+      </tr>
+      <tr>
+        <td><div align="right"><strong>{$lang.label_invoice_no}</strong></div></td>
+        <td>{if $order.shipping_id>0 and $order.shipping_status>0}<span>{if $order.invoice_no}{$order.invoice_no}{else}N/A{/if}</span>{/if}</td>
+        <td><div align="right"><strong>{$lang.from_order}</strong></div></td>
+        <td>{$order.referer}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="list-div" style="margin-bottom: 5px ; ">
+    <table width="100%" cellpadding="3" cellspacing="1">
+      <tr>
+        <th colspan="7" scope="col">{$lang.goods_info}</th>
+      </tr>
+      <tr>
+        <td scope="col"><div align="center"><strong>{$lang.goods_name_brand}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.goods_sn}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.product_sn}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.goods_attr}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.label_send_number}</strong></div></td>
+      </tr>
+      {foreach from=$goods_list item=goods}
+      <tr>
+        <td> {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'} <a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+          {/if} </td>
+        <td><div align="left">{$goods.goods_sn}</div></td>
+        <td><div align="left">{$goods.product_sn}</div></td>
+        <td><div align="left">{$goods.goods_attr|nl2br}</div></td>
+        <td><div align="left">{$goods.send_number}</div></td>
+      </tr>
+      {/foreach}
+    </table>
+  </div>
+  <!--退货 S-->
+  {if $return_list.return_goods}
+  <div class="list-div" style="margin-bottom: 5px">
+    <table width="100%" cellpadding="3" cellspacing="1">
+      <tr>
+        <th colspan="7" scope="col">{$lang.back_goods_info}</th>
+      </tr>
+      <tr>
+        <td scope="col"><div align="center"><strong>{$lang.goods_name_brand}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.aftermarket_type}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.goods_sn}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.product_sn}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.goods_attr}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.should_refund}</strong></div></td>
+        <td scope="col"><div align="center"><strong>{$lang.goods_number}</strong></div></td>
+      </tr>
+      {foreach from=$return_list item=goods}
+      <tr>
+        <td> {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'} <a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+          {/if} </td>
+        <td><div align="left">{$goods.service_type}</div></td>
+        <td><div align="left">{$goods.goods_sn}</div></td>
+        <td><div align="left">{$goods.product_sn}</div></td>
+        <td><div align="left">{$goods.goods_attr|nl2br}</div></td>
+        <td><div align="left"> </div></td>
+        <td><div align="left">{$goods.back_num}</div></td>
+      </tr>
+      {/foreach}
+    </table>
+  </div>    
+  {/if}
+  <!--退货 E-->
+  
+  <!--换货 S-->
+  {if $return_list.exchange}
+  <div class="list-div" style="margin-bottom: 5px; display:none">
+    <table width="100%" cellpadding="3" cellspacing="1">
+      <tr>
+        <th colspan="7" scope="col">{$lang.return_goods_info}</th>
+      </tr>
+      <tr>
+        <td scope="col" width="45%"><div align="center"><strong>{$lang.goods_name_brand}</strong></div></td>
+        <td scope="col" width="6%"><div align="center"><strong>{$lang.business}</strong></div></td>
+        <td scope="col" width="12%"><div align="center"><strong>{$lang.goods_sn}</strong></div></td>
+        <td scope="col" width="6%"><div align="center"><strong>{$lang.product_sn}</strong></div></td>
+        <td scope="col" width="15%"><div align="center"><strong>{$lang.goods_attr}</strong></div></td>
+        <td scope="col" width="6%"><div align="center"><strong>{$lang.label_should_refund}</strong></div></td>
+        <td scope="col" width="6%"><div align="center"><strong>{$lang.goods_number}</strong></div></td>
+      </tr>
+      {foreach from=$return_list item=goods}
+      <tr>
+        <td> {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'} <a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+          {/if} </td>
+        <td><div align="left">{if $goods.return_type eq 1}退货-退回{elseif $goods.return_type eq 2}换货-换出{/if}</div></td>
+        <td><div align="left">{$goods.goods_sn}</div></td>
+        <td><div align="left">{$goods.product_sn}</div></td>
+        <td><div align="left">{$goods.goods_attr|nl2br}</div></td>
+        <td><div align="left">{if $goods.return_type eq 2}-{/if}{$goods.refound}</div></td>
+        <td><div align="left">{if $goods.return_type eq 1}{$goods.back_num}{elseif $goods.return_type eq 2}{$goods.out_num}{/if}</div></td>
+      </tr>
+      {/foreach}
+      <tr> {if $back_order.exchange gt 0}
+        <td colspan="5"> 换出操作公司 ：
+          {if $back_order.out_shipping_name} <span style="font-weight: bolder">{$back_order.out_shipp_shipping}</span> 快递单号： <span style="font-weight: bolder">{$back_order.out_invoice_no}</span> <a class="special" href="order.php?act=return_edit&ret_id={$back_order.ret_id}&order_id={$back_order.order_id}&step=back_shipping">编辑</a> {else}
+          <select name="shipping_name">
+            <option value="0">请选择快递公司</option>
+            
+            {foreach from=$shipping_list item=shipping }
+            
+            <option value="{$shipping.shipping_id}">{$shipping.shipping_name}</option>
+            
+            {/foreach}
+        
+          </select>
+          快递单号
+          <input type="text"  name="invoice_no"/>
+          <input type="submit" value="确定"  onclick="check_shipping()"  name="send_submit" />
+          {/if} </td>
+        {else}
+        <td colspan="5">&nbsp;</td>
+        {/if}
+        <td colspan="5"> 小计：<span style="color: red">{$back_order.should_return}
+          <input type="hidden" name="refund_amount" value="{$back_order.should_return1}"/>
+          </span></td>
+      </tr>
+      <script>
+      function check_shipping(){
+          var frm =  document.forms['theForm'] ;
+          var shipping_name = frm['shipping_name'].value;
+            if( shipping_name <= 0 ){
+
+                alert('请选择快递公司');
+                return false;
+            }
+            var invoice_no = frm['invoice_no'].value ;
+            if(invoice_no == ''|| invoice_no ==NULL ){
+                
+                alert('请填写快递单号');
+                return false;
+            
+            }
+          
+      
+      }
+      
+  </script>
+      <tr>
+        <td>退换货原因：{$back_order.return_cause} 
+        <td>
+      </tr>
+    </table>
+  </div>
+  {/if}
+  <!--换货 E-->
+  <div class="list-div" style="margin-bottom: 5px">
+    <table cellpadding="3" cellspacing="1">
+      <tr>
+        <th colspan="6">{$lang.action_info}</th>
+      </tr>
+      <tr>
+        <td><div align="right"> <strong>{$lang.label_action_note}</strong> </div></td>
+        <td colspan="6"><textarea rows="3" cols="60" name="action_note"></textarea></td>
+        <!--<td><div align="right"> <strong>订单注释-用户前台可见：</strong> </div></td>
+        <td colspan="3"><textarea rows="3" cols="60" name="action_note1"></textarea>
+          <input class="button" type="submit" value="确定" name="zhushi"></td>-->
+      </tr>
+      <tr>
+        <td><div align="right"></div>
+          <div align="right"> <strong>{$lang.label_operable_act}</strong> </div></td>
+        <td colspan="5"> 
+          {if $operable_list.check}
+          <input name="check" type="submit" value="{$lang.is_check}" class="button" />
+          {/if}
+          {if $operable_list.receive_goods}
+          <input name="receive_goods" type="submit" value="{$lang.receive_goods}" class="button" />
+          {/if}
+          {if $operable_list.swapped_out}
+          <input name="swapped_out" type="submit" value="{$lang.swapped_out}" class="button" />
+          {/if}
+          {if $operable_list.complete}
+          <input name="complete" type="submit" value="{$lang.complete}" class="button" />
+          {/if}
+          {if $operable_list.canceled}
+          <input name="canceled" type="submit" value="{$lang.canceled}" class="button" />
+          {/if}
+          {if $operable_list.refund}
+          <input name="refund" type="submit" value="{$lang.refund}" class="button" />
+          {/if}
+          
+          <!--{if $back_order.return_status1 lt 1 }
+          <input class="button" type="submit" value="收到退回商品" name="receive_goods">
+          {/if}
+          {if $back_order.refound_status1 eq 0 }
+          <input class="button" type="submit" value="去退款" name="refound">
+          {/if}
+          {if $back_order.return_status1 lt 2 }
+          <input class="button" type="submit" value="换出商品寄出【分单】" name="swapped_out_single">
+          <input class="button" type="submit" value="换出商品寄出" name="swapped_out">
+          {/if}
+          {if $back_order.return_status1 lt 4 }
+          <input class="button" type="submit" value="完成退换货" name="complete">
+          {/if}-->
+          <input class="button" type="submit" value="售后" name="after_service">
+          <input type="hidden" value="{$back_order.order_id}" name="order_id">
+          <input type="hidden" value="{$back_order.rec_id}" name="rec_id" />
+          <input type="hidden" value="{$back_order.ret_id}" name="ret_id" /></td>
+      </tr>
+      <tr>
+        <th>{$lang.action_user}</th>
+        <th>{$lang.action_time}</th>
+        <th>{$lang.return_status}</th>
+        <th>{$lang.refund_status}</th>
+        <th>{$lang.check_status}</th>
+        <th colspan="2">{$lang.action_note}</th>
+      </tr>
+      {foreach from=$action_list item=action}
+      <tr>
+        <td><div align="center">{$action.action_user}</div></td>
+        <td><div align="center">{$action.action_time}</div></td>
+        <td><div align="center">{$action.return_status}</div></td>
+        <td><div align="center">{$action.refund_status}</div></td>
+        <td><div align="center">{$action.is_check}</div></td>
+        <td>{$action.action_note|nl2br}</td>
+      </tr>
+      {/foreach}
+    </table>
+  </div>
+</form>
+{literal} 
+<script language="JavaScript">
+{/literal}
+  var oldAgencyId = {$back_order.agency_id|default:0};
+{literal}
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+
+</script> 
+{/literal}
+
+{include file="pagefooter.htm"}

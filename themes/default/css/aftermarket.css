@@ -1,0 +1,317 @@
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td {
+	margin:0;
+	padding:0
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0
+}
+h1, h2, h3, h4, h5, h6 {
+	font-size:100%
+}
+ul, ol, li {
+	list-style:none
+}
+em, i {
+	font-style:normal
+}
+strong, b {
+	font-weight:400
+}
+img {
+	border:0
+}
+input, img {
+	vertical-align:middle
+}
+a {
+	text-decoration:none
+}
+* {
+	-webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+	box-sizing:border-box
+}
+input, select, textarea {
+	-webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+	-webkit-appearance:none;
+	border:0;
+	border-radius:0
+}
+textarea:focus {
+	outline:0
+}
+body {
+	color:#000;
+	font-family:arial;
+	background:#FFF
+}
+@font-face {
+font-family:iconfont;
+src:url(//at.alicdn.com/t/font_1427779172_5609531.eot);
+src:url(//at.alicdn.com/t/font_1427779172_5609531.eot?#iefix) format('embedded-opentype'), url(//at.alicdn.com/t/font_1427779172_5609531.woff) format('woff'), url(//at.alicdn.com/t/font_1427779172_5609531.ttf) format('truetype'), url(//at.alicdn.com/t/font_1427779172_5609531.svg#iconfont) format('svg')
+}
+.icon-yen:before {
+	content:"\e613"
+}
+.icon-stop:before {
+	content:"\e607"
+}
+.icon-close:before {
+	content:"\e600"
+}
+.icon-roundcheck:before {
+	content:"\e60d"
+}
+.icon-error:before {
+	content:"\e601"
+}
+.icon-roundclose:before {
+	content:"\e604"
+}
+.icon-timefill:before {
+	content:"\e610"
+}
+.icon-time:before {
+	content:"\e60e"
+}
+.icon-unfold:before {
+	content:"\e602"
+}
+.icon-more:before {
+	content:"\e603"
+}
+.icon-question:before {
+	content:"\e611"
+}
+.icon-form:before {
+	content:"\e615"
+}
+.icon-qrcode:before {
+	content:"\e605"
+}
+.icon-rechargefill:before {
+	content:"\e612"
+}
+.icon-recharge:before {
+	content:"\e60f"
+}
+.icon-wifi:before {
+	content:"\e606"
+}
+.icon-jintuikuan:before {
+	content:"\e608"
+}
+.icon-huanhuo:before {
+	content:"\e609"
+}
+.icon-tuihuotuikuan:before {
+	content:"\e60a"
+}
+.icon-weixiu:before {
+	content:"\e60b"
+}
+.icon-buji:before {
+	content:"\e60c"
+}
+.icon-wangwang:before {
+	content:"\e614"
+}
+.icon-empty-star:before {
+	content:"\e616"
+}
+.icon-good-star:before {
+	content:"\e617"
+}
+.icon-bad-star:before {
+	content:"\e618"
+}
+.iconfont {
+	font-family:iconfont!important;
+	font-size:16px;
+	font-style:normal;
+	-webkit-font-smoothing:antialiased;
+	-webkit-text-stroke-width:.2px;
+	-moz-osx-font-smoothing:grayscale
+}
+html {
+	font-size:62.5%;
+	background-color:#fff
+}
+body {
+	background:#fff;
+	font-family:arial, "Heiti SC", "STHeiti Light", STXihei;
+	color:#555;
+	font-size:1.6rem;
+	-webkit-text-size-adjust:100%
+}
+#load-layer {
+	position:fixed;
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	z-index:31;
+	display:none;
+	background-image:url(//assets.alicdn.com/mw/base/styles/component/more/images/loading.gif);
+	background-position:center center;
+	background-color:transparent;
+	background-repeat:no-repeat
+}
+@media only screen and (-webkit-min-device-pixel-ratio:2) {
+#load-layer {
+background-size:30px 12px
+}
+}
+.loading #load-layer {
+	display:block
+}
+#error-layer {
+	display:none;
+	position:fixed;
+	width:100%;
+	height:100%;
+	background-color:#f5f5f5
+}
+#error-layer .icon-wifi {
+	font-size:10rem;
+	color:#fff;
+	width:14rem;
+	height:14rem;
+	line-height:14rem;
+	margin:30% auto 0;
+	border:1px solid #ddd;
+	border-radius:7rem;
+	background-color:#ddd;
+	text-align:center
+}
+#error-layer .error-msg {
+	font-size:1.4rem;
+	width:200px;
+	margin:1.5rem auto 1rem;
+	color:#aaa;
+	text-align:center
+}
+#error-layer .retry-btn {
+	border:1px solid #666;
+	padding:5px 10px;
+	background-color:#f5f5f5;
+	font-size:1.2rem;
+	width:10rem;
+	margin:0 auto;
+	display:block;
+	border-radius:3px;
+	color:#999;
+	white-space:nowrap
+}
+.error #error-layer {
+	display:block
+}
+.J_Takephoto{
+  opacity:0;
+  position:absolute; 
+  left:0; 
+  width:88px;
+  height:88px;
+}
+
+.webuploader-element-invisible {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+}
+.uploader-list{
+	display:block;
+	clear:both;
+	margin-top:10rem;
+	}
+.uploader-list li img{ 
+    width: 88px;
+	height: 88px;
+	overflow:hidden;
+}
+
+/**/
+.uploader-list li{ 
+	background: #fff none repeat scroll 0 0;
+    border: 2px dotted #e4e4e4;
+    border-radius: 5px;
+    display: block;
+	float:left;
+    text-align: center;
+	overflow:hidden;
+	margin-right:1rem;
+	position:relative;
+	overflow:hidden;
+}
+.uploader-list li {
+    display: inline;
+    float: left;
+    font-size: 12px;
+    margin: 0 8px 20px 0;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+}
+.uploader-list li p.imgWrap {
+    height: 88px;
+    line-height: 88px;
+    overflow: hidden;
+    position: relative;
+    transform-origin: 50% 50% 0;
+    transition: all 200ms ease-out 0s;
+    vertical-align: middle;
+    width: 88px;
+    z-index: 2;
+}
+.uploader-list div.file-panel {
+    background: rgba(0, 0, 0, 0.5) none repeat scroll 0 0;
+    height: 0;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 300;
+}
+.uploader-list div.file-panel span.cancel {
+    background-position: -48px -24px;
+}
+.uploader-list div.file-panel span {
+    background: rgba(0, 0, 0, 0) url("../images/icons.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    display: inline;
+    float: right;
+    height: 24px;
+    margin: 5px 1px 1px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 24px;
+}
+.uploader-list div.file-panel span.rotateRight {
+    background-position: -24px -24px;
+}
+.uploader-list div.file-panel span {
+    background: rgba(0, 0, 0, 0) url("../images/icons.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    display: inline;
+    float: right;
+    height: 24px;
+    margin: 5px 1px 1px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 24px;
+}
+.uploader-list div.file-panel span.rotateLeft {
+    background-position: 0 -24px;
+}
+.uploader-list div.file-panel span {
+    background: rgba(0, 0, 0, 0) url("../images/icons.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    display: inline;
+    float: right;
+    height: 24px;
+    margin: 5px 1px 1px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 24px;
+}

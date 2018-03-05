@@ -1,83 +1,139 @@
-<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
-<!-- {if $share.on eq 1} --> 
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<!-- {if $share.on eq 1} -->
 <!-- {if !$goodsid || $goodsid eq 0} -->
 <!-- {if $share.config.separate_by == 0} -->
-  <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
-    <tr align="center" class="first-tr">
-      <td>{$lang.affiliate_lever}</td>
-      <td>{$lang.affiliate_num}</td>
-      <td>{$lang.level_point}</td>
-      <td>{$lang.level_money}</td>
-    </tr>
-    <!-- {foreach from=$affdb key=level item=val name=affdb} -->
-    <tr align="center">
-      <td>{$level}</td>
-      <td>{$val.num}</td>
-      <td>{$val.point}</td>
-      <td>{$val.money}</td>
-    </tr>
-    <!-- {/foreach} -->
-  </table>
-  <!-- {/if} -->
-        <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
-    <tr align="center" class="first-tr">
-      <td bgcolor="#ffffff">{$lang.order_number}</td>
-      <td bgcolor="#ffffff">{$lang.affiliate_money}</td>
-      <td bgcolor="#ffffff">{$lang.affiliate_point}</td>
-      <td bgcolor="#ffffff">{$lang.affiliate_mode}</td>
-      <td bgcolor="#ffffff">{$lang.affiliate_status}</td>
-    </tr>
-    <!-- {foreach from=$logdb item=val name=logdb} -->
-    <tr align="center">
-      <td bgcolor="#ffffff">{$val.order_sn}</td>
-      <td bgcolor="#ffffff">{$val.money}</td>
-      <td bgcolor="#ffffff">{$val.point}</td>
-      <td bgcolor="#ffffff"><!-- {if $val.separate_type == 1 || $val.separate_type === 0} -->{$lang.affiliate_type.$val.separate_type}<!-- {else} -->{$lang.affiliate_type.$affiliate_type}<!-- {/if} --></td>
-      <td bgcolor="#ffffff">{$lang.affiliate_stats[$val.is_separate]}</td>
-    </tr>
-    {foreachelse}
-	<tr><td colspan="5" align="center" bgcolor="#ffffff">{$lang.no_records}</td></tr>
-    <!-- {/foreach} -->
-    <!-- {if $logdb} -->
-    <tr>
-    <td colspan="5" align="right">
-        <!-- {if $page} -->
-        <a href="{$page.page_prev}">{$lang.page_prev}</a><a href="{$page.page_next}">{$lang.page_next}</a>
-        <!-- {/if} -->
-    </td>
-    </tr>
-    <!-- {/if} -->
-  </table>
-  <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd" class="u-table">
-    <tr>
-      <td style="text-align:center;">{$shopurl}<br><img src="{$domain}{:url('user/create_qrcode', array('value'=>$this->_var['shopurl']))}"></td>
-    </tr>
-    <tr>
-        <td >
-        	<div class="bdsharebuttonbox" data-tag="share_1" style="width:12em;margin:0 auto;">
-				<a class="bds_qzone" data-cmd="qzone" href="#"></a>
-				<a class="bds_tsina" data-cmd="tsina"></a>
-				<a class="bds_bdhome" data-cmd="bdhome"></a>
-				<a class="bds_renren" data-cmd="renren"></a>
-			</div>
-        </td>
-    </tr>
-  </table>
+<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+	<h3 class="box-flex">我的分享</h3>
+	<p><i class="iconfont icon-pailie j-nav-box"></i></p>
+</header>
+<div class="j-nav-content">
+	<ul class="dis-box new-footer-box">
+		<li class="box-flex">
+			<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+		</li>
+		<li class="box-flex">
+			<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+	</ul>
 </div>
-<!-- {/if} --> 
+<div class="padding-all b-color-f share-cont-box m-top10">
+	<h3 class="my-u-title-size active">我的推荐会员</h3>
+	<table class="share-table-box">
+		<tr align="center" class="first-tr">
+			<th>{$lang.affiliate_lever}</th>
+			<th>{$lang.affiliate_num}</th>
+			<th>{$lang.level_point}</th>
+			<th>{$lang.level_money}</th>
+		</tr>
+		<!-- {foreach from=$affdb key=level item=val name=affdb} -->
+		<tr align="center">
+			<td>{$level}</td>
+			<td>{$val.num}</td>
+			<td>{$val.point}</td>
+			<td>{$val.money}</td>
+		</tr>
+		<!-- {/foreach} -->
+	</table>
+</div>
 <!-- {/if} -->
-<script>
-	window._bd_share_config = {
-		common : {
-			bdText : '{$shopdesc}',
-			bdUrl : '{$shopurl}',
-			bdPic : "{$domain}{:url('user/create_qrcode', array('value'=>$this->_var['shopurl']))}"
-		},
-		share : [{
-			"bdSize" : 32
-		}]
+<div class="padding-all b-color-f share-cont-box m-top10">
+	<h3 class="my-u-title-size active">我的分成</h3>
+	<table class="share-table-box">
+		<tr align="center" class="first-tr">
+			<th>{$lang.order_number}</th>
+			<th>{$lang.affiliate_money}</th>
+			<th>{$lang.affiliate_point}</th>
+			<th>{$lang.affiliate_mode}</th>
+			<th>{$lang.affiliate_status}</th>
+		</tr>
+		<!-- {foreach from=$logdb item=val name=logdb} -->
+		<tr align="center">
+			<td>{$val.order_sn}</td>
+			<td>{$val.money}</td>
+			<td>{$val.point}</td>
+			<td>
+				<!-- {if $val.separate_type == 1 || $val.separate_type === 0} -->{$lang.affiliate_type.$val.separate_type}
+				<!-- {else} -->{$lang.affiliate_type.$affiliate_type}
+				<!-- {/if} -->
+			</td>
+			<td>{$lang.affiliate_stats[$val.is_separate]}</td>
+		</tr>
+		{foreachelse}
+		<tr>
+			<td colspan="5" align="center" bgcolor="#ffffff">{$lang.no_records}</td>
+		</tr>
+		<!-- {/foreach} -->
+		<!-- {if $logdb} -->
+		<tr>
+			<td colspan="5" align="right">
+				<!-- {if $page} -->
+				<a href="{$page.page_prev}">{$lang.page_prev}</a><a href="{$page.page_next}">{$lang.page_next}</a>
+				<!-- {/if} -->
+			</td>
+		</tr>
+		<!-- {/if} -->
+	</table>
+</div>
+<div class="padding-all b-color-f share-cont-box m-top10">
+	<h3 class="my-u-title-size active">分享二维码</h3>
+	<div class="share-ewm-box">
+		<div class="share-ewm-box-1">
+			<div id="qrcode" style="width:100%; height:auto;"></div>
+		</div>
+		<p class="text-c col-8 f-02 m-top04">长按扫描二维码</p>
+	</div>
+	<div class="other-login">
+		<h4 class="title-hrbg"><span>点击以下图标分享</span><hr> </h4>
+	</div>
+	<div class="bdsharebuttonbox" data-tag="share_1" style="width:54%;margin:0 auto;">
+		<a class="bds_qzone" data-cmd="qzone" href="#"></a>
+		<a class="bds_tsina" data-cmd="tsina"></a>
+		<a class="bds_bdhome" data-cmd="bdhome"></a>
+		<a class="bds_renren" data-cmd="renren"></a>
+	</div>
+</div>
+<!-- {/if} -->
+<!-- {/if} -->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.min.js" ></script> 
+<script type="text/javascript" src="__TPL__/js/qrcode.js"></script>
+
+<input id="text" type="hidden" value="{$shopurl}" style="width:80%" /><br />
+
+
+<script type="text/javascript">
+var qrcode = new QRCode(document.getElementById("qrcode"), {
+	width : 100,
+	height : 100
+});
+
+function makeCode () {		
+	var elText = document.getElementById("text");
+	
+	if (!elText.value) {
+		alert("Input a text");
+		elText.focus();
+		return;
 	}
-	with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+	
+	qrcode.makeCode(elText.value);
+}
+
+makeCode();
+
+$("#text").
+	on("blur", function () {
+		makeCode();
+	}).
+	on("keydown", function (e) {
+		if (e.keyCode == 13) {
+			makeCode();
+		}
+	});
 </script>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
-<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+<!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" -->
+<!-- #EndLibraryItem -->

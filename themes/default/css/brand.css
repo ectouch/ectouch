@@ -1,0 +1,103 @@
+@charset "utf-8";
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td { margin:0; padding:0; }
+body { background:#fff; color:#555; font-size:12px; font-size:1.2rem;font-family:"Microsoft YaHei",微软雅黑，Verdana,Helvetica,Arial,sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-weight:normal; font-size:100%; }
+address, caption, cite, code, dfn, em, strong, th, var { font-style:normal; font-weight:normal;}
+a { color:#555; text-decoration:none; }
+a:hover { text-decoration:underline;text-decoration:none; }
+img { border:none; }
+ol,ul,li { list-style:none; }
+table { border-collapse:collapse; }
+html {overflow-y: scroll;} 
+
+/*通用*/
+.comWidth { width:100%; margin:0 auto; }
+.fl { float:left;}
+.fr { float:right;}
+.clearfix:after {content:"\200B"; display:block; height:0; clear:both; } 
+.clearfix:after {content:"";display:table;clear:both;} 
+.clearfix { *zoom:1; } 
+.bordernone { border:none !important;}
+.carousel-indicators { z-index:3;}
+@font-face {font-family: 'iconfont';
+    src: url('../font/iconfont.eot'); /* IE9*/
+    src: url('../font/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../font/iconfont.woff') format('woff'), /* chrome、firefox */
+    url('../font/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    url('../font/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+.iconfont{
+    font-family:"iconfont" !important;
+    font-size:25px;font-style:normal;	
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;}
+
+/*header-box*/
+.brand-header-box { height:75px; line-height:75px; background-color:#1CBB7F; padding:0 20px;position:fixed; margin:auto;left:0; right:0; top:0; z-index:4; overflow:hidden;text-align:center;}
+.brand-main { margin:75px auto;background-color:#F3F5F7;}
+.brand-header-box-left,.brand-header-box-right { color:#FFFFFF;}
+.brand-header-box h1 { font-size:2.8rem; font-weight:400; color:#FFFFFF; line-height:75px;}
+
+/*main*/
+.brand-today {width: 100%;height: auto;overflow: hidden;border-top: .5rem solid #F3F5F7;}
+.brand-today-slide,.brand-today-img {width: 100%;height: auto;background-color: #FFFFFF;border-bottom: .5rem solid #F3F5F7;overflow: hidden;}
+.brand-today-content {width: 35%;height:100%;padding: 15% 5%;background-color: #FFFFFF;font-size: 1.6rem;color: #505050;line-height: 175%;font-weight: 400;}
+.carousel {width: 65%;}
+.brand-today-content img {display: block; margin: 1rem auto;width: 100%;}
+.brand-today-img-text {width: 40%;background-color: #1CBB7F;color: #FFFFFF;text-align: center;height: 100%; padding: 16% 5%;}
+.brand-today-img-text p {font-size: 1.8rem;display: block;}
+.brand-today-img-text span {font-size: 1.5rem;line-height: 125%;}
+.brand-today-img-content {width: 60%;overflow: hidden;}
+.brand-today-img-content img {width: 100%;}
+.brand-today-img-logo {width: 40%;}
+.brand-today-img-logo img {width: 75%;margin: 0 auto;display: block;}
+.brand-lattice {width: 100%;height: auto;overflow: hidden;}
+.brand-lattice ul li {width: 50%;height: auto;float: left;position: relative;}
+.brand-lattice-bg {width: 100%;}
+.brand-lattice-logo {transition: all 2s;position: absolute;border-radius: 50%;width: 45%;z-index: 2;top: 30%;left: 28%;}
+.brand-lattice-logo.active {transform: rotateY(360deg);-webkit-transform: rotateY(360deg);-moz-transform: rotateY(360deg);}
+.brand-lattice li span {background-color: rgba(102,103,104,0.8);position: absolute;bottom: 0;left: 0;right: 0;width: 100%;color:#FFFFFF;font-size: 2rem;line-height: 2.5rem;display: block;text-align: center;}
+.brand-lattice li a {color: #FFFFFF;}
+.brand-list{width: 100%;height:auto;overflow: hidden;text-align: center;border-bottom: 1px solid #D7DCE1;margin-bottom: 1rem;}
+.brand-list ul {width: 100%;height: auto;overflow: hidden;margin: 0 auto;}
+.brand-list ul li {  float: left;  width: 33%;  border-right: 1px solid #EDF0F2;  border-bottom: 1px solid #EDF0F2;  background-color: #FFF;}
+.brand-list ul li img {display: block;margin: 0 auto;width: 100%;transition: all 0.5s}
+.brand-list ul li img.active {transform: scale(0.9);}
+.brand-hot {width: 100%;height: 320px;overflow: hidden;background-color: #FFFFFF;border-top: 1ps solid #D7DCE1;margin-bottom: 1rem;}
+.brand-hot-title {height: 6rem;line-height: 6rem;padding: 0 2%;font-size: 2rem;color: #464646;}
+.brand-hot-div {width: 100%;overflow-x: scroll;height: 100%;}
+.brand-hot-div ul {width: 200%;height:100%;}
+.brand-hot-div ul li {float: left;margin: 0 0.5rem;width: 14%;}
+.brand-hot-div li img {width: 100%;display: block;margin: 0 auto;}
+.top {width: 40%;background-color: #FFF;color: #000;text-align: center;height: 100%; padding: 5% 5%; padding-bottom:0;}
+.top p {font-size: 1.8rem;display: block;}
+.top img {width:100%;height:auto;}
+.top span {overflow: hidden;text-overflow: ellipsis;font-size: 1.5rem;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 6;}
+
+
+/*media*/
+@media (min-width: 500px) and (max-width: 600px) {
+html { font-size:50%;}
+.brand-header-box { height:70px;}
+.brand-main { margin:70px auto;}
+}
+@media (min-width: 400px) and (max-width: 500px) {
+html { font-size:50%;}
+.brand-header-box { height:65px;}
+.brand-main { margin:65px auto;}
+}
+@media (min-width: 340px) and (max-width: 400px) {
+html { font-size:45%;}
+.brand-header-box { height:60px;}
+.brand-main { margin:60px auto;}
+.brand-today-content{padding: 8% 5%;}
+.brand-today-img-text{padding: 13% 5%;}
+}
+@media all and (max-width: 340px) {
+html { font-size:40%;}
+.brand-header-box { height:55px;}
+.brand-main { margin:55px auto;}
+.brand-today-content{padding: 8% 5%;}
+.brand-today-img-text{padding: 13% 5%;}
+}

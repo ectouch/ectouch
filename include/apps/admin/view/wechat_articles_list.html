@@ -1,0 +1,97 @@
+{include file="wechat_header"}
+<style type="text/css">
+.article{border:1px solid #ddd;padding:5px 5px 0 5px;}
+.cover{height:160px; position:relative;margin-bottom:5px;overflow:hidden;}
+.article .cover img{width:100%; height:auto;}
+.article span{height:40px; line-height:40px; display:block; z-index:5; position:absolute;width:100%;bottom:0px; color:#FFF; padding:0 10px; background-color:rgba(0,0,0,0.6)}
+.article_list{padding:5px;border:1px solid #ddd;border-top:0;overflow:hidden;}
+.checkbox label{width:100%;position:relative;padding:0;}
+.checkbox .news_mask{position:absolute;left:0;top:0;background-color:#000;opacity:0.5;width:100%;height:100%;z-index:10;}
+</style>
+<div class="panel panel-default" style="margin:0;">
+      <div class="panel-heading">选择素材 </div>
+      <div class="panel-body">
+        <div class="row">
+        <div class="col-md-4 col-sm-4 col-md-offset-2 col-sm-offset-2">
+            {loop $article $k $v}
+            {if $k%2 == 0}
+            <div class="checkbox">
+            <label>
+                <input type="checkbox" name="article[]" value="{$v['id']}" class="hidden artlist" />
+                <div class="article">
+                    <h4>{$v['title']}</h4>
+                    <p>{date('Y年m月d日', $v['add_time'])}</p>
+                    <div class="cover"><img src="{$v['file']}" /></div>
+                    <p>{$v['content']}</p>
+                </div>
+                <div class="news_mask hidden"></div>
+            </label>
+            </div>
+            {/if}
+            {/loop}
+        </div>
+        <div class="col-md-4 col-sm-4">
+            {loop $article $k $v}
+            {if ($k+1)%2 == 0}
+            <div class="checkbox">
+            <label>
+                <input type="checkbox" name="article[]" value="{$v['id']}" class="hidden artlist" />
+                <div class="article">
+                    <h4>{$v['title']}</h4>
+                    <p>{date('Y年m月d日', $v['add_time'])}</p>
+                    <div class="cover"><img src="{$v['file']}" /></div>
+                    <p>{$v['content']}</p>
+                </div>
+                <div class="news_mask hidden"></div>
+            </label>
+            </div>
+            {/if}
+            {/loop}
+        </div>
+        </div>
+      </div>
+      <div class="panel-footer">
+      {include file="pageview"}
+        <div class="form-group" style="margin:20px 0;">
+		  <input type="submit" value="{$lang['button_submit']}" class="btn btn-primary confrim" name="file_submit" />
+      	 <input type="reset" value="{$lang['button_reset']}" class="btn btn-default" name="reset" />
+       </div>
+      </div>
+</div>
+<script type="text/javascript">
+$(function(){
+	//选择图文
+	$(".confrim").click(function(){
+	    var article = [];
+	    $("input[type=checkbox]:checked").each(function(){
+	        article.push($(this).val());
+		});
+	    $.post('{url(get_article)}', {article:article}, function(data){
+	        if(data.length > 0){
+		        var str = '';
+		        for(i=0;i<data.length;i++){
+			        if(i == 0 && $(".ajax-data .article").length <= 0){
+			            str += '<div class="article"><input type="hidden" name="article[]" value="'+data[i]['id']+'" /><p>'+data[i]['add_time']+'</p><div class="cover"><img src="'+data[i]['file']+'" /><span>'+data[i]['title']+'</span></div></div>';
+			        }
+			        else{
+			            str += '<div class="article_list"><input type="hidden" name="article[]" value="'+data[i]['id']+'" /><span>'+data[i]['title']+'</span><img src="'+data[i]['file']+'" width="78" height="78" class="pull-right"></div>';
+				    }
+			    }
+			    if(str != ""){
+			       window.parent.$(".ajax-data").html(str);
+			       window.parent.$.fancybox.close();
+			    }
+		    }
+	    }, 'json');
+	});
+	//遮罩
+	$(".artlist").click(function(){
+	    if($(this).is(":checked")){
+	        $(this).siblings(".news_mask").removeClass("hidden");
+		}else{
+			$(this).siblings(".news_mask").addClass("hidden");
+		}
+	});
+})
+</script>
+{include file="pagefooter"}

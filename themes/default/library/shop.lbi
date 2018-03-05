@@ -1,0 +1,37 @@
+{if $drp_info}
+<script type="text/javascript" src="__PUBLIC__/js/jquery.min.js" ></script>
+    <div class="box">
+        <div class="header-box">
+            <div class="header-color">
+                <ul class="header-coltent">
+                    <li class="logo"><img src="{$drp_info.headimgurl}"/></li>
+                    <li class="name">
+                        <p class="title">{$drp_info.shop_name}</p>
+                        <p class="content"></p>
+                    </li>
+                    <li class="rem"><img src="__TPL__/sale/images/2.png"/></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="shop-ew" class="shop-ew">
+        <div class="shop-ew-img"><img src="{$drp_info.mobile_qr}" /></div>
+        <div class="shop-ew-bg"></div>
+    </div>
+    <style>
+        .shop-ew{position:fixed;  left:0; right:0; top:0; bottom:0; z-index:1200;}
+        .shop-ew-img{margin-top:40%; text-align:center; width:100%; z-index:1201}
+        .shop-ew-img img{position:relative; z-index:2000}
+        .shop-ew.hide{display:none;}
+        .shop-ew .shop-ew-bg{ background:rgba(0,0,0,0.8); position:absolute; left:0; right:0; top:0; bottom:0; z-index:1999}
+    </style>
+    <script>
+        $(".shop-ew").hide();
+        $(".rem").click(function(){
+            $(".shop-ew").show();
+        });
+        $(".shop-ew-bg").click(function(){
+            $(".shop-ew").hide();
+        });
+    </script>
+{/if}

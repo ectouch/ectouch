@@ -34,7 +34,7 @@
   <p class="ect-padding-lr ect-margin-tb text-center ect-margin-bottom0" style="clear:both"><a href="{:url('user/get_password_phone')}">{$lang.no_wholesale}</a></p>
   <!-- {/if} --> 
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript">
 if( {$show_asynclist} == 1){
  	get_asynclist('{:url('wholesale/asynclist', array('page'=>$this->_var['page'], 'order'=>$this->_var['order'], 'keywords'=>$this->_var['keywords']))}' , '__TPL__/images/loader.gif');

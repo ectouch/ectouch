@@ -1,0 +1,50 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="con">
+  <div class="ect-bg">
+    <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write ect-bg"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>支付提示</span> <a href="javascript:;"  onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a></header>
+    <nav class="ect-nav ect-nav-list" style="display:none;"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
+  </div>
+
+</div>
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+
+{if $is_wxh5 == 1}
+<style>
+.layui-m-layerbtn span[yes] {color:#ff0000; }
+</style>
+<script type="text/javascript" src="__PUBLIC__/layer/layer_mobile/layer.js"></script>
+<script>
+  $(function() {
+      open_wxpay();
+  });
+
+  function open_wxpay(){
+    var url = "{$order_url}";
+    //询问框
+    layer.open({
+      content: '请确认微信支付是否已完成',
+      btn: ['已完成支付', '支付遇到问题，重新支付'],
+      yes: function(index){
+        window.location.href = "{$repond_url}";
+        layer.close(index);
+      },
+      no: function (index){
+        redirect(url);
+        layer.close(index);
+      }
+    });
+
+    setTimeout(function () {
+        window.location.href = url.replace('respond', 'index');
+    }, 3000);
+  }
+
+  function redirect(url) {
+      window.location.href = url.replace('respond', 'index');
+  }
+</script>
+
+{/if}
+</body>
+</html>

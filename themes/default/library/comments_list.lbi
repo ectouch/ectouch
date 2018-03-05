@@ -1,180 +1,140 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<div class="goods-info ect-padding-tb"> 
-  <!--商品评论-->
-  <section class="user-tab ect-border-bottom0">
-    <div id="is-nav-tabs" style="height:3.15em; display:none;"></div>
-    <!-- Nav tabs -->
-    <ul class="nav nav-tabs text-center">
-      <li class="col-xs-3{if $rank eq 0} active{/if}"><a href="#one" role="tab" data-toggle="tab">{$lang.all_comment}</a></li>
-      <li class="col-xs-3{if $rank eq 1} active{/if}"><a href="#two" role="tab" data-toggle="tab">{$lang.favorable_comment}</a></li>
-      <li class="col-xs-3{if $rank eq 2} active{/if}"><a href="#three" role="tab" data-toggle="tab">{$lang.medium_comment}</a></li>
-      <li class="col-xs-3{if $rank eq 3} active{/if}"><a href="#four" role="tab" data-toggle="tab">{$lang.bad_comment}</a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <div class="tab-pane tab-msg {if $rank eq 0} active{/if}" id="one">
-        <ul class="msg">
-          <!-- {foreach from=$comment_list item=comment} -->
-          <li>
-            <p>{$comment.content}</p>
-            <p>{$lang.comment_rank}：<span><img src="__TPL__/images/stars{$comment.rank}.png" class="star" alt="{$comment.comment_rank}" /></span></p>
-            <p><span class="pull-left">{$lang.username}：<!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></span><span class="pull-right">{$comment.add_time}</span></p>
-            <!-- {if $comment.re_content} -->
-            <p>{$lang.admin_username}<span>{$comment.re_content}</span></p>
-			<!-- {/if} -->
-          </li>
-          <!-- {/foreach} -->
-        </ul>
-        <!--翻页 start-->
-        <div id="pagebar" class="f_r">
-          <form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
-            <!-- {if $pager.styleid eq 0 } -->
-            <div id="pager" style="padding:1em 0" class="text-right"> {$lang.pager_1}{$pager.record_count}{$lang.pager_2}{$lang.pager_3}{$pager.page_count}{$lang.pager_4} <span> <a href="{$pager.page_prev}">{$lang.page_prev}</a>&nbsp;&nbsp;&nbsp;<a href="{$pager.page_next}">{$lang.page_next}</a> </span> 
-              <!--{foreach from=$pager.search key=key item=item}-->
-              <input type="hidden" name="{$key}" value="{$item}" />
-              <!--{/foreach}--> 
-            </div>
-            <!--{else}--> 
-            <!-- {/if} -->
-          </form>
-        </div>
-        <!--翻页 END--> 
-      </div>
-      <div class="tab-pane tab-msg{if $rank eq 1} active{/if}" id="two">
-        <ul class="msg">
-          <!-- {foreach from=$comment_fav item=comment} -->
-          <li>
-            <p>{$comment.content}</p>
-            <p>{$lang.comment_rank}：<span><img src="__TPL__/images/stars{$comment.rank}.png" class="star" alt="{$comment.comment_rank}" /></span></p>
-            <p><span class="pull-left">{$lang.username}：<!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></span><span class="pull-right">{$comment.add_time}</span></p>
-            <!-- {if $comment.re_content} -->
-            <p>{$lang.admin_username}<span>{$comment.re_content}</span></p>
-			<!-- {/if} -->
-          </li>
-          <!-- {/foreach} -->
-        </ul>
-        <!--翻页 start-->
-        <div id="pagebar" class="f_r">
-          <form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
-            <!-- {if $pager_fav.styleid eq 0 } -->
-            <div id="pager" style="padding:1em 0" class="text-right"> {$lang.pager_1}{$pager_fav.record_count}{$lang.pager_2}{$lang.pager_3}{$pager_fav.page_count}{$lang.pager_4} <span> <a href="{$pager_fav.page_prev}">{$lang.page_prev}</a>&nbsp;&nbsp;&nbsp;<a href="{$pager_fav.page_next}">{$lang.page_next}</a> </span> 
-              <!--{foreach from=$pager_fav.search key=key item=item}-->
-              <input type="hidden" name="{$key}" value="{$item}" />
-              <!--{/foreach}--> 
-            </div>
-            <!--{else}--> 
-            <!-- {/if} -->
-          </form>
-        </div>
-        <!--翻页 END--> 
-      </div>
-      <div class="tab-pane tab-msg{if $rank eq 2} active{/if}" id="three">
-        <ul class="msg">
-          <!-- {foreach from=$comment_med item=comment} -->
-          <li>
-            <p>{$comment.content}</p>
-            <p>{$lang.comment_rank}：<span><img src="__TPL__/images/stars{$comment.rank}.png" class="star" alt="{$comment.comment_rank}" /></span></p>
-            <p><span class="pull-left">{$lang.username}：：<!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></span><span class="pull-right">{$comment.add_time}</span></p>
-            <!-- {if $comment.re_content} -->
-            <p>{$lang.admin_username}<span>{$comment.re_content}</span></p>
-			<!-- {/if} -->
-          </li>
-          <!-- {/foreach} -->
-        </ul>
-        <!--翻页 start-->
-        <div id="pagebar" class="f_r">
-          <form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
-            <!-- {if $pager_med.styleid eq 0 } -->
-            <div id="pager" style="padding:1em 0" class="text-right"> {$lang.pager_1}{$pager_med.record_count}{$lang.pager_2}{$lang.pager_3}{$pager_med.record_count}{$lang.pager_4} <span> <a href="{$pager_med.page_prev}">{$lang.page_prev}</a>&nbsp;&nbsp;&nbsp;<a href="{$pager_bad.page_next}">{$lang.page_next}</a> </span> 
-              <!--{foreach from=$pager_med.search key=key item=item}-->
-              <input type="hidden" name="{$key}" value="{$item}" />
-              <!--{/foreach}--> 
-            </div>
-            <!--{else}--> 
-            <!-- {/if} -->
-          </form>
-        </div>
-        <!--翻页 END--> 
-      </div>
-      <div class="tab-pane tab-msg{if $rank eq 3} active{/if}" id="four">
-        <ul class="msg">
-          <!-- {foreach from=$comment_bad item=comment} -->
-          <li>
-            <p>{$comment.content}</p>
-            <p>{$lang.comment_rank}：<span><img src="__TPL__/images/stars{$comment.rank}.png" class="star" alt="{$comment.comment_rank}" /></span></p>
-            <p><span class="pull-left">{$lang.username}：：<!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></span><span class="pull-right">{$comment.add_time}</span></p>
-            <!-- {if $comment.re_content} -->
-            <p>{$lang.admin_username}<span>{$comment.re_content}</span></p>
-			<!-- {/if} -->
-          </li>
-          <!-- {/foreach} -->
-        </ul>
-        <!--翻页 start-->
-        <div id="pagebar" class="f_r">
-          <form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
-            <!-- {if $pager_bad.styleid eq 0 } -->
-            <div id="pager" style="padding:1em 0" class="text-right"> {$lang.pager_1}{$pager_bad.record_count}{$lang.pager_2}{$lang.pager_3}{$pager_bad.record_count}{$lang.pager_4} <span> <a href="{$pager_bad.page_prev}">{$lang.page_prev}</a>&nbsp;&nbsp;&nbsp;<a href="{$pager_bad.page_next}">{$lang.page_next}</a> </span> 
-              <!--{foreach from=$pager_bad.search key=key item=item}-->
-              <input type="hidden" name="{$key}" value="{$item}" />
-              <!--{/foreach}--> 
-            </div>
-            <!--{else}--> 
-            <!-- {/if} -->
-          </form>
-        </div>
-        <!--翻页 END--> 
-      </div>
-    </div>
-    <!--评论表单 start-->
-    <div class="submit-comments">
-      <form action="javascript:;" onsubmit="submitComment(this)" method="post" name="commentForm" id="commentForm">
-        <div class="ect-padding-lr">
-          <h4 class="ect-margin-tb">{$lang.username}：<strong><!--{if $smarty.session.user_name}-->{$smarty.session.user_name}<!--{else}-->{$lang.anonymous}<!--{/if}--></strong></h4>
-          <ul class="comment-radio ect-radio ect-margin-tb ect-margin-bottom0">
-            <li>
-              <input name="comment_rank" type="radio" value="5" checked="checked" id="comment_rank5" />
-              <label for="comment_rank5"><i></i>{$lang.five_stars}</label>
-            </li>
-            <li>
-              <input name="comment_rank" type="radio" value="4" id="comment_rank4"/>
-              <label for="comment_rank4"><i></i>{$lang.four_stars}</label>
-            </li>
-            <li>
-              <input name="comment_rank" type="radio" value="3" id="comment_rank3"/>
-              <label for="comment_rank3"><i></i>{$lang.three_stars}</label>
-            </li>
-            <li>
-              <input name="comment_rank" type="radio" value="2" id="comment_rank2"/>
-              <label for="comment_rank2"><i></i>{$lang.two_stars}</label>
-            </li>
-            <li>
-              <input name="comment_rank" type="radio" value="1" id="comment_rank1"/>
-              <label for="comment_rank1"><i></i>{$lang.one_stars}</label>
-            </li>
-          </ul>
-          <p class="ect-padding-tb">
-            <input placeholder="E-mail"  type="text" name="email" id="email"  maxlength="100" value="{$smarty.session.email|escape}" >
-          </p>
-          <p class="ect-padding-tb">
-            <textarea name="content" placeholder="{$lang.comment_content}"></textarea>
-            <input type="hidden" name="cmt_type" value="{$comment_type}" />
-            <input type="hidden" name="id" value="{$id}" />
-          </p>
-          <!-- 判断是否启用验证码{if $enabled_captcha} -->
-          <p class="ect-padding-tb code"><span>
-            <input placeholder="{$lang.comment_captcha}" type="text" name="captcha"/>
-            </span> <img class="pull-right" src="{:url('public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" onClick="this.src='{:url('public/captcha')}&t='+Math.random()"  /> </p>
-          <!-- {/if} -->
-          <p class="ect-padding-tb">
-            <input type="submit" class="btn btn-info ect-btn-info" value="{$lang.submit_comment}"/>
-          </p>
-        </div>
-      </form>
-    </div>
-  </section>
-  <!--用户评论 END--> 
+<div class="goods-evaluation-page of-hidden ect-tab j-ect-tab">
+	<div class="hd j-tab-title tab-title b-color-f of-hidden">
+		<ul class="dis-box">
+			<li class="box-flex active">{$lang.all_comment}<em class="dis-block m-top04">205</em></li>
+			<li class="box-flex">{$lang.favorable_comment}<em class="dis-block m-top04">115</em></li>
+			<li class="box-flex">{$lang.medium_comment}<em class="dis-block m-top04">35</em></li>
+			<li class="box-flex">{$lang.bad_comment}<em class="dis-block m-top04">15</em></li>
+			<li class="box-flex">有图<em class="dis-block m-top04">55</em></li>
+		</ul>
+	</div>
+	<div id="j-tab-con" class="b-color-f tab-con m-top06">
+		<div class="swiper-wrapper">
+			<section class="swiper-slide of-hidden">
+				<!-- {foreach from=$comment_list item=comment} -->
+				<div class="evaluation-list padding-all">
+					<header class="of-hidden ">
+						<p class="fl">
+							<span class="grade-star g-star-{$comment.rank} fl"></span>
+							<em class="t-remark fl"><!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></em>
+						</p>
+						<p class="fr t-remark">{$comment.add_time}</p>
+					</header>
+					<p class="clear m-top10 t-goods1">{$comment.content}</p>
+					<!-- {if $comment.re_content} -->
+					<p><font class="f1">{$lang.admin_username}</font>{$comment.re_content}</p>
+					<!-- {/if} -->
+					<p class="clear m-top08 t-remark">颜色分类：70cm、5144蓝色</p>
+				</div>
+				<!-- {/foreach} -->
+			</section>
+			<section class="swiper-slide">
+				<!-- {foreach from=$comment_fav item=comment} -->
+				<div class="evaluation-list padding-all">
+					<header class="of-hidden ">
+						<p class="fl"><span class="grade-star g-star-{$comment.rank} fl"></span><em class="t-remark fl"><!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></em></p>
+						<p class="fr t-remark">{$comment.add_time}</p>
+					</header>
+					<p class="clear m-top10 t-goods1">{$comment.content}</p>
+					<!-- {if $comment.re_content} -->
+					<p><font class="f1">{$lang.admin_username}</font>{$comment.re_content}</p>
+					<!-- {/if} -->
+					<p class="clear m-top08 t-remark">颜色分类：70cm、5144蓝色</p>
+				</div>
+				<!-- {/foreach} -->
+			</section>
+			<section class="swiper-slide">
+				<!-- {foreach from=$comment_med item=comment} -->
+				<div class="evaluation-list padding-all">
+					<header class="of-hidden ">
+						<p class="fl"><span class="grade-star g-star-{$comment.rank} fl"></span><em class="t-remark fl"><!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></em></p>
+						<p class="fr t-remark">{$comment.add_time}</p>
+					</header>
+					<p class="clear m-top10 t-goods1">{$comment.content}</p>
+					<!-- {if $comment.re_content} -->
+					<p><font class="f1">{$lang.admin_username}</font>{$comment.re_content}</p>
+					<!-- {/if} -->
+					<p class="clear m-top08 t-remark">颜色分类：70cm、5144蓝色</p>
+				</div>
+				<!-- {/foreach} -->
+			</section>
+			<section class="swiper-slide">
+				<!-- {foreach from=$comment_bad item=comment} -->
+				<div class="evaluation-list padding-all">
+					<header class="of-hidden ">
+						<p class="fl"><span class="grade-star g-star-{$comment.rank} fl"></span><em class="t-remark fl"><!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></em></p>
+						<p class="fr t-remark">{$comment.add_time}</p>
+					</header>
+					<p class="clear m-top10 t-goods1">{$comment.content}</p>
+					<!-- {if $comment.re_content} -->
+					<p><font class="f1">{$lang.admin_username}</font>{$comment.re_content}</p>
+					<!-- {/if} -->
+					<p class="clear m-top08 t-remark">颜色分类：70cm、5144蓝色</p>
+				</div>
+				<!-- {/foreach} -->
+			</section>
+			<!--带图评价-->
+			<section class="swiper-slide">
+				<!-- {foreach from=$comment_med item=comment} -->
+				<div class="evaluation-list padding-all">
+					<header class="of-hidden ">
+						<p class="fl"><span class="grade-star g-star-{$comment.rank} fl"></span><em class="t-remark fl"><!--{if $comment.username}-->{$comment.username|escape:html}<!--{else}-->{$lang.anonymous}<!--{/if}--></em></p>
+						<p class="fr t-remark">{$comment.add_time}</p>
+					</header>
+					<p class="clear m-top10 t-goods1">{$comment.content}</p>
+					<!-- {if $comment.re_content} -->
+					<p><font class="f1">{$lang.admin_username}</font>{$comment.re_content}</p>
+					<!-- {/if} -->
+					<p class="clear m-top08 t-remark">颜色分类：70cm、5144蓝色</p>
+				</div>
+				<!-- {/foreach} -->
+			</section>
+		</div>
+	</div>
 </div>
+</div>
+<!--引用js-->
+<script type="text/javascript" src="/ectouch/ectouch/themes/default/statics/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="/ectouch/ectouch/themes/default/statics/js/swiper-3.2.5.min.js"></script>
+<script type="text/javascript" src="/ectouch/ectouch/themes/default/statics/js/ectouch.js"></script>
+<script>
+	/*切换*/
+			var tabsSwiper = new Swiper('#j-tab-con', {
+				speed: 100,
+				noSwiping: true,
+				autoHeight: true,
+				onSlideChangeStart: function() {
+					$(".j-tab-title .active").removeClass('active')
+					$(".j-tab-title li").eq(tabsSwiper.activeIndex).addClass('active')
+				}
+			})
+			$(".j-tab-title li").on('touchstart mousedown', function(e) {
+				e.preventDefault()
+				$(".j-tab-title .active").removeClass('active')
+				$(this).addClass('active')
+				tabsSwiper.slideTo($(this).index())
+			})
+			$(".j-tab-title li").click(function(e) {
+					e.preventDefault()
+				})
+				/*店铺信息商品滚动*/
+			var swiper = new Swiper('.j-g-e-p-pic', {
+				scrollbarHide: true,
+				slidesPerView: 'auto',
+				centeredSlides: false,
+				grabCursor: true
+			});
+</script>
 <script type="text/javascript">
+			/*点击下拉菜单*/
+			function openMune() {
+			    if ($(".ect-nav").is(":visible")) {
+			        $(".ect-nav").hide();
+			    } else {
+			        $(".ect-nav").show();
+			    }
+			}
 //<![CDATA[
 {foreach from=$lang.cmt_lang item=item key=key}
 var {$key} = "{$item}";

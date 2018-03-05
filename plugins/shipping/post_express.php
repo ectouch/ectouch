@@ -3,58 +3,6 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-$shipping_lang = ROOT_PATH . 'plugins/shipping/language/' . C('lang') . '/' . basename(__FILE__);
-if (file_exists($shipping_lang))
-{
-    global $_LANG;
-    include_once($shipping_lang);
-}
-
-/* 模块的基本信息 */
-if (isset($set_modules) && $set_modules == TRUE)
-{
-    $i = (isset($modules)) ? count($modules) : 0;
-
-    /* 配送方式插件的代码必须和文件名保持一致 */
-    $modules[$i]['code']    = basename(__FILE__, '.php');
-
-    $modules[$i]['version'] = '1.0.0';
-
-    /* 配送方式的描述 */
-    $modules[$i]['desc']    = 'post_express_desc';
-
-    /* 保价比例,如果不支持保价则填入false,支持则还需加入calculate_insure()函数。固定价格直接填入固定数字，按商品总价则在数值后加上%  */
-    $modules[$i]['insure']  = '1%';
-
-    /* 配送方式是否支持货到付款 */
-    $modules[$i]['cod']     = false;
-
-    /* 插件的作者 */
-    $modules[$i]['author']  = 'ECSHOP TEAM';
-
-    /* 插件作者的官方网站 */
-    $modules[$i]['website'] = 'http://www.ecshop.com';
-
-    /* 配送接口需要的参数 */
-    $modules[$i]['configure'] = array(
-                                    array('name' => 'item_fee',     'value'=>5),
-                                    array('name' => 'base_fee',     'value'=>5),
-                                    array('name' => 'step_fee',    'value'=>2),
-                                    array('name' => 'step_fee1',    'value'=>1),
-                                );
-
-    /* 模式编辑器 */
-    $modules[$i]['print_model'] = 2;
-
-    /* 打印单背景 */
-    $modules[$i]['print_bg'] = '';
-
-   /* 打印快递单标签位置信息 */
-    $modules[$i]['config_lable'] = '';
-
-    return;
-}
-
 /**
  * 邮政快递包裹费用计算方式
  * ====================================================================================
@@ -157,7 +105,14 @@ class post_express
      */
     function query($invoice_sn)
     {
-        return $invoice_sn;
+        $url = 'http://m.kuaidi100.com/query?type=youzhengguonei&id=1&postid=' .$invoice_sn. '&temp='.time();
+        return $url;
+    }
+
+    function third_party($invoice_sn)
+    {
+        $url = 'http://m.kuaidi100.com/index_all.html?type=youzhengguonei&postid=' .$invoice_sn;
+        return $url;
     }
 
     /**
@@ -179,15 +134,4 @@ class post_express
         }
         return ceil($price);
     }
-    
-    /**
-     * 返回快递100查询链接 by wang 
-     * URL：https://code.google.com/p/kuaidi-api/wiki/Open_API_Chaxun_URL
-     */
-    function kuaidi100($invoice_sn){
-        $url = 'http://m.kuaidi100.com/query?type=youzhengguonei&id=1&postid=' .$invoice_sn. '&temp='.time();
-        return $url;
-    }
 }
-
-?>

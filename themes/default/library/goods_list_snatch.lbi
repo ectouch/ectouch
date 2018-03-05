@@ -29,7 +29,6 @@
 </div>
 {include file='library/page.lbi '}
 <!--{/if} --> 
-<footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 <!--筛选开始-->
 <form class="hold-height" method="post" id="form" action="{:url('category/index')}">
   <div id="goFilter">

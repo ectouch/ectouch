@@ -53,44 +53,12 @@
         <input name = "payment" type="radio" value = "-1" checked="checked"  style="display:none"/>
         <!--{/if}--> 
         <!-- {if $inv_content_list} 能否开发票 --> 
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo1">
-        <p><b>{$lang.invoice}</b></p>
-        <i class="fa fa-angle-down"></i></a>
-        <div id="collapseTwo1" class="panel-collapse collapse in" style="overflow:hidden;">
-          <li class="b_no"> 
-          <span class="modRadio fr"> <i class="fl"></i> <ins>{$lang.no}</ins> </span>
-		  <input name="need_inv" type="checkbox"  class="input" id="ECS_NEEDINV" onclick="changeNeedInv()" value="1"  {if $order.need_inv}checked="true"{/if} style="display:none"/>
-        
-        </li>
-          <li> 
-            <!-- {if $inv_type_list} --> 
-            <span class="pull-left select-span">{$lang.invoice_type}</span>
-            <div class="form-select pull-left"> <i class="fa fa-sort"></i>
-              <select name="inv_type" id="ECS_INVTYPE"  onchange="changeNeedInv()" style="border:1px solid #ccc;">
-                
-         	{html_options options=$inv_type_list selected=$order.inv_type}
-          
-              </select>
-            </div>
-          </li>
-          <!-- {/if} -->
-          <li>
-            <input name="inv_payee" type="text"  placeholder="{$lang.please_invoice_title}" class="input" id="ECS_INVPAYEE" size="20" value="{$order.inv_payee}" onblur="changeNeedInv()" />
-          </li>
-          <li> <span class="pull-left select-span">{$lang.invoice_content}</span>
-            <div class="form-select pull-left"> <i class="fa fa-sort"></i>
-              <select name="inv_type" id="ECS_INVCONTENT"  onchange="changeNeedInv()" style="border:1px solid #ccc;">
-                
-            
-           	 {html_options values=$inv_content_list output=$inv_content_list selected=$order.inv_content}
-          
-          
-              </select>
-            </div>
-          </li>
-        </div>
-        <!--{/if}--> 
-        
+        <a  href="{:url('flow/select_inv')}" class="add_inv">
+        <p><b>{$lang.invoice}</b><i class="fa fa-angle-right"></i></p><input id="invinput" type="hidden"  name="invinput" value="0" />
+        </a>
+       
+         
+        <!--{/if}-->
       </section>
       <!-- {if $pack_list || $card_list} 是否有包装 或贺卡 -->
       <section class="ect-margin-tb ect-padding-lr checkout-select"> 
@@ -130,19 +98,18 @@
             </li>
             <!-- {/foreach} 循环贺卡 -->
           </ul>
-          <input name="" type="text" placeholder="{$lang.bless_note}">
+          <input name="card_message" maxlength="22" type="text" placeholder="{$lang.bless_note}">
         </div>
       </section>
       <!-- {/if} 是否使用贺卡 --> 
       <!-- {/if} 是否有包装 或贺卡 -->
-      
       <section class="ect-margin-tb ect-padding-lr checkout-select"> 
-	  <!-- {if $allow_use_bonus and $bonus_list} 是否使用红包 -->
-	 	<a data-toggle="collapse" data-parent="#accordion" href="#collapseBonus">
+    <!-- {if $allow_use_bonus and $bonus_list} 是否使用红包 -->
+    <a data-toggle="collapse" data-parent="#accordion" href="#collapseBonus">
         <p><b>{$lang.use_bonus}</b></p>
         <i class="fa fa-angle-down"></i></a>
         <div id="collapseBonus" class="panel-collapse collapse in">
-		  <ul class="ect-radio">
+      <ul class="ect-radio">
             <li>
               <input  type="radio" id="bonus_{$bonus.bonus_id}"  name="bonus" value="0" {if $order.bonus_id eq 0}checked="true"{/if} onclick="changeBonus(this)" >
               <label for="bonus_{$bonus.bonus_id}">{$lang.no_use_bonus}<i></i></label>
@@ -180,7 +147,7 @@
         <p><b> {$lang.order_postscript} </b></p>
         <i class="fa fa-angle-down"></i> </a>
         <div id="collapseFive" class="panel-collapse collapse in">
-          <input name="postscript" type="text" class="fuyan" placeholder="{$lang.please_order_postscript}">
+          <input name="postscript" type="text" class="fuyan" maxlength="22" placeholder="{$lang.please_order_postscript}">
         </div>
       </section>
       <section class="ect-margin-tb ect-margin-bottom0 ect-padding-lr checkout-select checkout-pro-list">
@@ -189,8 +156,15 @@
           <!-- {foreach from=$goods_list item=goods} -->
           <li>
             <dl>
-              <dt class="pull-left"> 
-                <!-- {if $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'} --> 
+             
+
+            <div class="flow-checkout-box">
+              <div class="flow-checkout-shopimg">
+               <a href="{:url('goods/index',array('id'=>$this->_var['goods']['goods_id']))}" target="_blank" > <img src="{$goods.goods_thumb}"></a>
+              </div>
+              <div class="flow-checkout-cont">
+                 <h4 class="twolist-hidden">
+                 <!-- {if $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'} --> 
                 <a href="javascript:void(0)" onClick="setSuitShow({$goods.goods_id})" >{$goods.goods_name}<span style="color:#FF0000;">（{$lang.remark_package}）</span></a> 
                 <!-- { else } --> 
                 <a href="{:url('goods/index',array('id'=>$this->_var['goods']['goods_id']))}" target="_blank" >{$goods.goods_name}</a> 
@@ -201,15 +175,22 @@
                 <!-- {/if} --> 
                 <!-- {/if} --> 
                 <!-- {if $goods.is_shipping} -->(<span style="color:#FF0000">{$lang.free_goods}</span>)<!-- {/if} --> 
-              </dt>
-              <dd class="pull-left list-num">x {$goods.goods_number}</dd>
-              <dd class="pull-right">{$goods.formated_subtotal}</dd>
+                </h4>
+                <p class="n-check-title">数量：<span>x {$goods.goods_number}</span></p>
+                <p>价格：<span class="color-red">{$goods.formated_subtotal}</span></p>
+              </div>
+            </div>
             </dl>
           </li>
           <!-- {/foreach} -->
         </ul>
+
         <!-- #BeginLibraryItem "/Library/order_total.lbi" --><!-- #EndLibraryItem --> </section>
       <div class="ect-padding-lr ect-padding-tb ect-margin-tb">
+        <input type="hidden" name="inv_payee" value="{$inv_payee}" />
+        <input type="hidden" name="inv_type" value="{$inv_type}" />
+        <input type="hidden" name="inv_text_id" value="{$inv_text_id}" />
+        <input type="hidden" name="inv_content" value="{$inv_content}" />
         <input type="submit" name="submit" value="{$lang.order_submit}" class="btn btn-info ect-btn-info ect-colorf ect-bg"/>
         <input type="hidden" name="step" value="done" />
       </div>

@@ -3,7 +3,7 @@
   <div class="ect-bg">
     <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write article"><a class="ect-icon ect-icon-home pull-left" href="index.php"></a><span>{$lang.shophelp}</span><a class="ect-icon ect-icon-cate pull-right" href="{:url('article/index')}"></a></header>
   </div>
-  <div class="article-list">
+  <div class="article-list" style="margin-bottom: 2rem;">
   <form action="{:url('article/art_list')}" name="search_form" method="post" class="article_search">
     <div class="input-search"> <span>
       <input autocomplete="off" placeholder="{$lang.art_no_keywords}"  name="keywords" id="requirement" class="J_SearchInput inputSear" type="text">
@@ -18,7 +18,7 @@
   <div class="nav">
     <ul>
       <!--{foreach from=$article_categories item=cat name="article_cat"}-->
-      <li><a href="{:url('article/art_list', array('id'=>$this->_var['cat']['id']))}">{$cat.name|escape:html}</a></li>
+      <li><a href="{$cat.url}">{$cat.cat_name|escape:html}</a></li>
       <!--{/foreach}-->
     </ul>
   </div>
@@ -34,7 +34,7 @@
   </div>
   <!-- {/if} --> 
   </div>
-    <footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
+    
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
 </body></html>

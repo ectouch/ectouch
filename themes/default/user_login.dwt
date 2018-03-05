@@ -1,50 +1,77 @@
-<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
- <form name="formLogin" action="{:url('user/login')}" method="post" class="validforms">
- <div class="flow-consignee ect-bg-colorf">
-     <section>
-      <ul>
-   		<li>
-    		<div class="input-text"><b>{$lang.username}：</b><span><input placeholder="{$lang.username}/{$lang.mobile}/{$lang.email}" name="username" type="text"  class="inputBg" id="username" datatype="*" ></span></div>
-        </li>
-        <li>
-    		<div class="input-text"><b>{$lang.label_password}：</b><span><input placeholder="{$lang.label_password}"  name="password" type="password" class="inputBg" datatype="*6-16" /></span></div>
-        </li>
-        <!-- 判断是否启用验证码{if $enabled_captcha} -->
-       <li>
-          <div class="input-text code"><b>{$lang.comment_captcha}</b><span>
-             <input name="captcha" type="text" placeholder="{$lang.comment_captcha}">
-             </span><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm pull-right" onClick="this.src='{:url('public/captcha')}&t='+Math.random()" /></div>
-            </li>
-            <!--{/if}-->
-      </ul>
-    </section>
-  </div>
-  <p class="ect-checkbox ect-padding-tb ect-margin-tb ect-margin-bottom0 ect-padding-lr">
-     <input type="checkbox" value="1" name="remember" id="remember" class="l-checkbox" />
-     <label for="remember">{$lang.remember}<i></i></label>
-      <!-- {if $anonymous_buy eq 1 && $step eq 'flow'} 是否允许未登录用户购物 -->
-      <a href="{:url('flow/consignee',array('direct_shopping'=>1))}" style="float:right;">{$lang.direct_shopping}</a>
-      <!-- {/if} -->
-     
-  </p>
-   <input type="hidden" name="back_act" value="{$back_act}" />
-  <div class="ect-padding-lr ect-padding-tb"> 
-  <input type="submit" class="btn btn-info ect-btn-info ect-bg" value="{$lang.now_landing}" />
-  </div>
-  </form>
-  <p class="ect-padding-lr ect-margin-tb text-right ect-margin-bottom0" style="clear:both;">
-	<a href="{:url('user/get_password_phone')}">{$lang.forgot_password}</a>  
-	<a href="{:url('user/register')}">{$lang.free_registered}</a>
-  </p>
-  <div class="ect-padding-lr ect-margin-tb user-hezuo">
-  	{$lang.third_login}
-  	<p>
-    	<a href="{:url('user/third_login',array('type'=>'qq'))}"><img src="__TPL__/images/qq.png"></a>
-        <a href="{:url('user/third_login',array('type'=>'sina'))}"><img src="__TPL__/images/weibo.png"></a>
-    </p>
-  </div>
-  </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
-<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<body class="b-color-f">
+<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+	<h3 class="box-flex">登录</h3>
+	<p><a href="{:url('index/index')}"><i class="iconfont icon-home"></i></a></p>
+</header>
+
+<div class="padding-all b-color-f">
+	<form name="formLogin" action="{:url('user/login')}" method="post" class="validforms">
+		<div class="ect-bg-colorf">
+			<section>
+				<ul class="register-list-box">
+					<li class="dis-box user-register-box">
+						<div class="box-flex reg-left-input"><input placeholder="用户名/手机号" name="username" type="text" id="username" maxlength="20"></div>
+					</li>
+					<li class="dis-box user-register-box input-text item-password">
+						<input class="txt-password" type="password" name="password" autocomplete="off" placeholder="请输入密码" />
+						<b class="tp-btn btn-off"></b>
+					</li>
+					<!-- 判断是否启用验证码{if $enabled_captcha} -->
+					<li class="dis-box user-register-box">
+						<div class="box-flex reg-left-input"><input placeholder="{$lang.comment_captcha}" name="captcha" type="text" datatype="*3-15"></div>
+						<div class="user-register-list"><img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" class="img-yzm pull-right" onClick="this.src='{:url('public/captcha')}&t='+Math.random()" /></div>
+					</li>
+					<!--{/if}-->
+				</ul>
+			</section>
+		</div>
+		<p class="ect-checkbox ect-padding-tb ect-margin-tb ect-margin-bottom0">
+			<input type="checkbox" value="1" name="remember" id="remember" class="l-checkbox" />
+			<label for="remember">{$lang.remember}<i></i></label>
+			<!-- {if $anonymous_buy eq 1 && $step eq 'flow'} 是否允许未登录用户购物 -->
+			<a href="{:url('flow/consignee',array('direct_shopping'=>1))}" style="float:right;">{$lang.direct_shopping}</a>
+			<!-- {/if} -->
+		</p>
+		<input type="hidden" name="back_act" value="{$back_act}" />
+		<div class=" ect-padding-tb">
+			<button type="submit" class="btn-submit" value="" />{$lang.now_landing}</button>
+		</div>
+
+	</form>
+	<p class="text-right ect-margin-bottom0 n-login-x">
+		<a href="{:url('user/get_password_phone')}">{$lang.forgot_password}</a>
+		<a href="{:url('user/register')}">{$lang.free_registered}</a>
+	</p>
+	<div class="other-login">
+		<h4 class="title-hrbg"><span>{$lang.third_login}</span><hr> </h4>
+		<ul class="dis-box">
+			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'qq', 'back_url' => $this->_var['back_act']))}"><span class="qq"><i class="iconfont icon-qq"></i></span></a></li>
+			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'weibo', 'back_url' => $this->_var['back_act']))}"><span class="weibo"><i class="iconfont icon-weibo"></i></span></a></li>
+			{if $is_wechat}
+			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'weixin', 'back_url' => $this->_var['back_act']))}"><span class="weixin"><i class="iconfont icon-weibiaoti1"></i></span></a></li>
+			{/if}
+		</ul>
+	</div>
+</div>
+
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" -->
+<!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+<!-- #EndLibraryItem -->
+<script>
+	$('.btn-off').on('click', function() {
+		if ($(this).hasClass('btn-on')) {
+			$(this).removeClass('btn-on');
+			$(this).prev().attr('type', 'password');
+		} else {
+			$(this).addClass('btn-on');
+			$(this).prev().attr('type', 'text');
+		}
+	});
+</script>
 </body>
+
 </html>

@@ -73,9 +73,8 @@
     <section class="goods-more-a"> <a class="ect-padding-lr ect-padding-tb" href="{:url('Auction/record' , array('id' => $this->_var['auction']['act_id']))}"><span class="Text">{$lang.activity_intro}</span> <i class="pull-right fa fa-chevron-right"></i></a> <a class="ect-padding-lr ect-padding-tb" href="{:url('Auction/record' , array('id' => $this->_var['auction']['act_id']))}"><span class="Text">{$lang.bid_record}</span> <i class="pull-right fa fa-chevron-right"></i></a> </section>
   </div>
   <div class="goods-related ect-padding-lr ect-padding-tb"> {$auction.act_desc|escape:html|nl2br} </div>
-  <footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript" src="__TPL__/js/lefttime.js"></script> 
 <script type="text/javascript">
 TouchSlide({ 

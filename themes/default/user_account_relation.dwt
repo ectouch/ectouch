@@ -1,0 +1,151 @@
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" --><!-- #EndLibraryItem -->
+
+    {if $is_relation == 0}
+    <section class="user-login">
+        <div class="user_relation-section b-color-f padding-all">
+            <header class="padding-all f-07 text-c">
+                关联商城账号
+            </header>
+            <ul>
+                <li>1.新注册用户系统会默认分配一个主账号且自动关联，如果在商城已经注册过账号的，可在此重新关联已注册的账号。</li>
+                <li>2.关联可快捷登录商城PC网站和APP账号，并可享受网站会员特权等。商城承诺保障您的账号隐私安全。</li>
+            </ul>
+            <div class="dis-box user_relation_plan">
+                <div class="box-flex plan active">
+                    <span class="active">1</span>
+                    <p class="f-02  text-c m-top04">验证信息</p>
+                </div>
+                <div class="box-flex ">
+                    <span><i class="iconfont icon-gou"></i></span>
+                    <p class="f-02  text-c m-top04 col-8">关联完成</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  <form class="validation" action="{:url('user/account_relation')}" method="post">
+     <section class="padding-all b-color-f">
+        <div class="b-color-f user-login-ul">
+            <div class="text-all dis-box j-text-all  user-register-box " name="usernamediv">
+                <div class="box-flex input-text">
+                    <input class="j-input-text" name="username" datatype="*" nullmsg="请输入用户名或手机号" errormsg="不能输入特殊字符" type="text" placeholder="用户名/手机号"/>
+                </div>
+            </div>
+            <div class="text-all dis-box j-text-all  user-register-box m-top10" name="verifydiv">
+                <div class="box-flex input-text">
+                    <input class="j-input-text" placeholder="{$lang.comment_captcha}" name="captcha" type="text" datatype="*3-15" />
+                </div>
+                <img src="{:url('Public/captcha', array('rand'=>$this->_var['rand']))}" onclick="this.src='{:url('public/captcha')}&t='+Math.random()" height="36" class="ipt-check-btn j-verify-img"/>
+            </div>
+            <div class="text-all dis-box j-text-all  user-register-box m-top10" name="passworddiv">
+                <div class="box-flex input-text">
+                    <input class="txt-password" type="password" name="password" autocomplete="off" placeholder="请输入密码" datatype="*" />
+                </div>
+            </div>
+         </div>
+    </section>
+        <footer class="padding-all">
+            <button type="submit" class="btn-submit min-two-btn br-5">确定关联</button>
+
+            <p class="text-right f-02 col-4 m-top10"><a href="{:url('user/get_password_phone')}" >忘记密码</a></p>
+        </footer>
+    </form>
+    {/if}
+
+    {if $is_relation == 1}
+    <section class="user-login b-color-f user_relation_index m-top10">
+        <h3 class="f-05 col-3">当前登录账号</h3>
+        <ul class="dis-box  padding-all" for="logo">
+            <li class="user-img p-r">
+                <div class="user-head-img-box-1 p-r">
+                    {if $now_user_info.user_picture != '' }<img src="{$now_user_info.user_picture}">{else}<img src="__TPL__/images/member-photo-img2.jpeg">{/if}
+                </div>
+            </li>
+            <li class="box-flex right-cont f-02">
+                <p class="col-3"><span class="col-9">用户名：</span> {$now_user_info.user_name}</p>
+                <p class="col-3"><span class="col-9">手机：</span> {$now_user_info.mobile_phone}</p>
+            </li>
+        </ul>
+        <!--<div class="t-remark3 text-center m-top10">已关联账号：{$relation_user_info.user_name}</div>-->
+    </section>
+
+    {if $is_change_login == 1}
+    <div class="user_relation_box">
+        <h5 class="title-hrbg " style="margin-top:0"><span>可切换登录账号</span></h5>
+    </div>
+    <section class=" user_relation_index b-color-f" >
+        <ul class="dis-box padding-all  br-5" for="logo">
+            <li class="user-img p-r">
+                <div class="user-head-img-box-1 p-r">
+                    {if $change_user_info.user_picture != '' }<img src="{$change_user_info.user_picture}">{else}<img src="__TPL__/images/member-photo-img2.jpeg">{/if}
+                </div>
+            </li>
+            <li class="box-flex right-cont f-02">
+                <p class="col-3"><span class="col-9">用户名：</span> {$change_user_info.user_name}</p>
+                <p class="col-3"><span class="col-9">手机：</span> {$change_user_info.mobile_phone}</p>
+                <p class="col-3"><span class="col-9">邮箱：</span> {$change_user_info.email}</p>
+            </li>
+        </ul>
+    </section>
+    {/if}
+    <footer class="padding-all">
+        <input type="hidden" name="change_user_id" value="{$change_user_info.user_id}"/>
+        <button type="submit" class="btn-submit  min-two-btn br-5 change-login-button ">切换并登录</button>
+        {if $is_remove_relation == 1}
+        <input type="hidden" name="relation_user_id" value="{$relation_user_info.user_id}"/>
+        <button class="btn-submit br-5 remove-relation-button2 min-two-btn m-top10 remove-relation-button">解除关联</button>
+        {/if}
+    </footer>
+    <div class="dis-box user_relation_remark">
+        <label class="f-02 col-9">注：</label>
+        <p class="col-9 f-02 box-flex">
+         {if $is_remove_relation == 1}解除关联后将无法使用微信快捷登录商城PC网站及APP。但仍可以使用系统默认分配账号登录。{/if}
+         {if $is_remove_relation == 0}当前登录账号为关联账号，则无法解除关联，如您需要解除关联，请将当前登录账号切换为主账号即可。{/if}
+         </p>
+    </div>
+    {/if}
+
+</div>
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="__PUBLIC__/layer/layer.js"></script>
+<script>
+    $(function () {
+
+        // 解除关联
+        $('.remove-relation-button').click(function(){
+          //询问框
+          layer.open({
+            content: '您确定要解除关联账号吗？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                var relation_user_id = $("input[name='relation_user_id']").val();
+                // console.log(relation_user_id);
+                $.post("{:url('user/remove_relation')}",{relation_user_id:relation_user_id},function(data){
+                    layer.msg(data.msg);
+                    if(data.error == 0 && data.url){
+                        window.location.href = data.url;
+                    }
+                    return false;
+                },"json");
+              layer.close(index);
+            }
+          });
+        });
+
+        // 切换并登录
+        $('.change-login-button').click(function(){
+            var change_user_id = $("input[name='change_user_id']").val();
+            $.post("{:url('user/change_login')}",{change_user_id:change_user_id},function(data){
+                layer.msg(data.msg);
+                if(data.error == 0 && data.url){
+                    window.location.href = data.url;
+                }
+                return false;
+            },"json");
+        });
+
+    })
+</script>
+</body>
+</html>

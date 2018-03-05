@@ -1,0 +1,160 @@
+
+.upload_choose{}
+.upload_drag_area{display:inline-block; width:63%; padding:4em 0; margin-left:.5em; border:1px dashed #ddd; background:#fff no-repeat 20px center; color:#999; text-align:center; vertical-align:middle;}
+.upload_drag_hover{border-color:#069; box-shadow:inset 2px 2px 4px rgba(0, 0, 0, .5); color:#333;}
+.upload_preview{height:6rem; _zoom:1;}
+.upload_append_list{height:6rem; margin-right:1rem; margin-bottom:1rem; display:inline-block; position:relative;}
+.upload_delete{margin-left:2em;}
+.upload_image{max-width: 100%; max-height:100%; padding:0px;}
+.upload_submit{margin-top:1rem; overflow: hidden;}
+.upload_submit_btn{height:32px; font-size:14px;display:none;}
+.upload_progress{padding:5px; border-radius:10px; color:#fff; background-color:rgba(0,0,0,.6); position:absolute; left:25px; top:45px;}
+
+.andArea{width:auto;}
+.filePicker{
+	position:relative;
+	width:12rem;
+	height:12rem;
+	border:1px solid #dfdfdf;
+}
+.filePicker:before,.filePicker:after{content: " "; height:2px; left:2rem; right:2rem; top:50%; position: absolute; background:#dfdfdf}
+.filePicker:after{-moz-transform: rotate(-90deg);-webkit-transform: rotate(-90deg);-ms-transform: rotate(-90deg);-o-transform: rotate(-90deg);transform: rotate(-90deg);}
+.demo{
+	margin: auto;
+}
+.convent_choice{
+}
+
+#fileImage{
+	display: none;
+}
+
+
+/* 每个图片上的操作bar */
+
+.uploadImg{
+	padding:.3rem;
+	box-sizing: border-box;
+}
+.file_progress{
+	display: none;
+	margin: 0;
+	position: absolute;
+	bottom:0px;
+	height:8px;
+	left:0px;
+	right:0px;
+	background: none repeat scroll 0 0 #00B7EE;
+	text-align:center;
+	width: 0%;
+}
+.file_failure{
+	display: none;
+	margin: 0;
+	position: absolute;
+	bottom:0px;
+	height:24px;
+	left:0px;
+	right:0px;
+	background: none repeat scroll 0 0 red;
+	color:#fff;
+	text-align:center;
+}
+.file_success{
+	display: none;
+	margin: 0;
+	position: absolute;
+	bottom:0px;
+	height:40px;
+	left:0px;
+	right:0px;
+	background: url("../img/success.png") no-repeat scroll right bottom transparent;
+}
+.file_name{
+	margin:0px;
+	white-space: nowrap;
+    width: 66%;                  /* IE6 需要定义宽度 */
+    overflow: hidden;            
+    -o-text-overflow: ellipsis;    /* Opera */
+    text-overflow:    ellipsis;    /* IE, Safari (WebKit) */
+    float: left;
+}
+.file_edit{
+	background: url("../img/edit_white.png") no-repeat scroll 0 0 transparent;
+	width:18px;
+	height:18px;
+	display: inline;
+	-moz-user-select: none;
+	position: absolute;
+	right:22px;
+	margin-top:4px;
+}
+.file_del{
+	height:1.6rem;
+	width: 1.6rem;
+	border-radius: 100%;
+    position: absolute;
+    right: -.8rem;
+    top: -.8rem;
+    padding:0px;
+    margin: 0;
+    opacity: 0.9;
+    color:#fff;
+    background:#EC5151;
+    transition: all 0.5s;
+	-moz-transition: all 0.5s;
+	-webkit-transition: all 0.5s;
+	-o-transition: all 0.5s;
+	overflow: hidden;
+	z-index: 1;
+}
+.file_del:before,.file_del:after{content:" "; left:.3rem; right:.3rem; top:50%; position:absolute; height:1px; background:#fff; 
+-moz-transform: rotate(-45deg);-webkit-transform: rotate(-45deg);-ms-transform: rotate(-45deg);-o-transform: rotate(-45deg);transform: rotate(-45deg);
+}
+.file_del:after{-moz-transform: rotate(-135deg);-webkit-transform: rotate(-135deg);-ms-transform: rotate(-135deg);-o-transform: rotate(-135deg);transform: rotate(-135deg);}
+/* 设置图片等比例缩放 并且垂直居中*/
+.upload_append_list a {
+	display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #DFDFDF;
+}
+.upload_append_list img {
+	vertical-align: middle; /*图片垂直居中*/
+}
+.uploadImg {
+	position:relative;
+	width:6rem;
+	height:6rem;
+	display:table-cell;
+	vertical-align: middle;
+}
+
+.add_upload .uploadImg:before,.add_upload .uploadImg:after{content:" "; position: absolute; left:1rem; right:1rem; height:2px; background:#d1d1d1; top:50%; margin-top:-1px; }
+.add_upload .uploadImg:after{-moz-transform: rotate(-90deg);-webkit-transform: rotate(-90deg);-ms-transform: rotate(-90deg);-o-transform: rotate(-90deg);transform: rotate(-90deg);}
+/* 不带有拖拽的样式 */
+.add_upload{
+	border: 1px solid #DFDFDF;
+	width:6rem;
+	height:6rem;
+	margin-bottom:1rem;
+	display: inline-block; 
+	position:relative;
+}
+.add_upload:hover{
+	cursor:pointer;
+}
+.add_imgBox{
+  
+    width:100%;
+    height:100%;
+    display: block;
+}
+.single_main{
+	border-top:0px;
+}
+.info{color:#888; padding-top:1rem; font-size:1.2rem;}
+
+
+
+

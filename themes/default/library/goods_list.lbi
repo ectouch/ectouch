@@ -1,70 +1,95 @@
-<div class="ect-wrapper text-center">
-  <form method="GET" class="sort" name="listform">
-    <div> <a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'goods_id', 'order'=> 'DESC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_default}</a> 
-    <a class="{if $sort =='sales_volume' && $order == 'DESC'}ect-colory select{elseif $sort =='sales_volume' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'sales_volume', 'order'=> ($this->_var['sort']=='sales_volume' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_sales} <i class="glyphicon glyphicon-arrow-up"></i></a> 
-    <a class="{if $sort =='click_count' && $order == 'DESC'}ect-colory select{elseif $sort =='click_count' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'click_count', 'order'=> ($this->_var['sort']=='click_count' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a> 
-    <a class="{if $sort =='shop_price' && $order == 'DESC'}ect-colory select{elseif $sort =='shop_price' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'shop_price', 'order'=> ($this->_var['sort']=='shop_price' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_price}<i class="glyphicon glyphicon-arrow-up"></i></a> <a class="category-list"><i class="ect-icon ect-icon2 ect-icon-cate3"></i>{$lang.goods_filter}</a> </div>
-    <div class="category-list-show"> 
-      <!--{foreach from=$category item=cat name=no}--> 
-      <a href="{$cat.url}" class="col-md-3 col-xs-3"><span>{if $cat.cat_id}{$cat.name|escape:html}{else}{$cat.name|escape:html}{/if}</span></a> 
-      <!--{/foreach}--> 
-      <a href="{:url('category/top_all')}" class="col-md-3 col-xs-3 ect-colory"><span>更多</span></a> </div>
-    <input type="hidden" name="id" value="{$id}" />
-    <input type="hidden" name="display" value="{$display}" id="display" />
-    <input type="hidden" name="brand" value="{$brand_id}" />
-    <input type="hidden" name="price_min" value="{$price_min}" />
-    <input type="hidden" name="price_max" value="{$price_max}" />
-    <input type="hidden" name="filter_attr" value="{$filter_attr}" />
-    <input type="hidden" name="page" value="{$page}" />
-    <input type="hidden" name="sort" value="{$sort}" />
-    <input type="hidden" name="order" value="{$order}" />
-    <input type="hidden" name="keywords" value="{$keywords}" />
-  </form>
-</div>
+			
+			<ul class="list-menu-bar">
+				<li class="fl btn"><a class="{if $sort == 'goods_id' && $order == 'DESC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'type'=>$this->_var['type'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'goods_id', 'order'=> 'DESC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_default}</a></li>
+				<li class="fl btn">
+					<a class="{if $sort =='sales_volume' && $order == 'DESC'}ect-colory select{elseif $sort =='sales_volume' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'type'=>$this->_var['type'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'sales_volume', 'order'=> ($this->_var['sort']=='sales_volume' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_sales} <i class="glyphicon glyphicon-arrow-up"></i></a></li>
+				<li class="fl btn"><a class="{if $sort =='click_count' && $order == 'DESC'}ect-colory select{elseif $sort =='click_count' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'type'=>$this->_var['type'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'click_count', 'order'=> ($this->_var['sort']=='click_count' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_popularity} <i class="glyphicon glyphicon-arrow-up"></i></a></li>
+				<li class="fl btn list-menu-bar-icon">
+					<a class="{if $sort =='shop_price' && $order == 'DESC'}ect-colory select{elseif $sort =='shop_price' && $order == 'ASC'}ect-colory{/if}" href="{:url('category/index#goods_list',array('id'=>$this->_var['id'],'display'=>$this->_var['display'],'brand'=>$this->_var['brand_id'],'type'=>$this->_var['type'],'price_min'=>$this->_var['price_min'],'price_max'=>$this->_var['price_max'],'filter_attr'=>$this->_var['filter_attr'], 'sort'=>'shop_price', 'order'=> ($this->_var['sort']=='shop_price' && $this->_var['order']=='ASC')?'DESC':'ASC', 'keywords'=>$this->_var['keywords']))}">{$lang.sort_price}<i class="glyphicon glyphicon-arrow-up"></i></a>
+				</li>
+				<li class="fl btn list-menu-bar-filter" id="slider-range"><a class="category-list"><i class="ect-icon ect-icon2 ect-icon-cate3"></i>{$lang.goods_filter}</a></li>
+			</ul>
 
-<!--{if $show_asynclist eq 1}-->
-<div class="ect-margin-tb ect-pro-list ect-margin-bottom0 ect-border-bottom0">
-  <ul id="J_ItemList">
-    <li class="single_item"></li>
-    <a href="javascript:;" class="get_more"></a>
-  </ul>
-</div>
-<!--{else}-->
-<div class="ect-margin-tb ect-pro-list ect-margin-bottom0 ect-border-bottom0">
-  <ul id="J_ItemList">
-    <!--{foreach name=goods_list from=$goods_list item=goods}-->
-    <li class="single_item"> <a href="{$goods.url}"><img src="{$goods.goods_thumb}" alt="{$goods.name}"></a>
-      <dl>
-        <dt>
-          <h4 class="title"><a href="{$goods.url}">{$goods.name}</a></h4>
-        </dt>
-        <dd><span class="pull-left"><strong>{$lang.price}：<b class="ect-colory"><!--{if $goods.promote_price}-->{$goods.promote_price}<!--{else}-->{$goods.shop_price}<!--{/if}--></b></strong><small class="ect-margin-lr"><del>{$goods.market_price}</del></small></span><span class="ect-pro-price"> 
-          <!--{if $goods.promotion} --> 
-          <!-- {foreach from=$goods.promotion item=promotion} --> 
-          <!--{if $promotion.type == 'group_buy'}--><i class="label tuan">{$lang.group_buy_act}</i> 
-          <!--{elseif $promotion.act_type == 0}--> <i class="label mz"> {$lang.favourable_mz}</i> 
-          <!--{elseif $promotion.act_type == 1}--> <i class="label mj"> {$lang.favourable_mj}</i> 
-          <!--{elseif $promotion.act_type == 2}--> <i class="label zk"> {$lang.favourable_zk}</i> 
-          <!--{/if}--> 
-          <!--{/foreach}--> 
-          <!--{/if}--> 
-          </span></dd>
-        <dd><span class="pull-left {if $goods.mysc!= 0}ect-colory{/if}"><i class="fa {if $goods.mysc!= 0}fa-heart{else}fa-heart-o{/if}"></i> {$goods.sc}{$lang.like_num}</span><span class="pull-right">{$lang.sort_sales}：{$goods.sales_count}{$lang.piece}</span> </dd>
-      </dl>
-    </li>
-    <!--{/foreach}-->
-  </ul>
-</div>
-{include file='library/page.lbi '}
-<!--{/if} --> 
-<footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
-<!--筛选开始-->
+			<div class="goods-list-goods ">
+				<!--<p class="goods-list-total">共找到相关商品3312</p>-->
+				<ul>
+					<!--{if $goods_list}-->
+					<!--{foreach from=$goods_list item="vo"}-->
+					<li>
+						<a href="{$vo.url}">
+							<div class="goods-list-pic fl">
+								<img src="{$vo.goods_img}" />
+							</div>
+							<div class="goods-list-title">
+								<h1>{$vo.goods_name}</h1>
+								<h2>{$vo.shop_price}</h2>
+								<p>
+									<span>{$vo.count}人评价</span>
+									<span>好评率{$vo.rank}%</span>
+								</p>
+							</div>
+
+						</a>
+					</li>
+					
+					
+					
+					<!--{/foreach}-->
+					<!--{/if}-->
+
+				</ul>
+			</div>
+
+			<!--layer-->
+			<div class="comm-search-layer">
+				<header class="comm-search-layer-header">
+				     <form action="{:url('category/index')}<!-- {if $id} -->&id={$id}<!-- {/if} -->"  method="post" id="searchForm" name="searchForm">
+					  <div class="input-search"> <span>
+						<input name="keywords" type="search" placeholder="{$lang.no_keywords}" id="keywordBox">
+						</span>
+						<button type="submit" value="{$lang.search}" onclick="return check('keywordBox')"><i class="glyphicon glyphicon-search"></i></button>
+					  </div>
+					</form>
+				</header>
+
+				<div class="layer-main">
+					<div class="layer-hot-srarch">
+						<h1>热门搜索</h1>
+					<ul class="layer-hot-list">
+						<!-- {if $hot_search_keywords} -->
+						<div class="hot-search">
+						  <p>
+						  <h4 class="title"><b>{$lang.hot_search}：</b></h4>
+						  </p>
+						  <!-- {foreach from=$hot_search_keywords item=ky} --> 
+						  <a href="{:url('category/index', array('keywords'=>$this->_var[ky]))}<!-- {if $id} -->&id={$id}<!-- {/if} -->">{$ky}</a> 
+						  <!-- {/foreach} --> 
+						</div>
+						<!-- {/if} --> 
+						</ul>
+					</div>
+					<div class="layer-history-srarch">
+						<h1>历史搜索</h1>
+						<ul class="layer-history-list">
+							<!--{foreach from=$history item="vo"}-->
+							<li><a href="{:url('goods/index',array('id'=>$this->_var['id'],'id'=>$this->_var['vo']['goods_id']))}">{$vo.goods_name}</a></li>
+							<!--{/foreach}-->
+						</ul>
+						<div class="layer-clear">
+							<i class="iconfont">&#xe610;</i><span><a href="{:url('Category/clear_history')}">清空记录</a></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--筛选layer-->
+			<div class="filter-layer">
+				<!--筛选开始-->
 <form class="hold-height" method="post" id="form" action="{:url('category/index')}">
   <div id="goFilter">
     <div class="touchweb_mod_Filter">
-      <div class="touchweb-com_headerFilter"> <a class="pull-left left" href="javascript:;" data-data-pc="-1">{$lang.is_cancel}</a>
+      <div class="touchweb-com_headerFilter"> <a class="pull-left left" href="javascript:;" data-data-pc="-1"> 〈</a>
         <h1 class="title"><span>{$lang.goods_filter}<span></h1>
-        <a class=" right pull-right" href="javascript:document.getElementById('form').submit()">{$lang.button_submit}</a> </div>
+        <a class=" right pull-right" href="javascript::void(0)"></a> </div>
       <div class="scrollContent">
         <div data-tpa="H5_SEARCH_FILTER" class="touchweb-com_listType">
           <input type="hidden" name="id" class="cat" value="{$id}"/>
@@ -114,7 +139,7 @@
         </div>
         <div class="btn1 row">
           <div class="col-xs-3">
-            <input type="button" class="clear" onClick="javascript:clear_filter()" value="{$lang.clear_filter}"/>
+            <button class="clear" onClick="javascript:clear_filter()">{$lang.clear_filter}</button>
           </div>
           <div class="col-xs-9">
             <input type="submit" class="sure" name="sub" value="{$lang.button_submit}"/>
@@ -135,4 +160,10 @@ function clear_filter(){
 }
 </script> 
 <!--筛选结束--> 
+			</div>
+		</div>
+		<script type="text/javascript">
+		</script>
+	</body>
 
+</html>

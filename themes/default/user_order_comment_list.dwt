@@ -1,0 +1,44 @@
+<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+{if $show_asynclist}
+<div class="ect-pro-list user-order" style="border-bottom:none;">
+    <ul id="J_ItemList">
+       <li class="single_item"></li>
+       <a href="javascript:;" style="text-align:center" class="get_more"></a>
+    </ul>
+</div>
+{else}
+	<div class="ect-pro-list user-order" style="border-bottom:none;">
+		<ul id="J_ItemList">
+		 <!--{foreach name=goods_list from=$goods_list item=orders}-->
+			<li>
+			<a href="{:url('user/order_comment_list', array('id'=>$this->_var['orders']['rec_id'],'order_id'=>$this->_var['orders']['order_id']))}">
+
+			<img src="{$orders.goods_img}" class="pull-left" />
+			<dl>
+			   <dd>{$orders.name}</dd></br>	{$orders.add_time}		   
+			</dl>
+			
+			<dd>
+				 <a  style="" href="{:url('user/order_comment_list',array('id'=>$this->_var['orders']['rec_id'],'order_id'=>$this->_var['orders']['order_id']))}">
+					  <span style="  border: 1px solid #1CBB7F;color:#1CBB7F;border-radius:0.4rem; padding:0.2rem 0.8rem;  position: absolute;  top: 4.5rem;  right: 1rem; }">去评价</span>
+				 </a> 				
+		    </dd>
+			</li>
+		<!--{/foreach}-->
+		</ul>
+	</div>
+
+ {include file='library/page.lbi '}
+{/if}
+</div>
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript">
+{foreach from=$lang.merge_order_js item=item key=key}
+    var {$key} = "{$item}";
+{/foreach}
+if({$show_asynclist}){
+get_asynclist('index.php?m=default&c=user&a=async_order_list&pay={$pay}' , '__TPL__/images/loader.gif');
+}
+</script> 
+</body></html>

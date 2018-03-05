@@ -1,0 +1,80 @@
+
+{include file="pageheader.htm"}
+<div class="main-div">
+<form method="post" action="aftermarket_type.php" name="theForm" enctype="multipart/form-data" onsubmit="return validate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+  <!--<tr>
+    <td class="label">{$lang.service_type_name}</td>
+    <td><input type="text" name="service_type_name" maxlength="60" value="{$service_type.service_name}" />{$lang.require_field}</td>
+  </tr>-->
+  <tr>
+    <td class="label">{$lang.service_type_name}</td>
+    <td>
+    <select name="service_type_name">
+    {foreach from=$service_type_list item=service key=key}
+    <option value="{$key}" {if $key eq $service_type.service_type} selected="selected" {/if}>{$service}</option>
+    {/foreach}
+    </select>
+      {$lang.require_field}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.days}</td>
+    <td><input type="text" name="received_days" maxlength="40" size="15" value="{$service_type.received_days}" /> ({$lang.received_days})</td>
+  </tr>
+   <tr>
+    <td class="label">{$lang.days}</td>
+    <td><input type="text" name="unreceived_days" maxlength="40" size="15" value="{$service_type.unreceived_days}" />({$lang.unreceived_days})</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.service_desc}</td>
+    <td><textarea  name="service_desc" cols="60" rows="4"  >{$service_type.service_desc}</textarea></td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.sort_order}</td>
+    <td><input type="text" name="sort_order" maxlength="40" size="15" value="{$service_type.sort_order}" /></td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.is_show}</td>
+    <td><input type="radio" name="is_show" value="1" {if $service_type.is_show eq 1}checked="checked"{/if} /> {$lang.yes}
+        <input type="radio" name="is_show" value="0" {if $service_type.is_show eq 0}checked="checked"{/if} /> {$lang.no}
+        ({$lang.visibility_notes})
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><br />
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <input type="reset" class="button" value="{$lang.button_reset}" />
+      <input type="hidden" name="act" value="{$form_action}" />
+      <input type="hidden" name="old_service_name" value="{$service_type.service_name}" />
+      <input type="hidden" name="id" value="{$service_type.service_id}" />
+      <input type="hidden" name="old_brandlogo" value="{$service_type.brand_logo}">
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['service_type_name'].focus();
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+
+    validator = new Validator("theForm");
+    validator.required("service_type_name",  no_servicetypename);
+    validator.isNumber("sort_order", require_num, true);
+    return validator.passed();
+}
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

@@ -1,0 +1,25 @@
+1.getAll -> 修改为query()
+
+2.getRow -> 修改为queryRow()
+
+3.getOne -> 修改为queryOne()
+
+4.while ($row = $GLOBALS['db']->fetchRow()) -> 修改为foreach ($res as $row)
+
+5.$GLOBALS['db']->autoExecute($GLOBALS['ecs']->table('order_info'), $order, 'UPDATE', "order_id = '$order_id'");
+-> 修改为$touch->model->table('order_info')->data($order)->where($condition)->update();
+
+6.$res = $GLOBALS['db']->SelectLimit($sql, $num, $start);
+ -> 修改为$touch->model->queryLimit($sql, $num, $start);
+
+7.$list = $GLOBALS['db']->GetCol($sql); -> 修改为$list = $touch->model->queryCol($sql);
+
+8.$order_id = $GLOBALS['db']->insert_id(); -> 修改为$order_id = $touch->model->insert_id();
+
+9.$res = $GLOBALS['db']->selectLimit($sql, $num);
+-> 修改为$res = $touch->model->queryLimit($sql, $num);
+
+10.$GLOBALS['db']->query($sql, 'SILENT') 
+->修改为$touch->model->query($sql, 'SILENT')
+------------------------------------------------------------------------------ 
+ 新产生 没改 $GLOBALS['db']->autoReplace() main_helper.php  934 1270

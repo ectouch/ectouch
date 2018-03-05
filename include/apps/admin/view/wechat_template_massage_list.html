@@ -1,0 +1,103 @@
+{include file="pageheader"}
+<div class="container-fluid" style="padding:0">
+  <div class="row" style="margin:0">
+    <div class="col-md-12 col-sm-12 col-lg-12" style="padding:0;">
+      <div class="panel panel-default">
+	<div class="panel-heading">{$lang['template_info']}</div>
+        <div class="explanation" id="explanation">
+          <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+            <ul>
+                <li>消息提醒，即微信模板消息，需要先登录微信公众号平台右侧菜单，添加插件，申请开通模板消息。（不用手动添加，手动添加的无效）</li>
+                <li>申请时选择填写所在行业： IT科技/互联网|电子商务，如果有其他行业则选填：IT科技/电子技术。</li>
+            </ul>
+        </div>
+    	<table border="0" cellpadding="0" cellspacing="0" class="table table-hover table-bordered table-striped">
+            <tr>
+                <th class="text-center">{$lang['template_title']}</th>
+                <th class="text-center">{$lang['template_code']}</th>
+                <th class="text-center">{$lang['wechat_add_time']}</th>
+                <th class="text-center">{$lang['handler']}</th>
+            </tr>
+            {loop $list $key $val}
+    		<tr>
+    			<td class="text-center">{$val['title']}</td>
+                <td class="text-center">{$val['code']}</td>
+                <td class="text-center">{$val['add_time']}</td>
+    			<td class="text-center">
+                    <input id="number" value="{$val['id']}" type="hidden">
+                    <div class="btn-group"  data-toggle="buttons" id="btn1">
+                        <label class="btn btn-primary {if $val['status'] == 1}active{/if}" ><input type="radio" name="data[status]" value="1" {if $val['status'] == 1}checked{/if} > {$lang['wechat_open']}</label>
+                        <label class="btn btn-primary {if $val['status'] == 0}active{/if}" ><input type="radio" name="data[status]" value="0"  {if $val['status'] == 0}checked{/if} >{$lang['wechat_close']}</label>
+                    </div>
+                    <!-- <a href="{url('edit_template', array('id' => $val['id']))}" class="btn btn-primary">编辑</a> -->
+                    <a class="btn btn-default reset-template" href="javascript:;" data-href="{url('reset_template', array('id' => $val['id']))}"  title="{$lang['reset']}" >{$lang['reset']}</a>
+    			</td>
+    		</tr>
+    		{/loop}
+    	</table>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    // 开启或禁用模板消息
+    $('.btn-primary input').bind('change',function(){
+		var toggle = 0,id = '';
+		if(parseInt($(this).val())){
+			toggle = 1;
+		}else{
+			toggle = 0;
+		}
+		id = $(this).parents('td').find('#number').val();
+		$.get("{url('wechat/is_switch')}",{"id":id,"status":toggle},function(data){
+            if(data.status == 200){
+                art.dialog({
+                    icon: 'succeed',
+                    time: 2,
+                    content: data.message
+                });
+            } else {
+                art.dialog({
+                    time: 2,
+                    content: data.message
+                });
+                return false;
+            }
+		},'json');
+	});
+
+    // 重置模板消息
+    $(".reset-template").click(function(){
+        var url = $(this).attr("data-href");
+        //询问框
+        art.dialog({
+            lock: true,
+            background: '#000', // 背景色
+            opacity: 0.3,  // 透明度
+            content: '您确定要重置模板消息吗？',
+            ok: function () {
+                $.get(url, '', function(data){
+                    art.dialog({
+                        time: 2,
+                        content: data.msg
+                    });
+                    if (data.error == 0 ){
+                        if (data.url) {
+                            window.location.href = data.url;
+                        }else{
+                            window.location.reload();
+                        }
+                    }
+                    return false;
+                }, 'json');
+            },
+            cancelVal: '关闭',
+            cancel: true //为true等价于function(){}
+        });
+
+    });
+
+})
+</script>
+{include file="pagefooter"}

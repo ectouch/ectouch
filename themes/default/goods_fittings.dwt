@@ -12,7 +12,7 @@
 	</ul>
     </section>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript">
 jQuery(function($){
 	$('#J_ItemList').more({'address': '{:url('flow/goods_fittings')}', 'spinner_code':'<div style="text-align:center; margin:10px;"><img src="__TPL__/images/loader.gif" /></div>'})

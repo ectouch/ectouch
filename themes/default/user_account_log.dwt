@@ -1,31 +1,59 @@
-<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
-<ul class="nav nav-tabs" role="tablist">
-    <li><a href="{:url('User/account_detail')}" >{$lang.add_surplus_log}</a></li>
-    <li class="active"><a href="{:url('User/account_log')}" >{$lang.view_application}</a></li>
-	<li><a href="{:url('User/account_deposit')}" >{$lang.surplus_type_0}</a></li>
-	<li><a href="{:url('User/account_raply')}" >{$lang.surplus_type_1}</a></li>
-  </ul>
- <div class="user-account-detail">
-  	<ul class=" ect-bg-colorf">
-     <!--{foreach from=$account_log item=item}-->
-    	<li>
-        	<p class="title"><span class="pull-left">{$item.add_time}</span> <span class="pull-right">{$item.amount}</span></p>
-            <p class="content"><span class="remark pull-left">{$lang.process_notic}:{$item.user_note}</span> <span class="pull-right text-right type">{$item.type}</span>
-			
-			</p>
-			<p class="content"><span class="remark pull-left">{$lang.admin_notic}:{if $item.admin_note}{$item.admin_note}{else}N/A{/if}</span> <span class="pull-right text-right type">{$lang.is_paid}:{$item.pay_status}</p>
-			<p class="content">{$lang.handle}：{$item.handle}&nbsp;&nbsp;<!-- {if ($item.is_paid eq 0 && $item.process_type eq 1) || $item.handle} -->
-			<a href="{:url('user/cancel',array('id'=>$this->_var['item']['id']))}" onclick="if (!confirm('{$lang.confirm_remove_account}')) return false;" class="btn btn-default">{$lang.is_cancel}</a>
-              <!-- {/if} -->
-			  </p>
-        </li>
-<!--{/foreach}-->
-    </ul>
-    <p class="pull-right count" style="background-color: bisque;">{$lang.current_surplus}<b class="ect-colory">{$surplus_amount}</b></p>
-  </div>
-    {include file='library/page.lbi '}
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+	<h3 class="box-flex">申请记录</h3>
+	<p><i class="iconfont icon-pailie j-nav-box"></i></p>
+</header>
+<div class="j-nav-content">
+	<ul class="dis-box new-footer-box">
+		<li class="box-flex">
+			<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+		</li>
+		<li class="box-flex">
+			<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+	</ul>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<ul class="n-user-acc-log">
+		<!--{if $account_log}-->
+	<!--{foreach from=$account_log item=item}-->
+	<li class="dis-shop-list p-r padding-all m-top10 b-color-f  ">
+		<div class="dis-box">
+			<div class="box-flex">
+				<h5 class="f-05 col-7">{$item.add_time}</h5>
+				<h6 class="f-05 col-7  m-top04">{$item.type}</h6>
+			</div>
+			<div class="box-flex">
+				<p class="f-04 color-red text-right">{$item.pay_status}</p>
+				<h6 class="f-05 col-3 text-right m-top04">{$item.amount}</h6>
+
+			</div>
+			
+		</div>
+		<p class="f-03 m-top02"><span class="col-7 f-05">{$lang.admin_notic} : </span><span class="col-3">{if $item.admin_note}{$item.admin_note}{else}N/A{/if}</span></p>
+		<p class="f-03 m-top04"><span class="col-7 f-05">{$lang.process_notic} : </span><span class="col-3">{$item.user_note}</span></p>
+		<div class="n-but-box n-acc-log">
+			{$item.handle}
+			<!-- {if ($item.is_paid eq 0 && $item.process_type eq 1) || $item.handle} -->
+			<a href="{:url('user/cancel',array('id'=>$this->_var['item']['id']))}" onclick="if (!confirm('{$lang.confirm_remove_account}')) return false;">{$lang.is_cancel}</a>
+              <!-- {/if} -->			
+		</div>
+		
+				
+	</li>
+	<!--{/foreach}-->
+	<!--{else}-->
+	<div class="no-div-message flow-no-cart">
+			<i class="iconfont icon-biaoqingleiben"></i>
+			<p>亲，此处没有内容～！</p>
+		</div>
+<!--{/if}-->
+</ul>
+  {include file='library/page.lbi '}
+
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
 </body>
 </html>

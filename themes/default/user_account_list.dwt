@@ -1,0 +1,51 @@
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<div class="con">
+	<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+		<h3 class="box-flex">账户明细</h3>
+		<p><i class="iconfont icon-pailie j-nav-box"></i></p>
+	</header>
+	<div class="j-nav-content">
+		<ul class="dis-box new-footer-box">
+		<li class="box-flex">
+			<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+		</li>
+		<li class="box-flex">
+			<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+	</ul>
+	</div>
+	<ul class="n-user-acc-log m-top10">
+		<!--{if $account_log}-->
+		<!--{foreach from=$account_log item=item}-->
+		<li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">
+			<div class="dis-box">
+				<div class="box-flex">
+					<h5 class="f-05 col-7">{$item.change_time}</h5>
+					<h6 class="f-05 col-7  m-top04">{$item.short_change_desc}</h6>
+				</div>
+				<div class="box-flex">
+					<p class="f-05 color-red text-right">{$item.amount}</p>
+					<h6 class="f-05 col-3 text-right m-top04">{$item.type}</h6>
+				</div>
+			</div>
+		</li>
+		<!--{/foreach}-->
+		<!--{else}-->
+	<div class="no-div-message flow-no-cart">
+			<i class="iconfont icon-biaoqingleiben"></i>
+			<p>亲，此处没有内容～！</p>
+		</div>
+		<!--{/if}-->
+	</ul>
+	{include file='library/page.lbi '}
+</div>
+<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+<!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" -->
+<!-- #EndLibraryItem -->
+</body>
+
+</html>

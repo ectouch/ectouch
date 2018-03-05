@@ -1,7 +1,7 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
 <div class="con">
   <div class="ect-bg">
-    <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write article"><a class="ect-icon ect-icon-home pull-left" href="{:url()}"></a><span>{$cat_name}</span><a class="ect-icon ect-icon-cate pull-right" href="{:url('article/index')}"></a></header>
+    <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write article"><a class="ect-icon ect-icon-home pull-left" href="index.php"></a><span>{$lang.shophelp}</span><a class="ect-icon ect-icon-cate pull-right" href="{:url('article/index')}"></a></header>
   </div>
   <div class="article-list">
    <form action="{:url('article/art_list')}" name="search_form" method="post" class="article_search">
@@ -14,34 +14,30 @@
       	<button type="submit" ><i class="glyphicon glyphicon-search"></i></button>
       </div>
       </form>
-
-	
-	<!--{if $show_asynclist eq 1}-->
+	  <!--{if $show_asynclist eq 1}-->
 		<div class="article-list-ol">
-		  <ol id="J_ItemList">
-			<li class="single_item"> </li>
-			<a href="javascript:;" class="get_more"></a>
-		  </ol>
+			  <ol id="J_ItemList">
+					<li class="single_item"> </li>
+					<a href="javascript:;" class="get_more"></a>
+			  </ol>
 		</div>
-	<!--{else}-->
-
+		<!--{else}-->
 		<div class="article-list-ol">
-		  <ol id="J_ItemList">
-		  	<!--{foreach from=$artciles_list item=article}-->
-				<li class="single_item"><a href="{$article.url}" >{$article.index}、{$article.short_title}</a></li>
-			<!--{/foreach}-->
-		  </ol>
+			  <ol id="J_ItemList">
+					<!--{foreach from=$artciles_list item=article}-->
+					<li class="single_item">
+						<a href="{$article.url}" >{$article.index}、{$article.short_title}</a> 
+					</li>
+					<!--{/foreach}-->
+			  </ol>
 		</div>
-    	<span class="blank10"></span> 
-			{include file='library/page.lbi '}
-    	<span class="blank10"></span>
-	<!--{/if} -->
+		<!--{/if} -->
+	    <!-- #BeginLibraryItem "/library/page.lbi" --><!-- #EndLibraryItem -->
 </div>
-<footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript">
-<!--{if $show_asynclist}-->
-	get_asynclist("{:url('article/asynclist', array('id'=>$this->_var['id'], 'page'=>$this->_var['page'], 'sort'=>$this->_var['sort'], 'keywords'=>$this->_var['keywords']))}" , '__TPL__/images/loader.gif');
-<!--{/if}--> 
+<!--{if $show_asynclist eq 1}-->
+get_asynclist("{:url('article/asynclist', array('id'=>$this->_var['id'], 'page'=>$this->_var['page'], 'sort'=>$this->_var['sort'], 'keywords'=>$this->_var['keywords']))}" , '__TPL__/images/loader.gif');
+<!--{/if} -->
 </script>
 </body></html>

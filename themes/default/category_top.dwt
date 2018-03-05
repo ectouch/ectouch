@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<!-- {if $cat_style} -->
+<link href="{$cat_style}" rel="stylesheet" type="text/css" />
+<!-- {/if} -->
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js'}
+{insert_scripts files='common.js,global.js,compare.js'}
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="block clearfix">
+  <div id="dingji_top">
+    <div id="category_tree_index"> 
+      <!--{foreach from=$categories_child item=cat name=cat}--> 
+      {if $cat.cat_id}
+      <dl>
+        <dt class="dt_{$smarty.foreach.cat.iteration}" ><a href="{$cat.url}">{$cat.name|escape:html}</a></dt>
+        <dd> 
+          <!--{foreach from=$cat.cat_id item=child name=no}--> 
+          <a href="{$child.url}" target="_blank">{$child.name|escape:html}</a> {if !$smarty.foreach.no.last} 
+          <!-- <span>|</span>--> 
+          {/if} 
+          <!--{/foreach}--> 
+        </dd>
+      </dl>
+      {/if} 
+      <!--{/foreach}--> 
+    </div>
+    <div class="hstyle_banner">
+      <div class="twoindex_focusbox">
+        <div class="focus_picbox">
+          <div style="display: block;" id="focus_pic1">
+            <?php
+if($_REQUEST['id'])
+{
+$id = $_REQUEST['id'];
+}else{
+$id = $_REQUEST['category'];
+}
+$sql = "select ap.ad_width,ap.ad_height,ad.ad_name,ad.ad_code,ad.ad_link from ".$GLOBALS['ecs']->table('ad_position').
+" as ap left join ".$GLOBALS['ecs']->table('ad')." as ad on ad.position_id = ap.position_id where ad.ad_name='".'cate_1'.
+"_".$id."' and ad.media_type=0 and UNIX_TIMESTAMP()>ad.start_time and UNIX_TIMESTAMP()<ad.end_time and ad.enabled=1";
+$res = $GLOBALS['db']->getAll($sql);
+foreach($res AS $v)
+{                      
+echo  "<a href='".$v['ad_link']."' target='_blank'><img src='data/afficheimg/".$v['ad_code']."' width='".$v['ad_width']."'
+ height='".$v['ad_height']."' /></a>";
+}
+?>
+          </div>
+          <div id="focus_pic2" style="display: none;">  <?php
+if($_REQUEST['id'])
+{
+$id = $_REQUEST['id'];
+}else{
+$id = $_REQUEST['category'];
+}
+$sql = "select ap.ad_width,ap.ad_height,ad.ad_name,ad.ad_code,ad.ad_link from ".$GLOBALS['ecs']->table('ad_position').
+" as ap left join ".$GLOBALS['ecs']->table('ad')." as ad on ad.position_id = ap.position_id where ad.ad_name='".'cate_2'.
+"_".$id."' and ad.media_type=0 and UNIX_TIMESTAMP()>ad.start_time and UNIX_TIMESTAMP()<ad.end_time and ad.enabled=1";
+$res = $GLOBALS['db']->getAll($sql);
+foreach($res AS $v)
+{                      
+echo  "<a href='".$v['ad_link']."' target='_blank'><img src='data/afficheimg/".$v['ad_code']."' width='".$v['ad_width']."'
+ height='".$v['ad_height']."' /></a>";
+}
+?></div>
+          <div id="focus_pic3" style="display: none;">  <?php
+if($_REQUEST['id'])
+{
+$id = $_REQUEST['id'];
+}else{
+$id = $_REQUEST['category'];
+}
+$sql = "select ap.ad_width,ap.ad_height,ad.ad_name,ad.ad_code,ad.ad_link from ".$GLOBALS['ecs']->table('ad_position').
+" as ap left join ".$GLOBALS['ecs']->table('ad')." as ad on ad.position_id = ap.position_id where ad.ad_name='".'cate_3'.
+"_".$id."' and ad.media_type=0 and UNIX_TIMESTAMP()>ad.start_time and UNIX_TIMESTAMP()<ad.end_time and ad.enabled=1";
+$res = $GLOBALS['db']->getAll($sql);
+foreach($res AS $v)
+{                      
+echo  "<a href='".$v['ad_link']."' target='_blank'><img src='data/afficheimg/".$v['ad_code']."' width='".$v['ad_width']."'
+ height='".$v['ad_height']."' /></a>";
+}
+?> </div>
+        </div>
+        <div class="focus_point">
+          <ul>
+            <li class="lion" id="pointer1" onmouseover="showfocuspic(1,1);" onmouseout="startpic();"><span> </span></li>
+            <li class="" id="pointer2" onmouseover="showfocuspic(2,1);" onmouseout="startpic();"><span>  </span></li>
+            <li class="" style="border-right:none" id="pointer3" onmouseover="showfocuspic(3,1);" 
+                     onmouseout="startpic();"><span> </span></li>
+          </ul>
+        </div>
+        <script>
+					var time=1;
+					function showfocuspic(n,num){
+						if(num==1){clearInterval(id);}
+						if(n>3)
+							n=1;
+						time=n;
+						for(var p=1; p<=3;p++)	{
+							if(p==n){	
+								if(p%3==0){$("#focus_pic"+p).fadeIn("slow");
+									$("#focus_pic"+p).css("display","block");
+									$("#pointer"+p).addClass("lion");
+									
+								}
+								else{
+									$("#focus_pic"+p).fadeIn("slow");
+									$("#focus_pic"+p).css("display","block");
+									$("#pointer"+p).addClass("lion");
+								}
+							}
+							else{
+								$("#focus_pic"+p).css("display","none");
+								$("#pointer"+p).removeClass("lion");
+							}
+						}
+					}
+					var id=window.setInterval("showfocuspic(time+1)",3000);
+					function startpic()	{
+						id=window.setInterval("showfocuspic(time+1)",3000);
+					}
+				</script> 
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="hstyle_sad"> <div style="display: block;">
+            <?php
+if($_REQUEST['id'])
+{
+$id = $_REQUEST['id'];
+}else{
+$id = $_REQUEST['category'];
+}
+$sql = "select ap.ad_width,ap.ad_height,ad.ad_name,ad.ad_code,ad.ad_link from ".$GLOBALS['ecs']->table('ad_position').
+" as ap left join ".$GLOBALS['ecs']->table('ad')." as ad on ad.position_id = ap.position_id where ad.ad_name='".'sad_1'.
+"_".$id."' and ad.media_type=0 and UNIX_TIMESTAMP()>ad.start_time and UNIX_TIMESTAMP()<ad.end_time and ad.enabled=1";
+$res = $GLOBALS['db']->getAll($sql);
+foreach($res AS $v)
+{                      
+echo  "<a href='".$v['ad_link']."' target='_blank'><img src='data/afficheimg/".$v['ad_code']."' width='".$v['ad_width']."'
+ height='".$v['ad_height']."' /></a>";
+}
+?>
+          </div></div>
+    <div class="hstyle_sad"> <div style="display: block;">
+            <?php
+if($_REQUEST['id'])
+{
+$id = $_REQUEST['id'];
+}else{
+$id = $_REQUEST['category'];
+}
+$sql = "select ap.ad_width,ap.ad_height,ad.ad_name,ad.ad_code,ad.ad_link from ".$GLOBALS['ecs']->table('ad_position').
+" as ap left join ".$GLOBALS['ecs']->table('ad')." as ad on ad.position_id = ap.position_id where ad.ad_name='".'sad_2'.
+"_".$id."' and ad.media_type=0 and UNIX_TIMESTAMP()>ad.start_time and UNIX_TIMESTAMP()<ad.end_time and ad.enabled=1";
+$res = $GLOBALS['db']->getAll($sql);
+foreach($res AS $v)
+{                      
+echo  "<a href='".$v['ad_link']."' target='_blank'><img src='data/afficheimg/".$v['ad_code']."' width='".$v['ad_width']."'
+ height='".$v['ad_height']."' /></a>";
+}
+?>
+          </div> </div>
+    
+     <!-- #BeginLibraryItem "/library/ad_top.lbi" --><!-- #EndLibraryItem -->
+    
+  </div>
+  <!-- #BeginLibraryItem "/library/recommend_best2.lbi" --><!-- #EndLibraryItem --> 
+  
+  <!-- {foreach from=$categories_child_goods item=cat_goods name=no} -->
+  <div class="bigBrandSample_item  block">
+    <div class="bigBrandSample_item_title"> <strong><a href="{$cat_goods.url}">{$cat_goods.name}</a></strong>
+      <div class="f_r"> 
+        <!--{foreach from=$cat_goods.cat_id item=child_cat}--><span><a href="{$child_cat.url}" target="_blank">{$child_cat.name}</a></span><!-- {/foreach} --> 
+      </div>
+    </div>
+    <ul class="bigBrandSample_list clearfix">
+      <!--{foreach from=$cat_goods.goods item=child_goods}-->
+      <li>
+        <div class="bigBrandSample_list_img"> <a href="{$child_goods.url}" title="{$child_goods.short_name}" class="link_pro"><img src="{$child_goods.thumb}"/> </a> </div>
+        <div class="bigBrandSample_list_text"> <a href="{$child_goods.url}" title="{$child_goods.short_name}"  class="bigBrandSample_list_text_name">{$child_goods.name}</a>
+          <p class="bigBrandSample_list_text_price">{$child_goods.shop_price}<span class="originalPrice">￥
+          {$child_goods.market_price}</span></p>
+           </div>
+      </li>
+      
+      <!-- {/foreach} -->
+    </ul>
+  </div>
+  <!-- {/foreach} -->
+  <div class="blank"></div>
+</div>
+<div class="blank5"></div>
+
+<div class="footer">
+  <div class="footerBody">
+    <Div class="block"> 
+	<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+     </Div>
+  </div>
+</div>
+</body>
+</html>

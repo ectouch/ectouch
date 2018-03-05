@@ -16,7 +16,7 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-$payment_lang = ROOT_PATH . 'plugins/connect/language/' . C('lang') . '/' . basename(__FILE__);
+$payment_lang = ROOT_PATH . 'plugins/connect/languages/' . C('lang') . '/' . basename(__FILE__);
 
 if (file_exists($payment_lang)) {
     include_once ($payment_lang);
@@ -26,28 +26,28 @@ if (file_exists($payment_lang)) {
 if (isset($set_modules) && $set_modules == TRUE) {
     $i = isset($modules) ? count($modules) : 0;
     /* 类名 */
-    $modules[$i]['name'] = 'QQ';
+    $modules[$i]['name'] = 'QQ登录插件';
     // 文件名，不包含后缀
     $modules[$i]['type'] = 'qq';
 
     $modules[$i]['className'] = 'qq';
     // 作者信息
-    $modules[$i]['author'] = 'Zhulin';
+    $modules[$i]['author'] = 'ECTouch Team';
 
     // 作者QQ
-    $modules[$i]['qq'] = '2880175566';
+    $modules[$i]['qq'] = '10000';
 
     // 作者邮箱
-    $modules[$i]['email'] = 'zhulin@ecmoban.com';
+    $modules[$i]['email'] = 'support@ectouch.cn';
 
     // 申请网址
-    $modules[$i]['website'] = 'http://open.qq.com';
+    $modules[$i]['website'] = 'http://connect.qq.com';
 
     // 版本号
     $modules[$i]['version'] = '1.0';
 
     // 更新日期
-    $modules[$i]['date'] = '2014-8-19';
+    $modules[$i]['date'] = '2017-05-05';
     /* 配置信息 */
     $modules[$i]['config'] = array(
         array('type' => 'text', 'name' => 'app_id', 'value' => ''),
@@ -70,8 +70,8 @@ class qq {
     /**
      * 构造函数
      *
-     * @param unknown $app            
-     * @param string $access_token            
+     * @param unknown $app
+     * @param string $access_token
      */
     public function __construct($conf, $access_token = NULL) {
         $this->appid = $conf['app_id'];
@@ -83,30 +83,48 @@ class qq {
     /**
      * 请求登录
      *
-     * @param unknown $info            
-     * @param unknown $url            
+     * @param unknown $info
+     * @param unknown $url
      * @return mixed
      */
-    public function act_login($info, $url) {
-        $login_url = $this->login_url($url, $this->scope);
-        $login_url = str_replace('&amp;', '&', $login_url);
-        return $login_url;
+    public function act_login($callback_url) {
+        $login_url = $this->login_url($callback_url, $this->scope);
+        return str_replace('&amp;', '&', $login_url);
     }
 
     /**
      * 回调
      *
-     * @param unknown $info            
-     * @param unknown $url            
-     * @param unknown $code            
+     * @param unknown $info
+     * @param unknown $url
+     * @param unknown $code
      * @return boolean
      */
-    public function call_back($info, $url, $code) {
-        $result = $this->access_token($url, $code);
+    public function call_back($callback_url, $code) {
+        $result = $this->access_token($callback_url, $code);
         if (isset($result['access_token']) && $result['access_token'] != '') {
             // 保存登录信息，此示例中使用session保存
-            $_SESSION['access_token'] = $result['access_token']; // access token echo '授权完成，请记录<br/>access token：<input size="50" value="', $result['access_token'], '">' . $_SESSION['qq_t'];
-            return true;
+            $this->access_token = $result['access_token'];
+
+            $openid = $this->get_openid();
+            // 获取用户信息
+            $userinfo = $this->get_user_info($openid);
+            if($userinfo['gender'] == '男'){
+                $userinfo['gender'] = 1;
+            }elseif ($userinfo['gender'] == '女'){
+                $userinfo['gender'] = 2;
+            }else {
+                $userinfo['gender'] = 0;
+            }
+            $_SESSION['nickname'] = $this->get_user_name($userinfo);
+            $_SESSION['headimgurl'] = $userinfo['figureurl_qq_2'] ? $userinfo['figureurl_qq_2'] : $userinfo['figureurl_qq_1'];
+            $data = array(
+                'openid' => $openid,
+                'nickname' => $this->get_user_name($userinfo),
+                'sex' => $userinfo['gender'],
+                'headimgurl' => $userinfo['figureurl_qq_2'] ? $userinfo['figureurl_qq_2'] : $userinfo['figureurl_qq_1']
+            );
+            return $data;
         } else {
             // echo "授权失败";
             return false;
@@ -116,8 +134,8 @@ class qq {
     /**
      * 生成授权网址
      *
-     * @param unknown $callback_url            
-     * @param string $scope            
+     * @param unknown $callback_url
+     * @param string $scope
      * @return string
      */
     public function login_url($callback_url, $scope = '') {
@@ -133,8 +151,8 @@ class qq {
     /**
      * 获取access token
      *
-     * @param unknown $callback_url            
-     * @param unknown $code            
+     * @param unknown $callback_url
+     * @param unknown $code
      * @return multitype:
      */
     public function access_token($callback_url, $code) {
@@ -146,8 +164,7 @@ class qq {
             'state' => '',
             'redirect_uri' => $callback_url
         );
-        $url = 'https://graph.qq.com/oauth2.0/token?' . http_build_query($params);
-        $url = str_replace('&amp;', '&', $url);
+        $url = 'https://graph.qq.com/oauth2.0/token?' . http_build_query($params, '', '&');
         $result_str = $this->http($url);
         $json_r = array();
         if ($result_str != '')
@@ -177,7 +194,7 @@ class qq {
     /**
      * 根据openid获取用户信息
      *
-     * @param unknown $openid            
+     * @param unknown $openid
      * @return Ambigous <multitype:, mixed>
      */
     public function get_user_info($openid) {
@@ -189,25 +206,25 @@ class qq {
 	 /**
      * 获取用户名
      *
-     * @param unknown $user_info            
+     * @param unknown $user_info
      * @return Ambigous <multitype:, mixed>
      */
 	public function get_user_name($userinfo){
-		
+
 		return $userinfo['nickname'];
-		
+
 		}
 
     /**
      * 发布分享
      *
-     * @param unknown $openid            
-     * @param unknown $title            
-     * @param unknown $url            
-     * @param unknown $site            
-     * @param unknown $fromurl            
-     * @param string $images            
-     * @param string $summary            
+     * @param unknown $openid
+     * @param unknown $title
+     * @param unknown $url
+     * @param unknown $site
+     * @param unknown $fromurl
+     * @param string $images
+     * @param string $summary
      * @return Ambigous <multitype:, mixed>
      */
     public function add_share($openid, $title, $url, $site, $fromurl, $images = '', $summary = '') {
@@ -226,9 +243,9 @@ class qq {
     /**
      * 调用接口
      *
-     * @param unknown $url            
-     * @param unknown $params            
-     * @param string $method            
+     * @param unknown $url
+     * @param unknown $params
+     * @param string $method
      * @return Ambigous <multitype:, mixed>
      *         //示例：根据openid获取用户信息
      *         $result=$qq->api('user/get_user_info', array('openid'=>$openid), 'GET');
@@ -239,12 +256,10 @@ class qq {
         $params['oauth_consumer_key'] = $this->appid;
         $params['format'] = 'json';
         if ($method == 'GET') {
-            $query_url = $url . '?' . http_build_query($params);
-            $query_url = str_replace('&amp;', '&', $query_url);
+            $query_url = $url . '?' . http_build_query($params, '', '&');
             $result_str = $this->http($query_url);
         } else {
-            $query = http_build_query($params);
-            $query = str_replace('&amp;', '&', $query);
+            $query = http_build_query($params, '', '&');
             $result_str = $this->http($url, $query, 'POST');
         }
         $result = array();
@@ -256,10 +271,10 @@ class qq {
     /**
      * 提交请求
      *
-     * @param unknown $url            
-     * @param string $postfields            
-     * @param string $method            
-     * @param unknown $headers            
+     * @param unknown $url
+     * @param string $postfields
+     * @param string $method
+     * @param unknown $headers
      * @return mixed
      */
     private function http($url, $postfields = '', $method = 'GET', $headers = array()) {

@@ -1,0 +1,153 @@
+bady{background-color: #f7f7f7}
+/*banner效果*/
+.swiper-container {width: 100%; height: 100%;}
+.swiper-container img {width: 100%;}
+.swiper-pagination-bullet-active {background: #1CBB7F;}
+
+/*搜索*/
+.ect-padding-lr { padding-left: 0.6em; padding-right: 0.6em; }
+.ect-bg {background: #1CBB7F !important; color: #fff !important; height: auto;overflow: hidden;}
+.search .ect-margin-tb{margin-top:0.6em; margin-bottom:0.6em;}
+.ect-header{height:1.5em; position:relative;background-color: #1CBB7F;}
+.ect-header span{font-size:1em; position:absolute; left:2.4em; right:3em; text-align: center}
+.herder-close{color:#fff; float:right; font-size:2em; margin-top: -0.1em; margin-right:0.2em;}
+
+.search input{background-color: #FFF;}
+.input-search{position:relative; margin-top:0.8em; height:auto; height:3em; overflow:hidden;}
+.input-search span{position:absolute; left:0em; right:2.9em; border:1px solid #eee;
+    -webkit-border-radius:  0.4em 0 0 0.4em;
+    -moz-border-radius: 0.4em 0 0 0.4em;
+    border-radius: 0.4em 0 0 0.4em;}
+.input-search span input{width:100%; height:2.4em; font-size:1em; border:1px solid #fcfcfc; padding:0 0.6em; box-sizing:border-box; border-radius:0; border:none; border-radius:0.4em 0 0 0.4em;}
+.input-search button{width:2.8em;height: 2.5em; background:#e6e6e6; display:block; position:absolute; right:0em; border-radius: 0 0.4em 0.4em 0; border:none;}
+.input-search button i{color:#999; font-size:1.5em;}
+.hot-search{margin-top:0.4em; display:table; width:100%;}
+.hot-search p{margin-top:0.5em;}
+.hot-search h4{height:1.6em;}
+.hot-search a{display:table-cell; float:left;  background:#fff; margin-right:0.6em; margin-bottom:0.6em; border-radius:0.4em;}
+header{line-height:2rem}
+/*display盒子*/
+.dis-box {display: -webkit-box;display: -moz-box;display: -ms-box;display: box;}
+.box-flex {-webkit-box-flex: 1;-moz-box-flex: 1;-ms-box-flex: 1;box-flex: 1; display: block; width:100%;}
+/*==================
+    关注
+=============*/
+.attention-left-img{width: 3.6rem;padding-right: 0.7rem;padding-top:0.76rem;}
+.attention-left-img img{width:100%;}
+.ect-attention{height: 4.4rem;background-color: rgba(0, 0, 0, 0.8); padding: 0 1.3rem;}
+.attention-text{padding-top:0.6rem;}
+.attention-img {width: 4rem;}
+.attention-button{width:6rem;padding-top:0.88rem;} 
+.attention-button .button{  border: 0px;background: #05af10; width: 6rem; height: 2.5rem; border-radius: 5px;color: #fff;font-size:1.2rem} 
+.index-max-box{position: fixed;z-index: 1000;top: 0;width: 100%; max-width: 640px;min-width: 320px;}
+.index-header{position:relative;}
+
+/*弹出层样式*/
+.index-guanz-t{display:none;transition: width 2s;-moz-transition: width 2s;-webkit-transition: width 2s;-o-transition: width 2s;  text-align: center;  max-width: 640px; min-width: 320px;}
+.index-guanz-t.active{display:block; transition: width 2s;-moz-transition: width 2s;-webkit-transition: width 2s;-o-transition: width 2s;}	
+.index-guanz-bg{background:rgba(0,0,0,0.7); position:fixed; top:0; left:0; right:0;bottom:0; z-index:1000;}
+.index-guanz-show{ position:fixed; left:22%; top:25%;right:22%; background:#fff; z-index:1001;   padding: 0.5rem;border-radius: 0.5rem;}
+.index-guanz-show p{color:#666;font-size: 1rem;margin: 0.2rem 0;}
+.index-guanz-show img{ width: 100%;}
+.index-guanz-show .left{}
+.index-guanz-show .right{float:right}
+.index-show-close{color:#777;}
+.index-guanz-show h5{color:#1CBB7F;font-size:1.3rem}
+.index-show-close-box{background:rgba(255,255,255,0.6);position:absolute;right:-2rem;top:-4rem;width: 3rem;height:3rem;border-radius:1.5rem;padding: 0.4rem 0.7rem 0.7rem;}
+
+/*==================
+   分销商信息
+=============*/
+   .index-main{margin:0; margin-bottom:4rem;}
+    .index-recom {border-bottom: 1px #eee solid}
+
+    .ect-index-header {
+        width: 100%;
+        box-sizing: border-box;
+        /*background-image: url(../sale/images/index_bg.jpg);*/
+        position: relative;
+        height: 12.5rem;
+        background-size: 100% auto;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .ect-index-info,.ect-index-menu,.ect-index-menu ul{
+        box-sizing: border-box;
+        width: 100%;
+
+    }
+    .ect-index-info{
+        position: absolute;
+        padding:0 1rem;
+        top:0;
+        bottom:0;
+        top: 4rem;
+        right: 0;
+        margin-top:-4.1rem;
+        width: 100%;
+    }
+    .ect-index-header>img{
+        width:100%;
+        height:12.5rem;
+    }
+    .ect-index-name{margin-top:0.3rem; color: #fff; position:absolute; right:0; bottom:1rem; color:#fff;font-size: 1rem; right:1rem;}
+    .ect-index-name h1{font-weight: normal; font-size:1.3rem; color: #fff;}
+    .ect-index-detail{text-align: left; display:block;  left: 0; width:6rem; height:6rem; position: absolute; bottom:-2rem; z-index: 999; left:1rem;}
+    .ect-index-info .ect-index-detail img{
+
+        width: 6rem;
+        height: 6rem;
+        margin-left: 0rem;
+    }
+    .ect-index-menu ul li{
+        padding: 0.8rem 0;
+        width: 25%;
+        box-sizing: border-box;
+        overflow: hidden;
+        float: left;
+        text-align: center;
+    }
+    .ect-index-menu ul li a{
+        border-right: 1px solid #e0e0e0;
+        display: block;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .ect-index-menu ul li a h3{
+        height: 1.6875rem;
+        font-size: 1.8rem;
+        color: #1CBB7F;
+        line-height: 1.8rem;
+        text-align: center;
+    }
+    .ect-index-menu ul li a h4{
+        /*height: 1.3125rem;*/
+        font-size: 1rem;
+        color: #999;
+        line-height: 1.2rem;
+        text-align: center;
+    }
+    .ect-index-menu-share{
+        height: 1.6875rem;
+        text-align: center;
+    }
+    .menu-share-pic{
+        display: inline-block;
+        width: 1.0625rem;
+        height: 1.125rem;
+        margin-top: .4375rem;
+        background:url(../sale/images/index-share.png);
+        background-repeat: no-repeat;
+        background-size: 100%;
+    }
+
+    .drp-name{
+        font-size: 1.5rem;
+        text-align: center;
+        line-height: 3rem
+    }
+
+    .share-div{position:fixed; left: 0; top:0; bottom:0; right:0; background:rgba(0,0,0,0.8); z-index: 1000; display: none;}
+    .share-div.active{display:inherit;}
+    .share-div{text-align: center;}
+    .share-div img{position: absolute; right: 0.2rem; top: 0.4rem;}

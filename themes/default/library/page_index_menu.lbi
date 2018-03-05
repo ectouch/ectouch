@@ -1,0 +1,22 @@
+<footer class="new-index-footer">
+<ul class="dis-box new-footer-box">
+	<li class="box-flex">
+		<a href="{:url('index/index')}"><i class="iconfont">&#xe621;</i><span>{$lang.home}</span></a>
+	</li>
+	<li class="box-flex">
+		<a href="{:url('category/top_all')}"><i class="iconfont">&#xe627;</i><span>{$lang.category}</span></a>
+	</li>
+	<li class="box-flex"><a href="javascript:;" class="j-search-input"><i class="iconfont">&#xe617;</i><span>{$lang.search}</span></a></li>
+	<li class="box-flex"><a href="{:url('flow/cart')}"><i class="iconfont">&#xe626;</i><span>{$lang.shopping_cart}</span></a></li>
+	{if $is_drp}
+	<li class="box-flex"><a href="{:url('sale/index')}"><i class="iconfont">&#xe625;</i><span>微店管理</span></a></li>
+		{else}
+	<li class="box-flex"><a href="{:url('user/index')}"><i class="iconfont">&#xe625;</i><span>{$lang.user_center}</span></a></li>
+	{/if}	
+</ul>
+</footer>
+
+
+
+
+

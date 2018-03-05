@@ -1,0 +1,68 @@
+
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,validator.js"}
+<!--验证表单信息TODO-->
+<div class="main-div">
+  <form action="" method="post" name="theForm" onsubmit="return validate();">
+    <table cellspacing="1" cellpadding="3" width="100%">
+      <tr>
+        <td class="label">退换原因:</td>
+        <td><input type="text" name="cause_name" value="{$cause_info.cause_name|escape}" size="40" />
+        {$lang.require_field}</td>
+      </tr>
+      <!--<tr>
+        <td class="label">原因分类:</td>
+        <td>
+          <select name="parent_id">
+            <option value="0">顶级分类</option>
+            {$cause_list}
+          </select>
+        </td>
+      </tr>-->
+     <tr>
+        <td class="label">排序:</td>
+        <td>
+          <input type="text" name='sort_order' {if $cause_info.sort_order} value='{$cause_info.sort_order}'{else} value="50"{/if} size="15" />
+        </td>
+      </tr>
+
+      <tr>
+        <td class="label">是否显示:</td>
+        <td>
+          <input type="radio" name="is_show" value="1" {if $cause_info.is_show neq 0} checked="true"{/if}/> {$lang.yes}
+          <input type="radio" name="is_show" value="0" {if $cause_info.is_show eq 0} checked="true"{/if} /> {$lang.no}
+        </td>
+      </tr>
+      <tr align="center">
+        <td colspan="2">
+          <input type="hidden" name="parent_id"  value="0"/>
+          <input type="hidden" name="c_id" value="{$c_id}" />
+          <input type="submit" value="{$lang.button_submit}" class="button" />
+          <input type="reset" value="{$lang.button_reset}" class="button" />
+          <input type="hidden" name="act" value="{$form_act}" />
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+
+<script type="text/javascript">
+<!--
+{literal}
+onload = function() {
+  document.forms['theForm'].elements['cause_name'].focus();
+  startCheckOrder();
+}
+
+function validate()
+{
+  var validator = new Validator('theForm');
+  validator.required('cause_name', type_name_empty);
+
+  return validator.passed();
+}
+{/literal}  
+//-->
+</script>
+
+{include file="pagefooter.htm"}

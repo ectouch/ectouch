@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+<meta http-equiv="Content-Type" content="text/html;" charset="UTF-8">
+<title>{$lang.cp_home}</title>
+<link href="__TPL__/css/skin_2.css" rel="stylesheet" type="text/css" id="cssfile"/>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.cookie.js"></script>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="__PUBLIC__/js/html5shiv.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/respond.min.js"></script>
+<![endif]-->
+<script type="text/javascript">
+$(function () {
+    $('span.bar-btn').click(function () {
+        $('ul.bar-list').toggle('fast');
+    });
+
+	var pagestyle = function() {
+		var iframe = $("#workspace");
+		var h = $(window).height() - iframe.offset().top;
+		var w = $(window).width() - iframe.offset().left;
+		if(h < 300) h = 300;
+		if(w < 973) w = 973;
+		iframe.height(h);
+		iframe.width(w);
+	}
+	pagestyle();
+	$(window).resize(pagestyle);
+	//turn location
+	if($.cookie('now_location_act') != null){
+		openItem($.cookie('now_location_op')+','+$.cookie('now_location_act')+','+$.cookie('now_location_nav'));
+	}else{
+		$('#mainMenu>ul').first().css('display','block');
+		//第一次进入后台时，默认定到欢迎界面
+		$('#item_welcome').addClass('selected');			
+		$('#workspace').attr('src','index.php?act=main');
+	}
+	$('#iframe_refresh').click(function(){
+		var fr = document.frames ? document.frames("workspace") : document.getElementById("workspace").contentWindow;;
+		fr.location.reload();
+	});
+	
+	//http://api.ecmoban.com/record.php?mod=login&url={$shop_url}
+
+});
+//收藏夹
+function addBookmark(url, label) {
+    if (document.all)
+    {
+        window.external.addFavorite(url, label);
+    }
+    else if (window.sidebar)
+    {
+        window.sidebar.addPanel(label, url, '');
+    }
+}
+
+
+function openItem(args){
+    closeBg();
+
+	spl = args.split(',');
+	module = spl[0];
+	try {
+		action = spl[1];
+		nav = spl[2];
+	}
+	catch(ex){}
+	if (typeof(action)=='undefined'){var nav = args;}
+	$('.actived').removeClass('actived');
+	$('#nav_'+nav).addClass('actived');
+
+	$('.selected').removeClass('selected');	
+
+	//show
+	$('#mainMenu ul').css('display','none');
+	$('#sort_'+nav).css('display','block');	
+
+	if (typeof(action)=='undefined'){
+		//顶部菜单事件
+		html = $('#sort_'+nav+'>li>dl>dd>ol>li').first().html();
+		str = html.match(/openItem\('(.*)'\)/ig);
+		arg = str[0].split("'");
+		spl = arg[1].split(',');
+		module  = spl[0];
+		action = spl[1];
+		nav = spl[2];
+		first_obj = $('#sort_'+nav+'>li>dl>dd>ol>li').first().children('a');
+		$(first_obj).addClass('selected');		
+		//crumbs
+		$('#crumbs').html('<span>'+$('#nav_'+nav+' > span').html()+'</span><span class="arrow">&nbsp;</span><span>'+$(first_obj).text()+'</span>');		
+	}else{
+		//左侧菜单事件
+		//location
+		$.cookie('now_location_nav',nav);
+		$.cookie('now_location_act',action);
+		$.cookie('now_location_op',module);
+		$("a[name='item_"+nav+'_'+module+"']").addClass('selected');
+		//crumbs
+		$('#crumbs').html('<span>'+$('#nav_'+nav+' > span').html()+'</span><span class="arrow">&nbsp;</span><span>'+$('#item_'+nav+'_'+module).html()+'</span>');
+	}
+	// src = 'index.php?m='+module+'&a='+action;
+	$('#workspace').attr('src', action.replace('amp;', ''));
+
+}
+
+$(function(){
+		bindAdminMenu();
+})
+function bindAdminMenu(){
+		$("[nc_type='parentli']").click(function(){
+			var key = $(this).attr('dataparam');
+			if($(this).find("dd").css("display")=="none"){
+				$("[nc_type='"+key+"']").slideDown("fast");
+				$(this).find('dt').css("background-position","-322px -170px");
+				$(this).find("dd").show();
+			}else{
+				$("[nc_type='"+key+"']").slideUp("fast");
+				$(this).find('dt').css("background-position","-483px -170px");
+				$(this).find("dd").hide();
+			}
+		});
+	}
+</script>
+<script type="text/javascript"> 
+//显示灰色JS遮罩层 
+function showBg(ct,content){ 
+var bH=$("body").height(); 
+var bW=$("body").width(); 
+var objWH=getObjWh(ct); 
+$("#pagemask").css({width:bW,height:bH,display:"none"}); 
+var tbT=objWH.split("|")[0]+"px"; 
+var tbL=objWH.split("|")[1]+"px"; 
+$("#"+ct).css({top:tbT,left:tbL,display:"block"}); 
+$(window).scroll(function(){resetBg()}); 
+$(window).resize(function(){resetBg()}); 
+} 
+function getObjWh(obj){ 
+var st=document.documentElement.scrollTop;//滚动条距顶部的距离 
+var sl=document.documentElement.scrollLeft;//滚动条距左边的距离 
+var ch=document.documentElement.clientHeight;//屏幕的高度 
+var cw=document.documentElement.clientWidth;//屏幕的宽度 
+var objH=$("#"+obj).height();//浮动对象的高度 
+var objW=$("#"+obj).width();//浮动对象的宽度 
+var objT=Number(st)+(Number(ch)-Number(objH))/2; 
+var objL=Number(sl)+(Number(cw)-Number(objW))/2; 
+return objT+"|"+objL; 
+} 
+function resetBg(){ 
+var fullbg=$("#pagemask").css("display"); 
+if(fullbg=="block"){ 
+var bH2=$("body").height(); 
+var bW2=$("body").width(); 
+$("#pagemask").css({width:bW2,height:bH2}); 
+var objV=getObjWh("dialog"); 
+var tbT=objV.split("|")[0]+"px"; 
+var tbL=objV.split("|")[1]+"px"; 
+$("#dialog").css({top:tbT,left:tbL}); 
+} 
+} 
+
+//关闭灰色JS遮罩层和操作窗口 
+function closeBg(){ 
+	$("#pagemask").css("display","none"); 
+	$("#dialog").css("display","none"); 
+} 
+</script>
+<script type="text/javascript"> 
+$(function(){   
+    var $li =$("#skin li");   
+		$li.click(function(){   
+		$("#"+this.id).addClass("selected").siblings().removeClass("selected");
+		$("#cssfile").attr("href","__TPL__/css/"+ (this.id) +".css");   
+        $.cookie( "MyCssSkin" ,  this.id , { path: '/', expires: 10 });  
+
+        $('iframe').contents().find('#cssfile2').attr("href","__TPL__/css/"+ (this.id) +".css"); 
+    });   
+
+    var cookie_skin = $.cookie( "MyCssSkin");
+    if (cookie_skin) {   
+		$("#"+cookie_skin).addClass("selected").siblings().removeClass("selected");
+		$("#cssfile").attr("href","__TPL__/css/"+ cookie_skin +".css"); 
+		$.cookie( "MyCssSkin" ,  cookie_skin  , { path: '/', expires: 10 }); 
+    }   
+});
+function addFavorite(url, title) {
+	try {
+		window.external.addFavorite(url, title);
+	} catch (e){
+		try {
+			window.sidebar.addPanel(title, url, '');
+        	} catch (e) {
+			showDialog("请按 Ctrl+D 键添加到收藏夹", 'notice');
+		}
+	}
+}
+</script>
+
+</head>
+
+<body style="margin: 0px;" scroll="no">
+<div id="pagemask"></div>
+<div id="dialog" style="display:none">
+  <div class="title">
+    <h3>管理中心导航</h3>
+    <span><a href="JavaScript:void(0);" onclick="closeBg();">关闭</a></span> </div>
+  <div class="content">
+    {foreach from=$menus item=menu key=key}
+    <dl>
+    	<dt>{$menu.label}</dt>
+        {foreach from=$menu.children item=child key=k}
+  		<dd><a href="javascript:void(0)" onclick="openItem('{$k},{$child.action},{$key}');">{$child.label}</a></dd>
+        {/foreach}
+    </dl>
+    {/foreach}
+    </div>
+</div>
+<table style="width: 100%;" id="frametable" height="100%" width="100%" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td colspan="2" height="90" class="mainhd"><div class="layout-header"> <!-- Title/Logo - can use text instead of image -->
+          <div id="title"></div>
+          <!-- Top navigation -->
+          <div id="topnav" class="top-nav">
+            <ul>
+              <li><a href="privilege.php?act=logout" title="{$lang.signout}"><span>{$lang.signout}</span></a></li>
+              <li><a href="../index.php" target="_blank" title="{$lang.preview}"><span>{$lang.preview}</span></a></li>
+              <li><a href="index.php?act=clear_cache" target="workspace">更新缓存</a></li>
+              <li><a href="privilege.php?act=modif" target="workspace"><span>{$lang.profile}</span></a></li>
+              <li><a href="privilege.php?act=modif" target="workspace">您好&nbsp;:&nbsp;{$smarty.session.admin_name}</a></li>
+            </ul>
+          </div>
+          <!-- End of Top navigation --> 
+          <!-- Main navigation -->
+          <nav id="nav" class="main-nav">
+            <ul>
+
+{foreach from=$menus item=menu key=k}
+<li><a class="link{if $smarty.foreach.menu.iteration eq 1} actived{/if}" id="nav_{$k}" href="javascript:;" onclick="openItem('{$k}');"><span>{$menu.label}</span></a></li>
+{/foreach}
+
+            </ul>
+          </nav>
+          <div class="loca"><strong>您的位置:</strong>
+            <div id="crumbs" class="crumbs"><span>控制台</span><span class="arrow">&nbsp;</span><span>欢迎页面</span> </div>
+          </div>
+          <div class="toolbar">
+            <div class="sitemap"><a id="siteMapBtn" href="#rhis" onclick="showBg('dialog','dialog_content');"><span>管理地图</span></a></div>
+          </div>
+        </div>
+        <div > </div></td>
+    </tr>
+    <tr>
+      <td class="menutd" valign="top" width="161"><div id="mainMenu" class="main-menu">
+        {foreach from=$menus item=menu key=key}
+          <ul id="sort_{$key}">
+            <li>
+              <dl>
+                <dd>
+                  <ol>
+                    {foreach from=$menu.children item=child key=k}
+                    <li><a href="JavaScript:void(0);" name="item_{$key}_{$k}" id="item_{$key}_{$k}" onclick="openItem('{$k},{$child.action},{$key}');">{$child.label}</a></li>
+                    {/foreach}
+                  </ol>
+                </dd>
+              </dl>
+            </li>
+          </ul>
+        {/foreach}
+
+        </div><div class="copyright">
+        <p>Powered By <em><a href="http://www.ectouch.cn" target="_blank"><span class="vol"><font class="b">ECTouch</font><font class="o">.Cn</font></span></a></em></p></div></td>
+      <td valign="top" width="100%"><iframe src="" id="workspace" name="workspace" style="overflow: visible;" frameborder="0" width="100%" height="100%" scrolling="yes" onload="window.parent"></iframe></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

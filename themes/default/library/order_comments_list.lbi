@@ -1,0 +1,138 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="goods-info ect-padding-tb"> 
+  <!--商品评论-->
+  <section class="user-tab ect-border-bottom0">
+    <div id="is-nav-tabs" style="height:3.15em; display:none;"></div>
+    
+    <!--评论表单 start-->
+    <div class="submit-comments">
+      <form action="javascript:;" onsubmit="submitComment(this)" method="post" name="commentForm" id="commentForm">
+        <div class="ect-padding-lr">
+          <h4 class="ect-margin-tb">{$lang.username}：<strong><!--{if $smarty.session.user_name}-->{$smarty.session.user_name}<!--{else}-->{$lang.anonymous}<!--{/if}--></strong></h4>
+          <ul class="comment-radio ect-radio ect-margin-tb ect-margin-bottom0">
+            <li>
+              <input name="comment_rank" type="radio" value="5" checked="checked" id="comment_rank5" />
+              <label for="comment_rank5"><i></i>{$lang.five_stars}</label>
+            </li>
+            <li>
+              <input name="comment_rank" type="radio" value="4" id="comment_rank4"/>
+              <label for="comment_rank4"><i></i>{$lang.four_stars}</label>
+            </li>
+            <li>
+              <input name="comment_rank" type="radio" value="3" id="comment_rank3"/>
+              <label for="comment_rank3"><i></i>{$lang.three_stars}</label>
+            </li>
+            <li>
+              <input name="comment_rank" type="radio" value="2" id="comment_rank2"/>
+              <label for="comment_rank2"><i></i>{$lang.two_stars}</label>
+            </li>
+            <li>
+              <input name="comment_rank" type="radio" value="1" id="comment_rank1"/>
+              <label for="comment_rank1"><i></i>{$lang.one_stars}</label>
+            </li>
+          </ul>
+        <!--   <p class="ect-padding-tb">
+            <input placeholder="E-mail"  type="text" name="email" id="email"  maxlength="100" value="{$smarty.session.email|escape}" >
+          </p> -->
+          <p class="ect-padding-tb">
+            <textarea name="content" placeholder="{$lang.comment_content}"></textarea>
+            <input type="hidden" name="cmt_type" value="{$comment_type}" />
+            <input type="hidden" name="id" value="{$id}" />
+            <input type="hidden" name="order_id" value="{$order_id}" />
+          </p>
+          <!-- 判断是否启用验证码{if $enabled_captcha_comments} -->
+          <p class="ect-padding-tb code"><span>
+            <input placeholder="{$lang.comment_captcha}" type="text" name="captcha"/>
+            </span> <img class="pull-right" src="{:url('public/captcha', array('rand'=>$this->_var['rand']))}" alt="captcha" onClick="this.src='{:url('public/captcha')}&t='+Math.random()"  /> </p>
+          <!-- {/if} -->
+          <p class="ect-padding-tb">
+            <input type="submit" class="btn btn-info ect-btn-info ect-bg" value="{$lang.submit_comment}"/>
+          </p>
+        </div>
+      </form>
+    </div>
+  </section>
+  <!--用户评论 END--> 
+</div>
+<script type="text/javascript">
+//<![CDATA[
+{foreach from=$lang.cmt_lang item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+{literal}
+/**
+ * 提交评论信息
+*/
+function submitComment(frm)
+{
+  var cmt = new Object;
+
+  // cmt.username        = frm.elements['username'].value;
+  //cmt.email           = frm.elements['email'].value;
+  cmt.content         = frm.elements['content'].value;
+  cmt.type            = frm.elements['cmt_type'].value;
+  cmt.id              = frm.elements['id'].value;
+  cmt.order_id        = frm.elements['order_id'].value;
+  cmt.enabled_captcha = frm.elements['enabled_captcha'] ? frm.elements['enabled_captcha'].value : '0';
+  cmt.captcha         = frm.elements['captcha'] ? frm.elements['captcha'].value : '';
+  cmt.rank            = 0;
+
+  for (i = 0; i < frm.elements['comment_rank'].length; i++)
+  {
+    if (frm.elements['comment_rank'][i].checked)
+    {
+       cmt.rank = frm.elements['comment_rank'][i].value;
+     }
+  }
+/*
+  if (cmt.username.length == 0)
+  {
+     alert(cmt_empty_username);
+     return false;
+  } */
+
+ 
+   if (cmt.content.length == 0)
+   {
+      alert(cmt_empty_content);
+      return false;
+   }
+
+   if (cmt.enabled_captcha > 0 && cmt.captcha.length == 0 )
+   {
+      alert(captcha_not_null);
+      return false;
+   }
+	
+   $.post('{:url('comment/index')}', {'cmt':$.toJSON(cmt)}, function(data){
+   	commentResponse(data);
+   }, 'json');
+   //Ajax.call('{:url('comment/index')}', 'cmt=' + cmt.toJSONString(), commentResponse, 'POST', 'JSON');
+   return false;
+}
+
+/**
+ * 处理提交评论的反馈信息
+*/
+  function commentResponse(result)
+  {
+    var cart_url = 'index.php?c=user&a=order_comment';
+    if (result.message)
+    {
+      alert(result.message);
+	  location.href = cart_url;
+    }
+
+    if (result.error == 0)
+    {
+      var layer = document.getElementById('ECS_COMMENT');
+
+      if (layer)
+      {
+        layer.innerHTML = result.content;
+      }
+    }
+  }
+{/literal}
+//]]>
+</script>

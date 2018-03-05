@@ -1,0 +1,61 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<!-- 订单搜索 -->
+
+
+<!-- 退换货原因列表 -->
+<form method="post" action="order.php?act=operate" name="listForm" onsubmit="return check()">
+  <div class="list-div" id="listDiv">
+{/if}
+
+<table width="100%" cellspacing="1" cellpadding="2" id="list-table">
+  <tr>
+    <th>退换货原因</th>
+    <th>是否显示</th>
+    <th>排序</th>
+    <th>操作</th>
+  </tr>
+  {foreach from=$cause_list item=cat}
+  <tr align="center" class="{$cat.level}" id="{$cat.level}_{$cat.cat_id}">
+    <td width="20%" align="left" >
+      {if $cat.is_leaf neq 1}
+      <img src="images/menu_minus.gif" id="icon_{$cat.level}_{$cat.cat_id}" width="9" height="9" border="0" style="margin-left:{$cat.level}em" onclick="rowClicked(this)" />
+      {else}
+      <img src="images/menu_arrow.gif" width="9" height="9" border="0" style="margin-left:{$cat.level}em" />
+      {/if}
+      <span>{$cat.cause_name}</span>
+    {if $cat.cat_image}
+      <img src="../{$cat.cat_image}" border="0" style="vertical-align:middle;" width="60px" height="21px">
+    {/if}
+    </td>
+    <td width="20%"><img src="images/{if $cat.is_show eq '1'}yes{else}no{/if}.gif" /></td>
+    <td width="15%" align="center"><span onclick="listTable.edit(this, 'edit_sort_order', {$cat.cat_id})">{$cat.sort_order}</span></td>
+    <td width="24%" align="center">
+      <a href="aftermarket_cause.php?act=edit_cause&amp;c_id={$cat.cause_id}">{$lang.edit}</a> |
+      <a href="javascript:;" onclick="listTable.remove({$cat.cause_id}, '{$lang.drop_confirm}' , 'remove_cause')" title="{$lang.remove}">{$lang.remove}</a>
+    </td>
+  </tr>
+  {/foreach}
+</table>
+
+{if $full_page}
+  </div>
+  <div>
+    <input name="remove_back" type="submit" id="btnSubmit3" value="{$lang.remove}" class="button" disabled="true" onclick="{if(confirm('{$lang.confirm_delete}')){return true;}return false;}" />
+  </div>
+</form>
+{literal}
+<script language="JavaScript">
+    onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+var imgPlus = new Image();
+imgPlus.src = "images/menu_plus.gif";
+</script>
+{/literal}
+{include file="pagefooter.htm"}
+{/if}

@@ -1,0 +1,217 @@
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<body >
+<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+	<h3 class="box-flex">发票信息</h3>
+	<p><i class="iconfont icon-pailie j-nav-box"></i></p>
+</header>
+<div class="j-nav-content">
+	<ul class="dis-box new-footer-box">
+		<li class="box-flex">
+			<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+		</li>
+		<li class="box-flex">
+			<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+	</ul>
+</div>
+<style>
+	/*发票*/
+.invoice-warp-box header{padding-bottom:1.1rem;}
+.invoice-warp ul li{display: inline-block;position:relative;}
+.invoice-warp ul li input{position:absolute;left:0; right:0; bottom:0; top:0; width: 100%; height: 100%; opacity: 0;}
+.invoice-warp ul li label{padding:.6rem 0.3rem;display:block;text-align:center;border:1px solid #efefef;border-radius:4px;color:#666}
+.invoice-warp{padding:1.1rem 0 ;border-bottom:1px solid #f6f6f9;}
+.invoice-warp .ect-select label{padding:.5rem 1.2rem;}
+.invoice-warp .ect-select {margin:0;}
+.invoice-warp ul li label.active{border-color:#1cbb7f;color:#1cbb7f}
+.invoice-warp ul li{font-size:1.4rem;margin:0 .3rem}
+.invoice-warp {background: #fff;overflow: hidden;}
+.invoice-cont,.invoice-cont-1{padding:0 1.1rem;}
+.invoice-cont li,.invoice-cont-1 li{padding:1rem 0;border-bottom:1px solid #f6f6f9;}
+.invoice-cont li:last-child,.invoice-cont-1 li:last-child{border-bottom:0;}
+.invoice-warp-box-1 ul{margin-bottom:1rem;padding:0 1.1rem;}
+.invoice-cont-list .ect-select{display: inline-block;position:relative;margin:0;}
+.invoice-cont-list .ect-select label{padding:.6rem 2rem;}
+.invoice-cont-list .ect-select input{position:absolute;left:0; right:0; bottom:0; top:0;width: 100%; height: 100%; opacity: 0;}
+.invoice-cont-box.active{display: none;}
+.invoice-cont-1{display: none}
+.invoice-cont-1.cur{display: block}
+.invoice-cont.cur{display: none}
+.invoice-cont-box p{line-height:1.5;}
+.n-invoice-max{position: static;width: 100%;left: 0;right: 0;top: 0;bottom: 0;z-index: 12;}
+.invoice-admin-box input{font-size:1.6rem;padding-top:.3rem;}
+.invoice-cont input ,.invoice-cont-1 input{font-size:1.6rem;padding-top:.3rem;}
+.invoice-admin-box{padding:1rem 0;border-bottom:1px solid #f6f6f9;}
+.select-three-invoice{padding:0 1.1rem;}
+.select-three-invoice .header-cont{font-size:1.6rem;color:#333;padding:.7rem 0; }
+.select-three-invoice .invoice-list{padding:.3rem 0;}
+.invoice-cont-2{display: none}
+.invoice-cont-2.active{display: block}
+.invoice-cont-2{padding:0 1.1rem;}
+.fl label.active{border-color: #1cbb7f;color: #1cbb7f;} 
+.fl label{ display: block;text-align: center;border: 1px solid #efefef;border-radius: 4px;padding: .6rem 2rem;}
+.fl label input{left: 0;right: 0;bottom: 0;top: 0;height:100%;width: 100%; position: absolute;opacity: 0;} 
+.invoice-cont{display: none}
+.invoice-cont.cur{display: block;}
+</style>
+<form action="{:url('flow/change_inv')}" method="post" name="theForm" id="theForm" >
+<li class="dis-box padding-all-n m-top1px   f-c-s-coupon j-f-c-receipt">
+                           
+                   
+                           
+
+                            <div  class="j-filter-div  filter-receipt-div n-invoice-max" >
+                                <div class="  con-filter-div-scrll">
+                                    <div class="j-flow-site" >
+                               <div class="">
+                                
+                                            <section class="invoice-warp-box padding-all bg-white">
+                                                     <div class="invoice-warp" style="border:none">
+                                                        
+                                                        <ul class="j-get-invoice-1 flow-receipt-cont">
+                                                            <li class="ect-select list-select promotion my-but-pre">
+                                                                <label class="ts-1 dis-block j-paper active"  data-type="0" for="msg-type0">开发票<input class= "ts-1 dis-block j-paper active" type="radio"  checked="checked" id="need_inv" name="need_inv" value="1"/></label>
+                                                            </li>
+                                                            <li class="ect-select  my-but-pre">
+                                                                <label class="ts-1 dis-block j-electron" data-type="1" for="msg-type1">不开发票<input class= "ts-1 dis-block j-paper active" type="radio" id="need_inv" name="need_inv" value="0"/></label>
+                                                            </li>
+                                                        </ul>
+                                                        <p class="f-03 col-7 m-top08">电子发票是税务局认可的有效凭证，其法律效力、基本用途及使用规定
+                                                        </p>
+                                                    </div>
+                                                    </section>
+                                                    
+                                                    <section class="invoice-cont-box">
+                                                     <div class="invoice-warp-box-1  bg-white">
+                                                        <div class="select-one-1 invoice-cont-list">
+                                                            <ul class="j-get-invoice flow-receipt-invoice_id">
+                                                                <li class="ect-select list-select promotion my-but-pre">
+                                                                    
+                                                                    <label class="ts-1 dis-block {if $inv_text_id == '' }active{/if}"  invoice-type="0" data="1">个人
+                                                                    <input class= "ts-1 dis-block " type="radio" checked="checked" name="inv_type" value="1"/></label>
+                                                                </li>
+                                                                <li class="ect-select  my-but-pre">
+                                                                  
+                                                                    <label class="ts-1 dis-block {if $inv_text_id != ''}active{/if}" invoice-type="1" data="2">
+                                                                    <input class= "ts-1 dis-block " {if $inv_text_id != ''} checked="checked"{/if} type="radio" name="inv_type" value="2"/>单位
+                                                                    </label>
+                                                                </li>
+                                                               
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                      <ul class="m-top10 bg-white invoice-cont flow-receipt-title text-all-select {if ($inv_payee != '' && $inv_text_id == '') || ($inv_payee == '' && $inv_text_id == '' )}cur{/if}">
+                                                        <li class="dis-box f-06">
+                                                            <div class="">个人姓名：</div>
+                                                            <input class="j-input-text" type="text" name="inv_person_name" id="inv_person_name" {if $inv_text_id == ''} value="{$inv_payee}" {/if}  placeholder="可填写个人名称"/>
+                                                        </li>                                                  
+                                                      </ul>
+                                                        
+                                                      <ul class="m-top10 bg-white invoice-cont-1 flow-receipt-title-1 text-all-select {if $inv_text_id != '' }cur{/if}">
+                                                         
+                                                          <li class="dis-box f-06">
+                                                              <div class="">单位名称：</div>
+                                                              <input  class="j-input-text j-input-text-1" name="inv_company_name" {if $inv_text_id != ''} value="{$inv_payee}" {/if} id="inv_company_name" type="text"  placeholder="可填写单位名称"/>
+                                                          </li>
+                                                          
+                                                          
+                                                          <li class="dis-box f-06">
+                                                              <div class="">纳税人识别号：</div>
+                                                              <input class="box-flex j-input-text-tax-id" name="inv_text_id" id="inv_text_id" value="{$inv_text_id}" type="tel"  placeholder="纳税人识别号"/>
+                                                          </li>
+                                                      </ul>
+                                                        
+                                                      <ul class="m-top10 bg-white flow-consignee-list j-invoice-r select-three select-three-invoice" style="margin-bottom:0">       
+                                                        <div class="header-cont">发票类型</div>
+                                                        <style>
+                                                        
+                                                        </style>
+                                                    <!--{foreach from=$inv_type_list  item=content key=key}-->
+                                                            <li class="flow-checkout-adr invoice-list of-hidden">
+                                                                <div class="ect-select fl">
+                                                                    <label class="ts-1 dis-block j-paper p-r {if ($content.name == $inv_type ) || ($inv_type == '' && $key ==  '0')}active{/if}"  data-type="0" for="msg-type0">
+                                                                        {$content.content}
+                                                                        <input name="inv_name" type="radio" {if $key eq 0 || $content.name == $inv_type}checked="checked"{/if} value="{$content.name}"  />
+                                                                       
+                                                                    </label>
+                                                                </div>
+                                                            </li>
+                                                    <!--{/foreach}-->
+                                                    </ul>
+                                                  </section>
+                                            <div class="ect-button-more dis-box padding-all ">
+                                                        <button class="btn-submit box-flex  br-5" onclick="return check()">确定</button>
+
+                                            </div>
+                                    </div>
+                                </div>
+                                   </div>
+                            </div>
+                        </li>
+ </form>                      
+<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+<!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" -->
+<!-- #EndLibraryItem -->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.more.js"></script>
+<script type="text/javascript">
+	//发票
+        $(".j-get-invoice-1 li").click(function () {
+            $(this).find("label").addClass("active").parent(".ect-select").siblings().find("label").removeClass("active");
+            if($(this).find("label").attr("for") == "msg-type0") {
+                $(".invoice-cont-box").removeClass("active");
+                $(".invoice-cont-2").removeClass('active');
+           
+            }
+            if($(this).find("label").attr("for") == "msg-type1") {
+                $(".invoice-cont-box").addClass("active");
+                $(".invoice-cont-2").addClass('active')
+            }
+        });
+        $(".j-get-invoice li").click(function () {
+            $(this).find("label").addClass("active").parent(".ect-select").siblings().find("label").removeClass("active");
+          if($(this).find("label").attr("data") == 1) {
+                // $(".invoice-cont").removeClass("cur");
+                $(".invoice-cont").addClass("cur");
+                $(".invoice-cont-1").removeClass("cur");
+            }
+            if($(this).find("label").attr("data") == 2) {
+                $(".invoice-cont-1").addClass("cur");
+                $(".invoice-cont").removeClass("cur");
+            }
+        });
+              /*单选consignee*/
+    $(".j-invoice-r label").click(function () {
+        $(this).addClass("active").parents(".flow-checkout-adr").siblings().find("label").removeClass("active");
+    });
+	
+</script>
+<script type="text/javascript">
+  function check(){  
+    var need_inv =  $("input[name='need_inv']:checked").val();
+    var inv_type = $("input[name='inv_type']:checked").val();
+    var inv_person_name = document.getElementById('inv_person_name').value;
+    var inv_company_name = document.getElementById('inv_company_name').value;
+    var inv_text_id = document.getElementById('inv_text_id').value;
+
+    if(need_inv == 1){      
+      if(inv_type == 1){
+        if(inv_person_name == ''){
+          alert('个人名称不能为空');
+          return false;
+        }
+      }else{
+        if(inv_company_name == '' || inv_text_id == ''){
+          alert('单位名称和纳税人识别号不能为空');
+          return false;
+        }
+      }
+    }
+    
+  }
+</script>
+</body>
+</html>

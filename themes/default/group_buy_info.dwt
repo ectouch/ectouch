@@ -5,7 +5,7 @@
     <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write ect-bg"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$lang.groupbuy_goods_info}</span> <a href="javascript:;"  onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a></header>
     <nav class="ect-nav ect-nav-list" style="display:none;"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
   </div>
-  
+
   <!--商品图片相册-->
   <div id="focus" class="focus goods-focus ect-padding-lr ect-margin-tb">
     <div class="hd">
@@ -14,7 +14,13 @@
     </div>
     <div class="bd">
       <ul id="Gallery">
-        <li><a href="{$gb_goods.goods_img}"><img alt="{$gb_goods.goods_name}" src="{$gb_goods.goods_img}" /></a></li>
+        <!--{if $pictures }--> 
+        <!-- {foreach from=$pictures item=picture name=no}-->
+        <li><a href="{$picture.img_url}"><img src="{$picture.img_url}" alt="{$picture.img_desc}" /></a></li>
+        <!--{/foreach}--> 
+		<!--{else}-->
+		<li><a href="{$gb_goods.goods_img}"><img src="{$gb_goods.goods_img}" alt="{$gb_goods.goods_name}" /></a></li>
+        <!--{/if}-->
       </ul>
     </div>
   </div>
@@ -24,7 +30,7 @@
       <h4 class="title pull-left" style="position:static;">{$gb_goods.goods_name}</h4>
       </section>
     <section class="ect-margin-tb ect-margin-lr ">
-      <p><span class="pull-left">{$lang.gb_cur_price}<strong class="ect-colory">{$group_buy.formated_cur_price}</strong></span><span class="pull-right">{$lang.sort_sales}：{$group_buy.sales_count} 件</span></p>
+      <p><span class="pull-left">{$lang.gb_cur_price}<strong class="ect-colory">{$group_buy.formated_cur_price}</strong></span><span class="pull-right">{$lang.sort_sales}：{$sales_count} 件</span></p>
        <!-- {if $cfg.show_goodssn && 0} -->
         <p> {$lang.goods_sn}<strong>{$gb_goods.goods_sn}</strong></p>
        <!-- {/if} --> 
@@ -130,9 +136,23 @@
     </form>
   </div>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript" src="__TPL__/js/TouchSlide.1.1.js"></script> 
 <script type="text/javascript">
+/*banner滚动图片*/
+TouchSlide({
+  slideCell : "#focus",
+  titCell : ".hd ul", // 开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+  mainCell : ".bd ul",
+  effect : "leftLoop",
+  autoPlay : true, // 自动播放
+  autoPage : true, // 自动分页
+  delayTime: 200, // 毫秒；切换效果持续时间（执行一次效果用多少毫秒）
+  interTime: 2500, // 毫秒；自动运行间隔（隔多少毫秒后执行下一个效果）
+  switchLoad : "_src" // 切换加载，真实图片路径为"_src"
+});
+
 $(function() {
 /*判断user-tab内容高度不够时撑开*/
 	var user_tab_height = $(".group-buy-infos");
@@ -161,7 +181,8 @@ function changeNum( type ){
     if(type == 1){qty--; }
     if(type == 3){qty++; }
     if(qty <=0 ){ qty=1; }
-	if(qty > valid){ qty--;}
+  	
+   
     if(!/^[0-9]*$/.test(qty)){ qty = document.getElementById('back_number').value; }
     document.getElementById('goods_number').value = qty;
   }

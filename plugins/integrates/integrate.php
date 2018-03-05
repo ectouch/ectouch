@@ -357,6 +357,14 @@ class integrate
                 $this->db->query($sql);
                 $sql = "DELETE FROM " . $this->db->pre . 'account_log ' . " WHERE " . db_create_in($col, 'user_id'); // 删除用户日志
                 $this->db->query($sql);
+                $sql = "DELETE FROM " . $this->db->pre . 'wechat_user ' . " WHERE " . db_create_in($col, 'ect_uid'); // 删除微信用户
+                $this->db->query($sql);
+                
+                $col_connect_id = $this->db->table('connect_user')->field('id')->where(db_create_in($col, 'user_id'))->getCol();
+                if($col_connect_id) {
+                   $sql = "DELETE FROM {pre}connect_user  WHERE " . db_create_in($col, 'user_id'); // 删除connect_user表关联数据
+                   $this->db->query($sql);
+                }
             }
         }
         

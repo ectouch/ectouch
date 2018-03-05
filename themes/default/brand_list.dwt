@@ -1,21 +1,40 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" href="__TPL__/css/brand_list.css">
 <div class="con">
-<div style="height:4.2em;"></div>
-  <header>
-    <nav class="ect-nav ect-bg icon-write">
-      <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem -->
-    </nav>
-  </header>
-  
-  <div class="bran_list" id="J_ItemList" style="opacity:1;">
-    <ul class="single_item">
-    </ul>
-    <a href="javascript:;" class="get_more"></a> </div>
-</div>
+    <div class="bran_list bs-example" id="J_ItemList" style="opacity:1;" data-example-id="embedded-scrollspy">
+        <ul class="single_item">
+            <!--{if $list}-->
+                <!-- {foreach from=$list item=lis} -->
+                <li class="brand-status" id="{$lis.info}">
+                    {$lis.info}
+                </li>
+                <!-- {foreach from=$lis.list item=li} -->
+                    <li>
+                        <p><a href="{$li.url}"><img src="{$li.brand_logo}"></a>{$li.brand_name}</p>
+                    </li>
+                <!--{/foreach}-->
+                <!--{/foreach}-->
+            <!-- {/if}-->
+        </ul>
+    </div>
+    <div class="brand-letter" style="position: fixed;top: 1rem;right: 1rem" id="navbar-example" class="bs-docs-sidebar  affix">
+        <ul class="nav bs-docs-sidenav ect-brand-list-nav">
+            <!--{foreach name=list from=$nav item=li}-->
+            <li><a href="#{$li}">{$li}</a></li>
+            <!--{/foreach}-->
+        </ul>
+    </div>
 
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+</div>
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
 <script type="text/javascript">
-get_asynclist("{:url('brand/asynclist', array('page'=>$this->_var['page'], 'sort'=>$this->_var['sort'], 'order'=>$this->_var['order']))}" , '__TPL__/images/loader.gif');
-</script> 
-</body></html>
+$('body').scrollspy({ target: '#navbar-example' })
+</script>
+<style>
+    #scrollUp{
+        display: none !important;
+    }
+</style>
+</body>
+</html>

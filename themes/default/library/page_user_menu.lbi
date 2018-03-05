@@ -1,0 +1,13 @@
+<footer class="new-index-footer ">
+		<ul class="dis-box new-footer-box">
+			<li class="box-flex">
+				<a href="{:url('index/index')}" class="nav-cont active"><i class="nav-box"><img src="__TPL__/statics/img/home-a.png"></i><span>首页</span></a>
+			</li>
+			<li class="box-flex">
+				<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			</li>
+			<li class="box-flex"><a href="{:url('store/check_store')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/shop.png"></i><span>店铺</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+		</ul>
+	</footer>

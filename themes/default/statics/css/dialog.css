@@ -1,0 +1,49 @@
+.ui-dialog {pointer-events: auto;bottom:100%; padding-bottom:1.3rem; border: 1px solid #ccc; background-color: #fff;}
+.ui-dialog-close { position: absolute; right: 10px;cursor: pointer;color:#FFF; font-weight: bold;font-family: cursive;}
+.ui-dialog-mask{position: fixed;width:100%;height:100%;left:0;top:0;background:#000;opacity: .4;display: none;filter:alpha(opacity=40);}
+.ui-dialog-title{background-color:#288df0;color:#fff;}
+.ui-scroller-mask{padding-top:1rem;}
+@-webkit-keyframes zoomIn {
+	0% { bottom: -100%;}
+	100% { bottom: 0; }
+}
+@-moz-keyframes zoomIn {
+	0% { bottom: -100%; }
+	100% { bottom: 0; }
+}
+@keyframes zoomIn {
+	0% { bottom: -100%;}
+	100% { bottom: 0; }
+}
+@keyframes zoomOut {
+	0% { bottom: -100%;}
+	100% { bottom: 0; }
+}
+@-webkit-keyframes zoomOut {
+	0% { bottom: -100%;}
+	100% { bottom: 0; }
+}
+@-moz-keyframes zoomOut {
+	0% { bottom: -100%;}
+	100% { bottom: 0; }
+}
+.zoomIn { -webkit-animation-name: zoomIn; animation-name: zoomIn; }
+.zoomOut { -webkit-animation-name: zoomOut; animation-name: zoomOut;display: none\0 !important; }
+.animated { -webkit-animation-duration: .3s; animation-duration: .3s; -webkit-animation-fill-mode: both; -ms-animation-fill-mode: both; -moz-animation-fill-mode: both; animation-fill-mode: both; }
+#confirmDialog{width: 350px;background-color: #fff;}
+.ui-confirm-title,.ui-alert-title{white-space:nowrap; text-align: center;font-size: 18px;font-weight: bold;color:#333;line-height: 40px;}
+.confirm-title2{font-size: 1.5rem;font-weight: normal; color: #666;text-align: center;line-height: 1.8;}
+.ui-dialog-submit,.ui-alert-submit,.ui-confirm-submit{color:#444; margin-left:1rem}
+.ui-dialog-cancel{background-color:#999999;}
+.ui-dialog-action{pointer-events: auto;text-align: center;margin-top: 20px;width:100%;border:none;}
+.ui-dialog-action td{text-align: center;border:none;}
+.ui-dialog-action button{display: inline-block;border-radius: 5px;padding:5px 20px;color:#fff;border:none;outline: none;cursor: pointer;box-sizing: border-box;}
+
+.ui-alert{width:100%; left:0; right:0; bottom:0;}
+.ui-alert .ui-dialog-close{display: none;}
+.ui-alert .ui-alert-submit{margin: 0 auto;}
+.ui-alert-info{text-align: center;margin-top:20px;}
+.ui-confirm-close,.ui-confirm-no{color:#888;}
+
+
+

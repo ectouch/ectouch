@@ -1,0 +1,20 @@
+<!-- 美洽 2016 版 -->
+<!--
+<script type='text/javascript'>
+    (function(m, ei, q, i, a, j, s) {
+        m[a] = m[a] || function() {
+            (m[a].a = m[a].a || []).push(arguments)
+        };
+        j = ei.createElement(q),
+            s = ei.getElementsByTagName(q)[0];
+        j.async = true;
+        j.charset = 'UTF-8';
+        j.src = i + '?v=' + new Date().getUTCDate();
+        s.parentNode.insertBefore(j, s);
+    })(window, document, 'script', '//eco-api.meiqia.com/dist/meiqia.js', '_MEIQIA');
+    // 请在此处填写美恰企业ID
+    _MEIQIA('entId', 0000);
+</script>
+-->
+<!-- 美洽经典版 -->
+<!-- <script src="//meiqia.com/js/mechat.js?unitid=3421" charset="UTF-8" async="async"></script> -->

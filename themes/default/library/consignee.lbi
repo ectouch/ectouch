@@ -1,20 +1,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<div class="ect-bg-colorf flow-consignee">
+<div class="ect-bg-colorf flow-consignee s-user-top">
   <ul>
     <li>
-      <div class="input-text"><b class="pull-left">{$lang.consignee_name}：</b><span>
-        <input name="consignee" type="text" class="inputBg" id="consignee_{$sn}" value="{$consignee.consignee|escape}">
+      <div class="input-text"><b class="pull-left">{$lang.consignee_name}：</b><span style="top: -0.5rem;">
+        <input name="consignee" maxlength="10" type="text" class="inputBg" id="consignee_{$sn}" placeholder="{$lang.consignee_name}{$lang.require_field}" value="{$consignee.consignee|escape}">
         </span></div>
     </li>
     <li>
-      <div class="input-text"><b class="pull-left">{$lang.mobile}：</b><span>
-        <input name="mobile" type="text" class="inputBg"  id="mobile_{$sn}" value="{$consignee.mobile|escape}">
+      <div class="input-text"><b class="pull-left">{$lang.mobile}：</b><span style="top: -0.5rem;">
+        <input name="mobile" maxlength="11" type="text" class="inputBg"  id="mobile_{$sn}" placeholder="{$lang.mobile}{$lang.require_field}" value="{$consignee.mobile|escape}">
         </span></div>
     </li>
     <!-- {if $real_goods_count gt 0} --> 
     <!-- 购物车中存在实体商品显示国家和地区 -->
-    <li>
-      <div class="form-select"> <i class="fa fa-sort"></i>
+    <li style="display:none">
+        <div class="input-text"><b class="pull-left">{$lang.city_district}：</b><span>
         <select name="country" id="selCountries_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$sn}')">
           <option value="0">{$lang.please_select}{$name_of_region[0]}</option>
           <!-- {foreach from=$country_list item=country} -->
@@ -22,7 +22,9 @@
           <!-- {/foreach} -->
         </select>
       </div>
-      <div class="form-select"> <i class="fa fa-sort"></i>
+    </li>
+    <li>
+        <div class="input-text"><b class="pull-left">省/直辖市：</b><span style="top: -0.5rem;">
         <select name="province" id="selProvinces_{$sn}" onchange="region.changed(this, 2, 'selCities_{$sn}')">
           <option value="0">{$lang.please_select}{$name_of_region[1]}</option>
           <!-- {foreach from=$province_list item=province} -->
@@ -30,7 +32,9 @@
           <!-- {/foreach} -->
         </select>
       </div>
-      <div class="form-select"> <i class="fa fa-sort"></i>
+    </li>
+    <li>
+        <div class="input-text"><b class="pull-left">城市：</b><span style="top: -0.5rem;">
         <select name="city" id="selCities_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$sn}')">
           <option value="0">{$lang.please_select}{$name_of_region[2]}</option>
           <!-- {foreach from=$city_list.$sn item=city} -->
@@ -38,8 +42,10 @@
           <!-- {/foreach} -->
         </select>
       </div>
-      <div class="form-select"> <i class="fa fa-sort"></i>
-        <select name="district" id="selDistricts_{$sn}" {if !$district_list.$sn}style="display:none"{/if}>
+    </li>
+    <li id="selDistricts_{$sn}_box" {if !$district_list.$sn}style="display:none"{/if}>
+        <div class="input-text"><b class="pull-left">区/县：</b><span style="top: -0.5rem;">
+        <select name="district" id="selDistricts_{$sn}">
           <option value="0">{$lang.please_select}{$name_of_region[3]}</option>
           <!-- {foreach from=$district_list.$sn item=district} -->
           <option value="{$district.region_id}" {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
@@ -52,7 +58,7 @@
     <!-- {if $real_goods_count gt 0} --> 
     <!-- 购物车中存在实体商品显示详细地址 -->
     <li class="input-text"><b class="pull-left">{$lang.detailed_address}：</b>
-      <textarea name="address"  id="address_{$sn}">{$consignee.address|escape}</textarea>
+      <textarea name="address" placeholder="{$lang.detailed_address}{$lang.require_field}"  id="address_{$sn}">{$consignee.address|escape}</textarea>
     </li>
     <!-- {/if} -->
   </ul>
@@ -60,9 +66,9 @@
 <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center"> 
   <!-- {if $smarty.session.user_id gt 0 and $consignee.address_id gt 0} --> 
   <!-- 如果登录了，显示删除按钮 --> 
-  <a  class="btn btn-info"  onclick="if (confirm('{$lang.drop_consignee_confirm}')) location.href='{:url('flow/drop_consignee',array('id'=>$this->_var['consignee']['address_id']))}'" >{$lang.drop}</a> 
+  <a  class="btn btn-info11 n-but-bor"  onclick="if (confirm('{$lang.drop_consignee_confirm}')) location.href='{:url('flow/drop_consignee',array('id'=>$this->_var['consignee']['address_id']))}'" >{$lang.drop}</a> 
   <!-- {/if} -->
-  <button type="submit" class="btn btn-info ect-bg-colory" name="Submit">{$lang.shipping_address}</button>
+  <button type="submit" class="btn btn-submit  ect-bg-colory" name="Submit">{$lang.shipping_address}</button>
 </div>
 <input type="hidden" name="step" value="consignee" />
 <input type="hidden" name="act" value="checkout" />

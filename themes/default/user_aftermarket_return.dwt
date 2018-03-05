@@ -1,0 +1,101 @@
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+
+<body class="b-color-f">
+	<header class="dis-box header-menu b-color color-whie">
+		<a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+		<h3 class="box-flex">{$title}</h3>
+		<a class="" href="javascript:;"><i class="iconfont icon-pailie j-nav-box"></i></a>
+	</header>
+	<div class="j-nav-content">
+		<ul class="dis-box new-footer-box">
+			<li class="box-flex">
+				<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+			</li>
+			<li class="box-flex">
+				<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+				<li class="box-flex">
+					<a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a>
+				</li>
+				<li class="box-flex">
+					<a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a>
+				</li>
+				<li class="box-flex">
+					<a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a>
+				</li>
+		</ul>
+	</div>
+	<div class="con">
+		<div id="page">
+			<div id="wrapper">
+				<div id="scroller">
+					<div class="panel panel-form">
+						<form class="f-form" method="post" action="{:url('user/to_return')}" enctype="multipart/form-data" name="serviceform" novalidate="novalidate">
+							<div class="panel-body" id="return_type1">
+								<div id="J_ModId_3">
+									<div class="bidi-viewer" data-view="form">
+										<div id="bidi-form-81" class="f-field">
+											<div class="row">
+												<label class="f-label">
+								                    <em>*</em>
+								                    <label id="bidi-form-82">退货快递</label>
+												</label>
+												<div class="f-controls select-wrapper">
+													<select id="bidi-form-83" class="select" name="back_other_shipping" data-type="select">
+														{foreach from=$shipping_list item=vo}
+														<option value="{$vo.shipping_id}">{$vo.shipping_name}</option>
+														{/foreach}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div id="bidi-form-84" class="f-field">
+											<div class="row">
+												<label class="f-label"> <em>*</em>快递单号 </label>
+												<div class="f-controls money-input iconfont">
+													<input name="back_invoice_no" id="back_num" class="input-l input-content-len-10 J_InputFee" name="back_num" value="" type="text" wrapper=".f-field" min="1" max="1" placeholder="请输入快递单号（必填）">
+												</div>
+											</div>
+										</div>
+										<div id="bidi-form-93" class="f-field">
+											<div class="row"> <span class="memo-tip"></span>
+												<div class="f-label"> 寄回地址 </div>
+												<div class="f-controls  n-addr-textarea">
+													<p> {$addr}</p>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+					</div>
+				</div>
+			</div>
+			<div class="filter-btn dis-box">
+			    <input type="hidden" name='ret_id' value="{$ret_id}">
+				<input type="submit" name="submit" class="btn-submit box-flex n-iphone5-top1 j-goods-attr j-show-div" value="确定商品寄出" />
+			</div>
+        </form>
+		</div>
+
+	</div>
+
+	<!-- #BeginLibraryItem "/library/new_search.lbi" -->
+	<!-- #EndLibraryItem -->
+	<!-- #BeginLibraryItem "/library/new_page_footer.lbi" -->
+	<!-- #EndLibraryItem -->
+	<script>
+		/*店铺信息商品滚动*/
+		var swiper = new Swiper('.j-g-s-p-con', {
+			scrollbarHide: true,
+			slidesPerView: 'auto',
+			centeredSlides: false,
+			grabCursor: true
+		});
+	</script>
+</body>
+
+</html>

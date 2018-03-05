@@ -133,11 +133,23 @@
     <!--{/if}--> 
     
   </div>
-  <footer class="logo"><a href="http://www.ectouch.cn" title="ECTouch官网" target="_blank"><img src="__TPL__/images/copyright.png" width="176" height="60"></a></footer>
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
 <script type="text/javascript" src="__TPL__/js/lefttime.js"></script> 
+<script type="text/javascript" src="__TPL__/js/TouchSlide.1.1.js"></script> 
 <script type="text/javascript">
+/*banner滚动图片*/
+TouchSlide({
+  slideCell : "#focus",
+  titCell : ".hd ul", // 开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+  mainCell : ".bd ul",
+  effect : "leftLoop",
+  autoPlay : true, // 自动播放
+  autoPage : true, // 自动分页
+  delayTime: 200, // 毫秒；切换效果持续时间（执行一次效果用多少毫秒）
+  interTime: 2500, // 毫秒；自动运行间隔（隔多少毫秒后执行下一个效果）
+  switchLoad : "_src" // 切换加载，真实图片路径为"_src"
+});
 var gmt_end_time = {$snatch_goods.gmt_end_time|default:0};
 var id = {$id};
 {foreach from=$lang.snatch_js item=item key=key}

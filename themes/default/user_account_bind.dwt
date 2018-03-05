@@ -1,0 +1,126 @@
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" --><!-- #EndLibraryItem -->
+
+	<div class="con">
+        <header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+            <h3 class="box-flex">{$page_title}</h3>
+            <p><i class="iconfont icon-pailie j-nav-box"></i></p>
+        </header>
+        <div class="j-nav-content">
+            <ul class="dis-box new-footer-box">
+            <li class="box-flex">
+                <a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+            </li>
+            <li class="box-flex">
+                <a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+                <li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+                <li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+                <li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+        </ul>
+        </div>
+
+        {if $list}
+            {foreach from=$list item=item}
+                {if $item.install == 1}
+                <div class="user_profile_bind  bg-white padding-all dis-box m-top08">
+                    <div class="box-flex"  >
+                        <div class="dis-box">
+                                {if $item.from == 'weixin'}
+                                <div><img src="__TPL__/images/wechat.png" alt="{$item.from}"></div>
+                                {else}
+                                <div><img src="__TPL__/images/{$item.from}.png" alt="{$item.from}"></div>
+                                {/if}
+                                <div class="box-flex cont">
+                                    {if $item.from == 'qq'}
+                                    <h4 class="f-05 col-3">QQ登录</h4>
+                                    {/if}
+                                    {if $item.from == 'weibo'}
+                                    <h4 class="f-05 col-3">微博登录</h4>
+                                    {/if}
+                                    {if $item.from == 'weixin'}
+                                    <h4 class="f-05 col-3">微信登录</h4>
+                                    {/if}
+                                    {if $item.from == 'facebook'}
+                                    <h4 class="f-05 col-3">facebook登录</h4>
+                                    {/if}
+                                    <p class="f-02 col-7 m-top02">一键登录，更方便，更快捷！</p>
+                                </div>
+
+                        </div>
+                    </div>
+                    <div class="right">
+                        <!-- 已经绑定 -->
+                        {if $item.user_id == $user_id}
+                        <div class="user_profile_bind_btn">
+                            <a href="javascript:;">
+                               <sapn class="color-red">已绑定</sapn>
+                            </a>
+                            <label>|</label>
+                            <a href="javascript:;" data-item="{$item.id}" class="accountbind">
+                                <sapn class="col-7">解绑</sapn>
+                            </a>
+                        </div>
+                        {else}
+                        <div class="user_profile_bind_btn">
+                            <a href="{:url('oauth/index', array('type' => $this->_var['item']['from'], 'user_id' => $this->_var['user_id']))}">
+                            <i class="iconfont icon-jiantou tf-180"></i><sapn class="col-7">去绑定</sapn>
+                            </a>
+                         </div>
+                        {/if}
+                    </div>
+    			</div>
+                {/if}
+            {/foreach}
+
+            <div class="dis-box user_relation_remark">
+                <label class="f-02 col-9">注：</label>
+                <p class="col-9 f-02 box-flex">
+                解绑后，将不能快捷登录网站，请谨慎操作。
+                </p>
+            </div>
+
+        {else}
+        <div class="no-div-message">
+            <i class="iconfont icon-biaoqingleiben"></i>
+            <p>亲，没有第三方授权登录插件</p>
+        </div>
+        {/if}
+	</div>
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    <script type="text/javascript" src="__PUBLIC__/layer/layer.js"></script>
+    <script type="text/javascript">
+    $(function(){
+        // 点击
+        $('.accountbind').click(function(){
+            var id = $(this).attr("data-item");
+            //询问框
+            layer.open({
+                content: '您确定要解绑此会员帐号吗？'
+                ,btn: ['确定', '取消']
+                ,yes: function(index){
+                    remove_account(id); //解绑
+                }
+            });
+        });
+
+        // 解绑
+        function remove_account(id) {
+            $.post("{:url('user/account_bind')}", {id:id}, function(data) {
+                layer.msg(data.msg);
+                url = data.url ? data.url : '';
+                setTimeout('goto(url)',2000);
+                return false;
+            },'json');
+        }
+    });
+
+    function goto(url)
+    {
+        if (url) {
+            window.location.href = url;
+        } else {
+            window.location.reload();
+        }
+    }
+    </script>
+</body>
+</html>

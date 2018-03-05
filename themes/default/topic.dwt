@@ -1,7 +1,10 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<style type="text/css">
+.topic-title img{width:100%;}
+</style>
 <div class="con">
   <div class="ect-bg">
-    <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write ect-bg"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$tile}</span> <a href="javascript:;"  onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a></header>
+    <header class="ect-header ect-margin-tb ect-margin-lr text-center icon-write ect-bg"> <a href="javascript:history.go(-1)" class="pull-left ect-icon ect-icon1 ect-icon-history"></a>  <span>{$tile}</span> <a href="javascript:;"  onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune icon-write"></a></header>
     <nav class="ect-nav ect-nav-list" style="display:none;"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
   </div>
   <!--{if $topic.htmls eq ''} 图片类型不为图片或者flash-->
@@ -18,23 +21,33 @@
 	}
 	else
 	{
-		document.write('<img border="0" src="' + img_url + '">');
+		document.write('<div id="img-photo-box"><img border="0" style="width:100%;" src="' + img_url + '"></div>');
 	}
   </script>
   <!--{else}-->
   {$topic.htmls}
   <!--{/if}-->
-  
+
   <!--{if $topic.intro neq ''}-->
-  {$topic.intro}
- <br /><br />
+  <div class="topic-title">{$topic.intro}</div>
   <!--{/if}-->
   <!-- #BeginLibraryItem "/library/goods_list_topic.lbi" --><!-- #EndLibraryItem --> 
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
 <script type="text/javascript">
 if( {$show_asynclist} == 1){
  	get_asynclist('{:url('topic/asynclist', array('id'=>$this->_var['id'], 'brand'=>$this->_var['brand_id'], 'price_min'=>$this->_var['price_min'], 'price_max'=>$this->_var['price_max'], 'filter_attr'=>$this->_var['filter_attr'], 'page'=>$this->_var['page'], 'sort'=>$this->_var['sort'], 'order'=>$this->_var['order'], 'keywords'=>$this->_var['keywords']))}' , '__TPL__/images/loader.gif');
  }
+</script>
+<script>
+$(function($) {
+/*相册控制*/
+	document.getElementById('img-photo-box').style.width = document.body.offsetWidth + 'px';
+	document.getElementById('img-photo-box').style.height = document.body.offsetWidth + 'px';     	
+	window.onresize = function(){
+		document.getElementById('img-photo-box').style.width = document.body.offsetWidth + 'px';
+	    document.getElementById('img-photo-box').style.height = document.body.offsetWidth + 'px';     					         
+	}
+});
 </script>
 </body></html>

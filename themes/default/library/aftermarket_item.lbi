@@ -1,0 +1,89 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div id="J_ModId_5">
+  <div id="J_Conversation" class="m_msg conversation"> 
+    <!--{foreach from=$action_list item=action}-->
+    <div class="msg-item    msg-owner-mine    ">
+      <div class="p-info">
+        <div class="time">{$action.action_time}</div>
+        <div class="other"></div>
+      </div>
+      <div class="msg-info"> <s class="arrow"></s>
+        <div class="title">
+          <div class="itm">{$action.return_status}</div>
+          <div class="itm">{$action.refund_status}</div>
+        </div>
+        <div class="cutoff-line"></div>
+        <div class="desc">
+          <div class="desc-i"> {$action.action_info} </div>
+        </div>
+      </div>
+    </div>
+    <!--{/foreach}-->
+  </div>
+</div>
+
+<div id="J_ModId_6" style="display:none">
+  <div class="m_msg status J_Status show">
+    <div style="left: 0px; opacity: 1;" class="msg-item msg-owner-xiaoer J_MsgOwnerHers msg-type-2">
+      <div class="p-info"> 
+        <div class="time">{$return.action_time}</div>
+        <div class="other"></div>
+      </div>
+      <div class="msg-info"> <s class="arrow"></s>
+        <div class="title">待卖家处理</div>
+        <div class="cutoff-line"></div>
+        <div class="desc">
+          <div class="desc-i">如卖家同意，请按照给出的退货地址退货</div>
+          <div class="desc-i">如卖家拒绝，您可修改申请后再次发起，卖家会重新处理</div>
+         <!-- <div class="desc-i">如卖家在<span class="J_Countdown countdown" data-config='{"leftTime":"431999","type":"countdown"}'><i class="iconfont icon-time"></i><span class="text">剩</span><s class="hand hand-d"><s class="digital digital-0 ">0</s><s class="digital digital-4 ">4</s></s>天<s class="hand hand-h"><s class="digital digital-2 ">2</s><s class="digital digital-3 ">3</s></s>时<s class="hand hand-m"><s class="digital digital-5 ">5</s><s class="digital digital-9 ">9</s></s>分</span>内未处理，申请将自动达成，请按系统给出的地址退货</div>-->
+          <div class="cutoff-line cutoff-line2"></div>
+          <div class="additional"> 编号: {$return.service_sn} </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--已申请，已审核-->
+<div id="J_ModId_15" style="display:none">
+  <div class="m_msg status J_Status show">
+    <div style="left: 0px; opacity: 1;" class="msg-item msg-owner-xiaoer J_MsgOwnerHers msg-type-2">
+      <div class="p-info"> 
+        <!--<div class="time">04-16 11:22</div>-->
+        <div class="other"></div>
+      </div>
+      <div class="msg-info"> <s class="arrow"></s>
+        <div class="title">审核通过</div>
+        <div class="cutoff-line"></div>
+        <div class="desc">
+          <div class="desc-i">您的申请已通过审核</div>
+          <div class="cutoff-line cutoff-line2"></div>
+          <!--前台用户可执行操作 -->
+          <div class="additional"><a href="{:Url('user/to_return',array('ret_id'=>$this->_var['return']['ret_id']))}">去退货</a></div>
+          <!--前台用户可执行操作 -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="J_ModId_15" style="display:none">
+  <div class="m_msg status J_Status show">
+    <div style="left: 0px; opacity: 1;" class="msg-item msg-owner-xiaoer J_MsgOwnerHers msg-type-2">
+      <div class="p-info">
+        <!--<div class="owner"><b></b>淘宝网系统</div>-->
+        <div class="time">04-16 11:22</div>
+        <div class="other"></div>
+      </div>
+      <div class="msg-info"> <s class="arrow"></s>
+        <div class="title">退款关闭</div>
+        <div class="cutoff-line"></div>
+        <div class="desc">
+          <div class="desc-i">因您撤消退款申请，退款已关闭</div>
+          <div class="cutoff-line cutoff-line2"></div>
+          <div class="additional"> 编号: 39220159728720 </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

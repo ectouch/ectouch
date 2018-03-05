@@ -1,15 +1,71 @@
-<!-- #BeginLibraryItem "/library/user_header.lbi" --><!-- #EndLibraryItem -->
+
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
+<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+	<h3 class="box-flex">消息中心</h3>
+	<p><i class="iconfont icon-pailie j-nav-box"></i></p>
+</header>
+<div class="j-nav-content">
+	<ul class="dis-box new-footer-box">
+		<li class="box-flex">
+			<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span>首页</span></a>
+		</li>
+		<li class="box-flex">
+			<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span>分类</span></a>
+			<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span>搜索</span></a></li>
+			<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span>购物车</span></a></li>
+			<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span>用户中心</span></a></li>
+	</ul>
+</div>
+{if $message_list}
+    <div class="user-account-detail" >
+      <ul>
+        <!--{foreach name=message_list from=$message_list item=msg}-->
+        <li class="single_item">       
+        	<div class="dis-box new-msg-title">
+        		<div class="box-flex">
+        			<h4>{$msg.msg_type}:</h4>
+        			<span>{$msg.msg_time}</span>
+        		</div>
+        		<div class="box-flex">
+        			<a onclick="if (!confirm('{$lang.confirm_remove_msg}')) return false;" href="{$msg.url}" style="float: right; outline: none;"><i class="iconfont icon-xiao10 fr"></i></a>
+        		</div>
+            </div>
+            <h5> {$msg.msg_title}</h5>
+            <p> {$msg.msg_content} </p>
+            <!--{if $msg.re_msg_content}-->
+            <table>
+            	
+              <tr>
+                <td><div class="msg-jiantou tf-45"></div> <label>{$lang.shopman_reply}<em>({$msg.re_msg_time})</em></label>
+                  {$msg.re_msg_content} </td>
+              </tr>
+            </table>
+            <!--{/if}-->
+        </li>
+        <!--{/foreach}-->
+      </ul>
+    </div>
+{include file='library/page.lbi'}
+
+{else}
 <div class="user-account-detail" >
+	<div class="user-account-message">
+		目前还没有消息
+	</div>
   <ul class="ect-bg-colorf" id="J_ItemList">
-    <li class="single_item"></li>
+    
     <a href="javascript:;" style="text-align:center" class="get_more"></a>
   </ul>
 </div>
+{/if}
+
 </div>
-<!-- #BeginLibraryItem "/library/search.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/new_search.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
-<script type="text/javascript" src="__PUBLIC__/js/jquery.more.js"></script> 
+{if empty($order_id)}
 <script type="text/javascript">
 get_asynclist('{:url("user/msg_list")}' , '__TPL__/images/loader.gif');
 </script>
+{/if}
 </body></html>

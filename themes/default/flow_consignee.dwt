@@ -1,32 +1,47 @@
-<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
-<script type="text/javascript" src="__PUBLIC__/js/region.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/shopping_flow.js"></script>
-<script type="text/javascript">
-          region.isAdmin = false;
-          {foreach from=$lang.flow_js item=item key=key}
-          var {$key} = "{$item}";
-          {/foreach}
-
-          {literal}
-          onload = function() {
-            if (!document.all)
-            {
-              document.forms['theForm'].reset();
-            }
-          }
-          {/literal}
-        </script>
+<!-- #BeginLibraryItem "/library/new_page_header.lbi" -->
+<!-- #EndLibraryItem -->
 <div class="con">
-  <div class="ect-bg">
-    <header class="ect-header ect-margin-tb ect-margin-lr text-center ect-bg icon-write"> <a href="{:url('flow/consignee_list')}" class="pull-left ect-icon ect-icon1 ect-icon-history"></a> <span>{$title}</span> <a href="javascript:;" onClick="openMune()" class="pull-right ect-icon ect-icon1 ect-icon-mune"></a></header>
-    <nav class="ect-nav ect-nav-list" style="display:none;"> <!-- #BeginLibraryItem "/library/page_menu.lbi" --><!-- #EndLibraryItem --> </nav>
-  </div>
-<section class="ect-text-style">
-  <!-- 如果有收货地址，循环显示用户的收获地址 --> 
-  <!-- {foreach from=$consignee_list item=consignee key=sn} -->    
-     <form action="{:url('flow/consignee')}" method="post" name="theForm" id="theForm" onSubmit="return checkConsignee(this)">
-        <!-- #BeginLibraryItem "/Library/consignee.lbi" --><!-- #EndLibraryItem -->
-     </form>
-  <!-- {/foreach} --> 
-</section>
+	<div class="ect-bg">
+		<header class="dis-box header-menu b-color color-whie"><a class="" href="javascript:history.go(-1)"><i class="iconfont icon-jiantou"></i></a>
+			<h3 class="box-flex">新增收货地址</h3>
+			<p><i class="iconfont icon-pailie j-nav-box"></i></p>
+		</header>
+	<div class="j-nav-content">
+		<ul class="dis-box new-footer-box">
+			<li class="box-flex">
+				<a href="{:url('index/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/home.png"></i><span style="margin-top:0rem;">首页</span></a>
+			</li>
+			<li class="box-flex">
+				<a href="{:url('category/top_all')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/cate.png"></i><span style="margin-top:0rem;">分类</span></a>
+				<li class="box-flex"><a href="javascript:;" class="nav-cont j-search-input"><i class="nav-box"><img src="__TPL__/statics/img/search.png"></i><span style="margin-top:0rem;">搜索</span></a></li>
+				<li class="box-flex"><a href="{:url('flow/cart')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/flow.png"></i><span style="margin-top:0rem;">购物车</span></a></li>
+				<li class="box-flex"><a href="{:url('user/index')}" class="nav-cont"><i class="nav-box"><img src="__TPL__/statics/img/user.png"></i><span style="margin-top:0rem;">用户中心</span></a></li>
+		</ul>
+	</div>
+	</div>
+	<section class="ect-text-style">
+		<!-- 如果有收货地址，循环显示用户的收获地址 -->
+		<!-- {foreach from=$consignee_list item=consignee key=sn} -->
+		<form action="{:url('flow/consignee')}" method="post" name="theForm" id="theForm" onSubmit="return checkConsignee(this)">
+			<!-- #BeginLibraryItem "/Library/consignee.lbi" -->
+			<!-- #EndLibraryItem -->
+		</form>
+		<!-- {/foreach} -->
+	</section>
 </div>
+<script type="text/javascript" src="__PUBLIC__/script/region.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/shopping_flow.js"></script> 
+<script type="text/javascript">
+	region.isAdmin = false;
+	{foreach from=$lang.flow_js item=item key=key}
+	var {$key} = "{$item}";
+	{/foreach}
+	{literal}
+	onload = function() {
+	      if (!document.all)
+	      {
+	        document.forms['theForm'].reset();
+	      }
+	}
+	{/literal}
+</script>

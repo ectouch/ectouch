@@ -24,10 +24,15 @@
 
 <!-- 品牌 start--> 
 <!--{if $brand}-->
-<li>
-  <p><a href="{$brand.url}"><img src="{$brand.brand_banner}"></a><span>{$brand.brand_name}</span></p>
-</li>
-<!-- {/if}--> 
+    <li class="brand-status" id="{$brand.info}">
+        {$brand.info}
+    </li>
+    <!-- {foreach from=$brand.list item=li} -->
+    <li>
+      <p><a href="{$li.url}"><img src="{$li.brand_logo}"></a>{$li.brand_name}</p>
+    </li>
+    <!--{/foreach}-->
+    <!-- {/if}-->
 <!-- 品牌end--> 
 
 <!-- 品牌商品 start--> 
@@ -132,13 +137,42 @@
 <!-- 用户订单end--> 
 
 <!-- 配送地址 start--> 
-<!--{if $consignee}--> 
-<a href="{$consignee.url}">
-<p class="title">{$consignee.consignee} <span class="ect-colory">{$consignee.mobile}</span></p>
-<p>{$consignee.address}</p>
-<i class="fa fa-angle-right"></i> </a> 
-<!-- {/if}--> 
+<!--{if $consignee}-->
+<div class="flow-set-adr of-hidden padding-all ">
+	<div class="ect-select fl">
+		<label class="dis-box  {if $consignee.address_id eq $consignee.adds_id}active{/if}" onclick ="edit_address_info({$consignee.address_id})">
+			<i class="select-btn"></i>
+			<span class="box-flex" >设为默认</span>
+		</label>
+	</div>
+	<div class="fr"><a href="{$consignee.url}"><i class="iconfont icon-bianji"></i>编辑</a><a href="{:url('user/del_address_list', array('id'=>$this->_var['consignee']['address_id']))}"><i class="iconfont icon-xiao10"></i>删除</a></div>
+</div>
+<div class="flow-have-adr padding-all">
+	<p class="f-h-adr-title">
+		<label>{$consignee.consignee}</label><span class="ect-colory">{$consignee.mobile}</span></p>
+	<p class="f-h-adr-con t-remark m-top04">{$consignee.address}</p>
+</div>
+<!-- {/if}-->
 <!-- 配送地址end--> 
+
+<!-- 购物车配送地址 start--> 
+<!--{if $flow_consignee}-->
+<div class="flow-set-adr of-hidden padding-all ">
+	<div class="ect-select fl">
+		<label class="dis-box  {if $flow_consignee.address_id eq $flow_consignee.adds_id}active{/if}" onclick ="flow_edit_address_info({$flow_consignee.address_id})">
+			<i class="select-btn"></i>
+			<span class="box-flex" >设为默认</span>
+		</label>
+	</div>
+	<div class="fr"><a href="{$flow_consignee.url}"><i class="iconfont icon-bianji"></i>编辑</a><a href="{:url('flow/drop_consignee', array('id'=>$this->_var['flow_consignee']['address_id']))}"><i class="iconfont icon-xiao10"></i>删除</a></div>
+</div>
+<div class="flow-have-adr padding-all">
+	<p class="f-h-adr-title">
+		<label>{$flow_consignee.consignee}</label><span class="ect-colory">{$flow_consignee.mobile}</span></p>
+	<p class="f-h-adr-con t-remark m-top04">{$flow_consignee.address}</p>
+</div>
+<!-- {/if}-->
+<!-- 购物车配送地址 end--> 
 
 <!-- 产品配件 start--> 
 <!--{if $fittings}--> 
@@ -149,7 +183,8 @@
   </dt>
   <dd>{$lang.fittings_price}<font class="ect-colory">{$fittings.fittings_price}</font></dd>
   <dd>
-    <div class="flow-del text-center"><a onclick="addToCart_quick({$fittings.goods_id})" href="javascript:;">{$lang.btn_add_to_cart}</a></div>
+    <div class="flow-del text-center">
+	<a onclick="addToCart({$fittings.goods_id},{$fittings.parent_id})" href="javascript:;">{$lang.btn_add_to_cart}</a></div>
   </dd>
 </dl>
 

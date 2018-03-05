@@ -1,0 +1,99 @@
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" href="__TPL__/css/brand.css">
+<div class="con">
+    <!--{if $list}-->
+    <div class="brand-main">
+        <div class="brand-today">
+            <div class="brand-today-img">
+                <!--{foreach name=list from=$list.top item=li}-->
+                <div class="top fr">
+
+                    <div class="">
+                        <a href="{$li.url}"> <img src="{$li.brand_logo}" alt="" /></a>
+                    </div>
+                    <span>{$li.brand_desc}</span>
+                </div>
+                <div class="brand-today-img-content fl ">
+                    <div id="focus" class="focus goods-focus ect-padding-lr ect-margin-tb">
+                        <div class="hd">
+                            <ul>
+                            </ul>
+                        </div>
+                        <div class="bd">
+                            <ul id="Gallery">
+                                <!--{foreach name=li from=$li.goods item=l}-->
+                                <li><a href="{$l.url}"><img src="{$l.goods_thumb}" alt="" /></a></li>
+                                <!--{/foreach}-->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--{/foreach}-->
+            </div>
+        </div>
+        <!--{foreach name=list from=$list.center item=li}-->
+        <div class="brand-today-img">
+            <a href="{:url('brand/goods_list',array('id'=>$this->_var['li']['brand_id']))}">
+            <div class="brand-today-img-text fl">
+                <p>今日推荐</p><span>Recommendationof day</span>
+            </div>
+            <div class="brand-today-img-content fr">
+                <img src="{$li.brand_banner}" alt="" />
+            </div>
+            <div class="brand-today-img-logo fl">
+                <img src="{$li.brand_logo}" alt="" />
+            </div>
+            </a>
+        </div>
+        <!--{/foreach}-->
+        <div class="brand-lattice">
+            <ul>
+                <!--{foreach name=list from=$list.list1 item=li}-->
+                <li>
+                    <a href="{:url('brand/goods_list',array('id'=>$this->_var['li']['brand_id']))}">
+                    <img src="{$li.goods.0.goods_thumb}" alt="" class="brand-lattice-bg" />
+                    <img src="{$li.brand_logo}" alt="" class="brand-lattice-logo" />
+                    <span>{$li.brand_name}</span>
+                    </a>
+			    </li>
+                <!--{/foreach}-->
+            </ul>
+        </div>
+
+        <div class="brand-list">
+            <ul>
+                <!--{foreach name=brand from=$list.list2 item=br}-->
+                <li><a href="{$br.url}"><img src="{$br.brand_logo}" alt="" /></a></li>
+                <!--{/foreach}-->
+
+                <li><a href="{:url('brand/nav')}"><img src="__TPL__/images/brand-list-img2.gif" alt="" /></a></li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+    <!--{/if}-->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body></html>
+<script type="text/javascript" src="__TPL__/js/TouchSlide.1.1.js"></script>
+<script type="text/javascript">
+$(function(){
+    /*banner滚动图片*/
+    TouchSlide({
+      slideCell : "#focus",
+      titCell : ".hd ul", // 开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+      mainCell : ".bd ul",
+      effect : "leftLoop",
+      autoPlay : true, // 自动播放
+      autoPage : true, // 自动分页
+      delayTime: 200, // 毫秒；切换效果持续时间（执行一次效果用多少毫秒）
+      interTime: 2500, // 毫秒；自动运行间隔（隔多少毫秒后执行下一个效果）
+      switchLoad : "_src" // 切换加载，真实图片路径为"_src"
+    });
+});
+</script>
+<style>
+.ect-padding-lr{margin:0 !important;padding:0 !important;}
+.ect-padding-lr img{width:100%;height:auto;margin:0 !important;padding:0 !important;}
+.brand-main{margin:0;}
+</style>
