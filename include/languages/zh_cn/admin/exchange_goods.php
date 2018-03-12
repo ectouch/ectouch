@@ -36,4 +36,3 @@ $_LANG['exchange_integral_invalid'] = '积分值为空或不是数字';
 /*JS 语言项*/
 $_LANG['js_languages']['no_goods_id'] = '没有选择商品';
 $_LANG['js_languages']['invalid_exchange_integral'] = '积分值为空或不是数字';
-?>

@@ -58,7 +58,7 @@ class ddcx extends PluginWechatController
     {
         $articles = array('type'=>'text', 'content'=>'暂无订单信息');
         $uid = model('Base')->model->table('wechat_user')->field('ect_uid')->where('openid = "'.$fromusername.'"')->getOne();
-        if(!empty($uid)){
+        if (!empty($uid)) {
             //订单ID
             $order_id = model('Base')->model->table('order_info')->field('order_id')->where('user_id = '.$uid)->order('add_time desc')->getOne();
             if (! empty($order_id)) {
@@ -67,8 +67,8 @@ class ddcx extends PluginWechatController
                 //订单商品
                 $order_goods = model('Order')->order_goods($order_id);
                 $goods = '';
-                if(!empty($order_goods)){
-                    foreach($order_goods as $key=>$val){
+                if (!empty($order_goods)) {
+                    foreach ($order_goods as $key=>$val) {
                         $goods_attr = !empty($val['goods_attr']) ? '(' . $val['goods_attr'] .')' : '';
                         $goods_number= !empty($val['goods_number']) ? '(' . $val['goods_number'] .'),' : '';
                         $goods .= $val['goods_name'] . $goods_attr . $goods_number;
@@ -127,5 +127,6 @@ class ddcx extends PluginWechatController
      * 行为操作
      */
     public function action()
-    {}
+    {
+    }
 }

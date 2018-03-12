@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ProductsBaseModel extends BaseModel {
+class ProductsBaseModel extends BaseModel
+{
 
     /**
      * 取指定规格的货品信息
@@ -26,7 +27,8 @@ class ProductsBaseModel extends BaseModel {
      * @param       array       $spec_goods_attr_id
      * @return      array
      */
-    function get_products_info($goods_id, $spec_goods_attr_id) {
+    public function get_products_info($goods_id, $spec_goods_attr_id)
+    {
         $return_array = array();
 
         if (empty($spec_goods_attr_id) || !is_array($spec_goods_attr_id) || empty($goods_id)) {
@@ -51,7 +53,8 @@ class ProductsBaseModel extends BaseModel {
      *
      * @return  array
      */
-    function get_good_products_select($goods_id) {
+    public function get_good_products_select($goods_id)
+    {
         $return_array = array();
         $products = $this->get_good_products($goods_id);
 
@@ -74,7 +77,8 @@ class ProductsBaseModel extends BaseModel {
      *
      * @return  array
      */
-    function get_good_products($goods_id, $conditions = '') {
+    public function get_good_products($goods_id, $conditions = '')
+    {
         if (empty($goods_id)) {
             return array();
         }
@@ -129,7 +133,8 @@ class ProductsBaseModel extends BaseModel {
      *
      * @return      string
      */
-    function sort_goods_attr_id_array($goods_attr_id_array, $sort = 'asc') {
+    public function sort_goods_attr_id_array($goods_attr_id_array, $sort = 'asc')
+    {
         if (empty($goods_attr_id_array)) {
             return $goods_attr_id_array;
         }
@@ -153,5 +158,4 @@ class ProductsBaseModel extends BaseModel {
 
         return $return_arr;
     }
-
 }

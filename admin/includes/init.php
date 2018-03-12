@@ -1,7 +1,6 @@
 <?php
 
-if (!defined('IN_ECTOUCH'))
-{
+if (!defined('IN_ECTOUCH')) {
     die('Hacking attempt');
 }
 
@@ -9,43 +8,42 @@ define('ECS_ADMIN', true);
 
 error_reporting(E_ALL);
 
-if (__FILE__ == '')
-{
+if (__FILE__ == '') {
     die('Fatal error code: 0');
 }
 
 /* 初始化设置 */
-@ini_set('memory_limit',          '512M');
-@ini_set('session.cache_expire',  180);
+@ini_set('memory_limit', '512M');
+@ini_set('session.cache_expire', 180);
 @ini_set('session.use_trans_sid', 0);
-@ini_set('session.use_cookies',   1);
-@ini_set('session.auto_start',    0);
-@ini_set('display_errors',        1);
+@ini_set('session.use_cookies', 1);
+@ini_set('session.auto_start', 0);
+@ini_set('display_errors', 1);
 
-if (DIRECTORY_SEPARATOR == '\\'){
-    @ini_set('include_path',      '.;' . ROOT_PATH);
-}else{
-    @ini_set('include_path',      '.:' . ROOT_PATH);
+if (DIRECTORY_SEPARATOR == '\\') {
+    @ini_set('include_path', '.;' . ROOT_PATH);
+} else {
+    @ini_set('include_path', '.:' . ROOT_PATH);
 }
 
 /* 取得当前ecshop所在的根目录 */
-define('ROOT_PATH', str_replace('\\','/', dirname(getcwd())) . '/');
+define('ROOT_PATH', str_replace('\\', '/', dirname(getcwd())) . '/');
 
 $db_config = require(ROOT_PATH . 'data/config.php');
 
 defined('IS_ECSHOP') or define('IS_ECSHOP', RUN_ON_ECS);
 
-if (defined('DEBUG_MODE') == false){
+if (defined('DEBUG_MODE') == false) {
     define('DEBUG_MODE', 0);
 }
 
-if (PHP_VERSION >= '5.1'){
+if (PHP_VERSION >= '5.1') {
     date_default_timezone_set(DEFAULT_TIMEZONE);
 }
 
-if (isset($_SERVER['PHP_SELF'])){
+if (isset($_SERVER['PHP_SELF'])) {
     define('PHP_SELF', $_SERVER['PHP_SELF']);
-}else{
+} else {
     define('PHP_SELF', $_SERVER['SCRIPT_NAME']);
 }
 
@@ -61,9 +59,9 @@ defined('BASE_PATH') or define('BASE_PATH', ROOT_PATH . 'include/');
 defined('DATA_PATH') or define('DATA_PATH', ROOT_PATH . 'data/');
 defined('STORAGE_PATH') or define('STORAGE_PATH', DATA_PATH . 'attached/');
 
-defined('__ROOT__') OR define('__ROOT__', '../');
-defined('__PUBLIC__') OR define('__PUBLIC__', '../data/assets');
-defined('__TPL__') OR define('__TPL__', '../data/assets/admin');
+defined('__ROOT__') or define('__ROOT__', '../');
+defined('__PUBLIC__') or define('__PUBLIC__', '../data/assets');
+defined('__TPL__') or define('__TPL__', '../data/assets/admin');
 
 require(BASE_PATH . 'vendor/autoload.php');
 require(BASE_PATH . 'config/constant.php');
@@ -76,14 +74,11 @@ require(ROOT_PATH . ADMIN_PATH . '/includes/cls_exchange.php');
 
 
 /* 对用户传入的变量进行转义操作。*/
-if (!get_magic_quotes_gpc())
-{
-    if (!empty($_GET))
-    {
+if (!get_magic_quotes_gpc()) {
+    if (!empty($_GET)) {
         $_GET  = addslashes_deep($_GET);
     }
-    if (!empty($_POST))
-    {
+    if (!empty($_POST)) {
         $_POST = addslashes_deep($_POST);
     }
 
@@ -92,8 +87,7 @@ if (!get_magic_quotes_gpc())
 }
 
 /* 对路径进行安全处理 */
-if (strpos(PHP_SELF, '.php/') !== false)
-{
+if (strpos(PHP_SELF, '.php/') !== false) {
     ecs_header("Location:" . substr(PHP_SELF, 0, strpos(PHP_SELF, '.php/') + 4) . "\n");
     exit();
 }
@@ -116,18 +110,13 @@ $err = new error('message.htm');
 $sess = new session($db, $ecs->table('sessions'), $ecs->table('sessions_data'), 'ECSCP_ID');
 
 /* 初始化 action */
-if (!isset($_REQUEST['act']))
-{
+if (!isset($_REQUEST['act'])) {
     $_REQUEST['act'] = '';
-}
-elseif (($_REQUEST['act'] == 'login' || $_REQUEST['act'] == 'logout' || $_REQUEST['act'] == 'signin') &&
-    strpos(PHP_SELF, '/privilege.php') === false)
-{
+} elseif (($_REQUEST['act'] == 'login' || $_REQUEST['act'] == 'logout' || $_REQUEST['act'] == 'signin') &&
+    strpos(PHP_SELF, '/privilege.php') === false) {
     $_REQUEST['act'] = '';
-}
-elseif (($_REQUEST['act'] == 'forget_pwd' || $_REQUEST['act'] == 'reset_pwd' || $_REQUEST['act'] == 'get_pwd') &&
-    strpos(PHP_SELF, '/get_password.php') === false)
-{
+} elseif (($_REQUEST['act'] == 'forget_pwd' || $_REQUEST['act'] == 'reset_pwd' || $_REQUEST['act'] == 'get_pwd') &&
+    strpos(PHP_SELF, '/get_password.php') === false) {
     $_REQUEST['act'] = '';
 }
 
@@ -136,8 +125,7 @@ $_CFG = load_config();
 C($_CFG);
 
 // TODO : 登录部分准备拿出去做，到时候把以下操作一起挪过去
-if ($_REQUEST['act'] == 'captcha')
-{
+if ($_REQUEST['act'] == 'captcha') {
     // include(ROOT_PATH . 'includes/cls_captcha.php');
 
     $img = new captcha('../data/captcha/');
@@ -150,20 +138,17 @@ if ($_REQUEST['act'] == 'captcha')
 require(ROOT_PATH . 'include/languages/' .$_CFG['lang']. '/admin/common.php');
 require(ROOT_PATH . 'include/languages/' .$_CFG['lang']. '/admin/log_action.php');
 
-if (file_exists(ROOT_PATH . 'include/languages/' . $_CFG['lang'] . '/admin/' . basename(PHP_SELF)))
-{
+if (file_exists(ROOT_PATH . 'include/languages/' . $_CFG['lang'] . '/admin/' . basename(PHP_SELF))) {
     include(ROOT_PATH . 'include/languages/' . $_CFG['lang'] . '/admin/' . basename(PHP_SELF));
 }
 L($_LANG);
 
-if (!file_exists('../data/caches'))
-{
+if (!file_exists('../data/caches')) {
     @mkdir('../data/caches', 0777);
     @chmod('../data/caches', 0777);
 }
 
-if (!file_exists('../data/caches/compiled/admin'))
-{
+if (!file_exists('../data/caches/compiled/admin')) {
     @mkdir('../data/caches/compiled/admin', 0777);
     @chmod('../data/caches/compiled/admin', 0777);
 }
@@ -171,14 +156,12 @@ if (!file_exists('../data/caches/compiled/admin'))
 clearstatcache();
 
 /* 如果有新版本，升级 */
-if (!isset($_CFG['ecs_version']))
-{
+if (!isset($_CFG['ecs_version'])) {
     $_CFG['ecs_version'] = 'v2.7.3';
 }
 
 if (preg_replace('/(?:\.|\s+)[a-z]*$/i', '', $_CFG['ecs_version']) != preg_replace('/(?:\.|\s+)[a-z]*$/i', '', VERSION)
-        && file_exists('../upgrade/index.php'))
-{
+        && file_exists('../upgrade/index.php')) {
     // 转到升级文件
     ecs_header("Location: ../upgrade/index.php\n");
 
@@ -191,8 +174,7 @@ $smarty = new template;
 
 $smarty->template_dir  = ROOT_PATH . ADMIN_PATH . '/templates';
 $smarty->compile_dir   = ROOT_PATH . 'data/caches/compiled/admin';
-if ((DEBUG_MODE & 2) == 2)
-{
+if ((DEBUG_MODE & 2) == 2) {
     $smarty->force_compile = true;
 }
 
@@ -200,18 +182,14 @@ $smarty->assign('is_ecshop', IS_ECSHOP ? 1:0);
 $smarty->assign('lang', $_LANG);
 $smarty->assign('help_open', $_CFG['help_open']);
 
-if(isset($_CFG['enable_order_check']))  // 为了从旧版本顺利升级到2.5.0
-{
+if (isset($_CFG['enable_order_check'])) {  // 为了从旧版本顺利升级到2.5.0
     $smarty->assign('enable_order_check', $_CFG['enable_order_check']);
-}
-else
-{
+} else {
     $smarty->assign('enable_order_check', 0);
 }
 
 /* 验证通行证信息 */
-if(isset($_GET['ent_id']) && isset($_GET['ent_ac']) &&  isset($_GET['ent_sign']) && isset($_GET['ent_email']))
-{
+if (isset($_GET['ent_id']) && isset($_GET['ent_ac']) &&  isset($_GET['ent_sign']) && isset($_GET['ent_email'])) {
     $ent_id = trim($_GET['ent_id']);
     $ent_ac = trim($_GET['ent_ac']);
     $ent_sign = trim($_GET['ent_sign']);
@@ -219,10 +197,9 @@ if(isset($_GET['ent_id']) && isset($_GET['ent_ac']) &&  isset($_GET['ent_sign'])
     $certificate_id = trim($_CFG['certificate_id']);
     $domain_url = $ecs->url();
     $token=$_GET['token'];
-    if($token==md5(md5($_CFG['token']).$domain_url.ADMIN_PATH))
-    {
+    if ($token==md5(md5($_CFG['token']).$domain_url.ADMIN_PATH)) {
         // require(ROOT_PATH . 'includes/cls_transport.php');
-        $t = new transport('-1',5);
+        $t = new transport('-1', 5);
         $apiget = "act=ent_sign&ent_id= $ent_id & certificate_id=$certificate_id";
 
         $t->request('http://cloud.ectouch.cn/api.php', $apiget);
@@ -238,39 +215,30 @@ if(isset($_GET['ent_id']) && isset($_GET['ent_ac']) &&  isset($_GET['ent_sign'])
 /* 验证管理员身份 */
 if ((!isset($_SESSION['admin_id']) || intval($_SESSION['admin_id']) <= 0) &&
     $_REQUEST['act'] != 'login' && $_REQUEST['act'] != 'signin' &&
-    $_REQUEST['act'] != 'forget_pwd' && $_REQUEST['act'] != 'reset_pwd' && $_REQUEST['act'] != 'check_order')
-{
+    $_REQUEST['act'] != 'forget_pwd' && $_REQUEST['act'] != 'reset_pwd' && $_REQUEST['act'] != 'check_order') {
     /* session 不存在，检查cookie */
-    if (!empty($_COOKIE['ECSCP']['admin_id']) && !empty($_COOKIE['ECSCP']['admin_pass']))
-    {
+    if (!empty($_COOKIE['ECSCP']['admin_id']) && !empty($_COOKIE['ECSCP']['admin_pass'])) {
         // 找到了cookie, 验证cookie信息
         $sql = 'SELECT user_id, user_name, password, action_list, last_login ' .
                 ' FROM ' .$ecs->table('admin_user') .
                 " WHERE user_id = '" . intval($_COOKIE['ECSCP']['admin_id']) . "'";
         $row = $db->GetRow($sql);
 
-        if (!$row)
-        {
+        if (!$row) {
             // 没有找到这个记录
-            setcookie($_COOKIE['ECSCP']['admin_id'],   '', 1);
+            setcookie($_COOKIE['ECSCP']['admin_id'], '', 1);
             setcookie($_COOKIE['ECSCP']['admin_pass'], '', 1);
 
-            if (!empty($_REQUEST['is_ajax']))
-            {
+            if (!empty($_REQUEST['is_ajax'])) {
                 make_json_error($_LANG['priv_error']);
-            }
-            else
-            {
+            } else {
                 ecs_header("Location: privilege.php?act=login\n");
             }
 
             exit;
-        }
-        else
-        {
+        } else {
             // 检查密码是否正确
-            if (md5($row['password'] . $_CFG['hash_code']) == $_COOKIE['ECSCP']['admin_pass'])
-            {
+            if (md5($row['password'] . $_CFG['hash_code']) == $_COOKIE['ECSCP']['admin_pass']) {
                 !isset($row['last_time']) && $row['last_time'] = '';
                 set_admin_session($row['user_id'], $row['user_name'], $row['action_list'], $row['last_time']);
 
@@ -278,33 +246,23 @@ if ((!isset($_SESSION['admin_id']) || intval($_SESSION['admin_id']) <= 0) &&
                 $db->query('UPDATE ' . $ecs->table('admin_user') .
                             " SET last_login = '" . gmtime() . "', last_ip = '" . real_ip() . "'" .
                             " WHERE user_id = '" . $_SESSION['admin_id'] . "'");
-            }
-            else
-            {
-                setcookie($_COOKIE['ECSCP']['admin_id'],   '', 1);
+            } else {
+                setcookie($_COOKIE['ECSCP']['admin_id'], '', 1);
                 setcookie($_COOKIE['ECSCP']['admin_pass'], '', 1);
 
-                if (!empty($_REQUEST['is_ajax']))
-                {
+                if (!empty($_REQUEST['is_ajax'])) {
                     make_json_error($_LANG['priv_error']);
-                }
-                else
-                {
+                } else {
                     ecs_header("Location: privilege.php?act=login\n");
                 }
 
                 exit;
             }
         }
-    }
-    else
-    {
-        if (!empty($_REQUEST['is_ajax']))
-        {
+    } else {
+        if (!empty($_REQUEST['is_ajax'])) {
             make_json_error($_LANG['priv_error']);
-        }
-        else
-        {
+        } else {
             ecs_header("Location: privilege.php?act=login\n");
         }
 
@@ -315,18 +273,13 @@ if ((!isset($_SESSION['admin_id']) || intval($_SESSION['admin_id']) <= 0) &&
 $smarty->assign('token', $_CFG['token']);
 
 if ($_REQUEST['act'] != 'login' && $_REQUEST['act'] != 'signin' &&
-    $_REQUEST['act'] != 'forget_pwd' && $_REQUEST['act'] != 'reset_pwd' && $_REQUEST['act'] != 'check_order' && (isset($_GET['item']) && $_GET['item'] != 'goods_desc'))
-{
+    $_REQUEST['act'] != 'forget_pwd' && $_REQUEST['act'] != 'reset_pwd' && $_REQUEST['act'] != 'check_order' && (isset($_GET['item']) && $_GET['item'] != 'goods_desc')) {
     $admin_path = preg_replace('/:\d+/', '', $ecs->url()) . ADMIN_PATH;
     if (!empty($_SERVER['HTTP_REFERER']) &&
-        strpos(preg_replace('/:\d+/', '', $_SERVER['HTTP_REFERER']), $admin_path) === false)
-    {
-        if (!empty($_REQUEST['is_ajax']))
-        {
+        strpos(preg_replace('/:\d+/', '', $_SERVER['HTTP_REFERER']), $admin_path) === false) {
+        if (!empty($_REQUEST['is_ajax'])) {
             make_json_error($_LANG['priv_error']);
-        }
-        else
-        {
+        } else {
             ecs_header("Location: privilege.php?act=login\n");
         }
 
@@ -335,8 +288,7 @@ if ($_REQUEST['act'] != 'login' && $_REQUEST['act'] != 'signin' &&
 }
 
 /* 管理员登录后可在任何页面使用 act=phpinfo 显示 phpinfo() 信息 */
-if ($_REQUEST['act'] == 'phpinfo' && function_exists('phpinfo'))
-{
+if ($_REQUEST['act'] == 'phpinfo' && function_exists('phpinfo')) {
     phpinfo();
 
     exit;
@@ -349,28 +301,23 @@ header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Cache-Control: no-cache, must-revalidate');
 header('Pragma: no-cache');
 
-if ((DEBUG_MODE & 1) == 1)
-{
+if ((DEBUG_MODE & 1) == 1) {
     error_reporting(E_ALL);
-}
-else
-{
+} else {
     error_reporting(E_ALL ^ E_NOTICE);
 }
 
 /* 判断是否支持gzip模式 */
-if (gzip_enabled())
-{
+if (gzip_enabled()) {
     ob_start('ob_gzhandler');
-}
-else
-{
+} else {
     ob_start();
 }
 
-function getDbInstance(){
+function getDbInstance()
+{
     static $obj = array();
-    if(empty($obj)){
+    if (empty($obj)) {
         $obj = new stdClass();
         $obj->ecs = $GLOBALS['ecs'];
         $obj->db = $GLOBALS['db'];
@@ -394,7 +341,8 @@ function getInstance()
  * @param boolean $strict 是否严谨 默认为true
  * @return void|string
  */
-function dump($var, $echo=true, $label=null, $strict=true) {
+function dump($var, $echo=true, $label=null, $strict=true)
+{
     $label = ($label === null) ? '' : rtrim($label) . ' ';
     if (!$strict) {
         if (ini_get('html_errors')) {
@@ -415,8 +363,9 @@ function dump($var, $echo=true, $label=null, $strict=true) {
     if ($echo) {
         echo($output);
         return null;
-    }else
+    } else {
         return $output;
+    }
 }
 
 /**
@@ -425,10 +374,11 @@ function dump($var, $echo=true, $label=null, $strict=true) {
  * @param  array  $params URL参数
  * @return string
  */
-function url($route=null, $params=array()) {
+function url($route=null, $params=array())
+{
     $controller = CONTROLLER_NAME;
     $action = ACTION_NAME;
-    if($route){
+    if ($route) {
         $route = explode('/', $route, 2);
         $routeNum = count($route);
         switch ($routeNum) {
@@ -461,20 +411,21 @@ function url($route=null, $params=array()) {
  * @param mixed $filter 参数过滤方法
  * @return mixed
  */
-function I($name,$default='') {
+function I($name, $default='')
+{
     $obj = get_instance();
-    if(strpos($name,'.')) { // 指定参数来源
-        list($method,$name) =   explode('.',$name,2);
-    }else{ // 默认为自动判断
+    if (strpos($name, '.')) { // 指定参数来源
+        list($method, $name) =   explode('.', $name, 2);
+    } else { // 默认为自动判断
         $method =   'param';
     }
 
-    switch(strtolower($method)) {
-        case 'get'     :   $input =& $obj->input->get();break;
-        case 'post'    :   $input =& $obj->input->post();break;
-        case 'put'     :   parse_str(file_get_contents('php://input'), $input);break;
-        case 'param'   :
-            switch($_SERVER['REQUEST_METHOD']) {
+    switch (strtolower($method)) {
+        case 'get':   $input =& $obj->input->get();break;
+        case 'post':   $input =& $obj->input->post();break;
+        case 'put':   parse_str(file_get_contents('php://input'), $input);break;
+        case 'param':
+            switch ($_SERVER['REQUEST_METHOD']) {
                 case 'POST':
                     $input  =  $obj->input->post();
                     break;
@@ -486,14 +437,14 @@ function I($name,$default='') {
             }
             break;
         default:
-            return NULL;
+            return null;
     }
-    if(empty($name)) { // 获取全部变量
+    if (empty($name)) { // 获取全部变量
         $data       =   $input;
-    }elseif(isset($input[$name])) { // 取值操作
+    } elseif (isset($input[$name])) { // 取值操作
         $data       =   $input[$name];
-    }else{ // 变量默认值
-        $data       =    isset($default)?$default:NULL;
+    } else { // 变量默认值
+        $data       =    isset($default)?$default:null;
     }
     return $data;
 }
@@ -504,11 +455,13 @@ function I($name,$default='') {
  * @param string $value 语言值
  * @return mixed
  */
-function L($name = null, $value = null) {
+function L($name = null, $value = null)
+{
     static $_lang = array();
     // 空参数返回所有定义
-    if (empty($name))
+    if (empty($name)) {
         return $_lang;
+    }
     // 判断语言获取(或设置)
     // 若不存在,直接返回全大写$name
 
@@ -558,11 +511,12 @@ function L($name = null, $value = null) {
  * @param mixed $value 配置值
  * @return mixed
  */
-function C($name=null, $value=null) {
+function C($name=null, $value=null)
+{
     static $_config = array();
     // 无参数时获取所有
     if (empty($name)) {
-        if(!empty($value) && $array = S('c_'.$value)) {
+        if (!empty($value) && $array = S('c_'.$value)) {
             $_config = array_merge($_config, array_change_key_case($array));
         }
         return $_config;
@@ -571,24 +525,26 @@ function C($name=null, $value=null) {
     if (is_string($name)) {
         if (!strpos($name, '.')) {
             $name = strtolower($name);
-            if (is_null($value))
+            if (is_null($value)) {
                 return isset($_config[$name]) ? $_config[$name] : null;
+            }
             $_config[$name] = $value;
             return;
         }
         // 二维数组设置和获取支持
         $name = explode('.', $name);
         $name[0]   =  strtolower($name[0]);
-        if (is_null($value))
+        if (is_null($value)) {
             return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : null;
+        }
         $_config[$name[0]][$name[1]] = $value;
         return;
     }
     // 批量设置
-    if (is_array($name)){
+    if (is_array($name)) {
         $_config = array_merge($_config, array_change_key_case($name));
-        if(!empty($value)) {// 保存配置值
-            S('c_'.$value,$_config);
+        if (!empty($value)) {// 保存配置值
+            S('c_'.$value, $_config);
         }
         return;
     }

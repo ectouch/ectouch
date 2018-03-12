@@ -15,7 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class IndexModel extends CommonModel {
+class IndexModel extends CommonModel
+{
 
     /**
      * 获取推荐商品
@@ -23,9 +24,9 @@ class IndexModel extends CommonModel {
      * @param  $limit
      * @param  $start
      */
-    public function goods_list($type = 'best', $limit = 10, $start = 0) {
-        switch ($type)
-        {
+    public function goods_list($type = 'best', $limit = 10, $start = 0)
+    {
+        switch ($type) {
             case 'best':
                 $type   = 'AND g.is_best = 1';
                 break;
@@ -45,7 +46,7 @@ class IndexModel extends CommonModel {
             default:
                 $type   = '1';
         }
-		
+        
         // 取出所有符合条件的商品数据，并将结果存入对应的推荐类型数组中
         $sql = 'SELECT g.goods_id, g.goods_name, g.goods_name_style, g.market_price, g.shop_price AS org_price, g.promote_price, ' . "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price, " . "promote_start_date, promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img, RAND() AS rnd " . 'FROM ' . $this->pre . 'goods AS g ' . "LEFT JOIN " . $this->pre . "member_price AS mp " . "ON mp.goods_id = g.goods_id AND mp.user_rank = '$_SESSION[user_rank]' ";
         $sql .= ' WHERE g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 ' . $type;
@@ -95,10 +96,11 @@ class IndexModel extends CommonModel {
      * @access  public
      * @return  array
      */
-    function get_promote_goods($cats = '') {
+    public function get_promote_goods($cats = '')
+    {
         $time = gmtime();
         $order_type = C('recommend_order');
-		
+        
         /* 取得促销lbi的数量限制 */
         $num = model('Common')->get_library_number("recommend_promotion");
         $sql = 'SELECT g.goods_id, g.goods_name, g.goods_name_style, g.market_price, g.shop_price AS org_price, g.promote_price, ' .
@@ -116,7 +118,7 @@ class IndexModel extends CommonModel {
         $result = $this->query($sql);
 
         $goods = array();
-        foreach ($result AS $idx => $row) {
+        foreach ($result as $idx => $row) {
             if ($row['promote_price'] > 0) {
                 $promote_price = bargain_price($row['promote_price'], $row['promote_start_date'], $row['promote_end_date']);
                 $goods[$idx]['promote_price'] = $promote_price > 0 ? price_format($promote_price) : '';
@@ -146,17 +148,18 @@ class IndexModel extends CommonModel {
      * @return type
      *  by Leah
      */
-    function get_recommend_res($cat_num = '10',$goods_num = '3') {
+    public function get_recommend_res($cat_num = '10', $goods_num = '3')
+    {
         $cat_recommend_res = $this->query("SELECT c.cat_id, c.cat_name, cr.recommend_type FROM " . $this->pre . "cat_recommend AS cr INNER JOIN " . $this->pre . "category AS c ON cr.cat_id=c.cat_id AND c.is_show = 1 ORDER BY c.sort_order ASC, c.cat_id ASC limit 0, $cat_num");
         if (!empty($cat_recommend_res)) {
             $cat_rec = array();
             foreach ($cat_recommend_res as $cat_recommend_data) {
                 $cat_rec[$cat_recommend_data['recommend_type']][] = array(
-                    'cat_id' => $cat_recommend_data['cat_id'], 
+                    'cat_id' => $cat_recommend_data['cat_id'],
                     'cat_name' => $cat_recommend_data['cat_name'],
-                    'url' => url('category/index', array('id' => $cat_recommend_data['cat_id'])), 
-                    'child_id' => model('Category')->get_parent_id_tree($cat_recommend_data['cat_id']), 
-                    'goods_list' => model('Category')->assign_cat_goods($cat_recommend_data['cat_id'], $goods_num)					
+                    'url' => url('category/index', array('id' => $cat_recommend_data['cat_id'])),
+                    'child_id' => model('Category')->get_parent_id_tree($cat_recommend_data['cat_id']),
+                    'goods_list' => model('Category')->assign_cat_goods($cat_recommend_data['cat_id'], $goods_num)
                 );
             }
             return $cat_rec;
@@ -170,9 +173,9 @@ class IndexModel extends CommonModel {
      * @access  public
      * @return  array
      */
-    function get_pro_goods($type = '') {
-        switch ($type)
-        {
+    public function get_pro_goods($type = '')
+    {
+        switch ($type) {
             case 'best':
                 $where   = 'AND g.is_best = 1';
                 break;
@@ -185,11 +188,10 @@ class IndexModel extends CommonModel {
             default:
                 $where   = 'AND 1';
         }
-		
-        $sql = 'SELECT count(g.goods_id) as num FROM ' . $this->pre . 'goods as g WHERE g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 ' 
+        
+        $sql = 'SELECT count(g.goods_id) as num FROM ' . $this->pre . 'goods as g WHERE g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 '
             . $where . " ORDER BY g.sort_order, g.goods_id DESC ";
         $result = $this->row($sql);
         return $result['num'];
     }
-	
 }

@@ -9,8 +9,7 @@ if (file_exists($payment_lang)) {
 }
 
 /* 模块的基本信息 */
-if (isset($set_modules) && $set_modules == TRUE)
-{
+if (isset($set_modules) && $set_modules == true) {
     $i = isset($modules) ? count($modules) : 0;
     /* 代码 */
     $modules[$i]['code']    = basename(__FILE__, '.php');

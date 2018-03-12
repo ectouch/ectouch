@@ -22,7 +22,7 @@ if (! defined('IN_ECTOUCH')) {
  * 物流查询类
  *
  * @author wanglu
- *        
+ *
  */
 class wlcx extends PluginWechatController
 {
@@ -34,7 +34,7 @@ class wlcx extends PluginWechatController
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -58,12 +58,12 @@ class wlcx extends PluginWechatController
     {
         $articles = array('type'=>'text', 'content'=>'暂无物流信息');
         $uid = model('Base')->model->table('wechat_user')->field('ect_uid')->where('openid = "'.$fromusername.'"')->getOne();
-        if(!empty($uid)){
+        if (!empty($uid)) {
             //订单ID
             $order = model('Base')->model->table('order_info')->field('order_id, order_sn, invoice_no, shipping_name, shipping_id, shipping_status')->where('user_id = '.$uid)->order('add_time desc')->find();
             if (! empty($order)) {
                 //已发货
-                if($order['shipping_status'] > 0){
+                if ($order['shipping_status'] > 0) {
                     $articles = array();
                     $articles['type'] = 'news';
                     $articles['content'][0]['Title'] = '物流信息';
@@ -80,8 +80,8 @@ class wlcx extends PluginWechatController
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -109,5 +109,6 @@ class wlcx extends PluginWechatController
      * 行为操作
      */
     public function action()
-    {}
+    {
+    }
 }

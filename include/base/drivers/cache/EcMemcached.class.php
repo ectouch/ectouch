@@ -3,13 +3,14 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class EcMemcached {
-
-    private $mmc = NULL;
+class EcMemcached
+{
+    private $mmc = null;
     private $group = '';
     private $ver = 0;
 
-    public function __construct($memConfig = array()) {
+    public function __construct($memConfig = array())
+    {
         $this->mmc = new Memcached;
         if (empty($memConfig)) {
             $memConfig['MEM_SERVER'] = array(array('127.0.0.1', 11211));
@@ -23,33 +24,38 @@ class EcMemcached {
     }
 
     //读取缓存
-    public function get($key) {
+    public function get($key)
+    {
         return $this->mmc->get($this->group . '_' . $this->ver . '_' . $key);
     }
 
     //设置缓存
-    public function set($key, $value, $expire = 1800) {
+    public function set($key, $value, $expire = 1800)
+    {
         return $this->mmc->set($this->group . '_' . $this->ver . '_' . $key, $value, $expire);
     }
 
     //自增1
-    public function inc($key, $value = 1) {
+    public function inc($key, $value = 1)
+    {
         return $this->mmc->increment($this->group . '_' . $this->ver . '_' . $key, $value);
     }
 
     //自减1
-    public function des($key, $value = 1) {
+    public function des($key, $value = 1)
+    {
         return $this->mmc->decrement($this->group . '_' . $this->ver . '_' . $key, $value);
     }
 
     //删除
-    public function del($key) {
+    public function del($key)
+    {
         return $this->mmc->delete($this->group . '_' . $this->ver . '_' . $key);
     }
 
     //全部清空
-    public function clear() {
+    public function clear()
+    {
         return $this->mmc->set($this->group . '_ver', $this->ver + 1);
     }
-
 }

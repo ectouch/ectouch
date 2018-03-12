@@ -24,4 +24,3 @@ $_LANG['all_send'] = '全部发送';
 $_LANG['mailsend_null'] = '邮件发送列表空!';
 $_LANG['mailsend_finished'] = '全部邮件发送完成!';
 $_LANG['send_end'] = '选择邮件发送完成!';
-?>

@@ -15,7 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class CommentModel extends BaseModel {
+class CommentModel extends BaseModel
+{
 
     /**
      * 查询评论内容
@@ -26,7 +27,8 @@ class CommentModel extends BaseModel {
      * @params  integer     $page
      * @return  array
      */
-    function assign_comment($id, $type, $rank = 0, $page = 1) {
+    public function assign_comment($id, $type, $rank = 0, $page = 1)
+    {
         $rank_info = '';
         if ($rank == '1') {
             $rank_info = ' AND (comment_rank= 5 OR comment_rank = 4)';
@@ -90,10 +92,11 @@ class CommentModel extends BaseModel {
      * 添加评论内容
      *
      * @access public
-     * @param object $cmt        	
+     * @param object $cmt
      * @return void
      */
-    function add_comment($cmt,$recId,$order_id) {
+    public function add_comment($cmt, $recId, $order_id)
+    {
         /* 评论是否需要审核 */
         $status = 1 - C('comment_check');
 
@@ -110,25 +113,24 @@ class CommentModel extends BaseModel {
         $sql = "INSERT INTO " . $this->pre . "comment(comment_type, id_value, email, user_name, content, comment_rank, add_time, ip_address, status, parent_id, user_id) VALUES " . "('" . $cmt->type . "', '" . $cmt->id . "', '$email', '$user_name', '" . $cmt->content . "', '" . $cmt->rank . "', " . gmtime() . ", '" . real_ip() . "', '$status', '0', '$user_id')";
         $result1 = $this->query($sql);
         $comment_id = $this->db->lastId();
-        if($result1){
+        if ($result1) {
             $sql = 'INSERT INTO ' . $this->pre . 'term_relationship ( ' .
                 'object_type, object_group, object_id, item_key1, item_value1, item_key2, item_value2'.') VALUES (' .
                 "'ecjia.comment', 'comment', '$recId', 'goods_id', '$goods_id', 'comment_id', '$comment_id')";
             $result = $this->query($sql);
-            if($result)
-            {
+            if ($result) {
                 clear_cache_files('comments_list.lbi');
                 return $result;
-            }else{
+            } else {
                 $sql = "DELETE FROM " . $this->pre . "comment WHERE commet_id = '" . $commet_id . "'";
                 $this->query($sql);
                 clear_cache_files('comments_list.lbi');
                 return $result;
-            }            
-        }else{
+            }
+        } else {
             clear_cache_files('comments_list.lbi');
             return $result1;
-        }        
+        }
     }
 
     /**
@@ -136,8 +138,8 @@ class CommentModel extends BaseModel {
      * @param type $id
      * @param type $type
      */
-    function get_comment_info($id, $type) {
-
+    public function get_comment_info($id, $type)
+    {
         $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre .
                 "comment WHERE id_value = '$id' AND comment_type = '$type' AND status = 1 AND parent_id = 0" .
                 ' ORDER BY comment_id DESC';
@@ -192,8 +194,8 @@ class CommentModel extends BaseModel {
      * @param type $type
      * @return type
      */
-    function get_goods_comment($goods_id, $type) {
-
+    public function get_goods_comment($goods_id, $type)
+    {
         $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre .
                 "comment WHERE id_value = '$goods_id' AND comment_type = '$type' AND status = 1 AND parent_id = 0" .
                 ' ORDER BY comment_id DESC';
@@ -207,8 +209,8 @@ class CommentModel extends BaseModel {
      * @param type $type
      * @return type
      */
-    function favorable_comment($goods_id, $type) {
-
+    public function favorable_comment($goods_id, $type)
+    {
         $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre .
                 "comment WHERE id_value = '$goods_id' AND comment_type = '$type' AND status = 1 AND parent_id = 0" .
                 ' ORDER BY comment_id DESC';
@@ -231,11 +233,12 @@ class CommentModel extends BaseModel {
     /**
      * 获取商品的评论列表
      */
-    function get_comment($goods_id,$type,$pay = 1, $num = 10, $start = 0){
-        if(empty($goods_id)){
+    public function get_comment($goods_id, $type, $pay = 1, $num = 10, $start = 0)
+    {
+        if (empty($goods_id)) {
             return false;
         }
-        switch($type){
+        switch ($type) {
             case 1:
             $where = " AND comment_rank > 0";
             break;
@@ -249,30 +252,30 @@ class CommentModel extends BaseModel {
             $where = " AND comment_rank IN (0,1)";
             break;
         }
-        if(!empty($limit)){
+        if (!empty($limit)) {
             $limit = " LIMIT $limit";
         }
         $sql = "SELECT comment_id,email,user_name,content,comment_rank,add_time FROM ". $this->pre ."comment WHERE ".
                "comment_type = 0 AND id_value = '".$goods_id."' AND status = 1 $where ORDER BY comment_id DESC LIMIT $start , $num";
         $comment_list = $this->query($sql);
-        foreach($comment_list as $k => $v){
-			$comment_list[$k]['add_time'] = local_date(C('time_format'), $v['add_time']);
-			$comment_list[$k]['reply'] =  $this->reply_content($v['comment_id']);
+        foreach ($comment_list as $k => $v) {
+            $comment_list[$k]['add_time'] = local_date(C('time_format'), $v['add_time']);
+            $comment_list[$k]['reply'] =  $this->reply_content($v['comment_id']);
         }
         return $comment_list;
     }
-	
-	/**
+    
+    /**
      * 获取评轮回复信息
      */
-	function reply_content($parent_id){
-		$sql = "SELECT comment_id,email,user_name,content,add_time FROM ". $this->pre ."comment WHERE ".
+    public function reply_content($parent_id)
+    {
+        $sql = "SELECT comment_id,email,user_name,content,add_time FROM ". $this->pre ."comment WHERE ".
                " parent_id = '".$parent_id."'";
         $replyt_list = $this->query($sql);
-        foreach($replyt_list as $k => $v){
-			$replyt_list[$k]['add_time'] = local_date(C('time_format'), $v['add_time']);
+        foreach ($replyt_list as $k => $v) {
+            $replyt_list[$k]['add_time'] = local_date(C('time_format'), $v['add_time']);
         }
-		 return $replyt_list;
-	}
-
+        return $replyt_list;
+    }
 }

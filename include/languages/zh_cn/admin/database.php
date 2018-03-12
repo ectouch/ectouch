@@ -106,5 +106,3 @@ $_LANG['cannot_add'] = '追加数据';
 $_LANG['cannot_modify'] = '不能修改文件';
 
 $_LANG['confirm_remove'] = '你确定要删除选中数据吗？';
-
-?>

@@ -4,19 +4,21 @@
 defined('IN_ECTOUCH') or die('Deny Access');
 
 /* 短信模块主类 */
-class EcsSms {
+class EcsSms
+{
+    public $sms_name = null; //用户名
+    public $sms_password = null; //密码
 
-    var $sms_name = NULL; //用户名
-    var $sms_password = NULL; //密码
-
-    function __construct() {
+    public function __construct()
+    {
         /* 直接赋值 */
         $this->sms_name = C('sms_ecmoban_user');
         $this->sms_password = C('sms_ecmoban_password');
     }
 
     // 发送短消息
-    function send($phones, $msg, $send_date = '', $send_num = 1, $sms_type = '', $version = '1.0', &$sms_error = '') {
+    public function send($phones, $msg, $send_date = '', $send_num = 1, $sms_type = '', $version = '1.0', &$sms_error = '')
+    {
         //function send($phones, $msg, &$sms_error = '') {
         /* 检查发送信息的合法性 */
         $contents = $this->get_contents($phones, $msg);
@@ -53,7 +55,8 @@ class EcsSms {
         }
     }
 
-    function Post($curlPost, $url) {
+    public function Post($curlPost, $url)
+    {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HEADER, false);
@@ -66,7 +69,8 @@ class EcsSms {
         return $return_str;
     }
 
-    function xml_to_array($xml) {
+    public function xml_to_array($xml)
+    {
         $reg = "/<(\w+)[^>]*>([\\x00-\\xFF]*)<\\/\\1>/";
         if (preg_match_all($reg, $xml, $matches)) {
             $count = count($matches[0]);
@@ -84,7 +88,8 @@ class EcsSms {
     }
 
     //检查手机号和发送的内容并生成生成短信队列
-    function get_contents($phones, $msg) {
+    public function get_contents($phones, $msg)
+    {
         if (empty($phones) || empty($msg)) {
             return false;
         }
@@ -122,7 +127,8 @@ class EcsSms {
     }
 
     // 自动转换字符集 支持数组转换
-    function auto_charset($fContents, $from = 'gbk', $to = 'utf-8') {
+    public function auto_charset($fContents, $from = 'gbk', $to = 'utf-8')
+    {
         $from = strtoupper($from) == 'UTF8' ? 'utf-8' : $from;
         $to = strtoupper($to) == 'UTF8' ? 'utf-8' : $to;
         if (strtoupper($from) === strtoupper($to) || empty($fContents) || (is_scalar($fContents) && !is_string($fContents))) {
@@ -141,30 +147,29 @@ class EcsSms {
             foreach ($fContents as $key => $val) {
                 $_key = auto_charset($key, $from, $to);
                 $fContents[$_key] = auto_charset($val, $from, $to);
-                if ($key != $_key)
+                if ($key != $_key) {
                     unset($fContents[$key]);
+                }
             }
             return $fContents;
-        }
-        else {
+        } else {
             return $fContents;
         }
     }
 
     // 检测手机号码是否正确
-    function is_moblie($moblie) {
+    public function is_moblie($moblie)
+    {
         return preg_match("/^13[0-9]{9}|15[012356789][0-9]{8}|18[0-9]{9}|14[579][0-9]{8}|17[0-9]{9}$/", $moblie);
     }
 
     //打印日志
-    function logResult($word = '') {
+    public function logResult($word = '')
+    {
         $fp = fopen(ROOT_PATH . "data/smserrlog.txt", "a");
         flock($fp, LOCK_EX);
         fwrite($fp, "执行日期：" . strftime("%Y%m%d%H%M%S", time()) . "\n" . $word . "\n");
         flock($fp, LOCK_UN);
         fclose($fp);
     }
-
 }
-
-?>

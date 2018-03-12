@@ -15,13 +15,15 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class FlowController extends CommonController {
+class FlowController extends CommonController
+{
 
     /**
      * 购物车列表
      */
-    public function index() {
-		$_SESSION['flow_type'] = CART_GENERAL_GOODS;
+    public function index()
+    {
+        $_SESSION['flow_type'] = CART_GENERAL_GOODS;
         /* 如果是一步购物，跳到结算中心 */
         if (C('one_step_buy') == '1') {
             ecs_header("Location: " . url('flow/checkout') . "\n");
@@ -77,7 +79,8 @@ class FlowController extends CommonController {
     /**
      * 获取购物车内的相关配件
      */
-    public function goods_fittings() {
+    public function goods_fittings()
+    {
         if (IS_AJAX) {
             $start = $_POST ['last'];
             $limit = $_POST ['amount'];
@@ -106,7 +109,8 @@ class FlowController extends CommonController {
     /**
      * 优惠活动（赠品）
      */
-    public function label_favourable() {
+    public function label_favourable()
+    {
         // 取得优惠活动
         $favourable_list = model('Flow')->favourable_list_flow($_SESSION ['user_rank']);
         usort($favourable_list, array("FlowModel", "cmp_favourable"));
@@ -120,14 +124,16 @@ class FlowController extends CommonController {
     /**
      * 购物车列表 连接到index
      */
-    public function cart() {
+    public function cart()
+    {
         $this->index();
     }
 
     /**
      * 立即购买
      */
-    public function add_to_cart() {
+    public function add_to_cart()
+    {
         //对goods处理
         $_POST ['goods'] = strip_tags(urldecode($_POST ['goods']));
         $_POST ['goods'] = json_str_iconv($_POST ['goods']);
@@ -160,16 +166,16 @@ class FlowController extends CommonController {
             $sql = "select user_price from ".$this->model->pre."member_price where goods_id = ".$goods->goods_id ." and user_rank = ".$_SESSION['user_rank'];
             $res = $this->model->query($sql);
             $mp_price = $res[0][user_price] ;
-            if(empty($mp_price)){
-                    $sql = "SELECT g.goods_name as goods_name,g.goods_thumb as goods_thumb, g.shop_price*$_SESSION[discount]  as shop_price,g.  goods_number as goods_number FROM ".
+            if (empty($mp_price)) {
+                $sql = "SELECT g.goods_name as goods_name,g.goods_thumb as goods_thumb, g.shop_price*$_SESSION[discount]  as shop_price,g.  goods_number as goods_number FROM ".
                      $this->model->pre."goods as g  ".
                      " where g.goods_id = ".$goods->goods_id ;
-            } else{
-                 $sql = "SELECT g.goods_name as goods_name,g.goods_thumb as goods_thumb,ifnull(".$mp_price.",g.shop_price*$_SESSION[discount]) as shop_price,g.  goods_number as goods_number FROM ".
+            } else {
+                $sql = "SELECT g.goods_name as goods_name,g.goods_thumb as goods_thumb,ifnull(".$mp_price.",g.shop_price*$_SESSION[discount]) as shop_price,g.  goods_number as goods_number FROM ".
                      $this->model->pre."goods as g  ".
                      " where g.goods_id = ".$goods->goods_id ;
             }
-             //var_dump($sql) ;
+            //var_dump($sql) ;
 
             $res = $this->model->query($sql);
             $goods_name = $res[0]['goods_name'];
@@ -186,7 +192,7 @@ class FlowController extends CommonController {
             if (!empty($res)) {
                 $spe_arr = array();
                 foreach ($res as $row) {
-                    if(!$mp){
+                    if (!$mp) {
                         $row['attr_price'] = $row['attr_price'] * $_SESSION['discount'];
                     }
                     $spe_arr [$row ['attr_id']] ['attr_type'] = $row ['attr_type'];
@@ -228,7 +234,7 @@ class FlowController extends CommonController {
             if ($arrGoods ['goods_number'] < $goodsnmber) {
                 $result['error'] = 1;
                 $result['message'] = sprintf(L('stock_insufficiency'), $arrGoods ['goods_name'], $arrGoods ['goods_number'], $arrGoods ['goods_number']);
-                if (C('use_how_oos') == 1){
+                if (C('use_how_oos') == 1) {
                     $result['message'] =L('oos_tips');
                 }
                 die(json_encode($result));
@@ -269,7 +275,8 @@ class FlowController extends CommonController {
     /**
      * 点击刷新购物车
      */
-    public function ajax_update_cart() {
+    public function ajax_update_cart()
+    {
         //格式化返回数组
         $result = array(
             'error' => 0,
@@ -402,7 +409,8 @@ class FlowController extends CommonController {
     /**
      * 删除购物车中的商品
      */
-    public function drop_goods() {
+    public function drop_goods()
+    {
         $rec_id = intval($_GET ['id']);
         //删除购物车中的商品
         model('Flow')->flow_drop_cart_goods($rec_id);
@@ -412,7 +420,8 @@ class FlowController extends CommonController {
     /**
      * 订单确认
      */
-    public function checkout() {
+    public function checkout()
+    {
         /* 取得购物类型 */
         $flow_type = isset($_SESSION ['flow_type']) ? intval($_SESSION ['flow_type']) : CART_GENERAL_GOODS;
         /* 团购标志 */
@@ -434,7 +443,7 @@ class FlowController extends CommonController {
         //  检查用户是否已经登录 如果用户已经登录了则检查是否有默认的收货地址 如果没有登录则跳转到登录和注册页面
         if (empty($_SESSION ['direct_shopping']) && $_SESSION ['user_id'] == 0) {
             /* 用户没有登录且没有选定匿名购物，转向到登录页面 */
-            $this->redirect(url('user/login',array('step'=>'flow')));
+            $this->redirect(url('user/login', array('step'=>'flow')));
             exit;
         }
         // 获取收货人信息
@@ -509,14 +518,12 @@ class FlowController extends CommonController {
         //团购商品计算商品价格
         if ($order['extension_code'] == 'group_buy') {
             $group_buy = model('GroupBuyBase')->group_buy_info($order['extension_id']);
-
         }
         // 查看购物车中是否全为免运费商品，若是则把运费赋为零
         $condition = "`session_id` = '" . SESS_ID . "' AND `extension_code` != 'package_buy' AND `is_shipping` = 0";
         $shipping_count = $this->model->table('cart')->field('count(*)')->where($condition)->getOne();
       
         foreach ($shipping_list as $key => $val) {
-
             $shipping_cfg = unserialize_config($val ['configure']);
             $shipping_fee = ($shipping_count == 0 and $cart_weight_price ['free_shipping'] == 1) ? 0 : shipping_fee($val['shipping_code'], unserialize($val ['configure']), $cart_weight_price ['weight'], $cart_weight_price['old_preic'] = $group_buy['cur_price'] > 0 ? $group_buy['cur_price'] : $cart_weight_price['old_preic'], $cart_weight_price ['number']);
 
@@ -530,8 +537,8 @@ class FlowController extends CommonController {
                 $insure_disabled = ($val ['insure'] == 0);
                 $cod_disabled = ($val ['support_cod'] == 0);
             }
-	        // 兼容过滤ecjia配送方式
-            if (substr($val['shipping_code'], 0 , 5) == 'ship_') {
+            // 兼容过滤ecjia配送方式
+            if (substr($val['shipping_code'], 0, 5) == 'ship_') {
                 unset($shipping_list[$key]);
             }
         }
@@ -583,7 +590,7 @@ class FlowController extends CommonController {
         if (isset($payment_list)) {
             foreach ($payment_list as $key => $payment) {
                 // 只保留显示手机版支付方式
-                if(!file_exists(ROOT_PATH . 'plugins/payment/'.$payment['pay_code'].'.php')){
+                if (!file_exists(ROOT_PATH . 'plugins/payment/'.$payment['pay_code'].'.php')) {
                     unset($payment_list[$key]);
                 }
                 if ($payment ['is_cod'] == '1') {
@@ -610,7 +617,7 @@ class FlowController extends CommonController {
                     unset($payment_list [$key]);
                 }
                 // 兼容过滤ecjia支付方式
-                if (substr($payment['pay_code'], 0 , 4) == 'pay_') {
+                if (substr($payment['pay_code'], 0, 4) == 'pay_') {
                     unset($payment_list[$key]);
                 }
             }
@@ -714,7 +721,8 @@ class FlowController extends CommonController {
     /**
      * 登录信息
      */
-    public function login() {
+    public function login()
+    {
         //用户登录注册
         if ($_SERVER ['REQUEST_METHOD'] == 'GET') {
             $this->assign('anonymous_buy', C('anonymous_buy'));
@@ -803,7 +811,8 @@ class FlowController extends CommonController {
     /**
      * 收货信息
      */
-    public function consignee() {
+    public function consignee()
+    {
         if ($_SERVER ['REQUEST_METHOD'] == 'GET') {
             /* 取得购物类型 */
             $flow_type = isset($_SESSION ['flow_type']) ? intval($_SESSION ['flow_type']) : CART_GENERAL_GOODS;
@@ -823,20 +832,20 @@ class FlowController extends CommonController {
                 if ($addressId > 0) {
                     $consignee_list[] = model('Users')->get_consignee_list($_SESSION ['user_id'], $addressId);
                 } else {
-					if(!empty($_SESSION['consignee'])){
-						$consignee = $_SESSION['consignee'];
-						$consignee_list [] = array(
+                    if (!empty($_SESSION['consignee'])) {
+                        $consignee = $_SESSION['consignee'];
+                        $consignee_list [] = array(
                         'country' => C('shop_country'),
-						'province' => $consignee['province'],
-						'city' => $consignee['city'],
-						'district' => $consignee['district'],
+                        'province' => $consignee['province'],
+                        'city' => $consignee['city'],
+                        'district' => $consignee['district'],
 
-						);
-					}else{
-						$consignee_list [] = array(
+                        );
+                    } else {
+                        $consignee_list [] = array(
                         'country' => C('shop_country'),
-						);
-					}
+                        );
+                    }
                 }
             } else {
                 if (isset($_SESSION ['flow_consignee'])) {
@@ -873,7 +882,7 @@ class FlowController extends CommonController {
             $this->assign('district_list', $district_list);
 
             /* 返回收货人页面代码 */
-            $this->assign('real_goods_count', model('Order')->exist_real_goods(0, $flow_type) ? 1 : 0 );
+            $this->assign('real_goods_count', model('Order')->exist_real_goods(0, $flow_type) ? 1 : 0);
         } else {
             /*  保存收货人信息 	 */
             $consignee = array(
@@ -908,7 +917,8 @@ class FlowController extends CommonController {
     /**
      *  把优惠活动加入购物车
      */
-    public function add_favourable() {
+    public function add_favourable()
+    {
         /* 取得优惠活动信息 */
         $act_id = intval($_POST ['act_id']);
         $favourable = model('GoodsBase')->favourable_info($act_id);
@@ -966,7 +976,8 @@ class FlowController extends CommonController {
     /**
      * 改变配送方式
      */
-    public function select_shipping() {
+    public function select_shipping()
+    {
         // 格式化返回数组
         $result = array(
             'error' => '',
@@ -1019,7 +1030,8 @@ class FlowController extends CommonController {
         echo json_encode($result);
     }
 
-    function select_inv(){
+    public function select_inv()
+    {
         /* 如果能开发票，取得发票内容列表 */
         $can_invoice = C('can_invoice');
         $invoice_content = C('invoice_content');
@@ -1036,7 +1048,6 @@ class FlowController extends CommonController {
                 }
             }
             $this->assign('inv_type_list', $inv_type_list);
-            
         }
         $this->assign('inv_payee', $_SESSION['inv_payee']);
         $this->assign('inv_type', $_SESSION['inv_type']);
@@ -1049,7 +1060,8 @@ class FlowController extends CommonController {
     /**
      *  提交订单
      */
-    public function done() {
+    public function done()
+    {
         /* 取得购物类型 */
         $flow_type = isset($_SESSION ['flow_type']) ? intval($_SESSION ['flow_type']) : CART_GENERAL_GOODS;
         /* 检查购物车中是否有商品 */
@@ -1132,7 +1144,6 @@ class FlowController extends CommonController {
         /* 检查积分余额是否合法 */
         $user_id = $_SESSION ['user_id'];
         if ($user_id > 0) {
-
             $user_info = model('Order')->user_info($user_id);
             $order ['surplus'] = min($order ['surplus'], $user_info ['user_money'] + $user_info ['credit_line']);
             if ($order ['surplus'] < 0) {
@@ -1163,7 +1174,6 @@ class FlowController extends CommonController {
             $bonus = model('Order')->bonus_info(0, $bonus_sn);
             $now = gmtime();
             if (empty($bonus) || $bonus ['user_id'] > 0 || $bonus ['order_id'] > 0 || $bonus ['min_goods_amount'] > model('Order')->cart_amount(true, $flow_type) || $now > $bonus ['use_end_date']) {
-
             } else {
                 if ($user_id > 0) {
                     $sql = "UPDATE " . $this->model->pre . "user_bonus SET user_id = '$user_id' WHERE bonus_id = '$bonus[bonus_id]' LIMIT 1";
@@ -1360,7 +1370,7 @@ class FlowController extends CommonController {
         //     send_wechat_message('order_remind', '', $order['order_sn'] . L('order_effective'), $order_url, $order['order_sn']);
         // }
         // 微信通模板消息
-        if (class_exists('WechatController') && is_wechat_browser() ) {
+        if (class_exists('WechatController') && is_wechat_browser()) {
             $pushData = array(
                 'first' => array('value' => '您的订单已提交成功','color' => '#173177'),
                 'orderID' => array('value' => $order['order_sn'],'color' => '#FF0000'), //订单号
@@ -1428,9 +1438,9 @@ class FlowController extends CommonController {
         if ($order ['order_amount'] > 0) {
             $payment = model('Order')->payment_info($order ['pay_id']);
 
-            include_once (ROOT_PATH . 'plugins/payment/' . $payment ['pay_code'] . '.php');
+            include_once(ROOT_PATH . 'plugins/payment/' . $payment ['pay_code'] . '.php');
 
-            $pay_obj = new $payment ['pay_code'] ();
+            $pay_obj = new $payment ['pay_code']();
 
             $pay_online = $pay_obj->get_code($order, unserialize_config($payment ['pay_config']));
 
@@ -1442,11 +1452,11 @@ class FlowController extends CommonController {
             $order ['shipping_name'] = trim(stripcslashes($order ['shipping_name']));
         }
         // 如果是银行汇款或货到付款 则显示支付描述
-        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'cod'){
+        if ($payment['pay_code'] == 'bank' || $payment['pay_code'] == 'cod') {
             if (empty($order ['pay_name'])) {
                 $order ['pay_name'] = trim(stripcslashes($payment ['pay_name']));
             }
-            $this->assign('pay_desc',$order['pay_desc']);
+            $this->assign('pay_desc', $order['pay_desc']);
         }
         // 货到付款不显示
         if ($payment ['pay_code'] != 'balance') {
@@ -1481,7 +1491,7 @@ class FlowController extends CommonController {
                         unset($payment_list [$key]);
                     }
                     // 兼容过滤ecjia支付方式
-                    if (substr($payment['pay_code'], 0 , 4) == 'pay_') {
+                    if (substr($payment['pay_code'], 0, 4) == 'pay_') {
                         unset($payment_list[$key]);
                     }
                 }
@@ -1515,7 +1525,8 @@ class FlowController extends CommonController {
     /**
      * 改变支付方式
      */
-    public function select_payment() {
+    public function select_payment()
+    {
         $json = new EcsJson;
         $result = array('error' => '', 'content' => '', 'need_insure' => 0, 'payment' => 1);
 
@@ -1567,7 +1578,8 @@ class FlowController extends CommonController {
     /**
      *  订单提交后修改付款方式
      */
-    public function get_total() {
+    public function get_total()
+    {
         /* 检查支付方式 */
         $pay_id = I('post.payment_id');
         $payment_info = model('Order')->payment_info($pay_id);
@@ -1588,7 +1600,8 @@ class FlowController extends CommonController {
         die($order['goods_amount']);
     }
 
-    public function select_pack() {
+    public function select_pack()
+    {
         $result = array('error' => '', 'content' => '', 'need_insure' => 0);
         /* 取得购物类型 */
         $flow_type = isset($_SESSION['flow_type']) ? intval($_SESSION['flow_type']) : CART_GENERAL_GOODS;
@@ -1636,7 +1649,8 @@ class FlowController extends CommonController {
     /**
      * 改变贺卡
      */
-    public function select_card() {
+    public function select_card()
+    {
         $result = array('error' => '', 'content' => '', 'need_insure' => 0);
 
         /* 取得购物类型 */
@@ -1685,7 +1699,8 @@ class FlowController extends CommonController {
     /**
      * 改变余额
      */
-    public function change_surplus() {
+    public function change_surplus()
+    {
         $surplus = floatval($_GET['surplus']);
         $user_info = model('Order')->user_info($_SESSION['user_id']);
 
@@ -1730,7 +1745,8 @@ class FlowController extends CommonController {
     /**
      * 改变积分
      */
-    public function change_integral() {
+    public function change_integral()
+    {
         $points = floatval($_GET['points']);
         $user_info = model('Order')->user_info($_SESSION['user_id']);
 
@@ -1780,7 +1796,8 @@ class FlowController extends CommonController {
     /**
      * 改变红包
      */
-    public function change_bonus() {
+    public function change_bonus()
+    {
         $result = array('error' => '', 'content' => '');
 
         /* 取得购物类型 */
@@ -1828,7 +1845,8 @@ class FlowController extends CommonController {
     /**
      * 改变发票的设置
      */
-    public function change_needinv() {
+    public function change_needinv()
+    {
         $result = array('error' => '', 'content' => '');
         $_GET['inv_type'] = !empty($_GET['inv_type']) ? json_str_iconv(urldecode($_GET['inv_type'])) : '';
         $_GET['invPayee'] = !empty($_GET['invPayee']) ? json_str_iconv(urldecode($_GET['invPayee'])) : '';
@@ -1881,7 +1899,8 @@ class FlowController extends CommonController {
     /**
      * 改变缺货处理时的方式
      */
-    public function change_oos() {
+    public function change_oos()
+    {
         /* 取得订单信息 */
         $order = model('Order')->flow_order_info();
 
@@ -1894,7 +1913,8 @@ class FlowController extends CommonController {
     /**
      * 检查用户输入的余额
      */
-    public function check_surplus() {
+    public function check_surplus()
+    {
         /* ------------------------------------------------------ */
         //-- 检查用户输入的余额
         /* ------------------------------------------------------ */
@@ -1911,7 +1931,8 @@ class FlowController extends CommonController {
     /**
      * 检查用户输入的余额
      */
-    public function check_integral() {
+    public function check_integral()
+    {
         $points = floatval($_GET['integral']);
         $user_info = model('Order')->user_info($_SESSION['user_id']);
         $flow_points = model('Flow')->flow_available_points();  // 该订单允许使用的积分
@@ -1931,7 +1952,8 @@ class FlowController extends CommonController {
     /**
      * 放入收藏夹
      */
-    public function drop_to_collect() {
+    public function drop_to_collect()
+    {
         if ($_SESSION['user_id'] > 0) {
             $rec_id = intval($_GET['id']);
             $goods_id = $this->model->table('cart')->field('goods_id')->where("rec_id = '$rec_id' AND session_id = '" . SESS_ID . "'")->getOne();
@@ -1951,7 +1973,8 @@ class FlowController extends CommonController {
     /**
      *  验证红包序列号
      */
-    public function validate_bonus() {
+    public function validate_bonus()
+    {
         $bonus_sn = trim($_REQUEST['bonus_sn']);
         if (is_numeric($bonus_sn)) {
             $bonus = model('Order')->bonus_info(0, $bonus_sn);
@@ -2021,7 +2044,8 @@ class FlowController extends CommonController {
     /**
      * 添加礼包到购物车
      */
-    public function add_package_to_cart() {
+    public function add_package_to_cart()
+    {
         $_POST['package_info'] = json_str_iconv($_POST['package_info']);
 
         $result = array('error' => 0, 'message' => '', 'content' => '', 'package_id' => '');
@@ -2067,7 +2091,8 @@ class FlowController extends CommonController {
     /**
      * 改变配送地址
      */
-    public function select_address() {
+    public function select_address()
+    {
         $result = array('error' => '', 'content' => '', 'need_insure' => 0, 'address' => 1);
         $address_id = intval($_REQUEST['address']);
         if (model('Users')->save_consignee_default($address_id)) {
@@ -2081,7 +2106,8 @@ class FlowController extends CommonController {
     /**
      * 更换支付方式
      */
-    public function change_payment() {
+    public function change_payment()
+    {
         if ($_POST) {
             // 接收数据
             $payment_id = intval($_POST ['payment']);
@@ -2151,10 +2177,10 @@ class FlowController extends CommonController {
                     $data_pay['order_amount'] = $order_amount;
                     $this->model->table('pay_log')->data($data_pay)->where('order_id = ' . $order_info ['order_id'])->update();
                     /* 调用相应的支付方式文件 */
-                    include_once (ROOT_PATH . 'plugins/payment/' . $payment_info ['pay_code'] . '.php');
+                    include_once(ROOT_PATH . 'plugins/payment/' . $payment_info ['pay_code'] . '.php');
 
                     /* 取得在线支付方式的支付链接，直接跳转 */
-                    $pay_obj = new $payment_info ['pay_code'] ();
+                    $pay_obj = new $payment_info ['pay_code']();
                     $pay_code = $pay_obj->get_code($order_info, $payment_info);
 
                     if (empty($pay_code)) {
@@ -2178,7 +2204,8 @@ class FlowController extends CommonController {
      * 获取配送地址列表
 
      */
-    public function consignee_list() {
+    public function consignee_list()
+    {
         if (IS_AJAX) {
             $start = $_POST ['last'];
             $limit = $_POST ['amount'];
@@ -2221,7 +2248,8 @@ class FlowController extends CommonController {
      * 删除收货人信息
 
      */
-    public function drop_consignee() {
+    public function drop_consignee()
+    {
         $consignee_id = intval($_GET['id']);
         if (model('Users')->drop_consignee($consignee_id)) {
             ecs_header("Location: " . url('flow/consignee_list') . "\n");
@@ -2230,33 +2258,31 @@ class FlowController extends CommonController {
             show_message(L('not_fount_consignee'));
         }
     }
-	/*设置默认收货地址*/
-	public function edit_address_info() {
-		if (IS_AJAX && IS_AJAX) {
+    /*设置默认收货地址*/
+    public function edit_address_info()
+    {
+        if (IS_AJAX && IS_AJAX) {
             $address_id = I('id');
-			$data['address_id'] = $address_id;
+            $data['address_id'] = $address_id;
             $condition['user_id'] = $_SESSION['user_id'];
-			$this->model->table('users')->data($data)->where($condition)->update();
-			unset($_SESSION['flow_consignee']);
+            $this->model->table('users')->data($data)->where($condition)->update();
+            unset($_SESSION['flow_consignee']);
             echo json_encode(array('status' => 1));
         } else {
             echo json_encode(array('status' => 0));
-         }
+        }
+    }
 
-	}
-
-     /**
-     *
-     */
-    function  add_to_cart_combo()
+    /**
+    *
+    */
+    public function add_to_cart_combo()
     {
         $_POST['goods']=strip_tags(urldecode($_POST['goods']));
         $_POST['goods'] = json_str_iconv($_POST['goods']);
 
-        if (!empty($_REQUEST['goods_id']) && empty($_POST['goods']))
-        {
-            if (!is_numeric($_REQUEST['goods_id']) || intval($_REQUEST['goods_id']) <= 0)
-            {
+        if (!empty($_REQUEST['goods_id']) && empty($_POST['goods'])) {
+            if (!is_numeric($_REQUEST['goods_id']) || intval($_REQUEST['goods_id']) <= 0) {
                 ecs_header("Location:./\n");
             }
             $goods_id = intval($_REQUEST['goods_id']);
@@ -2265,16 +2291,14 @@ class FlowController extends CommonController {
         $result = array('error' => 0, 'message' => '', 'content' => '', 'goods_id' => '');
         $json = new EcsJson();
 
-        if (empty($_POST['goods']))
-        {
+        if (empty($_POST['goods'])) {
             $result['error'] = 1;
             die($json->encode($result));
         }
 
         $goods = $json->decode($_POST['goods']);
         /* 检查：如果商品有规格，而post的数据没有规格，把商品的规格属性通过JSON传到前台 */
-        if (empty($goods->spec) AND empty($goods->quick))
-        {
+        if (empty($goods->spec) and empty($goods->quick)) {
             $sql = "SELECT a.attr_id, a.attr_name, a.attr_type, ".
                 "g.goods_attr_id, g.attr_value, g.attr_price " .
                 'FROM ' . $this->model->pre . 'goods_attr' . ' AS g ' .
@@ -2284,11 +2308,9 @@ class FlowController extends CommonController {
 
             $res = $this->model->query($sql);
 
-            if (!empty($res))
-            {
+            if (!empty($res)) {
                 $spe_arr = array();
-                foreach ($res AS $row)
-                {
+                foreach ($res as $row) {
                     $spe_arr[$row['attr_id']]['attr_type'] = $row['attr_type'];
                     $spe_arr[$row['attr_id']]['name']     = $row['attr_name'];
                     $spe_arr[$row['attr_id']]['attr_id']     = $row['attr_id'];
@@ -2300,8 +2322,7 @@ class FlowController extends CommonController {
                 }
                 $i = 0;
                 $spe_array = array();
-                foreach ($spe_arr AS $row)
-                {
+                foreach ($spe_arr as $row) {
                     $spe_array[]=$row;
                 }
                 $result['error']   = ERR_NEED_SELECT_ATTR;
@@ -2316,28 +2337,21 @@ class FlowController extends CommonController {
 
 
         /* 更新：如果是一步购物，先清空购物车 */
-        if (C('one_step_buy') == '1')
-        {
+        if (C('one_step_buy') == '1') {
             model('Order')->clear_cart();
         }
         /* 检查：商品数量是否合法 */
-        if (!is_numeric($goods->number) || intval($goods->number) <= 0)
-        {
+        if (!is_numeric($goods->number) || intval($goods->number) <= 0) {
             $result['error']   = 1;
             $result['message'] = 'buzu';
         }
         /* 更新：购物车 */
-        else
-        {
+        else {
             // 更新：添加到购物车
-            if (model('Order')->addto_cart_combo($goods->goods_id, $goods->number, $goods->spec, $goods->parent, $goods->group))
-            {
-                if (C('cart_confirm') > 2)
-                {
+            if (model('Order')->addto_cart_combo($goods->goods_id, $goods->number, $goods->spec, $goods->parent, $goods->group)) {
+                if (C('cart_confirm') > 2) {
                     $result['message'] = '';
-                }
-                else
-                {
+                } else {
                     $result['message'] = C('cart_confirm') == 1 ? L('addto_cart_success_1') : L('addto_cart_success_2');
                 }
 
@@ -2353,24 +2367,19 @@ class FlowController extends CommonController {
                 $result['goods_price'] = $combo_goods_info['goods_price'];
                 $result['stock'] = $combo_goods_info['stock'];
                 $result['parent'] = $goods->parent;
-            }
-            else
-            {
+            } else {
                 $result['message']  = ECTOUCH::err()->last_message();
                 $result['error']    = ECTOUCH::err()->error_no;
                 $result['group']    = $goods->group;
                 $result['goods_id'] = stripslashes($goods->goods_id);
-                if (is_array($goods->spec))
-                {
+                if (is_array($goods->spec)) {
                     $result['product_spec'] = implode(',', $goods->spec);
-                }
-                else
-                {
+                } else {
                     $result['product_spec'] = $goods->spec;
                 }
             }
         }
-      $cart_confirm =  C('cart_confirm');
+        $cart_confirm =  C('cart_confirm');
         $result['confirm_type'] = !empty($cart_confirm) ? $cart_confirm : 2;
         die($json->encode($result));
     }
@@ -2383,10 +2392,8 @@ class FlowController extends CommonController {
         $_POST['goods']=strip_tags(urldecode($_POST['goods']));
         $_POST['goods'] = json_str_iconv($_POST['goods']);
 
-        if (!empty($_REQUEST['goods_id']) && empty($_POST['goods']))
-        {
-            if (!is_numeric($_REQUEST['goods_id']) || intval($_REQUEST['goods_id']) <= 0)
-            {
+        if (!empty($_REQUEST['goods_id']) && empty($_POST['goods'])) {
+            if (!is_numeric($_REQUEST['goods_id']) || intval($_REQUEST['goods_id']) <= 0) {
                 ecs_header("Location:./\n");
             }
             $goods_id = intval($_REQUEST['goods_id']);
@@ -2396,15 +2403,14 @@ class FlowController extends CommonController {
         $result = array('error' => 0, 'message' => '');
         $json = new EcsJson();
 
-        if (empty($_POST['goods']))
-        {
+        if (empty($_POST['goods'])) {
             $result['error'] = 1;
             die($json->encode($result));
         }
 
         $goods = $json->decode($_POST['goods']);
 
-        if($goods->parent == 0){
+        if ($goods->parent == 0) {
             //更新临时购物车（删除基本件）
             $sql = "DELETE FROM " . $this->model->pre . 'cart_combo' . " WHERE session_id='" . SESS_ID . "'".
                 " AND goods_id = '" . $goods->goods_id . "' AND group_id = '" . $goods->group . "'";
@@ -2413,7 +2419,7 @@ class FlowController extends CommonController {
             $sql = "DELETE FROM " . $this->model->pre . 'cart_combo' . " WHERE session_id='" . SESS_ID . "'".
                 " AND parent_id = '".$goods->goods_id."' AND group_id = '" . $goods->group . "'";
             $this->model->query($sql);
-        }else{
+        } else {
             //更新临时购物车（删除配件）
             $sql = "DELETE FROM " . $this->model->pre . 'cart_combo' . " WHERE session_id='" . SESS_ID . "'".
                 " AND goods_id = '" . $goods->goods_id . "' AND group_id = '" . $goods->group . "'";
@@ -2430,15 +2436,14 @@ class FlowController extends CommonController {
     /**
      * 套餐添加到购物车
      */
-    function add_to_cart_group()
+    public function add_to_cart_group()
     {
         $_POST['goods'] = strip_tags(urldecode($_POST['goods']));
         $_POST['goods'] = json_str_iconv($_POST['goods']);
         $result = array('error' => 0, 'message' => '');
         $json = new EcsJson();
 
-        if (empty($_POST['goods']))
-        {
+        if (empty($_POST['goods'])) {
             $result['error'] = 1;
             $result['message'] = '系统无法接收不完整的数据';
             die($json->encode($result));
@@ -2450,11 +2455,11 @@ class FlowController extends CommonController {
         $sql = "SELECT rec_id FROM " . $this->model->pre . 'cart_combo' . " WHERE session_id = '" . SESS_ID . "'" .
             " AND group_id = '". $group ."' ORDER BY parent_id limit 1";
         $res = $this->model->query($sql);
-        if($res){
+        if ($res) {
             //清空购物车中的原有数据
             $sql = "DELETE FROM " . $this->model->pre . 'cart' . " WHERE ".
                 " session_id='" . SESS_ID . "' AND group_id = '" . $group . "'";
-             $this->model->query($sql);
+            $this->model->query($sql);
             //插入新的数据
             $sql = "INSERT INTO " . $this->model->pre . 'cart' . " SELECT * FROM " . $this->model->pre . 'cart_combo' . " WHERE ".
                 " session_id='" . SESS_ID . "' AND group_id = '" . $group . "'";
@@ -2467,7 +2472,7 @@ class FlowController extends CommonController {
             $sql = "DELETE FROM " . $this->model->pre . 'cart_combo' . " WHERE ".
                 " session_id='" . SESS_ID . "' AND group_id = '" . $group . "'";
             $this->model->query($sql);
-        }else{
+        } else {
             $result['error'] = 1;
             $result['message'] = '暂无数据可提交，请重新选择';
             die($json->encode($result));
@@ -2484,14 +2489,12 @@ class FlowController extends CommonController {
      * @param   array   $arr
      * @return  void
      */
-    function flow_update_cart($arr)
+    public function flow_update_cart($arr)
     {
         /* 处理 */
-        foreach ($arr AS $key => $val)
-        {
+        foreach ($arr as $key => $val) {
             $val = intval(make_semiangle($val));
-            if ($val <= 0 || !is_numeric($key))
-            {
+            if ($val <= 0 || !is_numeric($key)) {
                 continue;
             }
 
@@ -2508,34 +2511,35 @@ class FlowController extends CommonController {
             $row = $goods['0'];
 
             //查询：系统启用了库存，检查输入的商品数量是否有效
-            if (intval(C('use_storage')) > 0 && $goods['extension_code'] != 'package_buy')
-            {
-                if ($row['goods_number'] < $val)
-                {
-                    show_message(sprintf(L('stock_insufficiency'), $row['goods_name'],
-                    $row['goods_number'], $row['goods_number']));
+            if (intval(C('use_storage')) > 0 && $goods['extension_code'] != 'package_buy') {
+                if ($row['goods_number'] < $val) {
+                    show_message(sprintf(
+                        L('stock_insufficiency'),
+                        $row['goods_name'],
+                    $row['goods_number'],
+                        $row['goods_number']
+                    ));
                     exit;
                 }
                 /* 是货品 */
                 $goods['product_id'] = trim($goods['product_id']);
-                if (!empty($goods['product_id']))
-                {
+                if (!empty($goods['product_id'])) {
                     $sql = "SELECT product_number FROM " .$this->model->pre . 'products' . " WHERE goods_id = '" . $goods['goods_id'] . "' AND product_id = '" . $goods['product_id'] . "'";
 
                     $product_number = $this->model->query($sql);
                     $product_number = $product_number['0']['product_number'];
-                    if ($product_number < $val)
-                    {
-                        show_message(sprintf(L('stock_insufficiency'), $row['goods_name'],
-                        $product_number['product_number'], $product_number['product_number']));
+                    if ($product_number < $val) {
+                        show_message(sprintf(
+                            L('stock_insufficiency'),
+                            $row['goods_name'],
+                        $product_number['product_number'],
+                            $product_number['product_number']
+                        ));
                         exit;
                     }
                 }
-            }
-            elseif (intval(C('use_storage')) > 0 && $goods['extension_code'] == 'package_buy')
-            {
-                if (model('Order')->judge_package_stock($goods['goods_id'], $val))
-                {
+            } elseif (intval(C('use_storage')) > 0 && $goods['extension_code'] == 'package_buy') {
+                if (model('Order')->judge_package_stock($goods['goods_id'], $val)) {
                     show_message(L('package_stock_insufficiency'));
                     exit;
                 }
@@ -2554,13 +2558,11 @@ class FlowController extends CommonController {
             $offers_accessories_res = $this->model->query($sql);
 
             //订货数量大于0
-            if ($val > 0)
-            {
+            if ($val > 0) {
                 /* 判断是否为超出数量的优惠价格的配件 删除*/
                 $row_num = 1;
-                foreach ($offers_accessories_res as $key=>$offers_accessories_row){
-                    if ($row_num > $val)
-                    {
+                foreach ($offers_accessories_res as $key=>$offers_accessories_row) {
+                    if ($row_num > $val) {
                         $sql = "DELETE FROM " . $this->model->pre . 'cart' .
                         " WHERE session_id = '" . SESS_ID . "' " .
                         "AND rec_id = '" . $offers_accessories_row['rec_id'] ."' AND group_id='' LIMIT 1";
@@ -2571,15 +2573,13 @@ class FlowController extends CommonController {
                 }
 
                 /* 处理超值礼包 */
-                if ($goods['extension_code'] == 'package_buy')
-                {
+                if ($goods['extension_code'] == 'package_buy') {
                     //更新购物车中的商品数量
                     $sql = "UPDATE " .$this->model->pre . 'cart' .
                     " SET goods_number = '$val' WHERE rec_id='$key' AND session_id='" . SESS_ID . "' AND group_id=''";
                 }
                 /* 处理普通商品或非优惠的配件 */
-                else
-                {
+                else {
                     $attr_id    = empty($goods['goods_attr_id']) ? array() : explode(',', $goods['goods_attr_id']);
                     $goods_price = model('Goodsbase')->get_final_price($goods['goods_id'], $val, true, $attr_id);
 
@@ -2589,11 +2589,10 @@ class FlowController extends CommonController {
                 }
             }
             //订货数量等于0
-            else
-            {
+            else {
                 /* 如果是基本件并且有优惠价格的配件则删除优惠价格的配件 */
-                foreach ($offers_accessories_res as $key=>$offers_accessories_row){
-                   $sql = "DELETE FROM " . $this->model->pre . 'cart' .
+                foreach ($offers_accessories_res as $key=>$offers_accessories_row) {
+                    $sql = "DELETE FROM " . $this->model->pre . 'cart' .
                     " WHERE session_id = '" . SESS_ID . "' " .
                     "AND rec_id = '" . $offers_accessories_row['rec_id'] ."' AND group_id='' LIMIT 1";
                     $this->model->query($sql);
@@ -2611,29 +2610,30 @@ class FlowController extends CommonController {
         $this->model->query($sql);
     }
 
-     /*
-     * label选中价格
-     */
-    public function cart_label_count(){
-        $goods_id  = I('goods_id','');
-        $parent_id  = I('parent_id','');
-        if($parent_id ){
+    /*
+    * label选中价格
+    */
+    public function cart_label_count()
+    {
+        $goods_id  = I('goods_id', '');
+        $parent_id  = I('parent_id', '');
+        if ($parent_id) {
             $shop_price = $this->model->table('goods')->where(array('goods_id'=>$parent_id))->field('shop_price')->getOne();
         }
-        if($goods_id) {
+        if ($goods_id) {
             $sql = "select g.shop_price ,gg.goods_price from " . $this->model->pre ."group_goods as gg LEFT JOIN " . $this->model->pre . "goods as g on gg.goods_id = g.goods_id " . "where gg.goods_id in ($goods_id) and gg.parent_id = $parent_id ";
             $count = $this->model->query($sql);
         }
         $num=0;
-        if(count($count)>0){
-            foreach($count as $key){
+        if (count($count)>0) {
+            foreach ($count as $key) {
                 $count_price += floatval($key['goods_price']);
                 $num ++;
             }
-        }else{
+        } else {
             $count_price = '0.00';
         }
-        if($shop_price){
+        if ($shop_price) {
             $count_price += floatval($shop_price);
             $num += 1;
         }
@@ -2645,40 +2645,37 @@ class FlowController extends CommonController {
     /**
     *选中提交发票信息
     */
-    public function change_inv(){
+    public function change_inv()
+    {
         $need_inv = $_POST['need_inv'];
-        if($need_inv == 1){
+        if ($need_inv == 1) {
             $inv_content = !empty($_POST['inv_type']) ? ($_POST['inv_type'] == 1 ? '个人' : '单位') : '';
             $inv_person_name = !empty($_POST['inv_person_name']) ? $_POST['inv_person_name'] : '';
             $inv_payee = !empty($_POST['inv_company_name']) ? $_POST['inv_company_name'] : '';
             $inv_text_id = !empty($_POST['inv_text_id']) ? $_POST['inv_text_id'] : '';
             $inv_type = !empty($_POST['inv_name']) ? $_POST['inv_name'] : '';
 
-            if($inv_content == '个人'){
+            if ($inv_content == '个人') {
                 $_SESSION['inv_payee'] = $inv_person_name;
                 $_SESSION['inv_type'] = $inv_type;
                 $_SESSION['inv_content'] = '个人';
-                if(!empty($_SESSION['inv_text_id'])){
+                if (!empty($_SESSION['inv_text_id'])) {
                     unset($_SESSION['inv_text_id']);
                 }
                 show_message('保存发票信息成功', '继续结算', url('flow/checkout'));
-
-            }else{
+            } else {
                 $_SESSION['inv_payee'] = $inv_payee;
                 $_SESSION['inv_type'] = $inv_type;
                 $_SESSION['inv_text_id'] = $inv_text_id;
                 $_SESSION['inv_content'] = '单位';
                 show_message('保存发票信息成功', '继续结算', url('flow/checkout'));
             }
-        }else{
+        } else {
             unset($_SESSION['inv_payee']);
             unset($_SESSION['inv_type']);
             unset($_SESSION['inv_text_id']);
             unset($_SESSION['inv_content']);
             show_message('未选择开发票', '继续结算', url('flow/checkout'));
         }
-
     }
-
-
 }

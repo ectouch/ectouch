@@ -22,7 +22,7 @@ if (! defined('IN_ECTOUCH')) {
  * 砸金蛋
  *
  * @author wanglu
- *        
+ *
  */
 class ggk extends PluginWechatController
 {
@@ -34,7 +34,7 @@ class ggk extends PluginWechatController
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -101,8 +101,8 @@ class ggk extends PluginWechatController
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -148,7 +148,7 @@ class ggk extends PluginWechatController
         
         $file = ROOT_PATH . 'plugins/wechat/' . $this->plugin_name . '/view/index.html';
         if (file_exists($file)) {
-            require_once ($file);
+            require_once($file);
         }
     }
 
@@ -193,7 +193,7 @@ class ggk extends PluginWechatController
             }
             $file = ROOT_PATH . 'plugins/wechat/' . $this->plugin_name . '/view/user_info.html';
             if (file_exists($file)) {
-                require_once ($file);
+                require_once($file);
             }
             exit();
         }
@@ -203,7 +203,7 @@ class ggk extends PluginWechatController
             $ks = I('get.name');
             $rs = array();
 
-            if($ks != $this->plugin_name){
+            if ($ks != $this->plugin_name) {
                 $rs['status'] = 2;
                 $rs['msg'] = '错误的请求';
                 echo json_encode($rs);
@@ -211,14 +211,14 @@ class ggk extends PluginWechatController
             }
             // 插件配置
             $config = $this->get_config($this->plugin_name);
-            if(empty($config)){
+            if (empty($config)) {
                 $rs['status'] = 2;
                 $rs['msg'] = '错误的请求，请联系管理员';
                 echo json_encode($rs);
                 exit();
             }
             // 未登录
-           $openid = session('openid');
+            $openid = session('openid');
             if (empty($openid)) {
                 $rs['status'] = 2;
                 $rs['msg'] = '请先登录';
@@ -263,7 +263,7 @@ class ggk extends PluginWechatController
                 ->where('default_wx = 1')
                 ->getOne();
             //抽奖
-            if($act == 'draw'){
+            if ($act == 'draw') {
                 $prize = $config['prize'];
                 if (! empty($prize)) {
                     $arr = array();
@@ -285,29 +285,27 @@ class ggk extends PluginWechatController
                         $prob = $prob + $val['prize_prob'];
                     }
                     //未中奖的概率项
-                    if($prob < 100){
+                    if ($prob < 100) {
                         $prob = 100 - $prob;
                         $arr['not'] = $prob;
                     }
                     //抽奖
                     $level = $this->get_rand($arr);
-                    if($level == 'not'){
+                    if ($level == 'not') {
                         $rs['prize_type'] = 0;
                         $rs['msg'] = '谢谢参与';
                         $rs['status'] = 0;
                         $rs['level'] = '';
-                    }
-                    else{
+                    } else {
                         $rs['prize_type'] = 1;
                         $rs['msg'] = $prize_name[$level];
                         $rs['status'] = 1;
-                        $rs['level'] = $level;  
+                        $rs['level'] = $level;
                     }
                     
                     $rs['num'] = $config['prize_num'] - $num > 0 ? $config['prize_num'] - $num : 0;
                 }
-            }
-            elseif($act == 'do'){
+            } elseif ($act == 'do') {
                 $prize_type = I('get.prize_type') ? I('get.prize_type') : 0;
                 $prize_name = I('get.prize_name') ? I('get.prize_name') : '';
                 $prize_level = I('get.prize_level') ? I('get.prize_level') : 'not';
@@ -319,9 +317,9 @@ class ggk extends PluginWechatController
                 $data['dateline'] = time();
                 $data['activity_type'] = $this->plugin_name;
                 $id = model('Base')->model->table('wechat_prize')->data($data)->insert();
-                 //参与人数增加
+                //参与人数增加
                 $extend_cfg = model('Base')->model->table('wechat_extend')->where(array('wechat_id'=>$wxid, 'command'=>$this->plugin_name, 'enable'=>1))->field('config')->getOne();
-                if($extend_cfg){
+                if ($extend_cfg) {
                     $cfg_new = unserialize($extend_cfg);
                 }
                 $cfg_new['people_num'] = $cfg_new['people_num'] + 1;
@@ -347,7 +345,7 @@ class ggk extends PluginWechatController
     /**
      * 获取插件配置信息
      *
-     * @param string $code            
+     * @param string $code
      * @return multitype:unknown
      */
     private function get_config($code = '')

@@ -60,4 +60,3 @@ $_LANG['top_html'] = '代码';
 $_LANG['lable_upload'] = '上传';
 $_LANG['lable_from_web'] = '或者远程URL地址';
 $_LANG['lable_content'] = '内容';
-?>

@@ -22,7 +22,8 @@ function is_wechat_browser()
  * @access  public
  * @return  string
  */
-function get_page_title($cat = 0, $str = '') {
+function get_page_title($cat = 0, $str = '')
+{
     /* 初始化“页面标题”和“当前位置” */
     $page_title = C('shop_title');
     $ur_here = '<a href="' . __APP__ . '">' . L('home') . '</a>';
@@ -51,7 +52,7 @@ function get_page_title($cat = 0, $str = '') {
         /* 循环分类 */
         if (!empty($cat_arr)) {
             krsort($cat_arr);
-            foreach ($cat_arr AS $val) {
+            foreach ($cat_arr as $val) {
                 $page_title = htmlspecialchars($val['cat_name']) . '_' . $page_title;
                 $args = array($key => $val['cat_id']);
                 $ur_here .= ' <code>&gt;</code> <a href="' . url($type, $args) . '">' . htmlspecialchars($val['cat_name']) . '</a>';
@@ -105,10 +106,11 @@ function get_page_title($cat = 0, $str = '') {
  * @param   array   $arr    分类数组
  * @return  string
  */
-function build_pagetitle($arr, $type = 'category') {
+function build_pagetitle($arr, $type = 'category')
+{
     $str = '';
 
-    foreach ($arr AS $val) {
+    foreach ($arr as $val) {
         $str .= htmlspecialchars($val['cat_name']) . '_';
     }
 
@@ -123,11 +125,12 @@ function build_pagetitle($arr, $type = 'category') {
  * @param   array   $arr    分类数组
  * @return  void
  */
-function build_urhere($arr, $type = 'category') {
+function build_urhere($arr, $type = 'category')
+{
     krsort($arr);
 
     $str = '';
-    foreach ($arr AS $val) {
+    foreach ($arr as $val) {
         switch ($type) {
             case 'category':
             case 'brand':
@@ -161,7 +164,8 @@ function build_urhere($arr, $type = 'category') {
  * @param   string  $price_max      最高价格
  * @return  void
  */
-function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1, $keywords = '', $brand = 0, $price_min = 0, $price_max = 0, $display_type = 'list', $filter_attr = '', $url_format = '', $sch_array = '') {
+function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1, $keywords = '', $brand = 0, $price_min = 0, $price_max = 0, $display_type = 'list', $filter_attr = '', $url_format = '', $sch_array = '')
+{
     $sch = array('keywords' => $keywords,
         'sort' => $sort,
         'order' => $order,
@@ -276,7 +280,7 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
         $pager['search'] = $sch_array;
     } else {
         $pager['search']['category'] = $cat;
-        foreach ($sch AS $key => $row) {
+        foreach ($sch as $key => $row) {
             $pager['search'][$key] = $row;
         }
     }
@@ -296,7 +300,8 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
  *
  * @return  array       $pager
  */
-function get_pager($url, $param, $record_count, $page = 1, $size = 10) {
+function get_pager($url, $param, $record_count, $page = 1, $size = 10)
+{
     $size = intval($size);
     if ($size < 1) {
         $size = 10;
@@ -322,7 +327,7 @@ function get_pager($url, $param, $record_count, $page = 1, $size = 10) {
 
     /* 将参数合成url字串 */
     $param_url = '?';
-    foreach ($param AS $key => $value) {
+    foreach ($param as $key => $value) {
         $param_url .= $key . '=' . $value . '&';
     }
 
@@ -386,7 +391,8 @@ function get_pager($url, $param, $record_count, $page = 1, $size = 10) {
  * @param   integer $id   调查的编号
  * @return  array
  */
-function get_vote($id = '') {
+function get_vote($id = '')
+{
     /* 随机取得一个调查的主题 */
     if (empty($id)) {
         $time = gmtime();
@@ -418,7 +424,7 @@ function get_vote($id = '') {
 
         $arr = array();
         $count = 100;
-        foreach ($res AS $idx => $row) {
+        foreach ($res as $idx => $row) {
             if ($option_num > 0 && $idx == count($res) - 1) {
                 $percent = $count;
             } else {
@@ -452,7 +458,8 @@ function get_vote($id = '') {
  * @access  public
  * @return  string
  */
-function get_user_browser() {
+function get_user_browser()
+{
     if (empty($_SERVER['HTTP_USER_AGENT'])) {
         return '';
     }
@@ -503,10 +510,11 @@ function get_user_browser() {
  * @access  public
  * @return  string
  */
-function is_spider($record = true) {
-    static $spider = NULL;
+function is_spider($record = true)
+{
+    static $spider = null;
 
-    if ($spider !== NULL) {
+    if ($spider !== null) {
         return $spider;
     }
 
@@ -544,7 +552,7 @@ function is_spider($record = true) {
 
     $spider = strtolower($_SERVER['HTTP_USER_AGENT']);
 
-    foreach ($searchengine_bot AS $key => $value) {
+    foreach ($searchengine_bot as $key => $value) {
         if (strpos($spider, $value) !== false) {
             $spider = $searchengine_name[$key];
 
@@ -567,7 +575,8 @@ function is_spider($record = true) {
  * @access  private
  * @return  void
  */
-function get_os() {
+function get_os()
+{
     if (empty($_SERVER['HTTP_USER_AGENT'])) {
         return 'Unknown';
     }
@@ -644,7 +653,8 @@ function get_os() {
  * @access  public
  * @return  void
  */
-function save_searchengine_keyword($domain, $path) {
+function save_searchengine_keyword($domain, $path)
+{
     if (strpos($domain, 'google.com.tw') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'GOOGLE TAIWAN';
         $keywords = urldecode($regs[1]); // google taiwan
@@ -730,7 +740,8 @@ function save_searchengine_keyword($domain, $path) {
  *
  * @return string        结果
  */
-function dyna_libs_replace($matches) {
+function dyna_libs_replace($matches)
+{
     $key = '/' . $matches[1];
 
     if ($row = array_shift($GLOBALS['libs'][$key])) {
@@ -768,7 +779,8 @@ function dyna_libs_replace($matches) {
  *
  * @return string               上传图片名
  */
-function upload_file($upload, $type) {
+function upload_file($upload, $type)
+{
     if (!empty($upload['tmp_name'])) {
         $ftype = check_file_type($upload['tmp_name'], $upload['name'], '|png|jpg|jpeg|gif|doc|xls|txt|zip|ppt|pdf|rar|docx|xlsx|pptx|');
         if (!empty($ftype)) {
@@ -809,7 +821,8 @@ function upload_file($upload, $type) {
  * @param   string  $auto_redirect      是否自动跳转
  * @return  void
  */
-function show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_redirect = true) {
+function show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_redirect = true)
+{
     assign_template();
 
     $msg['content'] = $content;
@@ -851,7 +864,8 @@ function show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_
  * @param   string  $auto_redirect      是否自动跳转
  * @return  void
  */
-function crowd_show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_redirect = true) {
+function crowd_show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_redirect = true)
+{
     assign_template();
 
     $msg['content'] = $content;
@@ -890,7 +904,8 @@ function crowd_show_message($content, $links = '', $hrefs = '', $type = 'info', 
  * @param   char        operate 操作符号，只能返回‘+’或‘*’;
  * @return  float       value   浮点数
  */
-function parse_rate_value($str, &$operate) {
+function parse_rate_value($str, &$operate)
+{
     $operate = '+';
     $is_rate = false;
 
@@ -912,7 +927,8 @@ function parse_rate_value($str, &$operate) {
     }
 }
 
-function assign_template($ctype = '', $catlist = array()) {
+function assign_template($ctype = '', $catlist = array())
+{
     ECTouch::view()->assign('image_width', C('image_width'));
     ECTouch::view()->assign('image_height', C('image_height'));
     ECTouch::view()->assign('points_name', C('integral_name'));
@@ -952,7 +968,8 @@ function assign_template($ctype = '', $catlist = array()) {
  *
  * @return int      $gmt_time;
  */
-function time2gmt($time) {
+function time2gmt($time)
+{
     return strtotime(gmdate('Y-m-d H:i:s', $time));
 }
 
@@ -965,7 +982,8 @@ function time2gmt($time) {
  * @return void
  * @author xuanyan
  * */
-function set_affiliate($u = '') {
+function set_affiliate($u = '')
+{
     $_GET['u'] = empty($u) ? $_GET['u'] : $u;
     $config = unserialize(C('affiliate'));
     if (!empty($_GET['u']) && $config['on'] == 1) {
@@ -997,16 +1015,12 @@ function set_affiliate($u = '') {
  **/
 function get_affiliate()
 {
-    if (!empty($_COOKIE['ecshop_affiliate_uid']))
-    {
+    if (!empty($_COOKIE['ecshop_affiliate_uid'])) {
         $uid = intval($_COOKIE['ecshop_affiliate_uid']);
         $uid = M()->table('users')->field('user_id')->where('user_id = ' . $uid)->getOne();
-        if ($uid)
-        {
+        if ($uid) {
             return $uid;
-        }
-        else
-        {
+        } else {
             setcookie('ecshop_affiliate_uid', '', 1);
         }
     }
@@ -1020,7 +1034,8 @@ function get_affiliate()
  *
  * @return  str
  */
-function license_info() {
+function license_info()
+{
     if (C('licensed') > 0) {
         $license = '<a href="http://www.ectouch.cn/license.php?product=ectouch_free&url=' . urlencode(__URL__) . '" target="_blank"
 >&nbsp;&nbsp;Licensed</a>';
@@ -1036,7 +1051,8 @@ function license_info() {
 
 //调用购物车商品数量 by carson add
 
-function insert_goods_cart_count() {
+function insert_goods_cart_count()
+{
     return '0';
 }
 
@@ -1052,11 +1068,12 @@ function insert_goods_cart_count() {
  * @param   string       $cfg
  * @return  void
  */
-function unserialize_config($cfg) {
+function unserialize_config($cfg)
+{
     if (is_string($cfg) && ($arr = unserialize($cfg)) !== false) {
         $config = array();
 
-        foreach ($arr AS $key => $val) {
+        foreach ($arr as $key => $val) {
             $config[$val['name']] = $val['value'];
         }
 
@@ -1075,7 +1092,8 @@ function unserialize_config($cfg) {
  * @param   float   $goods_number       商品数量
  * @return  float   运费
  */
-function shipping_fee($shipping_code, $shipping_config, $goods_weight, $goods_amount, $goods_number = '') {
+function shipping_fee($shipping_code, $shipping_config, $goods_weight, $goods_amount, $goods_number = '')
+{
     if (!is_array($shipping_config)) {
         $shipping_config = unserialize($shipping_config);
     }
@@ -1101,7 +1119,8 @@ function shipping_fee($shipping_code, $shipping_config, $goods_weight, $goods_am
  * @param   mix         $insure         保价比例
  * @return  float
  */
-function shipping_insure_fee($shipping_code, $goods_amount, $insure) {
+function shipping_insure_fee($shipping_code, $goods_amount, $insure)
+{
     if (strpos($insure, '%') === false) {
         /* 如果保价费用不是百分比则直接返回该数值 */
         return floatval($insure);
@@ -1134,7 +1153,8 @@ function shipping_insure_fee($shipping_code, $goods_amount, $insure) {
  * @param   mix     $cod_fee
  * @return  float
  */
-function pay_fee($payment_id, $order_amount, $cod_fee = null) {
+function pay_fee($payment_id, $order_amount, $cod_fee = null)
+{
     $pay_fee = 0;
     $payment = model('Order')->payment_info($payment_id);
     $rate = ($payment['is_cod'] && !is_null($cod_fee)) ? $cod_fee : $payment['pay_fee'];
@@ -1158,7 +1178,8 @@ function pay_fee($payment_id, $order_amount, $cod_fee = null) {
  * @param   float   $goods_amount
  * @return  float
  */
-function pack_fee($pack_id, $goods_amount) {
+function pack_fee($pack_id, $goods_amount)
+{
     $pack = model('Order')->pack_info($pack_id);
 
     $val = (floatval($pack['free_money']) <= $goods_amount && $pack['free_money'] > 0) ? 0 : floatval($pack['pack_fee']);
@@ -1174,7 +1195,8 @@ function pack_fee($pack_id, $goods_amount) {
  * @param   float   $goods_amount
  * @return  float
  */
-function card_fee($card_id, $goods_amount) {
+function card_fee($card_id, $goods_amount)
+{
     $card = model('Order')->card_info($card_id);
 
     return ($card['free_money'] <= $goods_amount && $card['free_money'] > 0) ? 0 : $card['card_fee'];
@@ -1185,7 +1207,8 @@ function card_fee($card_id, $goods_amount) {
  * @param   array   $order  订单信息
  * @return  bool
  */
-function order_finished($order) {
+function order_finished($order)
+{
     return $order['order_status'] == OS_CONFIRMED &&
             ($order['shipping_status'] == SS_SHIPPED || $order['shipping_status'] == SS_RECEIVED) &&
             ($order['pay_status'] == PS_PAYED || $order['pay_status'] == PS_PAYING);
@@ -1195,7 +1218,8 @@ function order_finished($order) {
  * 得到新订单号
  * @return  string
  */
-function get_order_sn() {
+function get_order_sn()
+{
     /* 选择一个随机的方案 */
     mt_srand((double) microtime() * 1000000);
 
@@ -1207,7 +1231,8 @@ function get_order_sn() {
  * @param   int     $integral   积分
  * @return  float   积分价值
  */
-function value_of_integral($integral) {
+function value_of_integral($integral)
+{
     $scale = floatval(C('integral_scale'));
 
     return $scale > 0 ? round(($integral / 100) * $scale, 2) : 0;
@@ -1220,7 +1245,8 @@ function value_of_integral($integral) {
  * @param   integer $value  金额
  * @return  void
  */
-function integral_of_value($value) {
+function integral_of_value($value)
+{
     $scale = floatval(C('integral_scale'));
 
     return $scale > 0 ? round($value / $scale * 100) : 0;
@@ -1231,7 +1257,8 @@ function integral_of_value($value) {
  * @param   int   $shipping_id    配送插件ID
  * @return  object     配送插件对象实例
  */
-function &get_shipping_object($shipping_id) {
+function &get_shipping_object($shipping_id)
+{
     $shipping = model('Shipping')->shipping_info($shipping_id);
     if (!$shipping) {
         $object = new stdClass();
@@ -1251,7 +1278,8 @@ function &get_shipping_object($shipping_id) {
  * @param   string  $alias  order表的别名（包括.例如 o.）
  * @return  string
  */
-function order_query_sql($type = 'finished', $alias = '') {
+function order_query_sql($type = 'finished', $alias = '')
+{
     /* 已完成订单 */
     if ($type == 'finished') {
         return " AND {$alias}order_status " . db_create_in(array(OS_CONFIRMED, OS_SPLITED)) .
@@ -1296,7 +1324,8 @@ function order_query_sql($type = 'finished', $alias = '') {
  * @param   string  $alias  order表的别名（包括.例如 o.）
  * @return  string
  */
-function order_amount_field($alias = '') {
+function order_amount_field($alias = '')
+{
     return "   {$alias}goods_amount + {$alias}tax + {$alias}shipping_fee" .
             " + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" .
             " + {$alias}card_fee ";
@@ -1307,7 +1336,8 @@ function order_amount_field($alias = '') {
  * @param   string  $alias  order表的别名（包括.例如 o.）
  * @return  string
  */
-function order_due_field($alias = '') {
+function order_due_field($alias = '')
+{
     return order_amount_field($alias) .
             " - {$alias}money_paid - {$alias}surplus - {$alias}integral_money" .
             " - {$alias}bonus - {$alias}discount ";
@@ -1317,7 +1347,8 @@ function order_due_field($alias = '') {
  * 得到新发货单号
  * @return  string
  */
-function get_delivery_sn() {
+function get_delivery_sn()
+{
     /* 选择一个随机的方案 */
     mt_srand((double) microtime() * 1000000);
 
@@ -1336,7 +1367,8 @@ function get_delivery_sn() {
  *
  * @return void
  */
-function logout() {
+function logout()
+{
     /* todo */
 }
 
@@ -1351,9 +1383,11 @@ function logout() {
  *
  * @return  boolen  $bool
  */
-function edit_password($user_id, $old_password, $new_password = '', $code = '') {
-    if (empty($user_id))
+function edit_password($user_id, $old_password, $new_password = '', $code = '')
+{
+    if (empty($user_id)) {
         ECTouch::err()->add(L('not_login'));
+    }
 
     if (ECTouch::user()->edit_password($user_id, $old_password, $new_password, $code)) {
         return true;
@@ -1373,7 +1407,8 @@ function edit_password($user_id, $old_password, $new_password = '', $code = '') 
  *
  * @return  boolen
  */
-function check_userinfo($user_name, $email) {
+function check_userinfo($user_name, $email)
+{
     if (empty($user_name) || empty($email)) {
         ecs_header("Location: user.php?act=get_password\n");
 
@@ -1400,7 +1435,8 @@ function check_userinfo($user_name, $email) {
  *
  * @return  boolen  $result;
  */
-function send_pwd_email($uid, $user_name, $email, $code) {
+function send_pwd_email($uid, $user_name, $email, $code)
+{
     if (empty($uid) || empty($user_name) || empty($email) || empty($code)) {
         ecs_header("Location: " . url('user/get_password_phone') . "\n");
 
@@ -1463,7 +1499,8 @@ function notify_url($code)
  *
  * @return  array       $arr             团购活动列表
  */
-function get_user_group_buy($user_id, $num = 10, $start = 0) {
+function get_user_group_buy($user_id, $num = 10, $start = 0)
+{
     return true;
 }
 
@@ -1472,7 +1509,8 @@ function get_user_group_buy($user_id, $num = 10, $start = 0) {
  *
  *
  */
-function get_group_buy_detail($user_id, $group_buy_id) {
+function get_group_buy_detail($user_id, $group_buy_id)
+{
     return true;
 }
 
@@ -1481,7 +1519,8 @@ function get_group_buy_detail($user_id, $group_buy_id) {
  *
  *
  */
-function deleteRepeat($array) {
+function deleteRepeat($array)
+{
     $_card_sn_record = array();
     foreach ($array as $_k => $_v) {
         foreach ($_v['info'] as $__k => $__v) {
@@ -1508,7 +1547,8 @@ function deleteRepeat($array) {
  *
  * @return void
  */
-function add_feed($id, $feed_type) {
+function add_feed($id, $feed_type)
+{
     $feed = array();
     if ($feed_type == BUY_GOODS) {
         if (empty($id)) {
@@ -1543,7 +1583,8 @@ function add_feed($id, $feed_type) {
  *
  * @return  void
  */
-function get_linked_tags($tag_data) {
+function get_linked_tags($tag_data)
+{
     //取所有应用列表
     $app_list = uc_call("uc_app_ls");
     if ($app_list == '') {
@@ -1590,7 +1631,8 @@ function get_linked_tags($tag_data) {
  *
  * @return boolean
  */
-function exchange_points($uid, $fromcredits, $tocredits, $toappid, $netamount) {
+function exchange_points($uid, $fromcredits, $tocredits, $toappid, $netamount)
+{
     $ucresult = uc_call('uc_credit_exchange_request', array($uid, $fromcredits, $tocredits, $toappid, $netamount));
     if (!$ucresult) {
         return false;
@@ -1609,7 +1651,8 @@ function exchange_points($uid, $fromcredits, $tocredits, $toappid, $netamount) {
  * @param  $order_id 订单id
  *
  */
-function send_wechat_message($type = '', $title = '', $msg = '', $url = '', $order_id = '') {
+function send_wechat_message($type = '', $title = '', $msg = '', $url = '', $order_id = '')
+{
     /* 如果需要，微信通知 wanglu */
     if (!empty($type)) {
         $remind = M()->table('wechat_extend')->field('name, config')->where('enable = 1 and command = "' . $type . '"')->find();
@@ -1619,13 +1662,13 @@ function send_wechat_message($type = '', $title = '', $msg = '', $url = '', $ord
         $sql = "SELECT p.openid FROM ".M()->pre."pay_log p LEFT JOIN ".M()->pre."order_info o ON p.order_id = o.order_id WHERE o.order_sn = '$order_id'";
         $rs = M()->query($sql);
         $openid = $rs[0]['openid'];
-        if(empty($openid)){
+        if (empty($openid)) {
             $openid = M()->table('wechat_user')->field('openid')->where('ect_uid = ' . $_SESSION['user_id'])->getOne();
         }
         if (!empty($title) && !empty($openid)) {
-            if(IS_ECSHOP){
+            if (IS_ECSHOP) {
                 $dourl = __HOST__ . '/mobile/index.php?c=api&'. http_build_query(array('openid' => $openid, 'title' => $title, 'msg' => $msg, 'url' => $url), '', '&');
-            }else{
+            } else {
                 $dourl = __HOST__ . '/index.php?c=api&'. http_build_query(array('openid' => $openid, 'title' => $title, 'msg' => $msg, 'url' => $url), '', '&');
             }
             Http::doGet($dourl);
@@ -1654,7 +1697,7 @@ function get_goods_count($goods_id)
     } elseif ($period == 4) {// 一个月
         $ext = " AND o . add_time > '" . local_strtotime(' - 1 months') . "'";
     }
-  /* 查询该商品销量 */
+    /* 查询该商品销量 */
 
 
     $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) as count ' .
@@ -1669,7 +1712,7 @@ function get_goods_count($goods_id)
     $rs = M()->getRow($sql_goods);
     $virtual_sales = $rs["virtual_sales"];
 
-     $result["count"] += $virtual_sales;
+    $result["count"] += $virtual_sales;
     //$result += M()->getRow($sql_goods);
     //dump($result);exit;
     return $result['count'];
@@ -1679,11 +1722,12 @@ function get_goods_count($goods_id)
  * 得到新服务单号
  * @return  string
  */
-function get_service_sn() {
+function get_service_sn()
+{
     /* 选择一个随机的方案 */
     mt_srand((double) microtime() * 1000000);
 
-    return date('Ymd') . str_pad(mt_rand(1, 99999), 3, '0',STR_PAD_LEFT);
+    return date('Ymd') . str_pad(mt_rand(1, 99999), 3, '0', STR_PAD_LEFT);
 }
 
 /**

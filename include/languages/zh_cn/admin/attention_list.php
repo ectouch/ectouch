@@ -15,4 +15,3 @@ $_LANG['finish_list'] = '已经插入 %s 条记录,请稍后~';
 $_LANG['finishing'] = '正在生成请稍后';
 $_LANG['edit_ok'] = '操作成功！';
 $_LANG['batch_note'] = '将此日期后更新的商品全部插入发送队列：';
-?>

@@ -41,21 +41,21 @@ class IndexController extends AdminController
             ));
             // 提示信息
             if ($msg !== true) {
-                $this->message($msg, NULL, 'error');
+                $this->message($msg, null, 'error');
             }
             $data = array('license'=>$license, 'appid' => EC_APPID);
             $result = $this->cloud->data($data)->act('post.dolicense');
             if ($result['error'] > 0) {
-                $this->message($result['msg'], NULL, 'error');
+                $this->message($result['msg'], null, 'error');
             } else {
-                $this->message('授权成功', NULL, 'success');
+                $this->message('授权成功', null, 'success');
             }
         } else {
             // 检测是否授权
             $data = array('appid' => EC_APPID);
             $empower = $this->cloud->data($data)->act('get.licenseInfo');
-            if($empower){
-                $this->assign('empower',$empower);
+            if ($empower) {
+                $this->assign('empower', $empower);
             }
 
             $this->assign('ur_here', L('empower'));
@@ -66,14 +66,15 @@ class IndexController extends AdminController
     /**
      * 编辑器上传
      */
-    public function uploader(){
+    public function uploader()
+    {
         $info = $this->ectouchUpload('upload_file');
-        if($info['error']){
+        if ($info['error']) {
             $data = array(
                 'success' => false,
                 'msg' => $info['message']
             );
-        }else{
+        } else {
             $imageinfo = $info['message']['upload_file'];
             $savepath = substr($imageinfo['savepath'] . $imageinfo['savename'], 1);
             $data = array(

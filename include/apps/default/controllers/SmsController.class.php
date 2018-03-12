@@ -16,8 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class SmsController extends CommonController {
-
+class SmsController extends CommonController
+{
     protected $mobile;
     //短信验证码
     protected $mobile_code;
@@ -26,7 +26,8 @@ class SmsController extends CommonController {
     //验证码
     protected $captcha;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $this->mobile = in($_POST['mobile']);
@@ -36,7 +37,8 @@ class SmsController extends CommonController {
     }
 
     //发送
-    public function send() {
+    public function send()
+    {
         if (empty($this->sms_code) || $_SESSION['sms_code'] != $this->sms_code) {
             exit(json_encode(array('msg' => '请重新访问页面')));
         }
@@ -93,7 +95,8 @@ class SmsController extends CommonController {
     }
 
     //验证
-    public function check() {
+    public function check()
+    {
         if ($this->mobile != $_SESSION['sms_mobile'] or $this->mobile_code != $_SESSION['sms_mobile_code']) {
             exit(json_encode(array('msg' => '手机验证码输入错误。')));
         } else {
@@ -101,7 +104,8 @@ class SmsController extends CommonController {
         }
     }
 
-    private function random($length = 6, $numeric = 0) {
+    private function random($length = 6, $numeric = 0)
+    {
         PHP_VERSION < '4.2.0' && mt_srand((double) microtime() * 1000000);
         if ($numeric) {
             $hash = sprintf('%0' . $length . 'd', mt_rand(0, pow(10, $length) - 1));
@@ -116,7 +120,8 @@ class SmsController extends CommonController {
         return $hash;
     }
 
-    private function write_file($file_name, $content) {
+    private function write_file($file_name, $content)
+    {
         $this->mkdirs(ROOT_PATH . 'data/smslog/' . date('Ymd'));
         $filename = ROOT_PATH . 'data/smslog/' . date('Ymd') . '/' . $file_name . '.log';
         $Ts = fopen($filename, "a+");
@@ -124,15 +129,19 @@ class SmsController extends CommonController {
         fclose($Ts);
     }
 
-    private function mkdirs($dir, $mode = 0777) {
-        if (is_dir($dir) || @mkdir($dir, $mode))
-            return TRUE;
-        if (!$this->mkdirs(dirname($dir), $mode))
-            return FALSE;
+    private function mkdirs($dir, $mode = 0777)
+    {
+        if (is_dir($dir) || @mkdir($dir, $mode)) {
+            return true;
+        }
+        if (!$this->mkdirs(dirname($dir), $mode)) {
+            return false;
+        }
         return @mkdir($dir, $mode);
     }
 
-    private function read_file($file_name) {
+    private function read_file($file_name)
+    {
         $content = '';
         $filename = ROOT_PATH . 'data/smslog/' . date('Ymd') . '/' . $file_name . '.log';
         if (function_exists('file_get_contents')) {
@@ -146,5 +155,4 @@ class SmsController extends CommonController {
         $content = explode("\r\n", $content);
         return end($content);
     }
-
 }

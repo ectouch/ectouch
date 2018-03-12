@@ -9,30 +9,26 @@ define('IN_ECTOUCH', true);
 require(dirname(__FILE__) . '/includes/init.php');
 admin_priv('email_list');
 
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     $emaildb = get_email_list();
-    $smarty->assign('full_page',    1);
+    $smarty->assign('full_page', 1);
     $smarty->assign('ur_here', $_LANG['email_list']);
-    $smarty->assign('emaildb',      $emaildb['emaildb']);
-    $smarty->assign('filter',       $emaildb['filter']);
+    $smarty->assign('emaildb', $emaildb['emaildb']);
+    $smarty->assign('filter', $emaildb['filter']);
     $smarty->assign('record_count', $emaildb['record_count']);
-    $smarty->assign('page_count',   $emaildb['page_count']);
+    $smarty->assign('page_count', $emaildb['page_count']);
     assign_query_info();
     $smarty->display('email_list.htm');
-}
-elseif ($_REQUEST['act'] == 'export')
-{
+} elseif ($_REQUEST['act'] == 'export') {
     $sql = "SELECT email FROM " . $ecs->table('email_list') . "WHERE stat = 1";
     $emails = $db->getAll($sql);
     $out = '';
-    foreach ($emails as $key => $val)
-    {
+    foreach ($emails as $key => $val) {
         $out .= "$val[email]\n";
     }
     $contentType = 'text/plain';
     $len = strlen($out);
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s',time()+31536000) .' GMT');
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()+31536000) .' GMT');
     header('Pragma: no-cache');
     header('Content-Encoding: none');
     header('Content-type: ' . $contentType);
@@ -40,29 +36,28 @@ elseif ($_REQUEST['act'] == 'export')
     header('Content-Disposition: attachment; filename="email_list.txt"');
     echo $out;
     exit;
-}
-elseif ($_REQUEST['act'] == 'query')
-{
+} elseif ($_REQUEST['act'] == 'query') {
     $emaildb = get_email_list();
-    $smarty->assign('emaildb',      $emaildb['emaildb']);
-    $smarty->assign('filter',       $emaildb['filter']);
+    $smarty->assign('emaildb', $emaildb['emaildb']);
+    $smarty->assign('filter', $emaildb['filter']);
     $smarty->assign('record_count', $emaildb['record_count']);
-    $smarty->assign('page_count',   $emaildb['page_count']);
+    $smarty->assign('page_count', $emaildb['page_count']);
 
     $sort_flag  = sort_flag($emaildb['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
 
-    make_json_result($smarty->fetch('email_list.htm'), '',
-        array('filter' => $emaildb['filter'], 'page_count' => $emaildb['page_count']));
+    make_json_result(
+        $smarty->fetch('email_list.htm'),
+        '',
+        array('filter' => $emaildb['filter'], 'page_count' => $emaildb['page_count'])
+    );
 }
 
 /*------------------------------------------------------ */
 //-- 批量删除
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'batch_remove')
-{
-    if (!isset($_POST['checkboxes']) || !is_array($_POST['checkboxes']))
-    {
+elseif ($_REQUEST['act'] == 'batch_remove') {
+    if (!isset($_POST['checkboxes']) || !is_array($_POST['checkboxes'])) {
         sys_msg($_LANG['no_select_email'], 1);
     }
 
@@ -77,10 +72,8 @@ elseif ($_REQUEST['act'] == 'batch_remove')
 /*------------------------------------------------------ */
 //-- 批量恢复
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'batch_unremove')
-{
-    if (!isset($_POST['checkboxes']) || !is_array($_POST['checkboxes']))
-    {
+elseif ($_REQUEST['act'] == 'batch_unremove') {
+    if (!isset($_POST['checkboxes']) || !is_array($_POST['checkboxes'])) {
         sys_msg($_LANG['no_select_email'], 1);
     }
 
@@ -95,10 +88,8 @@ elseif ($_REQUEST['act'] == 'batch_unremove')
 /*------------------------------------------------------ */
 //-- 批量退订
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'batch_exit')
-{
-    if (!isset($_POST['checkboxes']) || !is_array($_POST['checkboxes']))
-    {
+elseif ($_REQUEST['act'] == 'batch_exit') {
+    if (!isset($_POST['checkboxes']) || !is_array($_POST['checkboxes'])) {
         sys_msg($_LANG['no_select_email'], 1);
     }
 
@@ -113,8 +104,7 @@ elseif ($_REQUEST['act'] == 'batch_exit')
 function get_email_list()
 {
     $result = get_filter();
-    if ($result === false)
-    {
+    if ($result === false) {
         $filter['sort_by']      = empty($_REQUEST['sort_by']) ? 'stat' : trim($_REQUEST['sort_by']);
         $filter['sort_order']   = empty($_REQUEST['sort_order']) ? 'ASC' : trim($_REQUEST['sort_order']);
 
@@ -131,9 +121,7 @@ function get_email_list()
             " LIMIT " . $filter['start'] . ",$filter[page_size]";
 
         set_filter($filter, $sql);
-    }
-    else
-    {
+    } else {
         $sql    = $result['sql'];
         $filter = $result['filter'];
     }
@@ -143,7 +131,4 @@ function get_email_list()
     $arr = array('emaildb' => $emaildb, 'filter' => $filter, 'page_count' => $filter['page_count'], 'record_count' => $filter['record_count']);
 
     return $arr;
-
-
 }
-?>

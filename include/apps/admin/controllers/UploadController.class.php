@@ -16,11 +16,12 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class UploadController extends AdminController {
-
+class UploadController extends AdminController
+{
     private $conf = array();
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->content = file_get_contents(ROOT_PATH . "plugins/editor/config.json");
         $this->conf = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", str_replace(array('__ROOT__', '__HOST__'), array(__ROOT__, __HOST__), $this->content)), true);
@@ -31,41 +32,42 @@ class UploadController extends AdminController {
     }
 
     // 上传方法
-    public function index() {
+    public function index()
+    {
         $action = I('get.action');
         $tag = I('get.tag');
 
         switch ($action) {
-            case 'config' :
+            case 'config':
                 $result = json_encode($this->conf);
                 break;
 
             /* 上传图片 */
-            case 'uploadimage' :
+            case 'uploadimage':
             /* 上传涂鸦 */
-            case 'uploadscrawl' :
+            case 'uploadscrawl':
             /* 上传视频 */
-            case 'uploadvideo' :
+            case 'uploadvideo':
             /* 上传文件 */
-            case 'uploadfile' :
+            case 'uploadfile':
                 $result = $this->uploads($tag);
                 break;
 
             /* 列出图片 */
-            case 'listimage' :
+            case 'listimage':
                 $result = $this->lists();
                 break;
             /* 列出文件 */
-            case 'listfile' :
+            case 'listfile':
                 $result = $this->lists();
                 break;
 
             /* 抓取远程文件 */
-            case 'catchimage' :
+            case 'catchimage':
                 $result = $this->crawler();
                 break;
 
-            default :
+            default:
                 $result = json_encode(array(
                     'state' => '请求地址出错'
                 ));
@@ -87,11 +89,12 @@ class UploadController extends AdminController {
     }
 
     // 上传附件和上传视频
-    private function uploads($tag = '') {
+    private function uploads($tag = '')
+    {
         /* 上传配置 */
         $base64 = "upload";
         switch (htmlspecialchars($_GET['action'])) {
-            case 'uploadimage' :
+            case 'uploadimage':
                 $config = array(
                     "pathFormat" => $this->conf['imagePathFormat'],
                     "maxSize" => $this->conf['imageMaxSize'],
@@ -99,7 +102,7 @@ class UploadController extends AdminController {
                 );
                 $fieldName = $this->conf['imageFieldName'];
                 break;
-            case 'uploadscrawl' :
+            case 'uploadscrawl':
                 $config = array(
                     "pathFormat" => $this->conf['scrawlPathFormat'],
                     "maxSize" => $this->conf['scrawlMaxSize'],
@@ -109,7 +112,7 @@ class UploadController extends AdminController {
                 $fieldName = $this->conf['scrawlFieldName'];
                 $base64 = "base64";
                 break;
-            case 'uploadvideo' :
+            case 'uploadvideo':
                 $config = array(
                     "pathFormat" => $this->conf['videoPathFormat'],
                     "maxSize" => $this->conf['videoMaxSize'],
@@ -117,8 +120,8 @@ class UploadController extends AdminController {
                 );
                 $fieldName = $this->conf['videoFieldName'];
                 break;
-            case 'uploadfile' :
-            default :
+            case 'uploadfile':
+            default:
                 $config = array(
                     "pathFormat" => $this->conf['filePathFormat'],
                     "maxSize" => $this->conf['fileMaxSize'],
@@ -132,7 +135,7 @@ class UploadController extends AdminController {
         $up = new Uploader($fieldName, $config, $base64);
 
         $res = $up->getFileInfo();
-        if(!empty($tag)){
+        if (!empty($tag)) {
             $wechat_res = $this->weObj->uploadImg(array('media' => '@' . ROOT_PATH . $res['url']));
             $res['url'] = $wechat_res['url'];
         }
@@ -153,18 +156,19 @@ class UploadController extends AdminController {
     }
 
     // 显示文件列表
-    private function lists() {
+    private function lists()
+    {
         /* 判断类型 */
         switch ($_GET['action']) {
             /* 列出文件 */
-            case 'listfile' :
+            case 'listfile':
                 $allowFiles = $this->conf['fileManagerAllowFiles'];
                 $listSize = $this->conf['fileManagerListSize'];
                 $path = $this->conf['fileManagerListPath'];
                 break;
             /* 列出图片 */
-            case 'listimage' :
-            default :
+            case 'listimage':
+            default:
                 $allowFiles = $this->conf['imageManagerAllowFiles'];
                 $listSize = $this->conf['imageManagerListSize'];
                 $path = $this->conf['imageManagerListPath'];
@@ -210,7 +214,8 @@ class UploadController extends AdminController {
     }
 
     // 抓取远程文件
-    private function crawler() {
+    private function crawler()
+    {
         set_time_limit(0);
 
         /* 上传配置 */
@@ -254,14 +259,17 @@ class UploadController extends AdminController {
      *
      * @param
      *        	$path
-     * @param array $files        	
+     * @param array $files
      * @return array
      */
-    private function getfiles($path, $allowFiles, &$files = array()) {
-        if (!is_dir($path))
+    private function getfiles($path, $allowFiles, &$files = array())
+    {
+        if (!is_dir($path)) {
             return null;
-        if (substr($path, strlen($path) - 1) != '/')
+        }
+        if (substr($path, strlen($path) - 1) != '/') {
             $path .= '/';
+        }
         $handle = opendir($path);
         while (false !== ($file = readdir($handle))) {
             if ($file != '.' && $file != '..') {
@@ -280,5 +288,4 @@ class UploadController extends AdminController {
         }
         return $files;
     }
-
 }

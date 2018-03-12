@@ -16,11 +16,12 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class AdminModel extends BaseModel {
-
+class AdminModel extends BaseModel
+{
     protected $table = 'admin_user';
 
-    public function getUserInfo($username = '', $password = '') {
+    public function getUserInfo($username = '', $password = '')
+    {
         // 获取加密因子
         $ec_salt = $this->field('ec_salt', array('user_name' => $username));
         /* 检查密码是否正确 */
@@ -47,7 +48,8 @@ class AdminModel extends BaseModel {
         return false;
     }
 
-    public function getUserInfoNoPwd($username = '', $email = '') {
+    public function getUserInfoNoPwd($username = '', $email = '')
+    {
         // 获取管理员信息
         $condition = array('user_name' => $username, 'email' => $email);
         $userInfo = $this->find($condition, 'user_id, password');
@@ -59,7 +61,8 @@ class AdminModel extends BaseModel {
         }
     }
 
-    public function getUserTotal($condition = array()) {
+    public function getUserTotal($condition = array())
+    {
         return $this->count($condition);
     }
 
@@ -71,7 +74,8 @@ class AdminModel extends BaseModel {
      * @param   string      $content    操作的内容
      * @return  void
      */
-    public function admin_log($sn = '', $action, $content) {
+    public function admin_log($sn = '', $action, $content)
+    {
         $log_info = L('log_action.' . $action) . L('log_action.' . $action) . ': ' . addslashes($sn);
 
         $sql = 'INSERT INTO ' . $this->pre . 'admin_log (log_time, user_id, log_info, ip_address) ' .
@@ -87,7 +91,8 @@ class AdminModel extends BaseModel {
      * @param   string      $value      该配置信息值
      * @return  void
      */
-    public function insert_config($parent, $code, $value) {
+    public function insert_config($parent, $code, $value)
+    {
         $this->table = 'touch_shop_config';
         $condition['code'] = $parent;
         $condition['type'] = 1;
@@ -106,13 +111,14 @@ class AdminModel extends BaseModel {
      * @param   string  $msg        如果出错，保存错误信息，否则为空
      * @return  Boolen
      */
-    function move_plugin_library($tmp_name, &$msg) {
+    public function move_plugin_library($tmp_name, &$msg)
+    {
         $sql = 'SELECT code, library FROM ' . $this->pre . "plugins WHERE library > ''";
         $rec =$this->query($sql);
         $return_value = true;
         $target_dir = ROOT_PATH . 'themes/' . $tmp_name;
         $source_dir = ROOT_PATH . 'themes/' . C('template');
-        foreach($rec as $key=> $value){
+        foreach ($rec as $key=> $value) {
             //先移动，移动失败试则拷贝
             if (!@rename($source_dir . $value['library'], $target_dir . $value['library'])) {
                 if (!@copy(ROOT_PATH . 'plugins/' . $value['code'] . '/temp' . $value['library'], $target_dir . $value['library'])) {
@@ -122,5 +128,4 @@ class AdminModel extends BaseModel {
             }
         }
     }
-
 }

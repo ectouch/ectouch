@@ -6,12 +6,13 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * 发送消息详情,传入openid
  */
-function sendTemplateMessage($data){
+function sendTemplateMessage($data)
+{
     $info = model('Base')->model->table('wechat_template')
         ->field('switch,template_id')
         ->where('open_id="'.$data['open_id'].'"')
         ->find();
-    if($info['switch'] == 1 && $info['template_id']){
+    if ($info['switch'] == 1 && $info['template_id']) {
         //发送
         $format = array(
             'touser' => $data['openid'],
@@ -69,12 +70,13 @@ function sendTemplateMessage($data){
  * 模板消息通知,先增加记录
  * @param string $user_id  消息模版发送给他人，需传参数
  */
-function pushTemplate($code = '', $data = array(), $url = '',$uid = ''){
-    if($uid){
+function pushTemplate($code = '', $data = array(), $url = '', $uid = '')
+{
+    if ($uid) {
         $user_id = $uid;
-    }else{
+    } else {
         $user_id = $_SESSION['user_id'];
-        if(!$user_id || !$code || !$data){
+        if (!$user_id || !$code || !$data) {
             return false;
         }
     }
@@ -122,16 +124,17 @@ function realpath_wechat($file)
  * $code 模板标识
  * $openid 发送人的openid
  */
-function sendTemplate($openid, $code = '' ){
+function sendTemplate($openid, $code = '')
+{
     //公众号信息
     $config = M()->table('wechat')->field('token, appid, appsecret')->where(array('id'=> 1, 'status'=> 1))->find();
-    if(!$config){
+    if (!$config) {
         return false;
     }
     $sql = "SELECT d.code, d.openid, d.data, d.url, t.template_id FROM {pre}wechat_template_log d LEFT JOIN {pre}wechat_template t ON d.code = t.code WHERE d.status = 0 and d.openid = '" . $openid. "'  and d.code = '" .$code. "' ORDER BY d.id ASC";
     $list = M()->query($sql);
-    if($list){
-        foreach($list as $k=>$v){
+    if ($list) {
+        foreach ($list as $k=>$v) {
             $data['touser'] = $v['openid'];
             $data['template_id'] = $v['template_id'];
             $data['url'] = $v['url'];
@@ -140,7 +143,7 @@ function sendTemplate($openid, $code = '' ){
             $weObj = new Wechat($config);
             $rs = $weObj->sendTemplateMessage($data);
             //logResult(var_export($rs, 1));
-            if(empty($rs)){
+            if (empty($rs)) {
                 // logResult($weObj->errMsg);
                 return false;
             }
@@ -157,7 +160,8 @@ function sendTemplate($openid, $code = '' ){
  *
  * @return  integer
  */
-function gmtime() {
+function gmtime()
+{
     return (time() - date('Z'));
 }
 
@@ -166,7 +170,8 @@ function gmtime() {
  *
  * @return  integer
  */
-function server_timezone() {
+function server_timezone()
+{
     if (function_exists('date_default_timezone_get')) {
         return date_default_timezone_get();
     } else {
@@ -187,7 +192,8 @@ function server_timezone() {
  *
  * @return void
  */
-function local_mktime($hour = NULL, $minute = NULL, $second = NULL, $month = NULL, $day = NULL, $year = NULL) {
+function local_mktime($hour = null, $minute = null, $second = null, $month = null, $day = null, $year = null)
+{
     $timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : C('timezone');
 
     /**
@@ -207,10 +213,11 @@ function local_mktime($hour = NULL, $minute = NULL, $second = NULL, $month = NUL
  *
  * @return  string
  */
-function local_date($format, $time = NULL) {
+function local_date($format, $time = null)
+{
     $timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : C('timezone');
 
-    if ($time === NULL) {
+    if ($time === null) {
         $time = gmtime();
     } elseif ($time <= 0) {
         return '';
@@ -228,7 +235,8 @@ function local_date($format, $time = NULL) {
  *
  * @return  integer
  */
-function gmstr2time($str) {
+function gmstr2time($str)
+{
     $time = strtotime($str);
 
     if ($time > 0) {
@@ -246,7 +254,8 @@ function gmstr2time($str) {
  *
  * @return  integer
  */
-function local_strtotime($str) {
+function local_strtotime($str)
+{
     $timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : C('timezone');
 
     /**
@@ -265,7 +274,8 @@ function local_strtotime($str) {
  *
  * @return  array
  */
-function local_gettime($timestamp = NULL) {
+function local_gettime($timestamp = null)
+{
     $tmp = local_getdate($timestamp);
     return $tmp[0];
 }
@@ -277,11 +287,12 @@ function local_gettime($timestamp = NULL) {
  *
  * @return  array
  */
-function local_getdate($timestamp = NULL) {
+function local_getdate($timestamp = null)
+{
     $timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : C('timezone');
 
     /* 如果时间戳为空，则获得服务器的当前时间 */
-    if ($timestamp === NULL) {
+    if ($timestamp === null) {
         $timestamp = time();
     }
 
@@ -304,7 +315,8 @@ function local_getdate($timestamp = NULL) {
  *
  * @return  string
  */
-function sub_str($str, $length = 0, $append = true) {
+function sub_str($str, $length = 0, $append = true)
+{
     $str = trim($str);
     $strlength = strlen($str);
 
@@ -339,10 +351,11 @@ function sub_str($str, $length = 0, $append = true) {
  * @access  public
  * @return  string
  */
-function real_ip() {
-    static $realip = NULL;
+function real_ip()
+{
+    static $realip = null;
 
-    if ($realip !== NULL) {
+    if ($realip !== null) {
         return $realip;
     }
 
@@ -351,7 +364,7 @@ function real_ip() {
             $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
 
             /* 取X-Forwarded-For中第一个非unknown的有效IP字符串 */
-            foreach ($arr AS $ip) {
+            foreach ($arr as $ip) {
                 $ip = trim($ip);
 
                 if ($ip != 'unknown') {
@@ -392,7 +405,8 @@ function real_ip() {
  *
  * @return  int
  */
-function str_len($str) {
+function str_len($str)
+{
     $length = strlen(preg_replace('/[\x00-\x7F]/', '', $str));
 
     if ($length) {
@@ -408,7 +422,8 @@ function str_len($str) {
  * @access  public
  * @return  string
  */
-function get_crlf() {
+function get_crlf()
+{
     /* LF (Line Feed, 0x0A, \N) 和 CR(Carriage Return, 0x0D, \R) */
     if (stristr($_SERVER['HTTP_USER_AGENT'], 'Win')) {
         $the_crlf = '\r\n';
@@ -433,7 +448,8 @@ function get_crlf() {
  *
  * @return boolean
  */
-function send_mail($name, $email, $subject, $content, $type = 0, $notification = false) {
+function send_mail($name, $email, $subject, $content, $type = 0, $notification = false)
+{
     /* 如果邮件编码不是EC_CHARSET，创建字符集转换对象，转换编码 */
     if (C('mail_charset') != EC_CHARSET) {
         $name = ecs_iconv(EC_CHARSET, C('mail_charset'), $name);
@@ -525,7 +541,7 @@ function send_mail($name, $email, $subject, $content, $type = 0, $notification =
                 } else {
                     if (strpos($err_msg, 'Failed to connect to server') !== false) {
                         ECTouch::err()->add(sprintf(L('smtp_connect_failure'), $params['host'] . ':' . $params['port']));
-                    } else if (strpos($err_msg, 'AUTH command failed') !== false) {
+                    } elseif (strpos($err_msg, 'AUTH command failed') !== false) {
                         ECTouch::err()->add(L('smtp_login_failure'));
                     } elseif (strpos($err_msg, 'bad sequence of commands') !== false) {
                         ECTouch::err()->add(L('smtp_refuse'));
@@ -546,7 +562,8 @@ function send_mail($name, $email, $subject, $content, $type = 0, $notification =
  * @access      public
  * @return      int         可能的值为0，1，2
  */
-function gd_version() {
+function gd_version()
+{
     return EcsImage::gd_version();
 }
 
@@ -561,7 +578,8 @@ function gd_version() {
  *                          返回值在二进制计数法中，四位由高到低分别代表
  *                          可执行rename()函数权限、可对文件追加内容权限、可写入文件权限、可读取文件权限。
  */
-function file_mode_info($file_path) {
+function file_mode_info($file_path)
+{
     /* 如果不存在，则不可读、不可写、不可改 */
     if (!file_exists($file_path)) {
         return false;
@@ -646,7 +664,8 @@ function file_mode_info($file_path) {
     return $mark;
 }
 
-function log_write($arg, $file = '', $line = '') {
+function log_write($arg, $file = '', $line = '')
+{
     if ((DEBUG_MODE & 4) != 4) {
         return;
     }
@@ -656,8 +675,8 @@ function log_write($arg, $file = '', $line = '') {
 
     if (is_array($arg)) {
         $str .= '$arg = array(';
-        foreach ($arg AS $val) {
-            foreach ($val AS $key => $list) {
+        foreach ($arg as $val) {
+            foreach ($val as $key => $list) {
                 $str .= "'$key' => '$list'\r\n";
             }
         }
@@ -677,7 +696,8 @@ function log_write($arg, $file = '', $line = '') {
  *
  * @return      bool
  */
-function make_dir($folder) {
+function make_dir($folder)
+{
     $reval = false;
 
     if (!file_exists($folder)) {
@@ -691,7 +711,7 @@ function make_dir($folder) {
         $base = ($atmp[0][0] == '/') ? '/' : '';
 
         /* 遍历包含路径信息的数组 */
-        foreach ($atmp[1] AS $val) {
+        foreach ($atmp[1] as $val) {
             if ('' != $val) {
                 $base .= $val;
 
@@ -732,10 +752,11 @@ function make_dir($folder) {
  *
  * @return  boolean
  */
-function gzip_enabled() {
-    static $enabled_gzip = NULL;
+function gzip_enabled()
+{
+    static $enabled_gzip = null;
 
-    if ($enabled_gzip === NULL) {
+    if ($enabled_gzip === null) {
         $enabled_gzip = (C('enable_gzip') && function_exists('ob_gzhandler'));
     }
 
@@ -750,7 +771,8 @@ function gzip_enabled() {
  *
  * @return  mix
  */
-function addslashes_deep($value) {
+function addslashes_deep($value)
+{
     if (empty($value)) {
         return $value;
     } else {
@@ -767,9 +789,10 @@ function addslashes_deep($value) {
  *
  * @return   mix                  对象或者数组
  */
-function addslashes_deep_obj($obj) {
+function addslashes_deep_obj($obj)
+{
     if (is_object($obj) == true) {
-        foreach ($obj AS $key => $val) {
+        foreach ($obj as $key => $val) {
             $obj->$key = addslashes_deep($val);
         }
     } else {
@@ -787,7 +810,8 @@ function addslashes_deep_obj($obj) {
  *
  * @return  mix
  */
-function stripslashes_deep($value) {
+function stripslashes_deep($value)
+{
     if (empty($value)) {
         return $value;
     } else {
@@ -803,7 +827,8 @@ function stripslashes_deep($value) {
  *
  * @return  string       $str         处理后字串
  */
-function make_semiangle($str) {
+function make_semiangle($str)
+{
     $arr = array('０' => '0', '１' => '1', '２' => '2', '３' => '3', '４' => '4',
         '５' => '5', '６' => '6', '７' => '7', '８' => '8', '９' => '9',
         'Ａ' => 'A', 'Ｂ' => 'B', 'Ｃ' => 'C', 'Ｄ' => 'D', 'Ｅ' => 'E',
@@ -839,7 +864,8 @@ function make_semiangle($str) {
  * @param       string      limit_ext_types     允许的文件类型
  * @return      string
  */
-function check_file_type($filename, $realname = '', $limit_ext_types = '') {
+function check_file_type($filename, $realname = '', $limit_ext_types = '')
+{
     if ($realname) {
         $extname = strtolower(substr($realname, strrpos($realname, '.') + 1));
     } else {
@@ -934,7 +960,8 @@ function check_file_type($filename, $realname = '', $limit_ext_types = '') {
  * @param       string      string  内容
  * @return      string
  */
-function mysql_like_quote($str) {
+function mysql_like_quote($str)
+{
     return strtr($str, array("\\\\" => "\\\\\\\\", '_' => '\_', '%' => '\%', "\'" => "\\\\\'"));
 }
 
@@ -945,10 +972,11 @@ function mysql_like_quote($str) {
  *
  * @return string
  * */
-function real_server_ip() {
-    static $serverip = NULL;
+function real_server_ip()
+{
+    static $serverip = null;
 
-    if ($serverip !== NULL) {
+    if ($serverip !== null) {
         return $serverip;
     }
 
@@ -972,7 +1000,8 @@ function real_server_ip() {
  *
  * @return  void
  * */
-function ecs_header($string, $replace = true, $http_response_code = 0) {
+function ecs_header($string, $replace = true, $http_response_code = 0)
+{
     if (strpos($string, '../upgrade/index.php') === 0) {
         echo '<script type="text/javascript">window.location.href="' . $string . '";</script>';
     }
@@ -991,23 +1020,25 @@ function ecs_header($string, $replace = true, $http_response_code = 0) {
     }
 }
 
-function ecs_iconv($source_lang, $target_lang, $source_string = '') {
-    static $chs = NULL;
+function ecs_iconv($source_lang, $target_lang, $source_string = '')
+{
+    static $chs = null;
 
     /* 如果字符串为空或者字符串不需要转换，直接返回 */
     if ($source_lang == $target_lang || $source_string == '' || preg_match("/[\x80-\xFF]+/", $source_string) == 0) {
         return $source_string;
     }
 
-    if ($chs === NULL) {
+    if ($chs === null) {
         $chs = new EcsIconv(ROOT_PATH);
     }
 
     return $chs->Convert($source_lang, $target_lang, $source_string);
 }
 
-function ecs_geoip($ip) {
-    static $fp = NULL, $offset = array(), $index = NULL;
+function ecs_geoip($ip)
+{
+    static $fp = null, $offset = array(), $index = null;
 
     $ip = gethostbyname($ip);
     $ipdot = explode('.', $ip);
@@ -1019,7 +1050,7 @@ function ecs_geoip($ip) {
         return 'LAN';
     }
 
-    if ($fp === NULL) {
+    if ($fp === null) {
         $fp = fopen(ROOT_PATH . 'data/ipdata/ipdata.dat', 'rb');
         if ($fp === false) {
             return 'Invalid IP data file';
@@ -1045,7 +1076,7 @@ function ecs_geoip($ip) {
     $area = fread($fp, $index_length['len']);
 
     fclose($fp);
-    $fp = NULL;
+    $fp = null;
 
     return $area;
 }
@@ -1057,7 +1088,8 @@ function ecs_geoip($ip) {
  *
  * @return  string
  */
-function trim_right($str) {
+function trim_right($str)
+{
     $len = strlen($str);
     /* 为空或单个字符直接返回 */
     if ($len == 0 || ord($str{$len - 1}) < 127) {
@@ -1088,12 +1120,13 @@ function trim_right($str) {
  * @param string $target_name
  * @return blog
  */
-function move_upload_file($file_name, $target_name = '') {
+function move_upload_file($file_name, $target_name = '')
+{
     if (function_exists("move_uploaded_file")) {
         if (move_uploaded_file($file_name, $target_name)) {
             @chmod($target_name, 0755);
             return true;
-        } else if (copy($file_name, $target_name)) {
+        } elseif (copy($file_name, $target_name)) {
             @chmod($target_name, 0755);
             return true;
         }
@@ -1110,7 +1143,8 @@ function move_upload_file($file_name, $target_name = '') {
  * @param string $str
  * @return string
  */
-function json_str_iconv($str) {
+function json_str_iconv($str)
+{
     if (EC_CHARSET != 'utf-8') {
         if (is_string($str)) {
             return addslashes(stripslashes(ecs_iconv('utf-8', EC_CHARSET, $str)));
@@ -1137,7 +1171,8 @@ function json_str_iconv($str) {
  * @param string $str
  * @return string
  */
-function to_utf8_iconv($str) {
+function to_utf8_iconv($str)
+{
     if (EC_CHARSET != 'utf-8') {
         if (is_string($str)) {
             return ecs_iconv(EC_CHARSET, 'utf-8', $str);
@@ -1165,7 +1200,8 @@ function to_utf8_iconv($str) {
  * @param array $allow_type
  * @return blob
  */
-function get_file_suffix($file_name, $allow_type = array()) {
+function get_file_suffix($file_name, $allow_type = array())
+{
     $file_suffix = strtolower(array_pop(explode('.', $file_name)));
     if (empty($allow_type)) {
         return $file_suffix;
@@ -1191,7 +1227,8 @@ function get_file_suffix($file_name, $allow_type = array()) {
  *
  * @return   void
  */
-function db_create_in($item_list, $field_name = '') {
+function db_create_in($item_list, $field_name = '')
+{
     if (empty($item_list)) {
         return $field_name . " IN ('') ";
     } else {
@@ -1200,7 +1237,7 @@ function db_create_in($item_list, $field_name = '') {
         }
         $item_list = array_unique($item_list);
         $item_list_tmp = '';
-        foreach ($item_list AS $item) {
+        foreach ($item_list as $item) {
             if ($item !== '') {
                 $item_list_tmp .= $item_list_tmp ? ",'$item'" : "'$item'";
             }
@@ -1221,7 +1258,8 @@ function db_create_in($item_list, $field_name = '') {
  *
  * @return bool
  */
-function is_email($user_email) {
+function is_email($user_email)
+{
     $chars = "/^([a-z0-9+_]|\\-|\\.)+@(([a-z0-9_]|\\-)+\\.)+[a-z]{2,6}\$/i";
     if (strpos($user_email, '@') !== false && strpos($user_email, '.') !== false) {
         if (preg_match($chars, $user_email)) {
@@ -1242,7 +1280,8 @@ function is_email($user_email) {
  *
  * @return bool
  */
-function is_mobile($user_mobile) {
+function is_mobile($user_mobile)
+{
     $chars = '/^(1(([35][0-9])|(47)|[8][0126789]))\d{8}$/';
     if (preg_match($chars, $user_mobile)) {
         return true;
@@ -1258,7 +1297,8 @@ function is_mobile($user_mobile) {
  * @param   string  $time
  * @return  void
  */
-function is_time($time) {
+function is_time($time)
+{
     $pattern = '/[\d]{4}-[\d]{1,2}-[\d]{1,2}\s[\d]{1,2}:[\d]{1,2}:[\d]{1,2}/';
 
     return preg_match($pattern, $time);
@@ -1270,7 +1310,8 @@ function is_time($time) {
  * @access  public
  * @return  void
  */
-function assign_query_info() {
+function assign_query_info()
+{
     if (M()->queryTime == '') {
         $query_time = 0;
     } else {
@@ -1295,11 +1336,12 @@ function assign_query_info() {
  * @param   array   $arr    地区数组 *
  * @return  void
  */
-function region_result($parent, $sel_name, $type) {
+function region_result($parent, $sel_name, $type)
+{
     global $cp;
 
     $arr = model('RegionBase')->get_regions($type, $parent);
-    foreach ($arr AS $v) {
+    foreach ($arr as $v) {
         $region = & $cp->add_node('region');
         $region_id = & $region->add_node('id');
         $region_name = & $region->add_node('name');
@@ -1317,7 +1359,8 @@ function region_result($parent, $sel_name, $type) {
  * @access  public
  * @return  object
  */
-function init_users() {
+function init_users()
+{
     $set_modules = false;
     static $cls = null;
     if ($cls != null) {
@@ -1348,10 +1391,11 @@ function init_users() {
  * @param   int     $is_show_all 如果为true显示所有分类，如果为false隐藏不可见分类。
  * @return  mix
  */
-function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_show_all = true) {
-    static $res = NULL;
+function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_show_all = true)
+{
+    static $res = null;
 
-    if ($res === NULL) {
+    if ($res === null) {
         $data = read_static_cache('cat_pid_releate');
         if ($data === false) {
             $res = model('Base')->get_all_cat_list();
@@ -1398,7 +1442,7 @@ function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_s
         }
 
         /* 保留level小于end_level的部分 */
-        foreach ($options AS $key => $val) {
+        foreach ($options as $key => $val) {
             if ($val['level'] >= $end_level) {
                 unset($options[$key]);
             }
@@ -1407,7 +1451,7 @@ function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_s
 
     if ($re_type == true) {
         $select = '';
-        foreach ($options AS $var) {
+        foreach ($options as $var) {
             $select .= '<option value="' . $var['cat_id'] . '" ';
             $select .= ($selected == $var['cat_id']) ? "selected='ture'" : '';
             $select .= '>';
@@ -1419,7 +1463,7 @@ function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_s
 
         return $select;
     } else {
-        foreach ($options AS $key => $value) {
+        foreach ($options as $key => $value) {
             $options[$key]['url'] = url('category/index', array('id' => $value['cat_id']));
         }
 
@@ -1427,10 +1471,11 @@ function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_s
     }
 }
 
-function cat_lists($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_show_all = true) {
-    static $res = NULL;
+function cat_lists($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_show_all = true)
+{
+    static $res = null;
 
-    if ($res === NULL) {
+    if ($res === null) {
         $data = read_static_cache('cat_pid_releate');
         if ($data === false) {
             $res = model('Base')->get_all_cat_lists();
@@ -1477,7 +1522,7 @@ function cat_lists($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_
         }
 
         /* 保留level小于end_level的部分 */
-        foreach ($options AS $key => $val) {
+        foreach ($options as $key => $val) {
             if ($val['level'] >= $end_level) {
                 unset($options[$key]);
             }
@@ -1486,7 +1531,7 @@ function cat_lists($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_
 
     if ($re_type == true) {
         $select = '';
-        foreach ($options AS $var) {
+        foreach ($options as $var) {
             $select .= '<option value="' . $var['cat_id'] . '" ';
             $select .= ($selected == $var['cat_id']) ? "selected='ture'" : '';
             $select .= '>';
@@ -1497,7 +1542,7 @@ function cat_lists($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_
         }
         return $select;
     } else {
-        foreach ($options AS $key => $value) {
+        foreach ($options as $key => $value) {
             $options[$key]['url'] = url('crowd_category/category', array('id' => $value['cat_id']));
         }
         return $options;
@@ -1513,7 +1558,8 @@ function cat_lists($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_
  * @param   int     $level      级别
  * @return  void
  */
-function cat_options($spec_cat_id, $arr) {
+function cat_options($spec_cat_id, $arr)
+{
     static $cat_options = array();
 
     if (isset($cat_options[$spec_cat_id])) {
@@ -1526,7 +1572,7 @@ function cat_options($spec_cat_id, $arr) {
         $data = read_static_cache('cat_option_static');
         if ($data === false) {
             while (!empty($arr)) {
-                foreach ($arr AS $key => $value) {
+                foreach ($arr as $key => $value) {
                     $cat_id = $value['cat_id'];
                     if ($level == 0 && $last_cat_id == 0) {
                         if ($value['parent_id'] > 0) {
@@ -1609,7 +1655,7 @@ function cat_options($spec_cat_id, $arr) {
 
         $spec_cat_id_level = $options[$spec_cat_id]['level'];
 
-        foreach ($options AS $key => $value) {
+        foreach ($options as $key => $value) {
             if ($key != $spec_cat_id) {
                 unset($options[$key]);
             } else {
@@ -1618,7 +1664,7 @@ function cat_options($spec_cat_id, $arr) {
         }
 
         $spec_cat_id_array = array();
-        foreach ($options AS $key => $value) {
+        foreach ($options as $key => $value) {
             if (($spec_cat_id_level == $value['level'] && $value['cat_id'] != $spec_cat_id) ||
                     ($spec_cat_id_level > $value['level'])) {
                 break;
@@ -1639,7 +1685,8 @@ function cat_options($spec_cat_id, $arr) {
  * @param   integer     $cat        指定的分类ID
  * @return  string
  */
-function get_children($cat = 0) {
+function get_children($cat = 0)
+{
     return 'g.cat_id ' . db_create_in(array_unique(array_merge(array($cat), array_keys(cat_list($cat, 0, false)))));
 }
 
@@ -1651,7 +1698,8 @@ function get_children($cat = 0) {
  *
  * @return void
  */
-function get_article_children($cat = 0) {
+function get_article_children($cat = 0)
+{
     return db_create_in(array_unique(array_merge(array($cat), array_keys(model('ArticleBase')->article_cat_list($cat, 0, false)))), 'cat_id');
 }
 
@@ -1660,7 +1708,8 @@ function get_article_children($cat = 0) {
  * @param type $str
  * @return type
  */
-function get_children_cat($str) {
+function get_children_cat($str)
+{
     $act_id = explode(',', $str);
     foreach ($act_id as $val) {
         $cat[] = array_unique(array_merge(array($val), array_keys(cat_list($val, 0, false))));
@@ -1680,7 +1729,8 @@ function get_children_cat($str) {
  * @param   float   $price  商品价格
  * @return  string
  */
-function price_format($price, $change_price = true) {
+function price_format($price, $change_price = true)
+{
     if ($price === '') {
         $price = 0;
     }
@@ -1728,7 +1778,8 @@ function price_format($price, $change_price = true) {
  *
  * @return int        返回清除的文件个数
  */
-function clear_tpl_files($is_cache = true, $ext = '') {
+function clear_tpl_files($is_cache = true, $ext = '')
+{
     $dirs = array();
 
     if (isset($GLOBALS['shop_id']) && $GLOBALS['shop_id'] > 0) {
@@ -1752,7 +1803,7 @@ function clear_tpl_files($is_cache = true, $ext = '') {
     $str_len = strlen($ext);
     $count = 0;
 
-    foreach ($dirs AS $dir) {
+    foreach ($dirs as $dir) {
         $folder = @opendir($dir);
 
         if ($folder === false) {
@@ -1795,7 +1846,8 @@ function clear_tpl_files($is_cache = true, $ext = '') {
  * @param   mix     $ext    模版文件名， 不包含后缀
  * @return  void
  */
-function clear_compiled_files($ext = '') {
+function clear_compiled_files($ext = '')
+{
     return clear_tpl_files(false, $ext);
 }
 
@@ -1806,7 +1858,8 @@ function clear_compiled_files($ext = '') {
  * @param   mix     $ext    模版文件名， 不包含后缀
  * @return  void
  */
-function clear_cache_files($ext = '') {
+function clear_cache_files($ext = '')
+{
     return clear_tpl_files(true, $ext);
 }
 
@@ -1817,7 +1870,8 @@ function clear_cache_files($ext = '') {
  * @param   mix     $ext    模版文件名后缀
  * @return  void
  */
-function clear_all_files($ext = '') {
+function clear_all_files($ext = '')
+{
     $dirs = array(
         'caches',
         'compiled',
@@ -1838,13 +1892,14 @@ function clear_all_files($ext = '') {
  * @param   string      $files
  * @return  void
  */
-function smarty_insert_scripts($args) {
+function smarty_insert_scripts($args)
+{
     static $scripts = array();
 
     $arr = explode(',', str_replace(' ', '', $args['files']));
 
     $str = '';
-    foreach ($arr AS $val) {
+    foreach ($arr as $val) {
         if (in_array($val, $scripts) == false) {
             $scripts[] = $val;
             if ($val{0} == '.') {
@@ -1865,7 +1920,8 @@ function smarty_insert_scripts($args) {
  * @param   integer $count
  * @return  string
  */
-function smarty_create_pages($params) {
+function smarty_create_pages($params)
+{
     extract($params);
 
     $str = '';
@@ -1907,7 +1963,8 @@ function smarty_create_pages($params) {
  * @param   string  $keywords   搜索关键词字符串
  * @return  void
  */
-function build_uri($app, $params, $append = '', $page = 0, $keywords = '', $size = 0) {
+function build_uri($app, $params, $append = '', $page = 0, $keywords = '', $size = 0)
+{
     return url($app, $params);
 }
 
@@ -1916,7 +1973,8 @@ function build_uri($app, $params, $append = '', $page = 0, $keywords = '', $size
  * @param   float   $weight     重量
  * @return  string  格式化后的重量
  */
-function formated_weight($weight) {
+function formated_weight($weight)
+{
     $weight = round(floatval($weight), 3);
     if ($weight > 0) {
         if ($weight < 1) {
@@ -1939,7 +1997,8 @@ function formated_weight($weight) {
  *
  * @return  mixed
  */
-function uc_call($func, $params = null) {
+function uc_call($func, $params = null)
+{
     restore_error_handler();
     if (!function_exists($func)) {
         include_once(ROOT_PATH . 'uc_client/client.php');
@@ -1957,7 +2016,8 @@ function uc_call($func, $params = null) {
  *
  * @return
  */
-function exception_handler($errno, $errstr, $errfile, $errline) {
+function exception_handler($errno, $errstr, $errfile, $errline)
+{
     return;
 }
 
@@ -1972,7 +2032,8 @@ function exception_handler($errno, $errstr, $errfile, $errline) {
  *
  * @return string   $url
  */
-function get_image_path($goods_id, $image = '', $thumb = false, $call = 'goods', $del = false) {
+function get_image_path($goods_id, $image = '', $thumb = false, $call = 'goods', $del = false)
+{
     $url = C('no_picture');
     if (!empty($image)) {
         if (strtolower(substr($image, 0, 4)) == 'http') {
@@ -1985,7 +2046,8 @@ function get_image_path($goods_id, $image = '', $thumb = false, $call = 'goods',
     return $url;
 }
 
-function get_image_topic($image = '', $thumb = false, $call = 'goods', $del = false) {
+function get_image_topic($image = '', $thumb = false, $call = 'goods', $del = false)
+{
     $url = C('no_picture');
     if (!empty($image)) {
         if (strtolower(substr($image, 0, 4)) == 'http') {
@@ -2005,7 +2067,8 @@ function get_image_topic($image = '', $thumb = false, $call = 'goods', $del = fa
  *
  * @return string   $url
  */
-function get_data_path($image = '', $folder = ''){
+function get_data_path($image = '', $folder = '')
+{
     $url = C('no_picture');
     if (!empty($image)) {
         if (strtolower(substr($image, 0, 4)) == 'http') {
@@ -2013,9 +2076,9 @@ function get_data_path($image = '', $folder = ''){
         }
         $shop_url = rtrim(C('shop_url'));
         $base_url = IS_ECSHOP ? (empty($shop_url) ? dirname(__URL__):$shop_url) : __URL__;
-        if(IS_ECSHOP){
+        if (IS_ECSHOP) {
             $url = $base_url . '/data/' . $folder . '/' . $image;
-        }else{
+        } else {
             $url = $base_url . '/data/attached/' . $folder . '/' . $image;
         }
     }
@@ -2030,7 +2093,8 @@ function get_data_path($image = '', $folder = ''){
  *
  * @return  mixed
  */
-function user_uc_call($func, $params = null) {
+function user_uc_call($func, $params = null)
+{
     $integrate_code = C('integrate_code');
     if (isset($integrate_code) && C('integrate_code') == 'ucenter') {
         restore_error_handler();
@@ -2051,8 +2115,8 @@ function user_uc_call($func, $params = null) {
  * @return  $combined
  */
 if (!function_exists('array_combine')) {
-
-    function array_combine($keys, $values) {
+    function array_combine($keys, $values)
+    {
         if (!is_array($keys)) {
             user_error('array_combine() expects parameter 1 to be array, ' .
                     gettype($keys) . ' given', E_USER_WARNING);
@@ -2087,7 +2151,6 @@ if (!function_exists('array_combine')) {
 
         return $combined;
     }
-
 }
 
 
@@ -2099,7 +2162,8 @@ if (!function_exists('array_combine')) {
 /**
  * 商品推荐usort用自定义排序行数
  */
-function goods_sort($goods_a, $goods_b) {
+function goods_sort($goods_a, $goods_b)
+{
     if ($goods_a['sort_order'] == $goods_b['sort_order']) {
         return 0;
     }
@@ -2115,7 +2179,8 @@ function goods_sort($goods_a, $goods_b) {
  * @param   string  $end        促销结束日期
  * @return  float   如果还在促销期则返回促销价，否则返回0
  */
-function bargain_price($price, $start, $end) {
+function bargain_price($price, $start, $end)
+{
     if ($price == 0) {
         return 0;
     } else {
@@ -2133,7 +2198,8 @@ function bargain_price($price, $start, $end) {
  * @param   array   $auction    拍卖活动原始信息
  * @return  int
  */
-function auction_status($auction) {
+function auction_status($auction)
+{
     $now = gmtime();
     if ($auction['is_finished'] == 0) {
         if ($now < $auction['start_time']) {
@@ -2156,7 +2222,8 @@ function auction_status($auction) {
  * @param   string     $style          样式参数
  * @return  string
  */
-function add_style($goods_name, $style) {
+function add_style($goods_name, $style)
+{
     $goods_style_name = $goods_name;
 
     $arr = explode('+', $style);
@@ -2185,7 +2252,8 @@ function add_style($goods_name, $style) {
  *
  * @return array        $arr            tags列表
  */
-function get_user_tags($user_id = 0) {
+function get_user_tags($user_id = 0)
+{
     if (empty($user_id)) {
         $GLOBALS['error_no'] = 1;
 
@@ -2210,7 +2278,8 @@ function get_user_tags($user_id = 0) {
  *
  * @return   none
  */
-function color_tag(&$tags) {
+function color_tag(&$tags)
+{
     $tagmark = array(
         array('color' => '#666666', 'size' => '0.8em', 'ifbold' => 1),
         array('color' => '#333333', 'size' => '0.9em', 'ifbold' => 0),
@@ -2226,7 +2295,7 @@ function color_tag(&$tags) {
     $maxlevel = count($tagmark);
     $tcount = $scount = array();
 
-    foreach ($tags AS $val) {
+    foreach ($tags as $val) {
         $tcount[] = $val['tag_count']; // 获得tag个数数组
     }
     $tcount = array_unique($tcount); // 去除相同个数的tag
@@ -2236,7 +2305,7 @@ function color_tag(&$tags) {
     $tempcount = count($tcount); // 真正的tag级数
     $per = $maxlevel >= $tempcount ? 1 : $maxlevel / ($tempcount - 1);
 
-    foreach ($tcount AS $key => $val) {
+    foreach ($tcount as $key => $val) {
         $lvl = floor($per * $key);
         $scount[$val] = $lvl; // 计算不同个数的tag相对应的着色数组key
     }
@@ -2244,7 +2313,7 @@ function color_tag(&$tags) {
     $rewrite = intval(C('rewrite')) > 0;
 
     /* 遍历所有标签，根据引用次数设定字体大小 */
-    foreach ($tags AS $key => $val) {
+    foreach ($tags as $key => $val) {
         $lvl = $scount[$val['tag_count']]; // 着色数组key
 
         $tags[$key]['color'] = $tagmark[$lvl]['color'];
@@ -2273,7 +2342,8 @@ function color_tag(&$tags) {
  * @param   string  $key    密钥
  * @return  string  加密后的字符串
  */
-function encrypt($str, $key = AUTH_KEY) {
+function encrypt($str, $key = AUTH_KEY)
+{
     $coded = '';
     $keylength = strlen($key);
 
@@ -2290,7 +2360,8 @@ function encrypt($str, $key = AUTH_KEY) {
  * @param   string  $key    密钥
  * @return  string  加密前的字符串
  */
-function decrypt($str, $key = AUTH_KEY) {
+function decrypt($str, $key = AUTH_KEY)
+{
     $coded = '';
     $keylength = strlen($key);
     $str = base64_decode($str);
@@ -2312,7 +2383,8 @@ function decrypt($str, $key = AUTH_KEY) {
  * @param   string     证书token
  * @return  string
  */
-function make_shopex_ac($post_params, $token) {
+function make_shopex_ac($post_params, $token)
+{
     if (!is_array($post_params)) {
         return;
     }
@@ -2336,7 +2408,8 @@ function make_shopex_ac($post_params, $token) {
  * @param   bool      $use_lib  使用哪一个json库，0为ec，1为shopex
  * @return  array
  */
-function exchange_shop_license($certi, $license, $use_lib = 0) {
+function exchange_shop_license($certi, $license, $use_lib = 0)
+{
     if (!is_array($certi)) {
         return array();
     }
@@ -2368,7 +2441,8 @@ function exchange_shop_license($certi, $license, $use_lib = 0) {
  * @param   array     $cert_auth    登录返回的用户信息
  * @return  array
  */
-function process_login_license($cert_auth) {
+function process_login_license($cert_auth)
+{
     if (!is_array($cert_auth)) {
         return array();
     }
@@ -2393,7 +2467,8 @@ function process_login_license($cert_auth) {
  * @return  array     $return_array['flag'] = login_succ、login_fail、login_ping_fail、login_param_fail；
  *                    $return_array['request']；
  */
-function license_login($certi_added = '') {
+function license_login($certi_added = '')
+{
     // 登录信息配置
     $certi['certi_app'] = ''; // 证书方法
     $certi['app_id'] = 'ectouch_free'; // 说明客户端来源
@@ -2459,7 +2534,8 @@ function license_login($certi_added = '') {
  * @param   string      $template_style     模版风格名
  * @return  array
  */
-function get_template_info($template_name, $template_style = '') {
+function get_template_info($template_name, $template_style = '')
+{
     if (empty($template_style) || $template_style == '') {
         $template_style = '';
     }
@@ -2532,7 +2608,8 @@ function get_template_info($template_name, $template_style = '') {
  * @param   string  $tmp_file   模版文件名称
  * @return  array
  */
-function get_template_region($tmp_name, $tmp_file, $lib = true) {
+function get_template_region($tmp_name, $tmp_file, $lib = true)
+{
     global $dyna_libs;
 
     $file = ROOT_PATH . 'themes/' . $tmp_name . '/' . $tmp_file;
@@ -2548,7 +2625,7 @@ function get_template_region($tmp_name, $tmp_file, $lib = true) {
         $result = preg_match_all('/(<!--\\s*TemplateBeginEditable\\sname=")([^"]+)("\\s*-->)/', $content, $matches, PREG_SET_ORDER);
 
         if ($result && $result > 0) {
-            foreach ($matches AS $key => $val) {
+            foreach ($matches as $key => $val) {
                 if ($val[2] != 'doctitle' && $val[2] != 'head') {
                     $regions[] = $val[2];
                 }
@@ -2562,7 +2639,7 @@ function get_template_region($tmp_name, $tmp_file, $lib = true) {
 
     $libs = array();
     /* 遍历所有编辑区 */
-    foreach ($regions AS $key => $val) {
+    foreach ($regions as $key => $val) {
         $matches = array();
         $pattern = '/(<!--\\s*TemplateBeginEditable\\sname="%s"\\s*-->)(.*?)(<!--\\s*TemplateEndEditable\\s*-->)/s';
 
@@ -2573,7 +2650,7 @@ function get_template_region($tmp_name, $tmp_file, $lib = true) {
             $result = preg_match_all('/([\s|\S]{0,20})(<!--\\s#BeginLibraryItem\\s")([^"]+)("\\s-->)/', $matches[2], $lib_matches, PREG_SET_ORDER);
             $i = 0;
             if ($result && $result > 0) {
-                foreach ($lib_matches AS $k => $v) {
+                foreach ($lib_matches as $k => $v) {
                     $v[3] = strtolower($v[3]);
                     $libs[] = array('library' => $v[3], 'region' => $val, 'lib' => basename(substr($v[3], 0, strpos($v[3], '.'))), 'sort_order' => $i);
                     $i++;
@@ -2593,10 +2670,11 @@ function get_template_region($tmp_name, $tmp_file, $lib = true) {
  * @param   array   $libs    包含设定内容的数组
  * @return  void
  */
-function get_setted($lib, &$arr) {
+function get_setted($lib, &$arr)
+{
     $options = array('region' => '', 'sort_order' => 0, 'display' => 0);
 
-    foreach ($arr AS $key => $val) {
+    foreach ($arr as $key => $val) {
         if ($lib == $val['library']) {
             $options['region'] = $val['region'];
             $options['sort_order'] = $val['sort_order'];
@@ -2617,7 +2695,8 @@ function get_setted($lib, &$arr) {
  * @param   array   $curr_page_libs   缺少xml文件时的默认编辑区信息数组
  * @return  array   $edit_libs        返回可编辑的库文件数组
  */
-function get_editable_libs($curr_template, $curr_page_libs) {
+function get_editable_libs($curr_template, $curr_page_libs)
+{
     global $_CFG;
     $vals = array();
     $edit_libs = array();
@@ -2650,6 +2729,7 @@ function get_editable_libs($curr_template, $curr_page_libs) {
  * 默认返回 model('Base')->model  用来直接使用ecModel的方法
  * @param string $model
  */
-function M($model='Base'){
+function M($model='Base')
+{
     return model($model)->model;
 }

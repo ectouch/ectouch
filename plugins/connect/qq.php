@@ -19,11 +19,11 @@ defined('IN_ECTOUCH') or die('Deny Access');
 $payment_lang = ROOT_PATH . 'plugins/connect/languages/' . C('lang') . '/' . basename(__FILE__);
 
 if (file_exists($payment_lang)) {
-    include_once ($payment_lang);
+    include_once($payment_lang);
     L($_LANG);
 }
 /* 模块的基本信息 */
-if (isset($set_modules) && $set_modules == TRUE) {
+if (isset($set_modules) && $set_modules == true) {
     $i = isset($modules) ? count($modules) : 0;
     /* 类名 */
     $modules[$i]['name'] = 'QQ登录插件';
@@ -59,8 +59,8 @@ if (isset($set_modules) && $set_modules == TRUE) {
 /**
  * QQ API client
  */
-class qq {
-
+class qq
+{
     public $api_url = 'https://graph.qq.com/';
     private $appid = '';
     private $appkey = '';
@@ -73,7 +73,8 @@ class qq {
      * @param unknown $app
      * @param string $access_token
      */
-    public function __construct($conf, $access_token = NULL) {
+    public function __construct($conf, $access_token = null)
+    {
         $this->appid = $conf['app_id'];
         $this->appkey = $conf['app_key'];
         $this->access_token = $access_token;
@@ -87,7 +88,8 @@ class qq {
      * @param unknown $url
      * @return mixed
      */
-    public function act_login($callback_url) {
+    public function act_login($callback_url)
+    {
         $login_url = $this->login_url($callback_url, $this->scope);
         return str_replace('&amp;', '&', $login_url);
     }
@@ -100,7 +102,8 @@ class qq {
      * @param unknown $code
      * @return boolean
      */
-    public function call_back($callback_url, $code) {
+    public function call_back($callback_url, $code)
+    {
         $result = $this->access_token($callback_url, $code);
         if (isset($result['access_token']) && $result['access_token'] != '') {
             // 保存登录信息，此示例中使用session保存
@@ -109,11 +112,11 @@ class qq {
             $openid = $this->get_openid();
             // 获取用户信息
             $userinfo = $this->get_user_info($openid);
-            if($userinfo['gender'] == '男'){
+            if ($userinfo['gender'] == '男') {
                 $userinfo['gender'] = 1;
-            }elseif ($userinfo['gender'] == '女'){
+            } elseif ($userinfo['gender'] == '女') {
                 $userinfo['gender'] = 2;
-            }else {
+            } else {
                 $userinfo['gender'] = 0;
             }
             $_SESSION['nickname'] = $this->get_user_name($userinfo);
@@ -138,7 +141,8 @@ class qq {
      * @param string $scope
      * @return string
      */
-    public function login_url($callback_url, $scope = '') {
+    public function login_url($callback_url, $scope = '')
+    {
         $params = array(
             'client_id' => $this->appid,
             'redirect_uri' => $callback_url,
@@ -155,7 +159,8 @@ class qq {
      * @param unknown $code
      * @return multitype:
      */
-    public function access_token($callback_url, $code) {
+    public function access_token($callback_url, $code)
+    {
         $params = array(
             'grant_type' => 'authorization_code',
             'client_id' => $this->appid,
@@ -167,8 +172,9 @@ class qq {
         $url = 'https://graph.qq.com/oauth2.0/token?' . http_build_query($params, '', '&');
         $result_str = $this->http($url);
         $json_r = array();
-        if ($result_str != '')
+        if ($result_str != '') {
             parse_str($result_str, $json_r);
+        }
         return $json_r;
     }
 
@@ -177,7 +183,8 @@ class qq {
      *
      * @return Ambigous <>
      */
-    public function get_openid() {
+    public function get_openid()
+    {
         $params = array(
             'access_token' => $this->access_token
         );
@@ -197,23 +204,23 @@ class qq {
      * @param unknown $openid
      * @return Ambigous <multitype:, mixed>
      */
-    public function get_user_info($openid) {
+    public function get_user_info($openid)
+    {
         $params = array(
             'openid' => $openid
         );
         return $this->api('user/get_user_info', $params);
     }
-	 /**
-     * 获取用户名
-     *
-     * @param unknown $user_info
-     * @return Ambigous <multitype:, mixed>
-     */
-	public function get_user_name($userinfo){
-
-		return $userinfo['nickname'];
-
-		}
+    /**
+    * 获取用户名
+    *
+    * @param unknown $user_info
+    * @return Ambigous <multitype:, mixed>
+    */
+    public function get_user_name($userinfo)
+    {
+        return $userinfo['nickname'];
+    }
 
     /**
      * 发布分享
@@ -227,7 +234,8 @@ class qq {
      * @param string $summary
      * @return Ambigous <multitype:, mixed>
      */
-    public function add_share($openid, $title, $url, $site, $fromurl, $images = '', $summary = '') {
+    public function add_share($openid, $title, $url, $site, $fromurl, $images = '', $summary = '')
+    {
         $params = array(
             'openid' => $openid,
             'title' => $title,
@@ -250,7 +258,8 @@ class qq {
      *         //示例：根据openid获取用户信息
      *         $result=$qq->api('user/get_user_info', array('openid'=>$openid), 'GET');
      */
-    public function api($url, $params = array(), $method = 'GET') {
+    public function api($url, $params = array(), $method = 'GET')
+    {
         $url = $this->api_url . $url;
         $params['access_token'] = $this->access_token;
         $params['oauth_consumer_key'] = $this->appid;
@@ -263,8 +272,9 @@ class qq {
             $result_str = $this->http($url, $query, 'POST');
         }
         $result = array();
-        if ($result_str != '')
+        if ($result_str != '') {
             $result = json_decode($result_str, true);
+        }
         return $result;
     }
 
@@ -277,16 +287,18 @@ class qq {
      * @param unknown $headers
      * @return mixed
      */
-    private function http($url, $postfields = '', $method = 'GET', $headers = array()) {
+    private function http($url, $postfields = '', $method = 'GET', $headers = array())
+    {
         $ci = curl_init();
-        curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ci, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ci, CURLOPT_TIMEOUT, 30);
         if ($method == 'POST') {
-            curl_setopt($ci, CURLOPT_POST, TRUE);
-            if ($postfields != '')
+            curl_setopt($ci, CURLOPT_POST, true);
+            if ($postfields != '') {
                 curl_setopt($ci, CURLOPT_POSTFIELDS, $postfields);
+            }
         }
         $headers[] = 'User-Agent: QQ.PHP(piscdong.com)';
         curl_setopt($ci, CURLOPT_HTTPHEADER, $headers);
@@ -295,5 +307,4 @@ class qq {
         curl_close($ci);
         return $response;
     }
-
 }

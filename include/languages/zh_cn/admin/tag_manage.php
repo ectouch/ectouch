@@ -28,5 +28,3 @@ $_LANG['back_list'] = '返回标签列表';
 $_LANG['drop_confirm'] = '您确定要删除这条记录吗?';
 
 $_LANG['js_languages']['tag_name_not_empty'] = '标签名称不能为空！';
-
-?>

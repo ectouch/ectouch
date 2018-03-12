@@ -19,11 +19,11 @@ defined('IN_ECTOUCH') or die('Deny Access');
 $payment_lang = ROOT_PATH . 'plugins/connect/languages/' . C('lang') . '/' . basename(__FILE__);
 
 if (file_exists($payment_lang)) {
-    include_once ($payment_lang);
+    include_once($payment_lang);
     L($_LANG);
 }
 /* 模块的基本信息 */
-if (isset($set_modules) && $set_modules == TRUE) {
+if (isset($set_modules) && $set_modules == true) {
     $i = isset($modules) ? count($modules) : 0;
     /* 类名 */
     $modules[$i]['name'] = '新浪微博登录';
@@ -60,8 +60,8 @@ if (isset($set_modules) && $set_modules == TRUE) {
 /**
  * 新浪微博 API client
  */
-class weibo {
-
+class weibo
+{
     public $api_url = 'https://api.weibo.com/2/';
     public $format = 'json';
 
@@ -71,7 +71,8 @@ class weibo {
      * @param unknown $app
      * @param string $access_token
      */
-    public function __construct($conf, $access_token = NULL) {
+    public function __construct($conf, $access_token = null)
+    {
         $this->client_id = $conf['app_key'];
         $this->client_secret = $conf['app_secret'];
         $this->access_token = $access_token;
@@ -84,7 +85,8 @@ class weibo {
      * @param unknown $url
      * @return mixed
      */
-    public function act_login($callback_url) {
+    public function act_login($callback_url)
+    {
         $login_url = $this->login_url($callback_url, $this->scope);
         return str_replace('&amp;', '&', $login_url);
     }
@@ -97,18 +99,19 @@ class weibo {
      * @param unknown $code
      * @return boolean
      */
-    public function call_back($callback_url, $code) {
+    public function call_back($callback_url, $code)
+    {
         $result = $this->access_token($callback_url, $code);
         if (isset($result['access_token']) && $result['access_token'] != '') {
             // 保存登录信息，此示例中使用session保存
             $this->access_token = $result['access_token']; // access token
             $openid = $this->get_openid();
             $userinfo = $this->get_user_info($openid);
-            if($userinfo['gender'] == 'f'){
+            if ($userinfo['gender'] == 'f') {
                 $userinfo['gender'] = 1;
-            }elseif ($userinfo['gender'] == 'm'){
+            } elseif ($userinfo['gender'] == 'm') {
                 $userinfo['gender'] = 2;
-            }else {
+            } else {
                 $userinfo['gender'] = 0;
             }
             $_SESSION['nickname'] = $this->get_user_name($userinfo);
@@ -132,7 +135,8 @@ class weibo {
      * @param unknown $callback_url
      * @return string
      */
-    public function login_url($callback_url) {
+    public function login_url($callback_url)
+    {
         $params = array(
             'response_type' => 'code',
             'client_id' => $this->client_id,
@@ -148,7 +152,8 @@ class weibo {
      * @param unknown $code
      * @return Ambigous <multitype:, mixed>
      */
-    public function access_token($callback_url, $code) {
+    public function access_token($callback_url, $code)
+    {
         $params = array(
             'grant_type' => 'authorization_code',
             'code' => $code,
@@ -166,7 +171,8 @@ class weibo {
      *
      * @return Ambigous <>
      */
-    public function get_openid() {
+    public function get_openid()
+    {
         $params = array();
         $result = $this->api('account/get_uid', $params);
         return $result['uid'];
@@ -178,7 +184,8 @@ class weibo {
      * @param unknown $uid
      * @return Ambigous <multitype:, mixed>
      */
-    public function get_user_info($uid) {
+    public function get_user_info($uid)
+    {
         $params = array(
             'uid' => $uid
         );
@@ -190,15 +197,14 @@ class weibo {
      * @param unknown $user_info
      * @return Ambigous <multitype:, mixed>
      */
-	public function get_user_name($userinfo){
-
-		if($userinfo['screen_name'] != ''){
-			return $userinfo['screen_name'];
-			}
-			else{
-				return $userinfo['name'];
-			}
-		}
+    public function get_user_name($userinfo)
+    {
+        if ($userinfo['screen_name'] != '') {
+            return $userinfo['screen_name'];
+        } else {
+            return $userinfo['name'];
+        }
+    }
     /**
      * 发布微博
      *
@@ -206,7 +212,8 @@ class weibo {
      * @param string $pic
      * @return Ambigous <multitype:, mixed>
      */
-    public function update($img_c, $pic = '') {
+    public function update($img_c, $pic = '')
+    {
         $params = array(
             'status' => $img_c
         );
@@ -227,7 +234,8 @@ class weibo {
      * @param number $page
      * @return Ambigous <multitype:, mixed>
      */
-    public function user_timeline($uid, $count = 10, $page = 1) {
+    public function user_timeline($uid, $count = 10, $page = 1)
+    {
         $params = array(
             'uid' => $uid,
             'page' => $page,
@@ -246,7 +254,8 @@ class weibo {
      *         //示例：根据uid获取用户信息
      *         $result=$sina->api('users/show', array('uid'=>$uid), 'GET');
      */
-    public function api($url, $params = array(), $method = 'GET') {
+    public function api($url, $params = array(), $method = 'GET')
+    {
         $url = $this->api_url . $url . '.' . $this->format;
         $params['access_token'] = $this->access_token;
         if ($method == 'GET') {
@@ -302,16 +311,18 @@ class weibo {
      * @param unknown $headers
      * @return Ambigous <multitype:, mixed>
      */
-    private function http($url, $postfields = '', $method = 'GET', $headers = array()) {
+    private function http($url, $postfields = '', $method = 'GET', $headers = array())
+    {
         $ci = curl_init();
-        curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ci, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ci, CURLOPT_TIMEOUT, 30);
         if ($method == 'POST') {
-            curl_setopt($ci, CURLOPT_POST, TRUE);
-            if ($postfields != '')
+            curl_setopt($ci, CURLOPT_POST, true);
+            if ($postfields != '') {
                 curl_setopt($ci, CURLOPT_POSTFIELDS, $postfields);
+            }
         }
         $headers[] = 'User-Agent: weibo.PHP(piscdong.com)';
         curl_setopt($ci, CURLOPT_HTTPHEADER, $headers);
@@ -319,9 +330,9 @@ class weibo {
         $response = curl_exec($ci);
         curl_close($ci);
         $json_r = array();
-        if ($response != '')
+        if ($response != '') {
             $json_r = json_decode($response, true);
+        }
         return $json_r;
     }
-
 }

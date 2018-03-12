@@ -16,14 +16,16 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ShippingModel extends BaseModel {
+class ShippingModel extends BaseModel
+{
 
     /**
      * 取得配送方式信息
      * @param   int     $shipping_id    配送方式id
      * @return  array   配送方式信息
      */
-    function shipping_info($shipping_id) {
+    public function shipping_info($shipping_id)
+    {
         $sql = 'SELECT * FROM ' . $this->pre .
                 "shipping WHERE shipping_id = '$shipping_id' " .
                 'AND enabled = 1';
@@ -35,7 +37,8 @@ class ShippingModel extends BaseModel {
      * 取得已安装的配送方式
      * @return  array   已安装的配送方式
      */
-    function shipping_list() {
+    public function shipping_list()
+    {
         $sql = 'SELECT shipping_id, shipping_name ' .
                 'FROM ' . $this->pre .
                 'shipping WHERE enabled = 1';
@@ -48,7 +51,8 @@ class ShippingModel extends BaseModel {
      * @param   array   $region_id_list     收货人地区id数组（包括国家、省、市、区）
      * @return  array   配送方式数组
      */
-    function available_shipping_list($region_id_list) {
+    public function available_shipping_list($region_id_list)
+    {
         $sql = 'SELECT s.shipping_id, s.shipping_code, s.shipping_name, ' .
                 's.shipping_desc, s.insure, s.support_cod, a.configure ' .
                 'FROM ' . $this->pre . 'shipping AS s, ' .
@@ -66,7 +70,8 @@ class ShippingModel extends BaseModel {
      * @param   array   $region_id_list     收货人地区id数组
      * @return  array   配送区域信息（config 对应着反序列化的 configure）
      */
-    function shipping_area_info($shipping_id, $region_id_list) {
+    public function shipping_area_info($shipping_id, $region_id_list)
+    {
         $sql = 'SELECT s.shipping_code, s.shipping_name, ' .
                 's.shipping_desc, s.insure, s.support_cod, a.configure ' .
                 'FROM ' . $this->pre . 'shipping AS s, ' .
@@ -92,5 +97,4 @@ class ShippingModel extends BaseModel {
 
         return $row;
     }
-
 }

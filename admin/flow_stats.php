@@ -11,19 +11,14 @@ require_once(BASE_PATH . 'languages/' .$_CFG['lang']. '/admin/statistic.php');
 $smarty->assign('lang', $_LANG);
 
 /* act操作项的初始化 */
-if (empty($_REQUEST['act']))
-{
+if (empty($_REQUEST['act'])) {
     $_REQUEST['act'] = 'view';
-}
-else
-{
+} else {
     $_REQUEST['act'] = trim($_REQUEST['act']);
 }
 
-if ($_REQUEST['act'] == 'view')
-{
-    if ($_CFG['visit_stats'] == 'off')
-    {
+if ($_REQUEST['act'] == 'view') {
+    if ($_CFG['visit_stats'] == 'off') {
         sys_msg($_LANG['stats_off']);
         exit();
     }
@@ -31,13 +26,10 @@ if ($_REQUEST['act'] == 'view')
     $is_multi = empty($_POST['is_multi']) ? false : true;
 
     /* 时间参数 */
-    if (isset($_POST['start_date']) && !empty($_POST['end_date']))
-    {
+    if (isset($_POST['start_date']) && !empty($_POST['end_date'])) {
         $start_date = local_strtotime($_POST['start_date']);
         $end_date = local_strtotime($_POST['end_date']);
-    }
-    else
-    {
+    } else {
         $today  = local_strtotime(local_date('Y-m-d'));
         $start_date = $today - 86400 * 7;
         $end_date   = $today;
@@ -45,25 +37,21 @@ if ($_REQUEST['act'] == 'view')
 
     $start_date_arr = array();
     $end_date_arr = array();
-    if(!empty($_POST['year_month']))
-    {
+    if (!empty($_POST['year_month'])) {
         $tmp = $_POST['year_month'];
 
-        for ($i = 0; $i < count($tmp); $i++)
-        {
-            if (!empty($tmp[$i]))
-            {
+        for ($i = 0; $i < count($tmp); $i++) {
+            if (!empty($tmp[$i])) {
                 $tmp_time = local_strtotime($tmp[$i] . '-1');
                 $start_date_arr[] = $tmp_time;
                 $end_date_arr[]   = local_strtotime($tmp[$i] . '-' . date('t', $tmp_time));
             }
         }
-    }
-    else
-    {
+    } else {
         $tmp_time = local_strtotime(local_date('Y-m-d'));
         $start_date_arr[] = local_strtotime(local_date('Y-m') . '-1');
-        $end_date_arr[]   = local_strtotime(local_date('Y-m') . '-31');;
+        $end_date_arr[]   = local_strtotime(local_date('Y-m') . '-31');
+        ;
     }
 
     /* ------------------------------------- */
@@ -71,8 +59,7 @@ if ($_REQUEST['act'] == 'view')
     /* ------------------------------------- */
     $max = 0;
 
-    if(!$is_multi)
-    {
+    if (!$is_multi) {
         $general_xml = "<graph caption='$_LANG[general_stats]' shownames='1' showvalues='1' decimalPrecision='0' yaxisminvalue='0' yaxismaxvalue='%d' animation='1' outCnvBaseFontSize='12' baseFontSize='12' xaxisname='$_LANG[date]' yaxisname='$_LANG[access_count]' >";
 
         $sql = "SELECT FLOOR((access_time - $start_date) / (24 * 3600)) AS sn, access_time, COUNT(*) AS access_count".
@@ -83,12 +70,10 @@ if ($_REQUEST['act'] == 'view')
 
         $key = 0;
 
-        while ($val = $db->fetchRow($res))
-        {
-            $val['access_date'] = gmdate('m-d',$val['access_time'] +  $timezone * 3600);
+        while ($val = $db->fetchRow($res)) {
+            $val['access_date'] = gmdate('m-d', $val['access_time'] +  $timezone * 3600);
             $general_xml .= "<set name='$val[access_date]' value='$val[access_count]' color='" .chart_color($key). "' />";
-            if ($val['access_count'] > $max)
-            {
+            if ($val['access_count'] > $max) {
                 $max = $val['access_count'];
             }
             $key++;
@@ -96,13 +81,9 @@ if ($_REQUEST['act'] == 'view')
 
         $general_xml .= '</graph>';
         $general_xml  = sprintf($general_xml, $max);
-    }
-    else
-    {
+    } else {
         $general_xml = "<graph caption='$_LANG[general_stats]' lineThickness='1' showValues='0' formatNumberScale='0' anchorRadius='2'   divLineAlpha='20' divLineColor='CC3300' divLineIsDashed='1' showAlternateHGridColor='1' alternateHGridAlpha='5' alternateHGridColor='CC3300' shadowAlpha='40' labelStep='2' numvdivlines='5' chartRightMargin='35' bgColor='FFFFFF,CC3300' bgAngle='270' bgAlpha='10,10' outCnvBaseFontSize='12' baseFontSize='12' >";
-        foreach($start_date_arr AS $k => $val)
-        {
-
+        foreach ($start_date_arr as $k => $val) {
             $seriesName = local_date('Y-m', $start_date_arr[$k]);
             $general_xml .= "<dataset seriesName='$seriesName' color='" . chart_color($k) . "' anchorBorderColor='" . chart_color($k) . "' anchorBgColor='" . chart_color($k) . "'>";
             $sql = "SELECT FLOOR((access_time - $start_date_arr[$k]) / (24 * 3600)) AS sn, access_time, COUNT(*) AS access_count".
@@ -113,16 +94,13 @@ if ($_REQUEST['act'] == 'view')
 
             $lastDay = 0;
 
-            while ($val = $db->fetchRow($res))
-            {
-                $day = gmdate('d',$val['access_time'] +  $timezone * 3600);
+            while ($val = $db->fetchRow($res)) {
+                $day = gmdate('d', $val['access_time'] +  $timezone * 3600);
 
-                if ($lastDay == 0)
-                {
+                if ($lastDay == 0) {
                     $time_span = (($day-1) - $lastDay);
                     $lastDay++;
-                    for (; $lastDay < $day; $lastDay++)
-                    {
+                    for (; $lastDay < $day; $lastDay++) {
                         $general_xml .= "<set value='0' />";
                     }
                 }
@@ -135,8 +113,7 @@ if ($_REQUEST['act'] == 'view')
 
         $general_xml .= "<categories>";
 
-        for ($i = 1;$i<=31;$i++)
-        {
+        for ($i = 1;$i<=31;$i++) {
             $general_xml .= "<category label='$i' />";
         }
         $general_xml .= "</categories>";
@@ -147,8 +124,7 @@ if ($_REQUEST['act'] == 'view')
     /* ------------------------------------- */
     $area_xml  = '';
 
-    if(!$is_multi)
-    {
+    if (!$is_multi) {
         $area_xml .= "<graph caption='".$_LANG['area_stats']."' shownames='1' showvalues='1' decimalPrecision='2' outCnvBaseFontSize='13' baseFontSize='13' pieYScale='45'  pieBorderAlpha='40' pieFillAlpha='70' pieSliceDepth='15' pieRadius='100' bgAngle='460'>";
 
         $sql = "SELECT COUNT(*) AS access_count, area FROM " . $ecs->table('stats') .
@@ -157,22 +133,17 @@ if ($_REQUEST['act'] == 'view')
         $res = $db->query($sql);
 
         $key = 0;
-        while ($val = $db->fetchRow($res))
-        {
+        while ($val = $db->fetchRow($res)) {
             $area = empty($val['area']) ? 'unknow' : $val['area'];
 
             $area_xml .= "<set name='$area' value='$val[access_count]' color='" .chart_color($key). "' />";
             $key++;
         }
         $area_xml .= '</graph>';
-    }
-    else
-    {
+    } else {
         $where = '';
-        foreach($start_date_arr AS $k => $val)
-        {
-            if ($where != '')
-            {
+        foreach ($start_date_arr as $k => $val) {
+            if ($where != '') {
                 $where .= ' or ';
             }
             $where .= "(access_time >= '$start_date_arr[$k]' AND access_time <= " .($end_date_arr[$k] + 86400).")";
@@ -181,41 +152,31 @@ if ($_REQUEST['act'] == 'view')
                 " WHERE $where";
         $res = $db->query($sql);
         $area_arr = array();
-        while ($val = $db->fetchRow($res))
-        {
-           $date = local_date('Y-m', $val['access_time']);
-           $area_arr[$val['area']] = null;
-           if (isset($category[$date][$val['area']]))
-           {
-               $category[$date][$val['area']]++;
-           }
-           else
-           {
-               $category[$date][$val['area']] = 1;
-           }
+        while ($val = $db->fetchRow($res)) {
+            $date = local_date('Y-m', $val['access_time']);
+            $area_arr[$val['area']] = null;
+            if (isset($category[$date][$val['area']])) {
+                $category[$date][$val['area']]++;
+            } else {
+                $category[$date][$val['area']] = 1;
+            }
         }
         $area_xml = "<chart palette='2' caption='$_LANG[area_stats]' shownames='1' showvalues='0' numberPrefix='' useRoundEdges='1' legendBorderAlpha='0' outCnvBaseFontSize='13' baseFontSize='13'>";
         $area_xml .= "<categories>";
-        foreach ($area_arr AS $k => $v)
-        {
+        foreach ($area_arr as $k => $v) {
             $area_xml .= "<category label='$k'/>";
         }
         $area_xml .= "</categories>";
         $key = 0;
-        foreach($start_date_arr AS $val)
-        {
+        foreach ($start_date_arr as $val) {
             $key++;
             $date = local_date('Y-m', $val);
             $area_xml .= "<dataset seriesName='$date' color='" .chart_color($key). "' showValues='0'>";
 
-            foreach ($area_arr AS $k => $v)
-            {
-                if (isset($category[$date][$k]))
-                {
+            foreach ($area_arr as $k => $v) {
+                if (isset($category[$date][$k])) {
                     $area_xml .= "<set value='" .$category[$date][$k]. "'/>";
-                }
-                else
-                {
+                } else {
                     $area_xml .= "<set value='0'/>";
                 }
             }
@@ -227,8 +188,7 @@ if ($_REQUEST['act'] == 'view')
     /* ------------------------------------- */
     /* --来源网站
     /* ------------------------------------- */
-    if(!$is_multi)
-    {
+    if (!$is_multi) {
         $from_xml = "<graph caption='$_LANG[from_stats]' shownames='1' showvalues='1' decimalPrecision='2' outCnvBaseFontSize='12' baseFontSize='12' pieYScale='45' pieBorderAlpha='40' pieFillAlpha='70' pieSliceDepth='15' pieRadius='100' bgAngle='460'>";
 
         $sql = "SELECT COUNT(*) AS access_count, referer_domain FROM " . $ecs->table('stats') .
@@ -238,8 +198,7 @@ if ($_REQUEST['act'] == 'view')
 
         $key = 0;
 
-        while ($val = $db->fetchRow($res))
-        {
+        while ($val = $db->fetchRow($res)) {
             $from = empty($val['referer_domain']) ? $_LANG['input_url'] : $val['referer_domain'];
 
             $from_xml .= "<set name='".str_replace(array('http://', 'https://'), array('', ''), $from) . "' value='$val[access_count]' color='" . chart_color($key). "' />";
@@ -248,14 +207,10 @@ if ($_REQUEST['act'] == 'view')
         }
 
         $from_xml .= '</graph>';
-    }
-    else
-    {
+    } else {
         $where = '';
-        foreach($start_date_arr AS $k => $val)
-        {
-            if ($where != '')
-            {
+        foreach ($start_date_arr as $k => $val) {
+            if ($where != '') {
                 $where .= ' or ';
             }
             $where .= "(access_time >= '$start_date_arr[$k]' AND access_time <= " .($end_date_arr[$k] + 86400).")";
@@ -266,42 +221,32 @@ if ($_REQUEST['act'] == 'view')
 
         $res = $db->query($sql);
         $domain_arr = array();
-        while ($val = $db->fetchRow($res))
-        {
-           $date = local_date('Y-m', $val['access_time']);
-           $domain_arr[$val['referer_domain']] = null;
-           if (isset($category[$date][$val['referer_domain']]))
-           {
-               $category[$date][$val['referer_domain']]++;
-           }
-           else
-           {
-               $category[$date][$val['referer_domain']] = 1;
-           }
+        while ($val = $db->fetchRow($res)) {
+            $date = local_date('Y-m', $val['access_time']);
+            $domain_arr[$val['referer_domain']] = null;
+            if (isset($category[$date][$val['referer_domain']])) {
+                $category[$date][$val['referer_domain']]++;
+            } else {
+                $category[$date][$val['referer_domain']] = 1;
+            }
         }
         $from_xml = "<chart palette='2' caption='$_LANG[from_stats]' shownames='1' showvalues='0' numberPrefix='' useRoundEdges='1' legendBorderAlpha='0' outCnvBaseFontSize='13' baseFontSize='13'>";
         $from_xml .= "<categories>";
-        foreach ($domain_arr AS $k => $v)
-        {
+        foreach ($domain_arr as $k => $v) {
             $from = $k == '' ? $_LANG['input_url'] : $k;
             $from_xml .= "<category label='$from'/>";
         }
         $from_xml .= "</categories>";
         $key = 0;
-        foreach($start_date_arr AS $val)
-        {
+        foreach ($start_date_arr as $val) {
             $key++;
             $date = local_date('Y-m', $val);
             $from_xml .= "<dataset seriesName='$date' color='" .chart_color($key). "' showValues='0'>";
 
-            foreach ($domain_arr AS $k => $v)
-            {
-                if (isset($category[$date][$k]))
-                {
+            foreach ($domain_arr as $k => $v) {
+                if (isset($category[$date][$k])) {
                     $from_xml .= "<set value='" .$category[$date][$k]. "'/>";
-                }
-                else
-                {
+                } else {
                     $from_xml .= "<set value='0'/>";
                 }
             }
@@ -311,35 +256,30 @@ if ($_REQUEST['act'] == 'view')
     }
 
     /* 模板赋值 */
-    $smarty->assign('ur_here',      $_LANG['flow_stats']);
+    $smarty->assign('ur_here', $_LANG['flow_stats']);
     $smarty->assign('general_data', $general_xml);
-    $smarty->assign('area_data',    $area_xml);
-    $smarty->assign('is_multi',     $is_multi);
-    $smarty->assign('from_data',    $from_xml);
+    $smarty->assign('area_data', $area_xml);
+    $smarty->assign('is_multi', $is_multi);
+    $smarty->assign('from_data', $from_xml);
     /* 显示日期 */
 
-    $smarty->assign('start_date',   local_date('Y-m-d', $start_date));
-    $smarty->assign('end_date',     local_date('Y-m-d', $end_date));
+    $smarty->assign('start_date', local_date('Y-m-d', $start_date));
+    $smarty->assign('end_date', local_date('Y-m-d', $end_date));
 
-    for ($i = 0; $i < 5; $i++)
-    {
-        if (isset($start_date_arr[$i]))
-        {
+    for ($i = 0; $i < 5; $i++) {
+        if (isset($start_date_arr[$i])) {
             $start_date_arr[$i] = local_date('Y-m', $start_date_arr[$i]);
-        }
-        else
-        {
+        } else {
             $start_date_arr[$i] = null;
         }
     }
     $smarty->assign('start_date_arr', $start_date_arr);
 
-    if (!$is_multi)
-    {
+    if (!$is_multi) {
         $filename = gmdate($_CFG['date_format'], $start_date + $timezone * 3600) . '_' .
                     gmdate($_CFG['date_format'], $end_date + $timezone * 3600);
 
-        $smarty->assign('action_link',  array('text' => $_LANG['down_flow_stats'],
+        $smarty->assign('action_link', array('text' => $_LANG['down_flow_stats'],
           'href'=>'flow_stats.php?act=download&filename=' . $filename .
             '&start_date=' . $start_date . '&end_date=' . $end_date));
     }
@@ -349,8 +289,7 @@ if ($_REQUEST['act'] == 'view')
     $smarty->display('flow_stats.htm');
 }
 /* 报表下载 */
-elseif ($act = 'download')
-{
+elseif ($act = 'download') {
     $filename = !empty($_REQUEST['filename']) ? trim($_REQUEST['filename']) : '';
 
     header("Content-type: application/vnd.ms-excel; charset=utf-8");
@@ -367,9 +306,8 @@ elseif ($act = 'download')
     $data .= $_LANG['date'] . "\t";
     $data .= $_LANG['access_count'] . "\t\n";
 
-    while ($val = $GLOBALS['db']->fetchRow($res))
-    {
-        $val['access_date'] = gmdate('m-d',$val['access_time'] +  $timezone * 3600);
+    while ($val = $GLOBALS['db']->fetchRow($res)) {
+        $val['access_date'] = gmdate('m-d', $val['access_time'] +  $timezone * 3600);
         $data .= $val['access_date'] . "\t";
         $data .= $val['access_count'] . "\t\n";
     }
@@ -384,8 +322,7 @@ elseif ($act = 'download')
     $data .= $_LANG['area'] . "\t";
     $data .= $_LANG['access_count'] . "\t\n";
 
-    while ($val = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($val = $GLOBALS['db']->fetchRow($res)) {
         $data .= $val['area'] . "\t";
         $data .= $val['access_count'] . "\t\n";
     }
@@ -401,19 +338,13 @@ elseif ($act = 'download')
     $data .= $_LANG['url'] . "\t";
     $data .= $_LANG['access_count'] . "\t\n";
 
-    while ($val = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($val = $GLOBALS['db']->fetchRow($res)) {
         $data .= ($val['referer_domain'] == "" ? $_LANG['input_url'] : $val['referer_domain']) . "\t";
         $data .= $val['access_count'] . "\t\n";
     }
-    if (CHARSET != 'gbk')
-    {
+    if (CHARSET != 'gbk') {
         echo ecs_iconv(CHARSET, 'gbk', $data) . "\t";
-    }
-    else
-    {
+    } else {
         echo $data. "\t";
     }
 }
-
-?>

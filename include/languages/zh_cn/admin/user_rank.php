@@ -30,4 +30,3 @@ $_LANG['js_languages']['integral_max_invalid'] = '您没有输入积分上限或
 $_LANG['js_languages']['discount_invalid'] = '您没有输入折扣率或者折扣率无效。';
 $_LANG['js_languages']['integral_max_small'] = '积分上限必须大于积分下限。';
 $_LANG['js_languages']['lang_remove'] = '移除';
-?>

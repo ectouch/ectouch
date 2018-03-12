@@ -15,14 +15,15 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class TopicController extends CommonController {
-
+class TopicController extends CommonController
+{
     protected $id;
 
     /**
      * 构造函数
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->id = isset($_REQUEST ['topic_id']) ? intval($_REQUEST ['topic_id']) : 0;
     }
@@ -30,10 +31,10 @@ class TopicController extends CommonController {
     /**
      * 专题详情
      */
-    public function index() {
+    public function index()
+    {
         $topic = $this->model->table('topic')->where('topic_id =' . $this->id)->find();
-        if(empty($topic))
-        {
+        if (empty($topic)) {
             /* 如果没有找到任何记录则跳回到首页 */
             $this->redirect(url('index/index'));
         }
@@ -44,11 +45,13 @@ class TopicController extends CommonController {
 
         $goods_id = array();
 
-        if(is_array($arr)) foreach ($arr AS $key => $value) {
-            foreach ($value AS $k => $val) {
-                $opt = explode('|', $val);
-                $arr[$key][$k] = $opt[1];
-                $goods_id[] = $opt[1];
+        if (is_array($arr)) {
+            foreach ($arr as $key => $value) {
+                foreach ($value as $k => $val) {
+                    $opt = explode('|', $val);
+                    $arr[$key][$k] = $opt[1];
+                    $goods_id[] = $opt[1];
+                }
             }
         }
 
@@ -100,8 +103,8 @@ class TopicController extends CommonController {
             $row['promotion'] = model('GoodsBase')->get_promotion_show($row['goods_id']);
             $row['comment_count'] = model('Comment')->get_goods_comment($row['goods_id'], 0);  //商品总评论数量
             $row['favorable_count'] = model('Comment')->favorable_comment($row['goods_id'], 0);  //获得商品好评数量
-            foreach ($arr AS $key => $value) {
-                foreach ($value AS $val) {
+            foreach ($arr as $key => $value) {
+                foreach ($value as $val) {
                     if ($val == $row['goods_id']) {
                         $key = $key == 'default' ? L('all_goods') : $key;
                         $sort_goods_arr[$key][] = $row;
@@ -109,7 +112,7 @@ class TopicController extends CommonController {
                 }
             }
         }
-		$topic['topic_img'] = get_image_topic($topic['topic_img'], true);
+        $topic['topic_img'] = get_image_topic($topic['topic_img'], true);
         $this->assign('sort_goods_arr', $sort_goods_arr);          // 商品列表
         $this->assign('topic', $topic);                   // 专题信息
         $this->assign('tile', $topic['title']);
@@ -130,5 +133,4 @@ class TopicController extends CommonController {
         $templates = empty($topic['template']) ? 'topic.dwt' : $topic['template'];
         $this->display($templates);
     }
-
 }

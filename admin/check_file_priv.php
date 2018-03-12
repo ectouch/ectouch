@@ -8,18 +8,15 @@ define('IN_ECTOUCH', true);
 
 require(dirname(__FILE__) . '/includes/init.php');
 
-if ($_REQUEST['act']== 'check')
-{
+if ($_REQUEST['act']== 'check') {
     /* 检查权限 */
     admin_priv('file_priv');
 
     /* 要检查目录文件列表 */
     $goods_img_dir = array();
     $folder = opendir(ROOT_PATH . 'images');
-    while ($dir = readdir($folder))
-    {
-        if (is_dir(ROOT_PATH . IMAGE_DIR . '/' . $dir) && preg_match('/^[0-9]{6}$/', $dir))
-        {
+    while ($dir = readdir($folder)) {
+        if (is_dir(ROOT_PATH . IMAGE_DIR . '/' . $dir) && preg_match('/^[0-9]{6}$/', $dir)) {
             $goods_img_dir[] = IMAGE_DIR . '/' . $dir;
         }
     }
@@ -49,8 +46,7 @@ if ($_REQUEST['act']== 'check')
     $dir_subdir['temp'][]      = DATA_DIR . '/attached/static_caches';
 
     /* 将商品图片目录加入检查范围 */
-    foreach ($goods_img_dir as $val)
-    {
+    foreach ($goods_img_dir as $val) {
         $dir_subdir['images'][] = $val;
     }
 
@@ -61,16 +57,14 @@ if ($_REQUEST['act']== 'check')
     $list = array();
 
     /* 检查目录 */
-    foreach ($dir AS $val)
-    {
+    foreach ($dir as $val) {
         $mark = file_mode_info(ROOT_PATH .$val);
         $list[] = array('item' => $val.$_LANG['dir'], 'r' => $mark&1, 'w' => $mark&2, 'm' => $mark&4);
     }
 
     /* 检查目录及子目录 */
     $keys = array_unique(array_keys($dir_subdir));
-    foreach ($keys AS $key)
-    {
+    foreach ($keys as $key) {
         $err_msg = array();
         $mark = check_file_in_array($dir_subdir[$key], $err_msg);
         $list[] = array('item' => $key.$_LANG['dir_subdir'], 'r' => $mark&1, 'w' => $mark&2, 'm' => $mark&4, 'err_msg' => $err_msg);
@@ -79,20 +73,16 @@ if ($_REQUEST['act']== 'check')
     /* 检查当前模板可写性 */
     $dwt = @opendir(ROOT_PATH .$tpl);
     $tpl_file = array(); //获取要检查的文件
-    while ($file = readdir($dwt))
-    {
-        if (is_file(ROOT_PATH .$tpl .$file) && strrpos($file, '.dwt') > 0)
-        {
+    while ($file = readdir($dwt)) {
+        if (is_file(ROOT_PATH .$tpl .$file) && strrpos($file, '.dwt') > 0) {
             $tpl_file[] = $tpl .$file;
         }
     }
     @closedir($dwt);
     $lib = @opendir(ROOT_PATH .$tpl.'library/');
-    while ($file = readdir($lib))
-    {
-        if (is_file(ROOT_PATH .$tpl.'library/'.$file) && strrpos($file, '.lbi') > 0 )
-        {
-             $tpl_file[] = $tpl . 'library/' . $file;
+    while ($file = readdir($lib)) {
+        if (is_file(ROOT_PATH .$tpl.'library/'.$file) && strrpos($file, '.lbi') > 0) {
+            $tpl_file[] = $tpl . 'library/' . $file;
         }
     }
     @closedir($lib);
@@ -109,27 +99,23 @@ if ($_REQUEST['act']== 'check')
     $tpl_dirs[] = 'temp/compiled/admin';
 
     /* 将商品图片目录加入检查范围 */
-    foreach ($goods_img_dir as $val)
-    {
+    foreach ($goods_img_dir as $val) {
         $tpl_dirs[] = $val;
     }
 
-    foreach ($tpl_dirs AS $dir)
-    {
+    foreach ($tpl_dirs as $dir) {
         $mask = file_mode_info(ROOT_PATH .$dir);
 
-        if (($mask & 4) > 0)
-        {
+        if (($mask & 4) > 0) {
             /* 之前已经检查过修改权限，只有有修改权限才检查rename权限 */
-            if (($mask & 8) < 1)
-            {
+            if (($mask & 8) < 1) {
                 $tpl_list[] = $dir;
             }
         }
     }
     $tpl_msg = implode(', ', $tpl_list);
-    $smarty->assign('ur_here',      $_LANG['check_file_priv']);
-    $smarty->assign('list',    $list);
+    $smarty->assign('ur_here', $_LANG['check_file_priv']);
+    $smarty->assign('list', $list);
     $smarty->assign('tpl_msg', $tpl_msg);
     $smarty->display('file_priv.html');
 }
@@ -148,42 +134,32 @@ function check_file_in_array($arr, &$err_msg)
     $read   = true;
     $writen = true;
     $modify = true;
-    foreach ($arr AS $val)
-    {
+    foreach ($arr as $val) {
         $mark = file_mode_info(ROOT_PATH . $val);
-        if (($mark & 1) < 1)
-        {
+        if (($mark & 1) < 1) {
             $read = false;
             $err_msg['r'][] = $val;
         }
-        if (($mark & 2) <1)
-        {
+        if (($mark & 2) <1) {
             $writen = false;
             $err_msg['w'][] = $val;
-
         }
-        if (($mark & 4) <1)
-        {
+        if (($mark & 4) <1) {
             $modify = false;
             $err_msg['m'][] = $val;
         }
     }
 
     $mark = 0;
-    if ($read)
-    {
+    if ($read) {
         $mark ^= 1;
     }
-    if ($writen)
-    {
+    if ($writen) {
         $mark ^= 2;
     }
-    if ($modify)
-    {
+    if ($modify) {
         $mark ^= 4;
     }
 
     return $mark;
 }
-
-?>

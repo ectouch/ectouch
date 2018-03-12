@@ -47,5 +47,3 @@ $_LANG['upfile_error'] = "图片无法上传，请确保data目录下所有子�
 $_LANG['js_languages']['no_cardname'] = '没有输入贺卡名';
 $_LANG['js_languages']['cardfee_un_num'] = '贺卡费用为空或不是数字';
 $_LANG['js_languages']['cardmoney_un_num'] = '贺卡免费额度为空或不是数字';
-
-?>

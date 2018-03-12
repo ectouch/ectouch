@@ -30,5 +30,3 @@ $_LANG['fail_license_login'] = "证书登录失败。上传证书不正确！";
 
 /* JS提示 */
 $_LANG['js_languages']['del_confirm'] = '确认删除错误的证书吗？';
-
-?>

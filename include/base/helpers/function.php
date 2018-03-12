@@ -22,11 +22,12 @@ defined('IN_ECTOUCH') or die('Deny Access');
  * @param boolean $end 结束标签
  * @return mixed
  */
-function debug($flag = 'system', $end = false) {
+function debug($flag = 'system', $end = false)
+{
     static $arr = array();
     if (!$end) {
         $arr[$flag] = microtime(true);
-    } else if ($end && isset($arr[$flag])) {
+    } elseif ($end && isset($arr[$flag])) {
         echo '<p>' . $flag . ': runtime:' . round((microtime(true) - $arr[$flag]), 6) . ' memory_usage:' . memory_get_usage() / 1000 . 'KB</p>';
     }
 }
@@ -37,14 +38,15 @@ function debug($flag = 'system', $end = false) {
  * @param boolean $force 为true时忽略get_magic_quotes_gpc
  * @return mixed
  */
-function in($data, $force = false) {
+function in($data, $force = false)
+{
     if (is_string($data)) {
         $data = trim(htmlspecialchars($data)); // 防止被挂马，跨站攻击
         if (($force == true) || (!get_magic_quotes_gpc())) {
             $data = addslashes($data); // 防止sql注入
         }
         return $data;
-    } else if (is_array($data)) {
+    } elseif (is_array($data)) {
         foreach ($data as $key => $value) {
             $data[$key] = in($value, $force);
         }
@@ -59,10 +61,11 @@ function in($data, $force = false) {
  * @param unknown $data
  * @return string unknown
  */
-function out($data) {
+function out($data)
+{
     if (is_string($data)) {
         return $data = stripslashes($data);
-    } else if (is_array($data)) {
+    } elseif (is_array($data)) {
         foreach ($data as $key => $value) {
             $data[$key] = out($value);
         }
@@ -77,7 +80,8 @@ function out($data) {
  * @param unknown $str
  * @return Ambigous <mixed, string>
  */
-function text_in($str) {
+function text_in($str)
+{
     $str = strip_tags($str, '<br>');
     $str = str_replace(" ", "&nbsp;", $str);
     $str = str_replace("\n", "<br>", $str);
@@ -92,7 +96,8 @@ function text_in($str) {
  * @param unknown $str
  * @return string
  */
-function text_out($str) {
+function text_out($str)
+{
     $str = str_replace("&nbsp;", " ", $str);
     $str = str_replace("<br>", "\n", $str);
     $str = stripslashes($str);
@@ -104,7 +109,8 @@ function text_out($str) {
  * @param unknown $str
  * @return string
  */
-function html_in($str) {
+function html_in($str)
+{
     $search = array(
         "'<script[^>]*?>.*?</script>'si", // 去掉 javascript
         "'<iframe[^>]*?>.*?</iframe>'si"  // 去掉iframe
@@ -123,7 +129,8 @@ function html_in($str) {
  * @param unknown $str
  * @return string
  */
-function html_out($str) {
+function html_out($str)
+{
     if (function_exists('htmlspecialchars_decode')) {
         $str = htmlspecialchars_decode($str);
     } else {
@@ -139,17 +146,20 @@ function html_out($str) {
  * @param boolean $adv 是否进行高级模式获取（有可能被伪装）
  * @return mixed
  */
-function get_client_ip($type = 0, $adv = false) {
+function get_client_ip($type = 0, $adv = false)
+{
     $type = $type ? 1 : 0;
-    static $ip = NULL;
-    if ($ip !== NULL)
+    static $ip = null;
+    if ($ip !== null) {
         return $ip[$type];
+    }
     if ($adv) {
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
             $pos = array_search('unknown', $arr);
-            if (false !== $pos)
+            if (false !== $pos) {
                 unset($arr[$pos]);
+            }
             $ip = trim($arr[0]);
         } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -174,10 +184,11 @@ function get_client_ip($type = 0, $adv = false) {
  * @param string $suffix
  * @return string
  */
-function msubstr($str, $length, $start = 0, $charset = "utf-8", $suffix = true) {
-    if (function_exists("mb_substr"))
+function msubstr($str, $length, $start = 0, $charset = "utf-8", $suffix = true)
+{
+    if (function_exists("mb_substr")) {
         $slice = mb_substr($str, $start, $length, $charset);
-    elseif (function_exists('iconv_substr')) {
+    } elseif (function_exists('iconv_substr')) {
         $slice = iconv_substr($str, $start, $length, $charset);
     } else {
         $re['utf-8'] = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/";
@@ -196,7 +207,8 @@ function msubstr($str, $length, $start = 0, $charset = "utf-8", $suffix = true) 
  * @param number $dec
  * @return string
  */
-function byte_format($size, $dec = 2) {
+function byte_format($size, $dec = 2)
+{
     $a = array(
         "B", "KB", "MB", "GB", "TB", "PB"
     );
@@ -213,7 +225,8 @@ function byte_format($size, $dec = 2) {
  * @param unknown $string
  * @return boolean
  */
-function is_utf8($string) {
+function is_utf8($string)
+{
     if (!empty($string)) {
         $ret = json_encode(array(
             'code' => $string
@@ -232,7 +245,8 @@ function is_utf8($string) {
  * @param string $to
  * @return unknown string Ambigous
  */
-function auto_charset($fContents, $from = 'gbk', $to = 'utf-8') {
+function auto_charset($fContents, $from = 'gbk', $to = 'utf-8')
+{
     $from = strtoupper($from) == 'UTF8' ? 'utf-8' : $from;
     $to = strtoupper($to) == 'UTF8' ? 'utf-8' : $to;
     if (strtoupper($from) === strtoupper($to) || empty($fContents) || (is_scalar($fContents) && !is_string($fContents))) {
@@ -251,8 +265,9 @@ function auto_charset($fContents, $from = 'gbk', $to = 'utf-8') {
         foreach ($fContents as $key => $val) {
             $_key = auto_charset($key, $from, $to);
             $fContents[$_key] = auto_charset($val, $from, $to);
-            if ($key != $_key)
+            if ($key != $_key) {
                 unset($fContents[$key]);
+            }
         }
         return $fContents;
     } else {
@@ -269,7 +284,8 @@ function auto_charset($fContents, $from = 'gbk', $to = 'utf-8') {
  * @param boolean $strict 是否严谨 默认为true
  * @return void string
  */
-function dump($var, $echo = true, $label = null, $strict = true) {
+function dump($var, $echo = true, $label = null, $strict = true)
+{
     $label = ($label === null) ? '' : rtrim($label) . ' ';
     if (!$strict) {
         if (ini_get('html_errors')) {
@@ -288,7 +304,7 @@ function dump($var, $echo = true, $label = null, $strict = true) {
         }
     }
     if ($echo) {
-        echo ($output);
+        echo($output);
         return null;
     } else {
         return $output;
@@ -299,7 +315,8 @@ function dump($var, $echo = true, $label = null, $strict = true) {
  * 获取微秒时间，常用于计算程序的运行时间
  * @return number
  */
-function utime() {
+function utime()
+{
     list($usec, $sec) = explode(" ", microtime());
     return ((float) $usec + (float) $sec);
 }
@@ -308,7 +325,8 @@ function utime() {
  * 生成唯一的值
  * @return string
  */
-function ec_uniqid() {
+function ec_uniqid()
+{
     return md5(uniqid(rand(), true));
 }
 
@@ -317,7 +335,8 @@ function ec_uniqid() {
  * @param string $srt
  * @return Ambigous <string, boolean, unknown>
  */
-function get_pinyin($srt = '') {
+function get_pinyin($srt = '')
+{
     $py = new Pinyin();
     return $py->output($srt); // 输出
 }
@@ -327,7 +346,8 @@ function get_pinyin($srt = '') {
  * @param string $ip
  * @return string
  */
-function get_ip_info($ip = '') {
+function get_ip_info($ip = '')
+{
     // $obj = new IpArea();
     // return $obj->get($ip);
     $url = "http://ip.taobao.com/service/getIpInfo.php?ip=" . $ip;
@@ -348,7 +368,8 @@ function get_ip_info($ip = '') {
  * @param number $expire
  * @return string
  */
-function ec_encode($data, $key = '', $expire = 0) {
+function ec_encode($data, $key = '', $expire = 0)
+{
     $string = serialize($data);
     $ckey_length = 4;
     $key = md5($key);
@@ -393,7 +414,8 @@ function ec_encode($data, $key = '', $expire = 0) {
  * @param string $key
  * @return mixed|string
  */
-function ec_decode($string, $key = '') {
+function ec_decode($string, $key = '')
+{
     $ckey_length = 4;
     $key = md5($key);
     $keya = md5(substr($key, 0, 16));
@@ -442,7 +464,8 @@ function ec_decode($string, $key = '') {
  * @param unknown $dst
  * @param string $del
  */
-function copy_dir($src, $dst, $del = false) {
+function copy_dir($src, $dst, $del = false)
+{
     if ($del && file_exists($dst)) {
         return del_dir($dst);
     }
@@ -450,10 +473,11 @@ function copy_dir($src, $dst, $del = false) {
         @mkdir($dst, 0777, true);
         $files = scandir($src);
         foreach ($files as $file) {
-            if ($file != "." && $file != "..")
+            if ($file != "." && $file != "..") {
                 copy_dir("$src/$file", "$dst/$file");
+            }
         }
-    } else if (file_exists($src)) {
+    } elseif (file_exists($src)) {
         copy($src, $dst);
     }
 }
@@ -463,7 +487,8 @@ function copy_dir($src, $dst, $del = false) {
  * @param unknown $dir
  * @return boolean
  */
-function del_dir($dir) {
+function del_dir($dir)
+{
     if (!is_dir($dir)) {
         return false;
     }
@@ -484,14 +509,16 @@ function del_dir($dir) {
  * @param unknown $file
  * @return mixed
  */
-function get_extension($file){
+function get_extension($file)
+{
     return end(explode('.', $file));
 }
 
 /**
  * 路由解析
  */
-function urlRoute() {
+function urlRoute()
+{
     Dispatcher::dispatch(); // URL调度
 }
 
@@ -501,7 +528,8 @@ function urlRoute() {
  * @param unknown $params
  * @return Ambigous <string, mixed>|string
  */
-function url($route = 'index/index', $params = array(), $org_mode = '') {
+function url($route = 'index/index', $params = array(), $org_mode = '')
+{
     return U($route, $params, true, false, $org_mode);
 }
 
@@ -513,143 +541,146 @@ function url($route = 'index/index', $params = array(), $org_mode = '') {
  * @param boolean $domain 是否显示域名
  * @return string
  */
-function U($url='',$vars='',$suffix=true,$domain=false,$org_mode='') {
+function U($url='', $vars='', $suffix=true, $domain=false, $org_mode='')
+{
     // 解析URL
     $info   =  parse_url($url);
     $url    =  !empty($info['path'])?$info['path']:ACTION_NAME;
-    if(isset($info['fragment'])) { // 解析锚点
+    if (isset($info['fragment'])) { // 解析锚点
         $anchor =   $info['fragment'];
-        if(false !== strpos($anchor,'?')) { // 解析参数
-            list($anchor,$info['query']) = explode('?',$anchor,2);
+        if (false !== strpos($anchor, '?')) { // 解析参数
+            list($anchor, $info['query']) = explode('?', $anchor, 2);
         }
-        if(false !== strpos($anchor,'@')) { // 解析域名
-            list($anchor,$host)    =   explode('@',$anchor, 2);
+        if (false !== strpos($anchor, '@')) { // 解析域名
+            list($anchor, $host)    =   explode('@', $anchor, 2);
         }
-    }elseif(false !== strpos($url,'@')) { // 解析域名
-        list($url,$host)    =   explode('@',$info['path'], 2);
+    } elseif (false !== strpos($url, '@')) { // 解析域名
+        list($url, $host)    =   explode('@', $info['path'], 2);
     }
     // 解析子域名
-    if(isset($host)) {
-        $domain = $host.(strpos($host,'.')?'':strstr($_SERVER['HTTP_HOST'],'.'));
-    }elseif($domain===true){
+    if (isset($host)) {
+        $domain = $host.(strpos($host, '.')?'':strstr($_SERVER['HTTP_HOST'], '.'));
+    } elseif ($domain===true) {
         $domain = $_SERVER['HTTP_HOST'];
     }
 
     // 解析参数
-    if(is_string($vars)) { // aaa=1&bbb=2 转换成数组
-        parse_str($vars,$vars);
-    }elseif(!is_array($vars)){
+    if (is_string($vars)) { // aaa=1&bbb=2 转换成数组
+        parse_str($vars, $vars);
+    } elseif (!is_array($vars)) {
         $vars = array();
     }
-    if(isset($info['query'])) { // 解析地址里面参数 合并到vars
-        parse_str($info['query'],$params);
-        $vars = array_merge($params,$vars);
+    if (isset($info['query'])) { // 解析地址里面参数 合并到vars
+        parse_str($info['query'], $params);
+        $vars = array_merge($params, $vars);
     }
 
-    if(!isset($vars['u'])){
+    if (!isset($vars['u'])) {
         $vars['u'] = $_SESSION['user_id'];
     }
 
     // URL组装
     $depr       =   C('URL_PATHINFO_DEPR');
     $urlCase    =   C('URL_CASE_INSENSITIVE');
-    if($url) {
-        if(0=== strpos($url,'/')) {// 定义路由
+    if ($url) {
+        if (0=== strpos($url, '/')) {// 定义路由
             $route      =   true;
-            $url        =   substr($url,1);
-            if('/' != $depr) {
-                $url    =   str_replace('/',$depr,$url);
+            $url        =   substr($url, 1);
+            if ('/' != $depr) {
+                $url    =   str_replace('/', $depr, $url);
             }
-        }else{
-            if('/' != $depr) { // 安全替换
-                $url    =   str_replace('/',$depr,$url);
+        } else {
+            if ('/' != $depr) { // 安全替换
+                $url    =   str_replace('/', $depr, $url);
             }
             // 解析模块、控制器和操作
-            $url        =   trim($url,$depr);
-            $path       =   explode($depr,$url);
+            $url        =   trim($url, $depr);
+            $path       =   explode($depr, $url);
             $var        =   array();
             $varModule      =   C('VAR_MODULE');
             $varController  =   C('VAR_CONTROLLER');
             $varAction      =   C('VAR_ACTION');
             $var[$varAction]       =   !empty($path)?array_pop($path):ACTION_NAME;
             $var[$varController]   =   !empty($path)?array_pop($path):CONTROLLER_NAME;
-            if($maps = C('URL_ACTION_MAP')) {
-                if(isset($maps[strtolower($var[$varController])])) {
+            if ($maps = C('URL_ACTION_MAP')) {
+                if (isset($maps[strtolower($var[$varController])])) {
                     $maps = $maps[strtolower($var[$varController])];
-                    if($action = array_search(strtolower($var[$varAction]),$maps)){
+                    if ($action = array_search(strtolower($var[$varAction]), $maps)) {
                         $var[$varAction] = $action;
                     }
                 }
             }
-            if($maps = C('URL_CONTROLLER_MAP')) {
-                if($controller = array_search(strtolower($var[$varController]),$maps)){
+            if ($maps = C('URL_CONTROLLER_MAP')) {
+                if ($controller = array_search(strtolower($var[$varController]), $maps)) {
                     $var[$varController] = $controller;
                 }
             }
-            if($urlCase) {
+            if ($urlCase) {
                 $var[$varController] = parse_name($var[$varController]);
             }
             $module =   '';
-            if(!empty($path)) {
-                $var[$varModule] = implode($depr,$path);
-            }else{
-                if(C('MULTI_MODULE')) {
-                    if(APP_NAME != C('DEFAULT_APP')){
+            if (!empty($path)) {
+                $var[$varModule] = implode($depr, $path);
+            } else {
+                if (C('MULTI_MODULE')) {
+                    if (APP_NAME != C('DEFAULT_APP')) {
                         $var[$varModule] = APP_NAME;
                     }
                 }
             }
-            if($maps = C('URL_MODULE_MAP')) {
-                if($_module = array_search(strtolower($var[$varModule]),$maps)){
+            if ($maps = C('URL_MODULE_MAP')) {
+                if ($_module = array_search(strtolower($var[$varModule]), $maps)) {
                     $var[$varModule] = $_module;
                 }
             }
-            if(isset($var[$varModule])){
+            if (isset($var[$varModule])) {
                 $module =   $var[$varModule];
                 unset($var[$varModule]);
             }
         }
     }
 
-    if(C('URL_MODEL') == 0 || $org_mode == 'org_mode') { // 普通模式URL转换
+    if (C('URL_MODEL') == 0 || $org_mode == 'org_mode') { // 普通模式URL转换
         $url        =   __APP__.'?'.$varModule."={$module}&".http_build_query(array_reverse($var), '', '&');
-        if($urlCase){
+        if ($urlCase) {
             $url    =   strtolower($url);
         }
-        if(!empty($vars)) {
+        if (!empty($vars)) {
             $vars   =   http_build_query($vars, '', '&');
             $url   .=   '&'.$vars;
         }
-    }else{ // PATHINFO模式或者兼容URL模式
-        if(isset($route)) {
-            $url    =   __APP__.'/'.rtrim($url,$depr);
-        }else{
-            $module =   (defined('BIND_MODULE') && BIND_MODULE==$module )? '' : $module;
-            $url    =   __APP__.'/'.($module?$module.$depr:'').implode($depr,array_reverse($var));
+    } else { // PATHINFO模式或者兼容URL模式
+        if (isset($route)) {
+            $url    =   __APP__.'/'.rtrim($url, $depr);
+        } else {
+            $module =   (defined('BIND_MODULE') && BIND_MODULE==$module)? '' : $module;
+            $url    =   __APP__.'/'.($module?$module.$depr:'').implode($depr, array_reverse($var));
         }
-        if($urlCase){
+        if ($urlCase) {
             $url    =   strtolower($url);
         }
-        if(!empty($vars)) { // 添加参数
-            foreach ($vars as $var => $val){
-                if('' !== trim($val))   $url .= $depr . $var . $depr . urlencode($val);
+        if (!empty($vars)) { // 添加参数
+            foreach ($vars as $var => $val) {
+                if ('' !== trim($val)) {
+                    $url .= $depr . $var . $depr . urlencode($val);
+                }
             }
         }
-        if($suffix) {
+        if ($suffix) {
             $suffix   =  $suffix===true ? C('URL_HTML_SUFFIX'):$suffix;
-            if($pos = strpos($suffix, '|')){
+            if ($pos = strpos($suffix, '|')) {
                 $suffix = substr($suffix, 0, $pos);
             }
-            if($suffix && '/' != substr($url,-1)){
-                $url  .=  '.'.ltrim($suffix,'.');
+            if ($suffix && '/' != substr($url, -1)) {
+                $url  .=  '.'.ltrim($suffix, '.');
             }
         }
     }
 
-    if(isset($anchor)){
+    if (isset($anchor)) {
         $url  .= '#'.$anchor;
     }
-    if($domain) {
+    if ($domain) {
         $url   =  (is_ssl()?'https://':'http://').$domain.$url;
     }
     return $url;
@@ -662,9 +693,12 @@ function U($url='',$vars='',$suffix=true,$domain=false,$org_mode='') {
  * @param integer $type 转换类型
  * @return string
  */
-function parse_name($name, $type=0) {
+function parse_name($name, $type=0)
+{
     if ($type) {
-        return ucfirst(preg_replace_callback('/_([a-zA-Z])/', function ($match) {return strtoupper($match[1]);}, $name));
+        return ucfirst(preg_replace_callback('/_([a-zA-Z])/', function ($match) {
+            return strtoupper($match[1]);
+        }, $name));
     } else {
         return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
     }
@@ -674,10 +708,11 @@ function parse_name($name, $type=0) {
  * 判断是否SSL协议
  * @return boolean
  */
-function is_ssl() {
-    if(isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))){
+function is_ssl()
+{
+    if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
         return true;
-    }elseif(isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'] )) {
+    } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
         return true;
     }
     return false;
@@ -690,11 +725,13 @@ function is_ssl() {
  * @param string $msg 重定向前的提示信息
  * @return void
  */
-function redirect($url, $time=0, $msg='') {
+function redirect($url, $time=0, $msg='')
+{
     //多行URL地址支持
     $url = str_replace(array("\n", "\r"), '', $url);
-    if (empty($msg))
+    if (empty($msg)) {
         $msg    = "系统将在{$time}秒之后自动跳转到{$url}！";
+    }
     if (!headers_sent()) {
         // redirect
         if (0 === $time) {
@@ -706,8 +743,9 @@ function redirect($url, $time=0, $msg='') {
         exit();
     } else {
         $str    = "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
-        if ($time != 0)
+        if ($time != 0) {
             $str .= $msg;
+        }
         exit($str);
     }
 }
@@ -717,7 +755,8 @@ function redirect($url, $time=0, $msg='') {
  * @param unknown $className
  * @return boolean
  */
-function autoload($className) {
+function autoload($className)
+{
     static $classes = array();
     $array = array(
         APP_PATH . 'common/models/' . $className . '.class.php',
@@ -748,22 +787,27 @@ function autoload($className) {
  * @var string $path 文件路径
  * @return void
  */
-function load_ext_file($path) {
+function load_ext_file($path)
+{
     // 加载自定义外部文件
-    if($files = C('LOAD_EXT_FILE')) {
-        $files      =  explode(',',$files);
-        foreach ($files as $file){
+    if ($files = C('LOAD_EXT_FILE')) {
+        $files      =  explode(',', $files);
+        foreach ($files as $file) {
             $file   = $path.'helpers/'.$file.'.php';
-            if(is_file($file)) include $file;
+            if (is_file($file)) {
+                include $file;
+            }
         }
     }
     // 加载自定义的动态配置文件
-    if($configs = C('LOAD_EXT_CONFIG')) {
-        if(is_string($configs)) $configs =  explode(',',$configs);
-        foreach ($configs as $key=>$config){
+    if ($configs = C('LOAD_EXT_CONFIG')) {
+        if (is_string($configs)) {
+            $configs =  explode(',', $configs);
+        }
+        foreach ($configs as $key=>$config) {
             $file   = $path.'config/'.$config.'.php';
-            if(is_file($file)) {
-                is_numeric($key)?C(load_config($file)):C($key,load_config($file));
+            if (is_file($file)) {
+                is_numeric($key)?C(load_config($file)):C($key, load_config($file));
             }
         }
     }
@@ -775,9 +819,10 @@ function load_ext_file($path) {
  * @param string $parse 配置解析方法 有些格式需要用户自己解析
  * @return array
  */
-function load_config($file,$parse=''){
-    $ext  = pathinfo($file,PATHINFO_EXTENSION);
-    switch($ext){
+function load_config($file, $parse='')
+{
+    $ext  = pathinfo($file, PATHINFO_EXTENSION);
+    switch ($ext) {
         case 'php':
             return include $file;
         case 'xml':
@@ -785,9 +830,9 @@ function load_config($file,$parse=''){
         case 'json':
             return json_decode(file_get_contents($file), true);
         default:
-            if(function_exists($parse)){
+            if (function_exists($parse)) {
                 return $parse($file);
-            }else{
+            } else {
                 E('Nonsupport:'.$ext);
             }
     }
@@ -799,7 +844,8 @@ function load_config($file,$parse=''){
  * @throws Exception
  * @return Ambigous <unknown>
  */
-function model($model) {
+function model($model)
+{
     static $objArray = array();
     $className = $model . 'Model';
     if (!is_object($objArray[$className])) {
@@ -816,7 +862,8 @@ function model($model) {
  * 取得当前的域名
  * @return string
  */
-function get_domain() {
+function get_domain()
+{
     /* 协议 */
     $protocol = (isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) != 'off') && !empty($_SERVER['HTTPS'])) ? 'https://' : 'http://';
     /* 域名或IP地址 */
@@ -898,7 +945,8 @@ function get_top_domain($url = '')
  * @param mixed $default 默认值
  * @return mixed
  */
-function C($name=null, $value=null, $default=null) {
+function C($name=null, $value=null, $default=null)
+{
     static $_config = array();
     // 无参数时获取所有
     if (empty($name)) {
@@ -908,61 +956,61 @@ function C($name=null, $value=null, $default=null) {
     if (is_string($name)) {
         if (!strpos($name, '.')) {
             $name = strtoupper($name);
-			if (is_null($value)){
-				if(isset($_config[$name])){
-					return $_config[$name];
-				} else if (isset($_config['APP'][$name])) {
-					return $_config['APP'][$name];
-				} else if (isset($_config['DB'][$name])) {
-					return $_config['DB'][$name];
-				} else if (isset($_config['TPL'][$name])) {
-					return $_config['TPL'][$name];
-				} else if (isset($_config['CFG'][$name])) {
-					return $_config['CFG'][$name];
-				} else if (isset($_config['SESSION'][$name])) {
-					return $_config['SESSION'][$name];
-				} else if (isset($_config['COOKIE'][$name])) {
-					return $_config['COOKIE'][$name];
-				}else{
-					return $default;
-				}
-			}
-			if(is_array($value) && isset($_config[$name])){
-				$_config[$name] = array_merge($_config[$name], $value);
-			}else{
-				$_config[$name] = $value;
-			}
-            return null;
-        }
-		// 二维数组设置和获取支持
-        $name = explode('.', $name);
-        $name[0] = strtoupper($name[0]);
-        if (is_null($value)){
-                if(isset($_config[$name[0]][$name[1]])){
-                    return $_config[$name[0]][$name[1]];
-                } else if (isset($_config['APP'][$name[0]][$name[1]])) {
-                    return $_config['APP'][$name[0]][$name[1]];
-                } else if (isset($_config['DB'][$name[0]][$name[1]])) {
-                    return $_config['DB'][$name[0]][$name[1]];
-                } else if (isset($_config['TPL'][$name[0]][$name[1]])) {
-                    return $_config['TPL'][$name[0]][$name[1]];
-                } else if (isset($_config['CFG'][$name[0]][$name[1]])) {
-                    return $_config['CFG'][$name[0]][$name[1]];
-                } else if (isset($_config['SESSION'][$name[0]][$name[1]])) {
-                    return $_config['SESSION'][$name[0]][$name[1]];
-                } else if (isset($_config['COOKIE'][$name[0]][$name[1]])) {
-                    return $_config['COOKIE'][$name[0]][$name[1]];
-                }else{
+            if (is_null($value)) {
+                if (isset($_config[$name])) {
+                    return $_config[$name];
+                } elseif (isset($_config['APP'][$name])) {
+                    return $_config['APP'][$name];
+                } elseif (isset($_config['DB'][$name])) {
+                    return $_config['DB'][$name];
+                } elseif (isset($_config['TPL'][$name])) {
+                    return $_config['TPL'][$name];
+                } elseif (isset($_config['CFG'][$name])) {
+                    return $_config['CFG'][$name];
+                } elseif (isset($_config['SESSION'][$name])) {
+                    return $_config['SESSION'][$name];
+                } elseif (isset($_config['COOKIE'][$name])) {
+                    return $_config['COOKIE'][$name];
+                } else {
                     return $default;
                 }
+            }
+            if (is_array($value) && isset($_config[$name])) {
+                $_config[$name] = array_merge($_config[$name], $value);
+            } else {
+                $_config[$name] = $value;
+            }
+            return null;
         }
-            // return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
-		$_config[$name[0]][$name[1]] = is_array($value) ? array_merge($_config[$name[0]][$name[1]], $value) : $value;
+        // 二维数组设置和获取支持
+        $name = explode('.', $name);
+        $name[0] = strtoupper($name[0]);
+        if (is_null($value)) {
+            if (isset($_config[$name[0]][$name[1]])) {
+                return $_config[$name[0]][$name[1]];
+            } elseif (isset($_config['APP'][$name[0]][$name[1]])) {
+                return $_config['APP'][$name[0]][$name[1]];
+            } elseif (isset($_config['DB'][$name[0]][$name[1]])) {
+                return $_config['DB'][$name[0]][$name[1]];
+            } elseif (isset($_config['TPL'][$name[0]][$name[1]])) {
+                return $_config['TPL'][$name[0]][$name[1]];
+            } elseif (isset($_config['CFG'][$name[0]][$name[1]])) {
+                return $_config['CFG'][$name[0]][$name[1]];
+            } elseif (isset($_config['SESSION'][$name[0]][$name[1]])) {
+                return $_config['SESSION'][$name[0]][$name[1]];
+            } elseif (isset($_config['COOKIE'][$name[0]][$name[1]])) {
+                return $_config['COOKIE'][$name[0]][$name[1]];
+            } else {
+                return $default;
+            }
+        }
+        // return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
+        $_config[$name[0]][$name[1]] = is_array($value) ? array_merge($_config[$name[0]][$name[1]], $value) : $value;
         return null;
     }
     // 批量设置
-    if (is_array($name)){
-        $_config = array_merge($_config, array_change_key_case($name,CASE_UPPER));
+    if (is_array($name)) {
+        $_config = array_merge($_config, array_change_key_case($name, CASE_UPPER));
         return null;
     }
     return null; // 避免非法参数
@@ -974,7 +1022,8 @@ function C($name=null, $value=null, $default=null) {
  * @param string $parse 配置解析方法 有些格式需要用户自己解析
  * @return void
  */
-function load_file($file) {
+function load_file($file)
+{
     if (file_exists($file)) {
         return include $file;
     }
@@ -986,7 +1035,8 @@ function load_file($file) {
  * @param integer $code 异常代码 默认为0
  * @return void
  */
-function E($msg, $code = 0) {
+function E($msg, $code = 0)
+{
     throw new Exception($msg, $code);
     exit();
 }
@@ -1008,25 +1058,29 @@ function E($msg, $code = 0) {
  * @param integer|string $dec 小数位或者m
  * @return mixed
  */
-function G($start, $end = '', $dec = 4) {
+function G($start, $end = '', $dec = 4)
+{
     static $_info = array();
     static $_mem = array();
     if (is_float($end)) { // 记录时间
         $_info[$start] = $end;
     } elseif (!empty($end)) { // 统计时间和内存使用
-        if (!isset($_info[$end]))
-            $_info[$end] = microtime(TRUE);
+        if (!isset($_info[$end])) {
+            $_info[$end] = microtime(true);
+        }
         if (MEMORY_LIMIT_ON && $dec == 'm') {
-            if (!isset($_mem[$end]))
+            if (!isset($_mem[$end])) {
                 $_mem[$end] = memory_get_usage();
+            }
             return number_format(($_mem[$end] - $_mem[$start]) / 1024);
         } else {
             return number_format(($_info[$end] - $_info[$start]), $dec);
         }
     } else { // 记录时间和内存使用
-        $_info[$start] = microtime(TRUE);
-        if (MEMORY_LIMIT_ON)
+        $_info[$start] = microtime(true);
+        if (MEMORY_LIMIT_ON) {
             $_mem[$start] = memory_get_usage();
+        }
     }
 }
 
@@ -1036,11 +1090,13 @@ function G($start, $end = '', $dec = 4) {
  * @param mixed $value 语言值或者变量
  * @return mixed
  */
-function L($name = null, $value = null) {
+function L($name = null, $value = null)
+{
     static $_lang = array();
     // 空参数返回所有定义
-    if (empty($name))
+    if (empty($name)) {
         return $_lang;
+    }
     // 判断语言获取(或设置)
     // 若不存在,直接返回全大写$name
 
@@ -1268,7 +1324,8 @@ function touch_filter(&$value)
  * @param mixed $mix 变量
  * @return string
  */
-function to_guid_string($mix) {
+function to_guid_string($mix)
+{
     if (is_object($mix)) {
         return spl_object_hash($mix);
     } elseif (is_resource($mix)) {
@@ -1289,7 +1346,8 @@ function to_guid_string($mix) {
  * @param string $encoding 数据编码
  * @return string
  */
-function xml_encode($data, $root = 'ectouch', $item = 'item', $attr = '', $id = 'id', $encoding = 'utf-8') {
+function xml_encode($data, $root = 'ectouch', $item = 'item', $attr = '', $id = 'id', $encoding = 'utf-8')
+{
     if (is_array($attr)) {
         $_attr = array();
         foreach ($attr as $key => $value) {
@@ -1313,7 +1371,8 @@ function xml_encode($data, $root = 'ectouch', $item = 'item', $attr = '', $id = 
  * @param string $id 数字索引key转换为的属性名
  * @return string
  */
-function data_to_xml($data, $item = 'item', $id = 'id') {
+function data_to_xml($data, $item = 'item', $id = 'id')
+{
     $xml = $attr = '';
     foreach ($data as $key => $val) {
         if (is_numeric($key)) {
@@ -1333,11 +1392,13 @@ function data_to_xml($data, $item = 'item', $id = 'id') {
  * @param mixed $value session值
  * @return mixed
  */
-function session($name = '', $value = '') {
+function session($name = '', $value = '')
+{
     $prefix = C('SESSION_PREFIX');
     if (is_array($name)) { // session初始化 在session_start 之前调用
-        if (isset($name['prefix']))
+        if (isset($name['prefix'])) {
             C('SESSION_PREFIX', $name['prefix']);
+        }
         if (C('VAR_SESSION_ID') && isset($_REQUEST[C('VAR_SESSION_ID')])) {
             session_id($_REQUEST[C('VAR_SESSION_ID')]);
         } elseif (isset($name['id'])) {
@@ -1346,25 +1407,34 @@ function session($name = '', $value = '') {
         if ('common' != APP_MODE) { // 其它模式可能不支持
             ini_set('session.auto_start', 0);
         }
-        if (isset($name['name']))
+        if (isset($name['name'])) {
             session_name($name['name']);
-        if (isset($name['path']))
+        }
+        if (isset($name['path'])) {
             session_save_path($name['path']);
-        if (isset($name['domain']))
+        }
+        if (isset($name['domain'])) {
             ini_set('session.cookie_domain', $name['domain']);
-        if (isset($name['expire']))
+        }
+        if (isset($name['expire'])) {
             ini_set('session.gc_maxlifetime', $name['expire']);
-        if (isset($name['use_trans_sid']))
+        }
+        if (isset($name['use_trans_sid'])) {
             ini_set('session.use_trans_sid', $name['use_trans_sid'] ? 1 : 0);
-        if (isset($name['use_cookies']))
+        }
+        if (isset($name['use_cookies'])) {
             ini_set('session.use_cookies', $name['use_cookies'] ? 1 : 0);
-        if (isset($name['cache_limiter']))
+        }
+        if (isset($name['cache_limiter'])) {
             session_cache_limiter($name['cache_limiter']);
-        if (isset($name['cache_expire']))
+        }
+        if (isset($name['cache_expire'])) {
             session_cache_expire($name['cache_expire']);
+        }
         // 启动session
-        if (C('SESSION_AUTO_START'))
+        if (C('SESSION_AUTO_START')) {
             session_start();
+        }
     } elseif ('' === $value) {
         if ('' === $name) {
             // 获取全部的session
@@ -1435,7 +1505,8 @@ function session($name = '', $value = '') {
  * @param mixed $options cookie参数
  * @return mixed
  */
-function cookie($name = '', $value = '', $option = null) {
+function cookie($name = '', $value = '', $option = null)
+{
     // 默认设置
     $config = array(
         'prefix' => C('COOKIE_PREFIX'), // cookie 名称前缀
@@ -1460,8 +1531,9 @@ function cookie($name = '', $value = '', $option = null) {
     }
     // 清除指定前缀的所有cookie
     if (is_null($name)) {
-        if (empty($_COOKIE))
-            return; // 要删除的cookie前缀，不指定则删除config设置的指定前缀
+        if (empty($_COOKIE)) {
+            return;
+        } // 要删除的cookie前缀，不指定则删除config设置的指定前缀
         $prefix = empty($value) ? $config['prefix'] : $value;
         if (!empty($prefix)) { // 如果前缀为空字符串将不作处理直接返回
             foreach ($_COOKIE as $key => $val) {
@@ -1509,7 +1581,8 @@ function cookie($name = '', $value = '', $option = null) {
  * 过滤表单中的表达式
  * @param unknown $value
  */
-function filter_exp(&$value) {
+function filter_exp(&$value)
+{
     if (in_array(strtolower($value), array('exp', 'or'))) {
         $value .= ' ';
     }
@@ -1521,7 +1594,8 @@ function filter_exp(&$value) {
  * @param unknown $array
  * @return boolean
  */
-function in_array_case($value, $array) {
+function in_array_case($value, $array)
+{
     return in_array(strtolower($value), array_map('strtolower', $array));
 }
 
@@ -1530,7 +1604,8 @@ function in_array_case($value, $array) {
  * @params  string  $cache_name
  * @return  array   $data
  */
-function read_static_cache($cache_name) {
+function read_static_cache($cache_name)
+{
     if ((DEBUG_MODE & 2) == 2) {
         return false;
     }
@@ -1554,7 +1629,8 @@ function read_static_cache($cache_name) {
  * @params  string  $caches
  * @return
  */
-function write_static_cache($cache_name, $caches) {
+function write_static_cache($cache_name, $caches)
+{
     if ((DEBUG_MODE & 2) == 2) {
         return false;
     }
@@ -1575,7 +1651,8 @@ function write_static_cache($cache_name, $caches) {
  * @param string $act
  * @param string $appid
  */
-function site_info($appid = AUTH_KEY){
+function site_info($appid = AUTH_KEY)
+{
     C('CFG', model('Base')->load_config());
     $shop_country = model('RegionBase')->get_region_name(C('shop_country'));
     $shop_province = model('RegionBase')->get_region_name(C('shop_province'));
@@ -1614,13 +1691,14 @@ function site_info($appid = AUTH_KEY){
  * 写入日志文件
  * @param string $word
  */
-function logResult($word='') {
+function logResult($word='')
+{
     $word = is_array($word) ? var_export($word, true) : $word;
-	$fp = fopen(ROOT_PATH ."data/log.txt","a");
-	flock($fp, LOCK_EX) ;
-	fwrite($fp,"执行日期：". date("Y-m-d H:i:s",time()) ."\n".$word."\n");
-	flock($fp, LOCK_UN);
-	fclose($fp);
+    $fp = fopen(ROOT_PATH ."data/log.txt", "a");
+    flock($fp, LOCK_EX) ;
+    fwrite($fp, "执行日期：". date("Y-m-d H:i:s", time()) ."\n".$word."\n");
+    flock($fp, LOCK_UN);
+    fclose($fp);
 }
 
 /**
@@ -1660,14 +1738,14 @@ function fatalError()
 {
     if ($e = error_get_last()) {
         switch ($e['type']) {
-        	case E_ERROR:
-        	case E_PARSE:
-        	case E_CORE_ERROR:
-        	case E_COMPILE_ERROR:
-        	case E_USER_ERROR:
-        	    ob_end_clean();
-        	    halt($e);
-        	    break;
+            case E_ERROR:
+            case E_PARSE:
+            case E_CORE_ERROR:
+            case E_COMPILE_ERROR:
+            case E_USER_ERROR:
+                ob_end_clean();
+                halt($e);
+                break;
         }
     }
 }
@@ -1698,10 +1776,9 @@ function halt($error)
  * 创建类的别名
  */
 if (!function_exists('class_alias')) {
-
-    function class_alias($original, $alias) {
+    function class_alias($original, $alias)
+    {
         $newclass = create_function('', 'class ' . $alias . ' extends ' . $original . ' {}');
         $newclass();
     }
-
 }

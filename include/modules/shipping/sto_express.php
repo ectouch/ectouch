@@ -5,16 +5,14 @@
  */
 
 $shipping_lang = BASE_PATH.'languages/' .C('lang'). '/shipping/sto_express.php';
-if (file_exists($shipping_lang))
-{
+if (file_exists($shipping_lang)) {
     global $_LANG;
     include_once($shipping_lang);
 }
 
 
 /* 模块的基本信息 */
-if (isset($set_modules) && $set_modules == TRUE)
-{
+if (isset($set_modules) && $set_modules == true) {
     include_once(BASE_PATH . 'languages/' . C('lang') . '/admin/shipping.php');
 
     $i = (isset($modules)) ? count($modules) : 0;
@@ -49,7 +47,7 @@ if (isset($set_modules) && $set_modules == TRUE)
     /* 打印单背景 */
     $modules[$i]['print_bg'] = '/images/receipt/dly_sto_express.jpg';
 
-   /* 打印快递单标签位置信息 */
+    /* 打印快递单标签位置信息 */
     $modules[$i]['config_lable'] = 't_shop_address,' . $_LANG['lable_box']['shop_address'] . ',235,48,131,152,b_shop_address||,||t_shop_name,' . $_LANG['lable_box']['shop_name'] . ',237,26,131,200,b_shop_name||,||t_shop_tel,' . $_LANG['lable_box']['shop_tel'] . ',96,36,144,257,b_shop_tel||,||t_customer_post,' . $_LANG['lable_box']['customer_post'] . ',86,23,578,268,b_customer_post||,||t_customer_address,' . $_LANG['lable_box']['customer_address'] . ',232,49,434,149,b_customer_address||,||t_customer_name,' . $_LANG['lable_box']['customer_name'] . ',151,27,449,231,b_customer_name||,||t_customer_tel,' . $_LANG['lable_box']['customer_tel'] . ',90,32,452,261,b_customer_tel||,||';
 
     return;
@@ -74,7 +72,7 @@ class sto_express
     /**
      * 配置信息参数
      */
-    var $configure;
+    public $configure;
 
     /*------------------------------------------------------ */
     //-- PUBLIC METHODs
@@ -87,10 +85,9 @@ class sto_express
      *
      * @return null
      */
-    function __construct($cfg=array())
+    public function __construct($cfg=array())
     {
-        foreach ($cfg AS $key=>$val)
-        {
+        foreach ($cfg as $key=>$val) {
             $this->configure[$val['name']] = $val['value'];
         }
     }
@@ -103,25 +100,18 @@ class sto_express
      * @param   float   $goods_amount   商品件数
      * @return  decimal
      */
-    function calculate($goods_weight, $goods_amount, $goods_number)
+    public function calculate($goods_weight, $goods_amount, $goods_number)
     {
-        if ($this->configure['free_money'] > 0 && $goods_amount >= $this->configure['free_money'])
-        {
+        if ($this->configure['free_money'] > 0 && $goods_amount >= $this->configure['free_money']) {
             return 0;
-        }
-        else
-        {
+        } else {
             @$fee = $this->configure['base_fee'];
             $this->configure['fee_compute_mode'] = !empty($this->configure['fee_compute_mode']) ? $this->configure['fee_compute_mode'] : 'by_weight';
 
-             if ($this->configure['fee_compute_mode'] == 'by_number')
-            {
+            if ($this->configure['fee_compute_mode'] == 'by_number') {
                 $fee = $goods_number * $this->configure['item_fee'];
-            }
-            else
-            {
-                if ($goods_weight > 1)
-                {
+            } else {
+                if ($goods_weight > 1) {
                     $fee += (ceil(($goods_weight - 1))) * $this->configure['step_fee'];
                 }
             }
@@ -137,7 +127,7 @@ class sto_express
      * @param   string  $invoice_sn     发货单号
      * @return  string  查询窗口的链接地址
      */
-    function query($invoice_sn)
+    public function query($invoice_sn)
     {
         // $str = '<form style="margin:0px" methods="post" '.
         //     'action="http://115.238.100.211:8081/result.aspx" name="queryForm_' .$invoice_sn. '" target="_blank">'.
@@ -148,5 +138,3 @@ class sto_express
         return $invoice_sn;
     }
 }
-
-?>

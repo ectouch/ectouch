@@ -42,5 +42,3 @@ $_LANG['js_languages']['invalid_endtime'] = '输入的结束时间格式不对�
 $_LANG['js_languages']['invalid_gt'] = '输入的结束时间应大于起始日期';
 $_LANG['js_languages']['search_is_null'] = '没有搜索到任何商品，请重新搜索';
 $_LANG['js_languages']['invalid_package_price'] = '礼包价格为空或不是数字';
-
-?>

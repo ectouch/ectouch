@@ -6,22 +6,23 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP SESSION
  */
-class EcsSession {
+class EcsSession
+{
+    public $db = null;
+    public $session_table = '';
+    public $max_life_time = 1800;
+    public $session_name = '';
+    public $session_id = '';
+    public $session_expiry = '';
+    public $session_md5 = '';
+    public $session_cookie_path = '/';
+    public $session_cookie_domain = '';
+    public $session_cookie_secure = false;
+    public $_ip = '';
+    public $_time = 0;
 
-    var $db = NULL;
-    var $session_table = '';
-    var $max_life_time = 1800;
-    var $session_name = '';
-    var $session_id = '';
-    var $session_expiry = '';
-    var $session_md5 = '';
-    var $session_cookie_path = '/';
-    var $session_cookie_domain = '';
-    var $session_cookie_secure = false;
-    var $_ip = '';
-    var $_time = 0;
-
-    function __construct(&$db, $session_table, $session_data_table, $session_name = 'ECS_ID', $session_id = '') {
+    public function __construct(&$db, $session_table, $session_data_table, $session_name = 'ECS_ID', $session_id = '')
+    {
         $GLOBALS['_SESSION'] = array();
 
         if (!empty($GLOBALS['cookie_path'])) {
@@ -51,16 +52,16 @@ class EcsSession {
 
         // 防御cc或DDOS lite
         $enable_firewall = false;
-        $cc_nowtime = time(); 
+        $cc_nowtime = time();
         $black_path = ROOT_PATH . 'data/caches/black_ip/';
-        if($enable_firewall){
-            if(!is_dir($black_path)){
+        if ($enable_firewall) {
+            if (!is_dir($black_path)) {
                 mkdir($black_path, 755);
             }
             // 如果是黑名单IP，禁止访问
-            if(file_exists($black_path . $this->_ip)){
+            if (file_exists($black_path . $this->_ip)) {
                 $cc_lasttime = file_get_contents($black_path . $this->_ip);
-                if(($cc_nowtime - $cc_lasttime) < 10){
+                if (($cc_nowtime - $cc_lasttime) < 10) {
                     header('HTTP/1.1 404 Not Found');
                     header("status: 404 Not Found");
                     exit();
@@ -94,12 +95,12 @@ class EcsSession {
         }
 
         // 防御cc或DDOS lite
-        if($enable_firewall){
-            if (isset($_SESSION['cc_lasttime'])){
+        if ($enable_firewall) {
+            if (isset($_SESSION['cc_lasttime'])) {
                 $cc_lasttime = $_SESSION['cc_lasttime'];
                 $cc_times = $_SESSION['cc_times'] + 1;
                 $_SESSION['cc_times'] = $cc_times;
-            }else{
+            } else {
                 $cc_lasttime = $cc_nowtime;
                 $cc_times = 1;
                 $_SESSION['cc_times'] = $cc_times;
@@ -108,8 +109,8 @@ class EcsSession {
             // 当前ip的用户数量
             $cc_users = $this->db->getOne('SELECT count(*) FROM ' . $this->session_table . " WHERE ip = '". $this->_ip ."'");
             // handler
-            if (($cc_nowtime - $cc_lasttime) < 5 || $cc_users >= 3){
-                if ($cc_times >= 10 || $cc_users >= 3){
+            if (($cc_nowtime - $cc_lasttime) < 5 || $cc_users >= 3) {
+                if ($cc_times >= 10 || $cc_users >= 3) {
                     // 回收游客数据
                     $this->db->query('DELETE FROM ' . $this->session_table . " WHERE userid = 0 AND ip = '" . $this->_ip . "'");
                     // 记录黑名单IP
@@ -118,7 +119,7 @@ class EcsSession {
                     header("status: 404 Not Found");
                     exit();
                 }
-            }else{
+            } else {
                 $cc_times = 0;
                 $_SESSION['cc_lasttime'] = $cc_nowtime;
                 $_SESSION['cc_times'] = $cc_times;
@@ -128,13 +129,15 @@ class EcsSession {
         register_shutdown_function(array(&$this, 'close_session'));
     }
 
-    function gen_session_id() {
+    public function gen_session_id()
+    {
         $this->session_id = md5(uniqid(mt_rand(), true));
 
         return $this->insert_session();
     }
 
-    function gen_session_key($session_id) {
+    public function gen_session_key($session_id)
+    {
         static $ip = '';
 
         if ($ip == '') {
@@ -144,11 +147,13 @@ class EcsSession {
         return sprintf('%08x', crc32(ROOT_PATH . $ip . $session_id));
     }
 
-    function insert_session() {
+    public function insert_session()
+    {
         return $this->db->query('INSERT INTO ' . $this->session_table . " (sesskey, expiry, ip, data) VALUES ('" . $this->session_id . "', '" . $this->_time . "', '" . $this->_ip . "', 'a:0:{}')");
     }
 
-    function load_session() {
+    public function load_session()
+    {
         $session = $this->db->getRow('SELECT userid, adminid, user_name, user_rank, discount, email, data, expiry FROM ' . $this->session_table . " WHERE sesskey = '" . $this->session_id . "'");
         if (empty($session)) {
             $this->insert_session();
@@ -188,7 +193,8 @@ class EcsSession {
         }
     }
 
-    function update_session() {
+    public function update_session()
+    {
         $adminid = !empty($GLOBALS['_SESSION']['admin_id']) ? intval($GLOBALS['_SESSION']['admin_id']) : 0;
         $userid = !empty($GLOBALS['_SESSION']['user_id']) ? intval($GLOBALS['_SESSION']['user_id']) : 0;
         $user_name = !empty($GLOBALS['_SESSION']['user_name']) ? trim($GLOBALS['_SESSION']['user_name']) : 0;
@@ -220,7 +226,8 @@ class EcsSession {
         return $this->db->query('UPDATE ' . $this->session_table . " SET expiry = '" . $this->_time . "', ip = '" . $this->_ip . "', userid = '" . $userid . "', adminid = '" . $adminid . "', user_name='" . $user_name . "', user_rank='" . $user_rank . "', discount='" . $discount . "', email='" . $email . "', data = '$data' WHERE sesskey = '" . $this->session_id . "' LIMIT 1");
     }
 
-    function close_session() {
+    public function close_session()
+    {
         $this->update_session();
 
         /* 闅忔満瀵 sessions_data 鐨勫簱杩涜?鍒犻櫎鎿嶄綔 */
@@ -235,7 +242,8 @@ class EcsSession {
         return true;
     }
 
-    function delete_spec_admin_session($adminid) {
+    public function delete_spec_admin_session($adminid)
+    {
         if (!empty($GLOBALS['_SESSION']['admin_id']) && $adminid) {
             return $this->db->query('DELETE FROM ' . $this->session_table . " WHERE adminid = '$adminid'");
         } else {
@@ -243,7 +251,8 @@ class EcsSession {
         }
     }
 
-    function destroy_session() {
+    public function destroy_session()
+    {
         $GLOBALS['_SESSION'] = array();
 
         setcookie($this->session_name, $this->session_id, 1, $this->session_cookie_path, $this->session_cookie_domain, $this->session_cookie_secure);
@@ -259,14 +268,13 @@ class EcsSession {
         return $this->db->query('DELETE FROM ' . $this->session_table . " WHERE sesskey = '" . $this->session_id . "' LIMIT 1");
     }
 
-    function get_session_id() {
+    public function get_session_id()
+    {
         return $this->session_id;
     }
 
-    function get_users_count() {
+    public function get_users_count()
+    {
         return $this->db->getOne('SELECT count(*) FROM ' . $this->session_table);
     }
-
 }
-
-?>

@@ -15,16 +15,17 @@ defined('IN_ECTOUCH') or die('Deny Access');
  *  define('ERR_INVALID_IMAGE_TYPE',        7);
  *  define('ROOT_PATH',                     '网站根目录')
  */
-class EcsImage {
+class EcsImage
+{
+    public $error_no = 0;
+    public $error_msg = '';
+    public $images_dir = IMAGE_DIR;
+    public $data_dir = DATA_DIR;
+    public $bgcolor = '';
+    public $type_maping = array(1 => 'image/gif', 2 => 'image/jpeg', 3 => 'image/png');
 
-    var $error_no = 0;
-    var $error_msg = '';
-    var $images_dir = IMAGE_DIR;
-    var $data_dir = DATA_DIR;
-    var $bgcolor = '';
-    var $type_maping = array(1 => 'image/gif', 2 => 'image/jpeg', 3 => 'image/png');
-
-    function __construct($bgcolor = '') {
+    public function __construct($bgcolor = '')
+    {
         if ($bgcolor) {
             $this->bgcolor = $bgcolor;
         } else {
@@ -41,7 +42,8 @@ class EcsImage {
      * @param       array       img_name     上传图片名称，为空则随机生成
      * @return      mix         如果成功则返回文件名，否则返回false
      */
-    function upload_image($upload, $dir = '', $img_name = '') {
+    public function upload_image($upload, $dir = '', $img_name = '')
+    {
         /* 没有指定目录默认为根目录images */
         if (empty($dir)) {
             /* 创建当月目录 */
@@ -105,7 +107,8 @@ class EcsImage {
      * @param   strint      $path         指定生成图片的目录名
      * @return  mix         如果成功返回缩略图的路径，失败则返回false
      */
-    function make_thumb($img, $thumb_width = 0, $thumb_height = 0, $path = '', $bgcolor = '') {
+    public function make_thumb($img, $thumb_width = 0, $thumb_height = 0, $path = '', $bgcolor = '')
+    {
         $gd = $this->gd_version(); //获取 GD 版本。0 表示没有 GD 库，1 表示 GD 1.x，2 表示 GD 2.x
         if ($gd == 0) {
             $this->error_msg = $GLOBALS['_LANG']['missing_gd'];
@@ -242,7 +245,8 @@ class EcsImage {
      * @param       int         $watermark_place    水印位置代码
      * @return      mix         如果成功则返回文件路径，否则返回false
      */
-    function add_watermark($filename, $target_file = '', $watermark = '', $watermark_place = '', $watermark_alpha = 0.65, $position = array()) {
+    public function add_watermark($filename, $target_file = '', $watermark = '', $watermark_place = '', $watermark_alpha = 0.65, $position = array())
+    {
         // 是否安装了GD
         $gd = $this->gd_version();
         if ($gd == 0) {
@@ -314,7 +318,7 @@ class EcsImage {
                 $y = $source_info[1] / 2 - $watermark_info[1] / 2;
         }
 
-        if(!empty($position)){
+        if (!empty($position)) {
             $x = $position[0];
             $y = $position[1];
         }
@@ -373,7 +377,8 @@ class EcsImage {
      *
      * @return boolen
      */
-    function validate_image($path) {
+    public function validate_image($path)
+    {
         if (empty($path)) {
             $this->error_msg = $GLOBALS['_LANG']['empty_watermark'];
             $this->error_no = ERR_INVALID_PARAM;
@@ -412,7 +417,8 @@ class EcsImage {
      *
      * @return  string   错误信息
      */
-    function error_msg() {
+    public function error_msg()
+    {
         return $this->error_msg;
     }
 
@@ -425,7 +431,8 @@ class EcsImage {
      * @param   string  $img_type   图片类型
      * @return  bool
      */
-    function check_img_type($img_type) {
+    public function check_img_type($img_type)
+    {
         return $img_type == 'image/pjpeg' ||
                 $img_type == 'image/x-png' ||
                 $img_type == 'image/png' ||
@@ -440,7 +447,8 @@ class EcsImage {
      * @param   string  $img_type   图片类型
      * @return  void
      */
-    function check_img_function($img_type) {
+    public function check_img_function($img_type)
+    {
         switch ($img_type) {
             case 'image/gif':
             case 1:
@@ -483,7 +491,8 @@ class EcsImage {
      * @author: weber liu
      * @return string
      */
-    function random_filename() {
+    public function random_filename()
+    {
         $str = '';
         for ($i = 0; $i < 9; $i++) {
             $str .= mt_rand(0, 9);
@@ -500,7 +509,8 @@ class EcsImage {
      *
      * @return  string      文件名
      */
-    function unique_name($dir) {
+    public function unique_name($dir)
+    {
         $filename = '';
         while (empty($filename)) {
             $filename = cls_image::random_filename();
@@ -520,7 +530,8 @@ class EcsImage {
      *
      * @return  string      文件后缀名
      */
-    function get_filetype($path) {
+    public function get_filetype($path)
+    {
         $pos = strrpos($path, '.');
         if ($pos !== false) {
             return substr($path, $pos);
@@ -537,7 +548,8 @@ class EcsImage {
      * @param   string      $mime_type  图片文件的文件类型
      * @return  resource    如果成功则返回图像操作标志符，反之则返回错误代码
      */
-    function img_resource($img_file, $mime_type) {
+    public function img_resource($img_file, $mime_type)
+    {
         switch ($mime_type) {
             case 1:
             case 'image/gif':
@@ -569,7 +581,8 @@ class EcsImage {
      * @access      public
      * @return      int         可能的值为0，1，2
      */
-    static function gd_version() {
+    public static function gd_version()
+    {
         static $version = -1;
 
         if ($version >= 0) {
@@ -620,7 +633,8 @@ class EcsImage {
      *
      * @return void
      */
-    function move_file($upload, $target) {
+    public function move_file($upload, $target)
+    {
         if (isset($upload['error']) && $upload['error'] > 0) {
             return false;
         }
@@ -631,7 +645,4 @@ class EcsImage {
 
         return true;
     }
-
 }
-
-?>

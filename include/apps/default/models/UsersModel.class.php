@@ -16,8 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class UsersModel extends BaseModel {
-
+class UsersModel extends BaseModel
+{
     protected $table = 'users';
 
     /**
@@ -26,7 +26,8 @@ class UsersModel extends BaseModel {
      * @access  public
      * @return  void
      */
-    function update_user_info() {
+    public function update_user_info()
+    {
         if (!$_SESSION['user_id']) {
             return false;
         }
@@ -102,7 +103,8 @@ class UsersModel extends BaseModel {
      *
      * @return  bool         $bool
      */
-    function register($username, $password, $email, $other = array()) {
+    public function register($username, $password, $email, $other = array())
+    {
         /* 检查注册是否关闭 */
         $shop_reg_closed = C('shop_reg_closed');
         if (!empty($shop_reg_closed)) {
@@ -195,7 +197,7 @@ class UsersModel extends BaseModel {
                         ->where($where)
                         ->select();
             //用户名是手机号格式时且并不存在此手机号则把用户插入到手机号字段中
-            if(($mobile == 1) && empty($res)){
+            if (($mobile == 1) && empty($res)) {
                 $sql = 'UPDATE ' . $this->pre . 'users SET mobile_phone = "' . $username . '" WHERE user_id = "' . $_SESSION['user_id'] . '"';
                 $this->query($sql);
             }
@@ -223,7 +225,6 @@ class UsersModel extends BaseModel {
                     //设置推荐人
                     $sql = 'UPDATE ' . $this->pre . 'users SET parent_id = ' . $up_uid . ' WHERE user_id = ' . $_SESSION['user_id'];
                     $this->query($sql);
-                    
                 }
             }
 
@@ -242,7 +243,8 @@ class UsersModel extends BaseModel {
      *
      * @return boolen
      */
-    function send_regiter_hash($user_id) {
+    public function send_regiter_hash($user_id)
+    {
         /* 设置验证邮件模板所需要的内容信息 */
         $template = model('Base')->get_mail_template('register_validate');
         $hash = model('Users')->register_hash('encode', $user_id);
@@ -274,7 +276,8 @@ class UsersModel extends BaseModel {
      *
      * @return void
      */
-    function register_hash($operation, $key) {
+    public function register_hash($operation, $key)
+    {
         if ($operation == 'encode') {
             $user_id = intval($key);
             $sql = "SELECT reg_time " .
@@ -318,7 +321,8 @@ class UsersModel extends BaseModel {
      * @param   string      $adminname 超级管理员用户名
      * @return  boolean
      */
-    function admin_registered($adminname) {
+    public function admin_registered($adminname)
+    {
         $sql = "SELECT COUNT(*) as count FROM " . $this->pre .
                 "admin_user WHERE user_name = '$adminname'";
         $res = $this->row($sql);
@@ -333,7 +337,8 @@ class UsersModel extends BaseModel {
      *
      * @return  boolen      $bool
      */
-    function edit_profile($profile) {
+    public function edit_profile($profile)
+    {
         if (empty($profile['user_id'])) {
             ECTouch::err()->add(L('not_login'));
             return false;
@@ -396,7 +401,8 @@ class UsersModel extends BaseModel {
      *
      * @return void
      */
-    function get_profile($user_id) {
+    public function get_profile($user_id)
+    {
 
         /* 会员帐号信息 */
         $info = array();
@@ -472,7 +478,8 @@ class UsersModel extends BaseModel {
      * @param   int     $id         收货地址id
      * @return  array
      */
-    function get_consignee_list($user_id, $id = 0, $num = 10, $start = 0) {
+    public function get_consignee_list($user_id, $id = 0, $num = 10, $start = 0)
+    {
         if ($id) {
             $where['user_id'] = $user_id;
             $where['address_id'] = $id;
@@ -494,7 +501,8 @@ class UsersModel extends BaseModel {
      *
      * @return  boolen      $result
      */
-    function add_bonus($user_id, $bouns_sn) {
+    public function add_bonus($user_id, $bouns_sn)
+    {
         if (empty($user_id)) {
             ECTouch::err()->add(L('not_login'));
 
@@ -555,16 +563,17 @@ class UsersModel extends BaseModel {
      * @param   int         $start          列表起始位置
      * @return  array       $order_list     订单列表
      */
-    function get_user_orders($user_id, $pay = 1, $num = 10, $start = 0) {
+    public function get_user_orders($user_id, $pay = 1, $num = 10, $start = 0)
+    {
         /* 取得订单列表 */
         $arr = array();
 
         if ($pay == 1) {
             $pay = '';
-        } elseif($pay == 0) {
+        } elseif ($pay == 0) {
             // 未付款 但不包含已取消、无效、退货订单的订单
             $pay = 'and pay_status = ' . PS_UNPAYED . ' and order_status not in(' . OS_CANCELED . ','. OS_INVALID .','. OS_RETURNED .')';
-        }else{
+        } else {
             $pay = 'and pay_status = ' . PS_UNPAYED ;
         }
 
@@ -576,7 +585,7 @@ class UsersModel extends BaseModel {
         foreach ($res as $key => $value) {
             if ($value['order_status'] == OS_UNCONFIRMED) {
                 $value['handler'] = "<a href=\"" . url('user/cancel_order', array('order_id' => $value['order_id'])) . "\" onclick=\"if (!confirm('" . L('confirm_cancel') . "')) return false;\">" . L('cancel') . "</a>";
-            } else if ($value['order_status'] == OS_SPLITED) {
+            } elseif ($value['order_status'] == OS_SPLITED) {
                 /* 对配送状态的处理 */
                 if ($value['shipping_status'] == SS_SHIPPED) {
                     @$value['handler'] = "<a href=\"" . url('user/affirm_received', array('order_id' => $value['order_id'])) . "\" onclick=\"if (!confirm('" . L('confirm_received') . "')) return false;\">" . L('received') . "</a>";
@@ -609,12 +618,11 @@ class UsersModel extends BaseModel {
                 'goods_count' => model('Users')->get_order_goods_count($value['order_id']),
                 'handler' => $value['handler']
             );
-
         }
         return $arr;
     }
 
-	/**
+    /**
      *  获取用户未收货订单列表
      *
      * @access  public
@@ -624,16 +632,14 @@ class UsersModel extends BaseModel {
      * @param   int         $start          列表起始位置
      * @return  array       $order_list     订单列表
      */
-    function not_shouhuo_orders($user_id, $pay = 1, $num = 10, $start = 0) {
+    public function not_shouhuo_orders($user_id, $pay = 1, $num = 10, $start = 0)
+    {
         /* 取得订单列表 */
         $arr = array();
 
         if ($pay == 1) {
             $pay = 'and pay_status = ' . PS_PAYED . ' and shipping_status not in(' . SS_RECEIVED .')';
-
-
         } else {
-
             $pay = '';
         }
 
@@ -650,7 +656,7 @@ class UsersModel extends BaseModel {
         foreach ($res as $key => $value) {
             if ($value['order_status'] == OS_UNCONFIRMED) {
                 $value['handler'] = "<a href=\"" . url('user/cancel_order', array('order_id' => $value['order_id'])) . "\" onclick=\"if (!confirm('" . L('confirm_cancel') . "')) return false;\">" . L('cancel') . "</a>";
-            } else if ($value['order_status'] == OS_SPLITED) {
+            } elseif ($value['order_status'] == OS_SPLITED) {
                 /* 对配送状态的处理 */
                 if ($value['shipping_status'] == SS_SHIPPED) {
                     @$value['handler'] = "<a href=\"" . url('user/affirm_received', array('order_id' => $value['order_id'])) . "\" onclick=\"if (!confirm('" . L('confirm_received') . "')) return false;\">" . L('received') . "</a>";
@@ -694,7 +700,8 @@ class UsersModel extends BaseModel {
      *
      * @return void
      */
-    function cancel_order($order_id, $user_id = 0) {
+    public function cancel_order($order_id, $user_id = 0)
+    {
         /* 查询订单信息，检查状态 */
         $sql = "SELECT user_id, order_id, order_sn , surplus , integral , bonus_id, order_status, shipping_status, pay_status FROM " . $this->pre . "order_info WHERE order_id = '$order_id'";
         $order = $this->row($sql);
@@ -787,7 +794,8 @@ class UsersModel extends BaseModel {
      *
      * @return  bool        $bool
      */
-    function affirm_received($order_id, $user_id = 0) {
+    public function affirm_received($order_id, $user_id = 0)
+    {
         /* 查询订单信息，检查状态 */
         $sql = "SELECT user_id, order_sn , order_status, shipping_status, pay_status FROM " . $this->pre . "order_info WHERE order_id = '$order_id'";
 
@@ -830,7 +838,8 @@ class UsersModel extends BaseModel {
      * @param   boolean $default        是否将该收货人信息设置为默认收货人信息
      * @return  boolean
      */
-    function save_consignee($consignee, $default = false) {
+    public function save_consignee($consignee, $default = false)
+    {
         if ($consignee['address_id'] > 0) {
             /* 修改地址 */
             $this->table = 'user_address';
@@ -863,7 +872,8 @@ class UsersModel extends BaseModel {
      * @param   integer $id
      * @return  boolean
      */
-    function drop_consignee($id) {
+    public function drop_consignee($id)
+    {
         $sql = "SELECT user_id FROM " . $this->pre . "user_address WHERE address_id = '$id'";
         $res = $this->row($sql);
         $uid = $res['user_id'];
@@ -884,7 +894,8 @@ class UsersModel extends BaseModel {
      * @param   array       $address
      * @return  bool
      */
-    function update_address($address) {
+    public function update_address($address)
+    {
         $address_id = intval($address['address_id']);
         unset($address['address_id']);
         $this->table = 'user_address';
@@ -918,8 +929,8 @@ class UsersModel extends BaseModel {
      *
      * @return   arr        $order          订单所有信息的数组
      */
-    function get_order_detail($order_id, $user_id = 0) {
-
+    public function get_order_detail($order_id, $user_id = 0)
+    {
         $order_id = intval($order_id);
         if ($order_id <= 0) {
             ECTouch::err()->add(L('invalid_order_id'));
@@ -968,12 +979,12 @@ class UsersModel extends BaseModel {
             $payment_info = array();
             $payment_info = Model('Order')->payment_info($order['pay_id']);
             // 只保留显示手机版支付方式
-            if(!file_exists(ROOT_PATH . 'plugins/payment/'.$payment_info['pay_code'].'.php')){
+            if (!file_exists(ROOT_PATH . 'plugins/payment/'.$payment_info['pay_code'].'.php')) {
                 $payment_info = false;
             }
 
             //无效支付方式
-            if ($payment_info === false || substr($payment_info['pay_code'], 0 , 4) == 'pay_') {
+            if ($payment_info === false || substr($payment_info['pay_code'], 0, 4) == 'pay_') {
                 $order['pay_online'] = '';
             } else {
                 //取得支付信息，生成支付代码
@@ -1007,7 +1018,7 @@ class UsersModel extends BaseModel {
             /* 取得已发货的虚拟商品信息 */
             $virtual_goods = model('OrderBase')->get_virtual_goods($order_id, true);
             $virtual_card = array();
-            foreach ($virtual_goods AS $code => $goods_list) {
+            foreach ($virtual_goods as $code => $goods_list) {
                 /* 只处理虚拟卡 */
                 if ($code == 'virtual_card') {
                     foreach ($goods_list as $goods) {
@@ -1023,7 +1034,7 @@ class UsersModel extends BaseModel {
                                 "WHERE pg.goods_id = g.goods_id AND pg.package_id = '" . $goods['goods_id'] . "' AND extension_code = 'virtual_card'";
                         $vcard_arr = $this->query($sql);
 
-                        foreach ($vcard_arr AS $val) {
+                        foreach ($vcard_arr as $val) {
                             if ($info = model('OrderBase')->virtual_card_result($order['order_sn'], $val)) {
                                 $virtual_card[] = array('goods_id' => $goods['goods_id'], 'goods_name' => $goods['goods_name'], 'info' => $info);
                             }
@@ -1063,7 +1074,8 @@ class UsersModel extends BaseModel {
      *
      * @return  array       $merge          可合并订单数组
      */
-    function get_user_merge($user_id) {
+    public function get_user_merge($user_id)
+    {
         $sql = "SELECT order_sn FROM " . $this->pre .
                 "order_info WHERE user_id  = '$user_id' " . order_query_sql('unprocessed') .
                 "AND extension_code = '' " .
@@ -1071,7 +1083,6 @@ class UsersModel extends BaseModel {
         $list = $this->query($sql);
         $merge = array();
         foreach ($list as $key => $value) {
-
             $merge[$value['order_sn']] = $value['order_sn'];
         }
         return $merge;
@@ -1086,7 +1097,8 @@ class UsersModel extends BaseModel {
      *
      * @return  boolen      $bool
      */
-    function merge_user_order($from_order, $to_order, $user_id = 0) {
+    public function merge_user_order($from_order, $to_order, $user_id = 0)
+    {
         if ($user_id > 0) {
             /* 检查订单是否属于指定用户 */
             if (strlen($to_order) > 0) {
@@ -1120,7 +1132,8 @@ class UsersModel extends BaseModel {
      *
      * @return  mix         $message        成功返回true, 错误返回出错信息
      */
-    function return_to_cart($order_id) {
+    public function return_to_cart($order_id)
+    {
         /* 初始化基本件数量 goods_id => goods_number */
         $basic_number = array();
 
@@ -1271,7 +1284,8 @@ class UsersModel extends BaseModel {
      *
      * @return  boolen  $bool
      */
-    function save_order_address($address, $user_id) {
+    public function save_order_address($address, $user_id)
+    {
         ECTouch::err()->clean();
         /* 数据验证 */
         empty($address['consignee']) and ECTouch::err()->add(L('consigness_empty'));
@@ -1320,7 +1334,8 @@ class UsersModel extends BaseModel {
      *
      * @return  array       $arr             红保列表
      */
-    function get_user_bouns_list($user_id, $num = 10, $start = 0) {
+    public function get_user_bouns_list($user_id, $num = 10, $start = 0)
+    {
         $sql = "SELECT u.bonus_sn, u.order_id, b.type_name, b.type_money, b.min_goods_amount, b.use_start_date, b.use_end_date " .
                 " FROM " . $this->pre . "user_bonus AS u ," .
                 $this->pre . "bonus_type AS b" .
@@ -1336,7 +1351,7 @@ class UsersModel extends BaseModel {
                 /* 没有被使用 */
                 if ($row['use_start_date'] > $cur_date) {
                     $row['status'] = L('not_start');
-                } else if ($row['use_end_date'] < $cur_date) {
+                } elseif ($row['use_end_date'] < $cur_date) {
                     $row['status'] = L('overdue');
                 } else {
                     $row['status'] = L('not_use');
@@ -1363,7 +1378,8 @@ class UsersModel extends BaseModel {
      *
      * @return void
      */
-    function add_feed($id, $feed_type) {
+    public function add_feed($id, $feed_type)
+    {
         $feed = array();
         if ($feed_type == BUY_GOODS) {
             if (empty($id)) {
@@ -1397,7 +1413,8 @@ class UsersModel extends BaseModel {
      * 指定默认配送地址
      *
      */
-    function save_consignee_default($address_id) {
+    public function save_consignee_default($address_id)
+    {
         /* 保存为用户的默认收货地址 */
         $sql = "UPDATE " . $this->pre .
                 "users SET address_id = '$address_id' WHERE user_id = '$_SESSION[user_id]'";
@@ -1410,7 +1427,8 @@ class UsersModel extends BaseModel {
     /**
      * 根据商品id获取购物车中此id的数量
      */
-    function get_goods_number($goods_id) {
+    public function get_goods_number($goods_id)
+    {
         // 查询
         $sql = "SELECT IFNULL(SUM(goods_number), 0) as number " .
                 " FROM " . $this->pre .
@@ -1427,7 +1445,8 @@ class UsersModel extends BaseModel {
      *
      * @return array        $user       用户信息数组
      */
-    function get_user_info($id = 0) {
+    public function get_user_info($id = 0)
+    {
         if ($id == 0) {
             $id = $_SESSION['user_id'];
         }
@@ -1456,7 +1475,8 @@ class UsersModel extends BaseModel {
      * @param   bool    $is_gb_deposit  是否团购保证金（如果是，应付款金额只计算商品总额和支付费用，可以获得的积分取 $gift_integral）
      * @return  array
      */
-    function order_fee($order, $goods, $consignee) {
+    public function order_fee($order, $goods, $consignee)
+    {
         /* 初始化订单的扩展code */
         if (!isset($order['extension_code'])) {
             $order['extension_code'] = '';
@@ -1484,7 +1504,7 @@ class UsersModel extends BaseModel {
         $weight = 0;
 
         /* 商品总价 */
-        foreach ($goods AS $val) {
+        foreach ($goods as $val) {
             /* 统计实体商品的个数 */
             if ($val['is_real']) {
                 $total['real_goods_count']++;
@@ -1558,7 +1578,7 @@ class UsersModel extends BaseModel {
 
 
         /* 配送费用 */
-        $shipping_cod_fee = NULL;
+        $shipping_cod_fee = null;
 
         if ($order['shipping_id'] > 0 && $total['real_goods_count'] > 0) {
             $region['country'] = $consignee['country'];
@@ -1579,7 +1599,7 @@ class UsersModel extends BaseModel {
                 $res = $this->row($sql);
                 $shipping_count = $res['count'];
 
-                $total['shipping_fee'] = ($shipping_count == 0 AND $weight_price['free_shipping'] == 1) ? 0 : shipping_fee($shipping_info['shipping_code'], $shipping_info['configure'], $weight_price['weight'], $old_price = $group_buy['cur_price'] > 0 ? $group_buy['cur_price'] : $old_price, $weight_price['number']);
+                $total['shipping_fee'] = ($shipping_count == 0 and $weight_price['free_shipping'] == 1) ? 0 : shipping_fee($shipping_info['shipping_code'], $shipping_info['configure'], $weight_price['weight'], $old_price = $group_buy['cur_price'] > 0 ? $group_buy['cur_price'] : $old_price, $weight_price['number']);
                 if (!empty($order['need_insure']) && $shipping_info['insure'] > 0) {
                     $total['shipping_insure'] = shipping_insure_fee($shipping_info['shipping_code'], $total['goods_price'], $shipping_info['insure']);
                 } else {
@@ -1703,7 +1723,8 @@ class UsersModel extends BaseModel {
      * @param   array   $order      key => value
      * @return  bool
      */
-    function update_order($order_id, $order) {
+    public function update_order($order_id, $order)
+    {
         $this->table = 'order_info';
         $condition['order_id'] = $order_id;
 
@@ -1727,7 +1748,8 @@ class UsersModel extends BaseModel {
      * @access  public
      * @return  void
      */
-    function recalculate_price() {
+    public function recalculate_price()
+    {
         /* 取得有可能改变价格的商品：除配件和赠品之外的商品 */
         $sql = 'SELECT c.rec_id, c.goods_id, c.goods_attr_id, g.promote_price, g.promote_start_date, c.goods_number,' .
                 "g.promote_end_date, IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS member_price " .
@@ -1740,7 +1762,7 @@ class UsersModel extends BaseModel {
 
         $res = $this->query($sql);
 
-        foreach ($res AS $row) {
+        foreach ($res as $row) {
             $attr_id = empty($row['goods_attr_id']) ? array() : explode(',', $row['goods_attr_id']);
 
 
@@ -1807,7 +1829,8 @@ class UsersModel extends BaseModel {
      * @param type $user_id
      * @return type
      */
-    function is_third_user($user_id) {
+    public function is_third_user($user_id)
+    {
         $sql = 'SELECT count(*) as count FROM ' . $this->pre . 'touch_user_info t LEFT JOIN ' . $this->pre .
                 'users u ON t.user_id = u.user_id  WHERE u.user_id = "' . $user_id . '" ';
         $res = $this->row($sql);
@@ -1818,7 +1841,8 @@ class UsersModel extends BaseModel {
      * @param type $aite_id
      * @return type
      */
-    function get_one_user($aite_id) {
+    public function get_one_user($aite_id)
+    {
         // pc兼容模式，安装pc端插件之后移除注释
         /**
         $sql = 'SELECT user_name FROM ' . $this->pre . 'users WHERE aite_id = "' . $aite_id . '" ';
@@ -1838,7 +1862,8 @@ class UsersModel extends BaseModel {
      * @param type $info
      * @return boolean
      */
-    function third_reg($info) {
+    public function third_reg($info)
+    {
         $username = $info['user_name'];
         $password = time();
         $email = $info['email'];
@@ -1863,7 +1888,8 @@ class UsersModel extends BaseModel {
      * @param string $unionid
      * @return array
      */
-    function get_connect_user($unionid) {
+    public function get_connect_user($unionid)
+    {
         $sql = "SELECT u.user_name, u.user_id, u.parent_id FROM {pre}users u, {pre}connect_user cu WHERE u.user_id = cu.user_id AND cu.open_id = '" . $unionid. "' ";
         return $this->row($sql);
     }
@@ -1873,7 +1899,7 @@ class UsersModel extends BaseModel {
      * @param   $res, $type:qq,weibo,wechat
      * @return
      */
-    function update_connnect_user($res, $type = '')
+    public function update_connnect_user($res, $type = '')
     {
         // 组合数据
         $profile = array(
@@ -1891,7 +1917,7 @@ class UsersModel extends BaseModel {
             'open_id' => $res['unionid'],
             'profile' => serialize($profile)
         );
-        if($res['user_id'] > 0 && $res['unionid']){
+        if ($res['user_id'] > 0 && $res['unionid']) {
             // 查询
             $connect_userinfo = $this->get_connect_user($res['unionid']);
             if (empty($connect_userinfo)) {
@@ -1911,7 +1937,7 @@ class UsersModel extends BaseModel {
      * @param string   $wechat_id  公众号ID
      * @return
      */
-    function update_wechat_user($info, $wechat_id = '')
+    public function update_wechat_user($info, $wechat_id = '')
     {
         //公众号id
         $wechat = $this->model->table('wechat')->field('id')->where(array('type' => 2, 'status' => 1, 'default_wx' => 1))->find();
@@ -1929,10 +1955,12 @@ class UsersModel extends BaseModel {
             'headimgurl' => !empty($info['headimgurl']) ? $info['headimgurl'] : '',
             'unionid' => $info['unionid'],
         );
-        if(!empty($info['user_id'])) { $data['ect_uid'] = $info['user_id'];}
+        if (!empty($info['user_id'])) {
+            $data['ect_uid'] = $info['user_id'];
+        }
 
         // unionid 微信开放平台唯一标识
-        if(!empty($info['unionid'])){
+        if (!empty($info['unionid'])) {
             // 查询
             $where = array('unionid' => $info['unionid'], 'wechat_id' => $wechat_id);
             $result = $this->model->table('wechat_user')->field('openid, unionid')->where($where)->find();
@@ -1951,18 +1979,19 @@ class UsersModel extends BaseModel {
      * @param type $user_name
      * @return type
      */
-    function check_user_name($user_name) {
+    public function check_user_name($user_name)
+    {
         $this->table = 'users';
         $condition['user_name'] = $user_name;
         return $this->count($condition);
     }
 
-	 /**
-     * 获取订单商品数量
-     * @return type
-     */
-    function get_order_goods_count($order_id) {
-
+    /**
+    * 获取订单商品数量
+    * @return type
+    */
+    public function get_order_goods_count($order_id)
+    {
         $sql = "SELECT  COUNT(*) as count " .
             "FROM " . $this->pre . "order_goods AS o " .
             "LEFT JOIN " . $this->pre . "products AS p ON o.product_id = p.product_id " .
@@ -1980,7 +2009,8 @@ class UsersModel extends BaseModel {
      * @param   int     $start      开始显示的条数
      * @return  array
      */
-    public function get_account_detail($user_id, $num, $start) {
+    public function get_account_detail($user_id, $num, $start)
+    {
 
         // 获取余额记录
         $account_log = array();
@@ -2006,8 +2036,6 @@ class UsersModel extends BaseModel {
         }
 
         return $res;
-
-
     }
 
 
@@ -2017,8 +2045,8 @@ class UsersModel extends BaseModel {
      * @param $order
      * @return array
      */
-    public function get_service_opt($order) {
-
+    public function get_service_opt($order)
+    {
         $service_return = $this->model->table('service_type')->where("service_type = " . ST_RETURN_GOODS)->find();
         $service_exchange = $this->model->table('service_type')->where("service_type = " . ST_EXCHANGE)->find();
 
@@ -2045,7 +2073,7 @@ class UsersModel extends BaseModel {
                     }
                 } elseif ($order['shipping_status'] == SS_RECEIVED) {
                     //已收货 退货换货，退款
-                    $action = $this->model->table('order_action')->field('log_time')->where(array('shipping_status' => SS_RECEIVED, 'order_id' => $order['order_id']))->find(); //获取发货时间                    
+                    $action = $this->model->table('order_action')->field('log_time')->where(array('shipping_status' => SS_RECEIVED, 'order_id' => $order['order_id']))->find(); //获取发货时间
                     /* 退货退款 现在时间-发货时时间 得到天数 */
                     $days = (($time - $action['log_time']) / 3600 / 24);
 
@@ -2073,7 +2101,8 @@ class UsersModel extends BaseModel {
      * @param $service_type
      * @return array
      */
-    public function get_service_type_list($order_id, $rec_id, $service_type) {
+    public function get_service_type_list($order_id, $rec_id, $service_type)
+    {
         $where = " service_type in(" . implode(',', $service_type) . ")";
         $sql = 'SELECT service_id, service_name, service_desc, service_type FROM ' . $this->pre . 'service_type' . ' WHERE  is_show = 1 AND' . $where . ' ORDER BY sort_order, service_id';
         $result = $this->query($sql);
@@ -2092,12 +2121,13 @@ class UsersModel extends BaseModel {
     /**
      * 获取顶级退换货原因 by ECTouch Leah
      */
-    public function get_parent_cause() {
+    public function get_parent_cause()
+    {
         $sql = "SELECT * FROM " . $this->pre . "return_cause WHERE parent_id = 0  AND is_show = 1  ORDER BY sort_order";
         $result = $this->query($sql);
         if (is_array($result)) {
             $select = '';
-            foreach ($result AS $var) {
+            foreach ($result as $var) {
                 $select .= '<option value="' . $var['cause_id'] . '" ';
                 $select .= ($selected == $var['cause_id']) ? "selected='ture'" : '';
                 $select .= '>';
@@ -2117,8 +2147,8 @@ class UsersModel extends BaseModel {
      * @param type $rec_id
      * @return type
      */
-    public function check_aftermarket($rec_id) {
-
+    public function check_aftermarket($rec_id)
+    {
         $service = $this->model->table('order_return')->field('COUNT(*) as count')->where('rec_id = ' . $rec_id)->find();
         return $service['count'];
     }
@@ -2128,8 +2158,8 @@ class UsersModel extends BaseModel {
      * @param $service_type
      * @return array
      */
-    public function get_aftermarket_operate($service_type) {
-
+    public function get_aftermarket_operate($service_type)
+    {
         $operate = array();
         /**
          * 退货退款
@@ -2139,7 +2169,6 @@ class UsersModel extends BaseModel {
         } /* 仅退款* */ elseif ($service_type == ST_REFUND) {
             $operate['refund'] = true;
         } /* 退货退款* */ elseif ($service_type == ST_EXCHANGE) {
-
             $operate['exchange'] = true;
         } /* 维修* */ elseif ($service_type == ST_REPAIR) {
             $operate['repair'] = true;
@@ -2148,10 +2177,11 @@ class UsersModel extends BaseModel {
     }
 
     /**退换货**/
-    function tuihuanhuo($user_id) {
-       $where['user_id'] = $user_id;
-       $count = $this->model->table('order_return')->where($where)->count();
-       return $count;
+    public function tuihuanhuo($user_id)
+    {
+        $where['user_id'] = $user_id;
+        $count = $this->model->table('order_return')->where($where)->count();
+        return $count;
     }
     /**
      *  获取用户指定范围的订单列表
@@ -2162,7 +2192,8 @@ class UsersModel extends BaseModel {
      * @param   int $start 列表起始位置
      * @return  array       $order_list     订单列表
      */
-    function get_user_aftermarket($user_id, $num = 10, $start = 0) {
+    public function get_user_aftermarket($user_id, $num = 10, $start = 0)
+    {
         /* 取得订单列表 */
         $arr = array();
 
@@ -2173,7 +2204,7 @@ class UsersModel extends BaseModel {
         foreach ($res as $key => $value) {
             if ($value['order_status'] == RF_APPLICATION) {
                 $value['handler'] = "<a href=\"" . url('user/cancel_order', array('order_id' => $value['order_id'])) . "\" onclick=\"if (!confirm('" . L('confirm_cancel') . "')) return false;\">" . L('cancel') . "</a>";
-            } else if ($value['is_check'] == RC_APPLY_SUCCESS) {
+            } elseif ($value['is_check'] == RC_APPLY_SUCCESS) {
                 /* 对配送状态的处理 */
                 if ($value['shipping_status'] == SS_SHIPPED) {
                     @$value['handler'] = "<a href=\"" . url('user/affirm_received', array('order_id' => $value['order_id'])) . "\" onclick=\"if (!confirm('" . L('confirm_received') . "')) return false;\">" . L('received') . "</a>";
@@ -2218,8 +2249,8 @@ class UsersModel extends BaseModel {
      *
      * @return   arr        $order          订单所有信息的数组
      */
-    function get_aftermarket_detail($ret_id, $user_id = 0) {
-
+    public function get_aftermarket_detail($ret_id, $user_id = 0)
+    {
         $ret_id = intval($ret_id);
         if ($ret_id <= 0) {
             ECTouch::err()->add(L('invalid_order_id'));
@@ -2240,9 +2271,8 @@ class UsersModel extends BaseModel {
     /**
      * 获取商家地址
      */
-    function get_business_address($suppliers_id) {
-
-
+    public function get_business_address($suppliers_id)
+    {
         $address = '';
         if ($suppliers_id) {
             $address = '';
@@ -2264,16 +2294,15 @@ class UsersModel extends BaseModel {
         return $address;
     }
 
-     /**
-     * 获取省，市，地区id
-     */
-    function find_address($region_name,$region_type = 0) {
-
-    	$sql = "SELECT region_id FROM " . $this->pre .
-    		"region where region_name like '%$region_name%' and region_type = $region_type ";
-    	$address = $this->row($sql);
+    /**
+    * 获取省，市，地区id
+    */
+    public function find_address($region_name, $region_type = 0)
+    {
+        $sql = "SELECT region_id FROM " . $this->pre .
+            "region where region_name like '%$region_name%' and region_type = $region_type ";
+        $address = $this->row($sql);
         return $address['region_id'];
-
     }
 
     /**
@@ -2283,13 +2312,13 @@ class UsersModel extends BaseModel {
      * @param   id $to_user_id 新会员id
      * @return  boolen      $bool
      */
-    function merge_user($from_user_id = 0, $to_user_id = 0)
+    public function merge_user($from_user_id = 0, $to_user_id = 0)
     {
-        if ($from_user_id > 0 && $to_user_id > 0 && $from_user_id != $to_user_id){
+        if ($from_user_id > 0 && $to_user_id > 0 && $from_user_id != $to_user_id) {
             // users表
             $from_user_info = $this->model->table('users')->field('*')->where(array('user_id'=> $from_user_id))->find();
 
-            if(!empty($from_user_info)){
+            if (!empty($from_user_info)) {
                 // 更新字段值 email,sex,birthday,address_id,user_rank,is_special,parent_id,flag,alias,msn,qq,office_phone,home_phone,mobile_phone,is_validated
                 // 组合数据
                 $from_data = array(
@@ -2319,7 +2348,7 @@ class UsersModel extends BaseModel {
 
             // 用户订单
             $from_order_info = $this->model->table('order_info')->field('order_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_order_info)){
+            if (!empty($from_order_info)) {
                 foreach ($from_order_info as $key => $value) {
                     $this->model->table('order_info')->data('user_id = ' . $to_user_id)->where('order_id = ' . $value['order_id'])->update();
                 }
@@ -2327,21 +2356,21 @@ class UsersModel extends BaseModel {
 
             // 用户缺货登记
             $from_booking_goods = $this->model->table('booking_goods')->field('rec_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_booking_goods)){
+            if (!empty($from_booking_goods)) {
                 foreach ($from_booking_goods as $key => $value) {
                     $this->model->table('booking_goods')->data('user_id = ' . $to_user_id)->where('rec_id = ' . $value['rec_id'])->update();
                 }
             }
             // 会员收藏商品
             $from_collect_goods = $this->model->table('collect_goods')->field('rec_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_collect_goods)){
+            if (!empty($from_collect_goods)) {
                 foreach ($from_collect_goods as $key => $value) {
                     $this->model->table('collect_goods')->data('user_id = ' . $to_user_id)->where('rec_id = ' . $value['rec_id'])->update();
                 }
             }
             // 会员留言
             $from_feedback = $this->model->table('feedback')->field('msg_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_feedback)){
+            if (!empty($from_feedback)) {
                 $to_user_info = $this->model->table('users')->field('user_name')->where(array('user_id'=> $to_user_id))->find();
                 foreach ($from_feedback as $key => $value) {
                     $setdata = array('user_id' => $to_user_id, 'user_name' => $to_user_info['user_name']);
@@ -2350,35 +2379,35 @@ class UsersModel extends BaseModel {
             }
             // 会员地址
             $from_user_address = $this->model->table('user_address')->field('address_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_user_address)){
+            if (!empty($from_user_address)) {
                 foreach ($from_user_address as $key => $value) {
                     $this->model->table('user_address')->data('user_id = ' . $to_user_id)->where('address_id = ' . $value['address_id'])->update();
                 }
             }
             // 会员红包
             $from_user_bonus = $this->model->table('user_bonus')->field('bonus_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_user_bonus)){
+            if (!empty($from_user_bonus)) {
                 foreach ($from_user_bonus as $key => $value) {
                     $this->model->table('user_bonus')->data('user_id = ' . $to_user_id)->where('bonus_id = ' . $value['bonus_id'])->update();
                 }
             }
             // 用户帐号金额
             $from_user_account = $this->model->table('user_account')->field('id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_user_account)){
+            if (!empty($from_user_account)) {
                 foreach ($from_user_account as $key => $value) {
                     $this->model->table('user_account')->data('user_id = ' . $to_user_id)->where('id = ' . $value['id'])->update();
                 }
             }
             // 用户标记
             $from_tag = $this->model->table('tag')->field('tag_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_tag)){
+            if (!empty($from_tag)) {
                 foreach ($from_tag as $key => $value) {
                     $this->model->table('tag')->data('user_id = ' . $to_user_id)->where('tag_id = ' . $value['tag_id'])->update();
                 }
             }
             // 用户日志
             $from_account_log = $this->model->table('account_log')->field('log_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_account_log)){
+            if (!empty($from_account_log)) {
                 foreach ($from_account_log as $key => $value) {
                     $this->model->table('account_log')->data('user_id = ' . $to_user_id)->where('log_id = ' . $value['log_id'])->update();
                 }
@@ -2386,7 +2415,7 @@ class UsersModel extends BaseModel {
 
             // 用户评论
             $from_comment = $this->model->table('comment')->field('comment_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_comment) && !empty($to_user_info)){
+            if (!empty($from_comment) && !empty($to_user_info)) {
                 foreach ($from_comment as $key => $value) {
                     $setdata = array('user_id' => $to_user_id, 'user_name' => $to_user_info['user_name'], 'email' => $to_user_info['email']);
                     $this->model->table('comment')->data($setdata)->where('comment_id = ' . $value['comment_id'])->update();
@@ -2395,7 +2424,7 @@ class UsersModel extends BaseModel {
 
             // 用户退换货
             $from_order_return = $this->model->table('order_return')->field('ret_id')->where(array('user_id'=> $from_user_id))->select();
-            if(!empty($from_order_return)){
+            if (!empty($from_order_return)) {
                 foreach ($from_order_return as $key => $value) {
                     $this->model->table('order_return')->data('user_id = ' . $to_user_id)->where('ret_id = ' . $value['ret_id'])->update();
                 }
@@ -2403,7 +2432,7 @@ class UsersModel extends BaseModel {
 
             
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -2414,7 +2443,7 @@ class UsersModel extends BaseModel {
      * @param  integer $wechat_id
      * @return array
      */
-    function get_users($user_id)
+    public function get_users($user_id)
     {
         $result = $this->model->table('users')->field('user_name, user_id, mobile_phone, email')->where(array('user_id' => $user_id))->find();
         return $result;
@@ -2426,7 +2455,7 @@ class UsersModel extends BaseModel {
      * 长度最大15个字符 兼容UCenter用户名
      * @return
      */
-    function get_wechat_username($unionid, $type = '')
+    public function get_wechat_username($unionid, $type = '')
     {
         switch ($type) {
             case 'weixin':
@@ -2454,17 +2483,18 @@ class UsersModel extends BaseModel {
      * @param   id $user_id 原会员id
      * @return  string      $v 非退货退款订单字符串
      */
-    public function order_rec_id($user_id){
+    public function order_rec_id($user_id)
+    {
         $sql = "SELECT rec_id FROM ". $this->pre ."order_return where user_id = '$user_id' and service_id = 1";
         $result = $this->query($sql);
 
-        foreach($result as $key =>$val){
-            if($val['rec_id']){
+        foreach ($result as $key =>$val) {
+            if ($val['rec_id']) {
                 $t = $val['rec_id'];
                 $v .= $t.",";
             }
         }
-        $v = substr($v,0,-1) ;
+        $v = substr($v, 0, -1) ;
         return $v;
     }
     
@@ -2474,10 +2504,9 @@ class UsersModel extends BaseModel {
      * @param  $user_id 原会员id
      * @return $openid  用户openid
      */
-    function get_openid($user_id) {
+    public function get_openid($user_id)
+    {
         $result = $this->model->table('wechat_user')->field('openid')->where(array('ect_uid' => $user_id))->find();
         return $result['openid'];
     }
-
-
 }

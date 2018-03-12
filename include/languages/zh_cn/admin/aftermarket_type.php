@@ -30,5 +30,3 @@ $_LANG['all_status'] = '订单状态';
 
 $_LANG['st'][ST_RETURN_GOODS] = '退货退款';
 $_LANG['st'][ST_EXCHANGE] = '换货';
-
-?>

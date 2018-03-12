@@ -15,15 +15,16 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class CommentController extends CommonController {
-
+class CommentController extends CommonController
+{
     private $cmt;
     private $act;
 
     /**
      * 构造函数
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         /* 只有在没有提交评论内容以及没有act的情况下才跳转 */
@@ -34,10 +35,10 @@ class CommentController extends CommonController {
         }
     }
 
-    public function index() {
+    public function index()
+    {
         $result = array('error' => 0, 'message' => '', 'content' => '');
         if (empty($this->act)) {
-
             $this->cmt = I('request.cmt', '', 'json_str_iconv');
             $result = array(
                 'error' => 0,
@@ -61,42 +62,42 @@ class CommentController extends CommonController {
                 $recId = $cmt->id;
                 $cmt->id = $goodsId[0]["goods_id"];
                 $cmt->type = !empty($cmt->type) ? intval($cmt->type) : 0;
-				$this->user_id = $_SESSION['user_id'];
-				$where['user_id'] = $this->user_id;
-				$where['id_value'] = $cmt->id;
+                $this->user_id = $_SESSION['user_id'];
+                $where['user_id'] = $this->user_id;
+                $where['id_value'] = $cmt->id;
                 $sql = "SELECT co.comment_id from ".$this->model->pre."comment as co left join ".$this->model->pre."term_relationship as te on co.comment_id = te.item_value2"." WHERE co.id_value = '$cmt->id' AND te.object_id =".$recId;
-$row = $this->model->query($sql);
-if(empty($row)){
-    $row = 0;
-}
+                $row = $this->model->query($sql);
+                if (empty($row)) {
+                    $row = 0;
+                }
 
 
-				if($row>0){
-					$result ['error'] = 1;
+                if ($row>0) {
+                    $result ['error'] = 1;
                     $result ['message'] = '此商品您已评论，只能评论一次哦';
-				}else{
-                if (empty($cmt) || !isset($cmt->type) || !isset($cmt->id)) {
-                    $result ['error'] = 1;
-                    $result ['message'] = L('invalid_comments');
-                } elseif (!empty($cmt->email) && !is_email($cmt->email)) {
-                    $result ['error'] = 1;
-                    $result ['message'] = L('error_email');
                 } else {
-                    if ((intval(C('captcha')) & CAPTCHA_COMMENT) && gd_version() > 0) {
-                        /* 检查验证码 */
+                    if (empty($cmt) || !isset($cmt->type) || !isset($cmt->id)) {
+                        $result ['error'] = 1;
+                        $result ['message'] = L('invalid_comments');
+                    } elseif (!empty($cmt->email) && !is_email($cmt->email)) {
+                        $result ['error'] = 1;
+                        $result ['message'] = L('error_email');
+                    } else {
+                        if ((intval(C('captcha')) & CAPTCHA_COMMENT) && gd_version() > 0) {
+                            /* 检查验证码 */
 
                             $factor = intval(C('comment_factor'));
                             if ($cmt->type == 0 && $factor > 0) {
                                 /* 只有商品才检查评论条件 */
                                 switch ($factor) {
-                                    case COMMENT_LOGIN :
+                                    case COMMENT_LOGIN:
                                         if ($_SESSION ['user_id'] == 0) {
                                             $result ['error'] = 1;
                                             $result ['message'] = L('comment_login');
                                         }
                                         break;
 
-                                    case COMMENT_CUSTOM :
+                                    case COMMENT_CUSTOM:
 
                                         if ($_SESSION ['user_id'] > 0) {
                                             $condition = "user_id = '" . $_SESSION ['user_id'] . "'" . " AND (order_status = '" . OS_CONFIRMED . "' or order_status = '" . OS_SPLITED . "') " . " AND (pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') " . " AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "') ";
@@ -110,7 +111,7 @@ if(empty($row)){
                                             $result ['message'] = L('comment_custom');
                                         }
                                         break;
-                                    case COMMENT_BOUGHT :
+                                    case COMMENT_BOUGHT:
                                         if ($_SESSION ['user_id'] > 0) {
                                             $sql = "SELECT o.order_id" . " FROM " . $this->model->pre . "order_info AS o, " . $this->model->pre . "order_goods AS og " . " WHERE o.order_id = og.order_id" . " AND o.user_id = '" . $_SESSION ['user_id'] . "'" . " AND og.goods_id = '" . $cmt->id . "'" . " AND (o.order_status = '" . OS_CONFIRMED . "' or o.order_status = '" . OS_SPLITED . "') " . " AND (o.pay_status = '" . PS_PAYED . "' OR o.pay_status = '" . PS_PAYING . "') " . " AND (o.shipping_status = '" . SS_SHIPPED . "' OR o.shipping_status = '" . SS_RECEIVED . "') " . " LIMIT 1";
 
@@ -129,32 +130,31 @@ if(empty($row)){
 
                             /* 无错误就保存留言 */
                             if (empty($result ['error'])) {
-                                model('Comment')->add_comment($cmt,$recId,$order_id);
+                                model('Comment')->add_comment($cmt, $recId, $order_id);
+                            }
+                        } else {
+                            /* 没有验证码时，用时间来限制机器人发帖或恶意发评论 */
+                            if (!isset($_SESSION ['send_time'])) {
+                                $_SESSION ['send_time'] = 0;
                             }
 
-                    } else {
-                        /* 没有验证码时，用时间来限制机器人发帖或恶意发评论 */
-                        if (!isset($_SESSION ['send_time'])) {
-                            $_SESSION ['send_time'] = 0;
-                        }
-
-                        $cur_time = gmtime();
-                        if (($cur_time - $_SESSION ['send_time']) < 30) { // 小于30秒禁止发评论
-                            $result ['error'] = 1;
-                            $result ['message'] = L('cmt_spam_warning');
-                        } else {
-                            $factor = intval(C('comment_factor'));
-                            if ($cmt->type == 0 && $factor > 0) {
-                                /* 只有商品才检查评论条件 */
-                                switch ($factor) {
-                                    case COMMENT_LOGIN :
+                            $cur_time = gmtime();
+                            if (($cur_time - $_SESSION ['send_time']) < 30) { // 小于30秒禁止发评论
+                                $result ['error'] = 1;
+                                $result ['message'] = L('cmt_spam_warning');
+                            } else {
+                                $factor = intval(C('comment_factor'));
+                                if ($cmt->type == 0 && $factor > 0) {
+                                    /* 只有商品才检查评论条件 */
+                                    switch ($factor) {
+                                    case COMMENT_LOGIN:
                                         if ($_SESSION ['user_id'] == 0) {
                                             $result ['error'] = 1;
                                             $result ['message'] = L('comment_login');
                                         }
                                         break;
 
-                                    case COMMENT_CUSTOM :
+                                    case COMMENT_CUSTOM:
                                         if ($_SESSION ['user_id'] > 0) {
                                             $condition = "user_id = '" . $_SESSION ['user_id'] . "'" . " AND (o.order_status = '" . OS_CONFIRMED . "' or o.order_status = '" . OS_SPLITED . "') " . " AND (o.pay_status = '" . PS_PAYED . "' OR o.pay_status = '" . PS_PAYING . "') " . " AND (o.shipping_status = '" . SS_SHIPPED . "' OR o.shipping_status = '" . SS_RECEIVED . "') ";
                                             $tmp = $this->model->table('order_info')->field('order_id')->where($condition)->getOne();
@@ -168,7 +168,7 @@ if(empty($row)){
                                         }
                                         break;
 
-                                    case COMMENT_BOUGHT :
+                                    case COMMENT_BOUGHT:
                                         if ($_SESSION ['user_id'] > 0) {
                                             $sql = "SELECT o.order_id" . " FROM " . $this->model->pre . "order_info AS o, " . $this->model->pre . "order_goods AS og " . " WHERE o.order_id = og.order_id" . " AND o.user_id = '" . $_SESSION ['user_id'] . "'" . " AND og.goods_id = '" . $cmt->id . "'" . " AND (o.order_status = '" . OS_CONFIRMED . "' or o.order_status = '" . OS_SPLITED . "') " . " AND (o.pay_status = '" . PS_PAYED . "' OR o.pay_status = '" . PS_PAYING . "') " . " AND (o.shipping_status = '" . SS_SHIPPED . "' OR o.shipping_status = '" . SS_RECEIVED . "') " . " LIMIT 1";
                                             $res = $this->model->query($sql);
@@ -182,22 +182,22 @@ if(empty($row)){
                                             $result ['message'] = L('comment_brought');
                                         }
                                 }
-                            }
-                            /* 无错误就保存留言 */
-                            if (empty($result ['error'])) {
-                                model('Comment')->add_comment($cmt,$recId,$order_id);
-                                $_SESSION ['send_time'] = $cur_time;
+                                }
+                                /* 无错误就保存留言 */
+                                if (empty($result ['error'])) {
+                                    model('Comment')->add_comment($cmt, $recId, $order_id);
+                                    $_SESSION ['send_time'] = $cur_time;
+                                }
                             }
                         }
                     }
                 }
-				}
             }
         } else {
             /*
              * act 参数不为空 默认为评论内容列表 根据 _GET 创建一个静态对象
              */
-            $cmt = new stdClass ();
+            $cmt = new stdClass();
             $id = I('get.id');
             $type = I('get.type');
             $page = I('get.page');
@@ -212,7 +212,7 @@ if(empty($row)){
             $comment = model('Comment')->assign_comment($cmt->id, $cmt->type, 0, $cmt->page);
             $this->assign('comment_list', $comment['comments']);
             $this->assign('pager', $comment['pager']);
-            //好评           
+            //好评
             $comment_favorable = model('Comment')->assign_comment($cmt->id, $cmt->type, '1');
             $this->assign('comment_fav', $comment_favorable['comments']);
             $this->assign('pager_fav', $comment_favorable['pager']);
@@ -260,5 +260,4 @@ if(empty($row)){
         }
         echo json_encode($result);
     }
-
 }

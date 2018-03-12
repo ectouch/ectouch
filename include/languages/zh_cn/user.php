@@ -752,8 +752,8 @@ $_LANG['explain_desc'] = '此处为商品问题描述，更新完成后由客服
 $_LANG['process_info'] = '备注';
 $_LANG['process_user'] = '操作人';
 $_LANG['aftermarket_info'] = '售后服务详情';
-$_LANG['aftermarket_progress'] = '售后服务进度条' ;  
-$_LANG['aftermarket_operate'] = '售后服务操作' ;  
+$_LANG['aftermarket_progress'] = '售后服务进度条' ;
+$_LANG['aftermarket_operate'] = '售后服务操作' ;
 $_LANG['progress_desc'] = '进度说明';
 
 $_LANG['confirm_cancel_aftermarket'] = '您确认要取消该服务订单吗？取消后此订单将视为无效订单';

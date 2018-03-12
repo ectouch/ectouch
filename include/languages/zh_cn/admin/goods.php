@@ -283,4 +283,3 @@ $_LANG['exist_same_goods_attr'] = '货品规格属性重复';
 $_LANG['cannot_goods_number'] = '此商品存在货品，不能修改商品库存';
 $_LANG['not_exist_goods_attr'] = '此商品不存在规格，请为其添加规格';
 $_LANG['goods_sn_exists'] = '您输入的货号已存在，请换一个';
-?>

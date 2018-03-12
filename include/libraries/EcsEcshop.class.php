@@ -6,10 +6,10 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP 基础类
  */
-class EcsEcshop {
-
-    var $db_name = '';
-    var $prefix = 'ecs_';
+class EcsEcshop
+{
+    public $db_name = '';
+    public $prefix = 'ecs_';
 
     /**
      * 构造函数
@@ -19,7 +19,8 @@ class EcsEcshop {
      *
      * @return  void
      */
-    function __construct($db_name, $prefix) {
+    public function __construct($db_name, $prefix)
+    {
         $this->db_name = $db_name;
         $this->prefix = $prefix;
     }
@@ -32,7 +33,8 @@ class EcsEcshop {
      *
      * @return  string
      */
-    function table($str) {
+    public function table($str)
+    {
         return '`' . $this->db_name . '`.`' . $this->prefix . $str . '`';
     }
 
@@ -44,7 +46,8 @@ class EcsEcshop {
      *
      * @return  string
      */
-    function compile_password($pass) {
+    public function compile_password($pass)
+    {
         return md5($pass);
     }
 
@@ -55,7 +58,8 @@ class EcsEcshop {
      *
      * @return  void
      */
-    function http() {
+    public function http()
+    {
         return (isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) != 'off')) ? 'https://' : 'http://';
     }
 
@@ -66,7 +70,8 @@ class EcsEcshop {
      *
      * @return string 路径
      */
-    function data_dir($sid = 0) {
+    public function data_dir($sid = 0)
+    {
         if (empty($sid)) {
             $s = 'data';
         } else {
@@ -84,7 +89,8 @@ class EcsEcshop {
      *
      * @return string 路径
      */
-    function image_dir($sid = 0) {
+    public function image_dir($sid = 0)
+    {
         if (empty($sid)) {
             $s = 'images';
         } else {
@@ -95,7 +101,4 @@ class EcsEcshop {
         }
         return $s;
     }
-
 }
-
-?>

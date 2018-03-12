@@ -17,7 +17,6 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class AfficheController extends CommonController
 {
-
     public function __construct()
     {
         parent::__construct();

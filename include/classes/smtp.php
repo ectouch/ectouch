@@ -5,24 +5,24 @@
  */
 
 define('SMTP_STATUS_NOT_CONNECTED', 1, true);
-define('SMTP_STATUS_CONNECTED',     2, true);
+define('SMTP_STATUS_CONNECTED', 2, true);
 
 class smtp
 {
-    var $connection;
-    var $recipients;
-    var $headers;
-    var $timeout;
-    var $errors;
-    var $status;
-    var $body;
-    var $from;
-    var $host;
-    var $port;
-    var $helo;
-    var $auth;
-    var $user;
-    var $pass;
+    public $connection;
+    public $recipients;
+    public $headers;
+    public $timeout;
+    public $errors;
+    public $status;
+    public $body;
+    public $from;
+    public $host;
+    public $port;
+    public $helo;
+    public $auth;
+    public $user;
+    public $pass;
 
     /**
      *  参数为一个数组
@@ -36,8 +36,7 @@ class smtp
      */
     public function __construct($params = array())
     {
-        if (!defined('CRLF'))
-        {
+        if (!defined('CRLF')) {
             define('CRLF', "\r\n", true);
         }
 
@@ -50,8 +49,7 @@ class smtp
         $this->pass     = '';
         $this->errors   = array();
 
-        foreach ($params AS $key => $value)
-        {
+        foreach ($params as $key => $value) {
             $this->$key = $value;
         }
 
@@ -61,30 +59,24 @@ class smtp
         $this->auth = ('' == $this->user) ? false : true;
     }
 
-    function connect($params = array())
+    public function connect($params = array())
     {
-        if (!isset($this->status))
-        {
+        if (!isset($this->status)) {
             $obj = new smtp($params);
 
-            if ($obj->connect())
-            {
+            if ($obj->connect()) {
                 $obj->status = SMTP_STATUS_CONNECTED;
             }
 
             return $obj;
-        }
-        else
-        {
+        } else {
             $smtp_ssl = C('smtp_ssl');
-            if (!empty($smtp_ssl))
-            {
+            if (!empty($smtp_ssl)) {
                 $this->host = "ssl://" . $this->host;
             }
             $this->connection = @fsockopen($this->host, $this->port, $errno, $errstr, $this->timeout);
 
-            if ($this->connection === false)
-            {
+            if ($this->connection === false) {
                 $this->errors[] = 'Access is denied.';
 
                 return false;
@@ -94,14 +86,11 @@ class smtp
 
             $greeting = $this->get_data();
 
-            if (is_resource($this->connection))
-            {
+            if (is_resource($this->connection)) {
                 $this->status = 2;
 
                 return $this->auth ? $this->ehlo() : $this->helo();
-            }
-            else
-            {
+            } else {
                 log_write($errstr, __FILE__, __LINE__);
                 $this->errors[] = 'Failed to connect to server: ' . $errstr;
 
@@ -118,40 +107,31 @@ class smtp
      * body            邮件的主体
      */
 
-    function send($params = array())
+    public function send($params = array())
     {
-        foreach ($params AS $key => $value)
-        {
+        foreach ($params as $key => $value) {
             $this->$key = $value;
         }
 
-        if ($this->is_connected())
-        {
+        if ($this->is_connected()) {
             //  服务器是否需要验证
-            if ($this->auth)
-            {
-                if (!$this->auth())
-                {
+            if ($this->auth) {
+                if (!$this->auth()) {
                     return false;
                 }
             }
 
             $this->mail($this->from);
 
-            if (is_array($this->recipients))
-            {
-                foreach ($this->recipients AS $value)
-                {
+            if (is_array($this->recipients)) {
+                foreach ($this->recipients as $value) {
                     $this->rcpt($value);
                 }
-            }
-            else
-            {
+            } else {
                 $this->rcpt($this->recipients);
             }
 
-            if (!$this->data())
-            {
+            if (!$this->data()) {
                 return false;
             }
 
@@ -165,147 +145,120 @@ class smtp
             $this->send_data('.');
 
             return (substr($this->get_data(), 0, 3) === '250');
-        }
-        else
-        {
+        } else {
             $this->errors[] = 'Not connected!';
 
             return false;
         }
     }
 
-    function helo()
+    public function helo()
     {
         if (is_resource($this->connection)
-                AND $this->send_data('HELO ' . $this->helo)
-                AND substr($error = $this->get_data(), 0, 3) === '250' )
-        {
+                and $this->send_data('HELO ' . $this->helo)
+                and substr($error = $this->get_data(), 0, 3) === '250') {
             return true;
-        }
-        else
-        {
+        } else {
             $this->errors[] = 'HELO command failed, output: ' . trim(substr($error, 3));
 
             return false;
         }
     }
 
-    function ehlo()
+    public function ehlo()
     {
         if (is_resource($this->connection)
-                AND $this->send_data('EHLO ' . $this->helo)
-                AND substr($error = $this->get_data(), 0, 3) === '250' )
-        {
+                and $this->send_data('EHLO ' . $this->helo)
+                and substr($error = $this->get_data(), 0, 3) === '250') {
             return true;
-        }
-        else
-        {
+        } else {
             $this->errors[] = 'EHLO command failed, output: ' . trim(substr($error, 3));
 
             return false;
         }
     }
 
-    function auth()
+    public function auth()
     {
         if (is_resource($this->connection)
-                AND $this->send_data('AUTH LOGIN')
-                AND substr($error = $this->get_data(), 0, 3) === '334'
-                AND $this->send_data(base64_encode($this->user))            // Send username
-                AND substr($error = $this->get_data(),0,3) === '334'
-                AND $this->send_data(base64_encode($this->pass))            // Send password
-                AND substr($error = $this->get_data(),0,3) === '235' )
-        {
+                and $this->send_data('AUTH LOGIN')
+                and substr($error = $this->get_data(), 0, 3) === '334'
+                and $this->send_data(base64_encode($this->user))            // Send username
+                and substr($error = $this->get_data(), 0, 3) === '334'
+                and $this->send_data(base64_encode($this->pass))            // Send password
+                and substr($error = $this->get_data(), 0, 3) === '235') {
             return true;
-        }
-        else
-        {
+        } else {
             $this->errors[] = 'AUTH command failed: ' . trim(substr($error, 3));
 
             return false;
         }
     }
 
-    function mail($from)
+    public function mail($from)
     {
         if ($this->is_connected()
-            AND $this->send_data('MAIL FROM:<' . $from . '>')
-            AND substr($this->get_data(), 0, 2) === '250' )
-        {
+            and $this->send_data('MAIL FROM:<' . $from . '>')
+            and substr($this->get_data(), 0, 2) === '250') {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    function rcpt($to)
+    public function rcpt($to)
     {
         if ($this->is_connected()
-            AND $this->send_data('RCPT TO:<' . $to . '>')
-            AND substr($error = $this->get_data(), 0, 2) === '25')
-        {
+            and $this->send_data('RCPT TO:<' . $to . '>')
+            and substr($error = $this->get_data(), 0, 2) === '25') {
             return true;
-        }
-        else
-        {
+        } else {
             $this->errors[] = trim(substr($error, 3));
 
             return false;
         }
     }
 
-    function data()
+    public function data()
     {
         if ($this->is_connected()
-            AND $this->send_data('DATA')
-            AND substr($error = $this->get_data(), 0, 3) === '354' )
-        {
+            and $this->send_data('DATA')
+            and substr($error = $this->get_data(), 0, 3) === '354') {
             return true;
-        }
-        else
-        {
+        } else {
             $this->errors[] = trim(substr($error, 3));
 
             return false;
         }
     }
 
-    function is_connected()
+    public function is_connected()
     {
-        return (is_resource($this->connection) AND ($this->status === SMTP_STATUS_CONNECTED));
+        return (is_resource($this->connection) and ($this->status === SMTP_STATUS_CONNECTED));
     }
 
-    function send_data($data)
+    public function send_data($data)
     {
-        if (is_resource($this->connection))
-        {
+        if (is_resource($this->connection)) {
             return fwrite($this->connection, $data . CRLF, strlen($data) + 2);
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    function get_data()
+    public function get_data()
     {
         $return = '';
         $line   = '';
 
-        if (is_resource($this->connection))
-        {
-            while (strpos($return, CRLF) === false OR $line{3} !== ' ')
-            {
+        if (is_resource($this->connection)) {
+            while (strpos($return, CRLF) === false or $line{3} !== ' ') {
                 $line    = fgets($this->connection, 512);
                 $return .= $line;
             }
 
             return trim($return);
-        }
-        else
-        {
+        } else {
             return '';
         }
     }
@@ -316,15 +269,12 @@ class smtp
      * @access  public
      * @return  string
      */
-    function error_msg()
+    public function error_msg()
     {
-        if (!empty($this->errors))
-        {
+        if (!empty($this->errors)) {
             $len = count($this->errors) - 1;
             return $this->errors[$len];
-        }
-        else
-        {
+        } else {
             return '';
         }
     }

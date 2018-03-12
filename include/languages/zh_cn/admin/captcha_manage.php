@@ -26,5 +26,3 @@ $_LANG['js_languages']['proper_height'] = '图片高度要在15到50之间!';
 
 $_LANG['save_ok'] = '设置保存成功';
 $_LANG['captcha_message'] = '留言板留言';
-
-?>

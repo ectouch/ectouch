@@ -66,4 +66,3 @@ $_LANG['custom_set'] = '自定义';
 
 /* JS 语言项 */
 $_LANG['js_languages']['setupConfirm'] = '启用新的Flash样式将覆盖原来的样式。\n您确定要启用选定的样式吗？';
-?>

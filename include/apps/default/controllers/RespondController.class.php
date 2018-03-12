@@ -18,7 +18,6 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class RespondController extends CommonController
 {
-
     private $data;
 
     public function __construct()
@@ -29,7 +28,7 @@ class RespondController extends CommonController
             'code' => I('get.code'),
             'type' => I('get.type')
         );
-	}
+    }
 
     // 发送
     public function index()
@@ -53,7 +52,7 @@ class RespondController extends CommonController
                 include_once($plugin_file);
                 $payobj = new $this->data['code']();
                 // 处理异步请求
-                if($this->data['type'] == 'notify'){
+                if ($this->data['type'] == 'notify') {
                     @$payobj->notify($this->data);
                 }
                 $msg = (@$payobj->callback($this->data)) ? L('pay_success') : L('pay_fail');

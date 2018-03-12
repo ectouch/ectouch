@@ -16,8 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class EcTemplate {
-
+class EcTemplate
+{
     public $config = array(); //配置
     protected $vars = array(); //存放变量信息
     protected $_replace = array();
@@ -26,8 +26,9 @@ class EcTemplate {
      * 构造函数
      * @param unknown $config
      */
-    public function __construct($config = array()) {
-        $this->config = array_merge(C('TPL'), (array) $config); //参数配置	
+    public function __construct($config = array())
+    {
+        $this->config = array_merge(C('TPL'), (array) $config); //参数配置
         $this->assign('EcTemplate', $this);
         $this->_replace = array(
             'str' => array('search' => array(),
@@ -50,7 +51,8 @@ class EcTemplate {
      * @param unknown $name
      * @param string $value
      */
-    public function assign($name, $value = '') {
+    public function assign($name, $value = '')
+    {
         if (is_array($name)) {
             foreach ($name as $k => $v) {
                 $this->vars[$k] = $v;
@@ -68,7 +70,8 @@ class EcTemplate {
      * @throws Exception
      * @return string
      */
-    public function display($tpl = '', $return = false, $is_tpl = true) {
+    public function display($tpl = '', $return = false, $is_tpl = true)
+    {
         //如果没有设置模板，则调用当前模块的当前操作模板
         if ($is_tpl && ($tpl == "") && (!empty($_GET['_module'])) && (!empty($_GET['_action']))) {
             $tpl = $_GET['_module'] . "/" . $_GET['_action'];
@@ -97,12 +100,12 @@ class EcTemplate {
                 if ((!file_exists($cacheFile)) || (filemtime($tplFile) > filemtime($cacheFile))) {
                     file_put_contents($cacheFile, "<?php if (!defined('ECTOUCH')) exit;?>" . $this->compile($tpl)); //写入缓存
                 }
-                include( $cacheFile ); //加载编译后的模板缓存
+                include($cacheFile); //加载编译后的模板缓存
             } else {
                 //支持memcache等缓存
                 $tpl_key = md5(realpath($tplFile));
                 $tpl_time_key = $tpl_key . '_time';
-                static $cache = NULL;
+                static $cache = null;
                 $cache = is_object($cache) ? $cache : new EcCache($this->config, $this->config['TPL_CACHE_TYPE']);
                 $compile_content = $cache->get($tpl_key);
                 if (empty($compile_content) || (filemtime($tplFile) > $cache->get($tpl_time_key))) {
@@ -128,7 +131,8 @@ class EcTemplate {
      * @param unknown $tags
      * @param string $reg
      */
-    public function addTags($tags = array(), $reg = false) {
+    public function addTags($tags = array(), $reg = false)
+    {
         $flag = $reg ? 'reg' : 'str';
         foreach ($tags as $k => $v) {
             $this->_replace[$flag]['search'][] = $k;
@@ -143,7 +147,8 @@ class EcTemplate {
      * @throws Exception
      * @return mixed
      */
-    protected function compile($tpl, $is_tpl = true) {
+    protected function compile($tpl, $is_tpl = true)
+    {
         if ($is_tpl) {
             $tplFile = $this->config['TPL_TEMPLATE_PATH'] . $tpl . $this->config['TPL_TEMPLATE_SUFFIX'];
             if (!file_exists($tplFile)) {
@@ -163,5 +168,4 @@ class EcTemplate {
         $template = preg_replace($this->_replace['reg']['search'], $this->_replace['reg']['replace'], $template);
         return $template;
     }
-
 }

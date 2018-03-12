@@ -108,4 +108,3 @@ $_LANG['js_languages']['password_not_same'] = '输入的密码和确认密码不
 $_LANG['js_languages']['invalid_pay_points'] = '消费积分数不是一个整数。';
 $_LANG['js_languages']['invalid_rank_points'] = '等级积分数不是一个整数。';
 $_LANG['js_languages']['password_len_err'] = '新密码和确认密码的长度不能小于6';
-?>

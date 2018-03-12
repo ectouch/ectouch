@@ -30,5 +30,3 @@ $_LANG['subject_empty'] = '对不起，邮件的主题不能为空。';
 $_LANG['content_empty'] = '对不起，邮件的内容不能为空。';
 
 $_LANG['js_languages']['save_confirm'] = '您已经修改了模板内容，您确定不保存么？';
-
-?>

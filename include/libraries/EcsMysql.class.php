@@ -6,27 +6,28 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP MYSQL 公用类库
  */
-class EcsMysql {
+class EcsMysql
+{
+    public $link_id = null;
+    public $settings = array();
+    public $queryCount = 0;
+    public $queryTime = '';
+    public $queryLog = array();
+    public $max_cache_time = 300; // 最大的缓存时间，以秒为单位
+    public $cache_data_dir = 'data/caches/query_caches/';
+    public $root_path = '';
+    public $error_message = array();
+    public $platform = '';
+    public $version = '';
+    public $dbhash = '';
+    public $starttime = 0;
+    public $timeline = 0;
+    public $timezone = 0;
+    public $mysql_config_cache_file_time = 0;
+    public $mysql_disable_cache_tables = array(); // 不允许被缓存的表，遇到将不会进行缓存
 
-    var $link_id = NULL;
-    var $settings = array();
-    var $queryCount = 0;
-    var $queryTime = '';
-    var $queryLog = array();
-    var $max_cache_time = 300; // 最大的缓存时间，以秒为单位
-    var $cache_data_dir = 'data/caches/query_caches/';
-    var $root_path = '';
-    var $error_message = array();
-    var $platform = '';
-    var $version = '';
-    var $dbhash = '';
-    var $starttime = 0;
-    var $timeline = 0;
-    var $timezone = 0;
-    var $mysql_config_cache_file_time = 0;
-    var $mysql_disable_cache_tables = array(); // 不允许被缓存的表，遇到将不会进行缓存
-
-    function __construct($dbhost, $dbuser, $dbpw, $dbname = '', $charset = 'gbk', $pconnect = 0, $quiet = 0) {
+    public function __construct($dbhost, $dbuser, $dbpw, $dbname = '', $charset = 'gbk', $pconnect = 0, $quiet = 0)
+    {
         if (defined('EC_CHARSET')) {
             $charset = strtolower(str_replace('-', '', EC_CHARSET));
         }
@@ -49,7 +50,8 @@ class EcsMysql {
         }
     }
 
-    function connect($dbhost, $dbuser, $dbpw, $dbname = '', $charset = 'utf8', $pconnect = 0, $quiet = 0) {
+    public function connect($dbhost, $dbuser, $dbpw, $dbname = '', $charset = 'utf8', $pconnect = 0, $quiet = 0)
+    {
         if ($pconnect) {
             if (!($this->link_id = @mysqli_connect($dbhost, $dbuser, $dbpw))) {
                 if (!$quiet) {
@@ -141,11 +143,13 @@ class EcsMysql {
         }
     }
 
-    function select_database($dbname) {
+    public function select_database($dbname)
+    {
         return mysqli_select_db($this->link_id, $dbname);
     }
 
-    function set_mysql_charset($charset) {
+    public function set_mysql_charset($charset)
+    {
         /* 如果mysql 版本是 4.1+ 以上，需要对字符集进行初始化 */
         if ($this->version > '4.1') {
             if (in_array(strtolower($charset), array('gbk', 'big5', 'utf-8', 'utf8'))) {
@@ -157,12 +161,14 @@ class EcsMysql {
         }
     }
 
-    function fetch_array($query, $result_type = MYSQLI_ASSOC) {
+    public function fetch_array($query, $result_type = MYSQLI_ASSOC)
+    {
         return mysqli_fetch_array($query, $result_type);
     }
 
-    function query($sql, $type = '') {
-        if ($this->link_id === NULL) {
+    public function query($sql, $type = '')
+    {
+        if ($this->link_id === null) {
             $this->connect($this->settings['dbhost'], $this->settings['dbuser'], $this->settings['dbpw'], $this->settings['dbname'], $this->settings['charset'], $this->settings['pconnect']);
             $this->settings = array();
         }
@@ -212,51 +218,63 @@ class EcsMysql {
         return $query;
     }
 
-    function affected_rows() {
+    public function affected_rows()
+    {
         return mysqli_affected_rows($this->link_id);
     }
 
-    function error() {
+    public function error()
+    {
         return mysqli_error($this->link_id);
     }
 
-    function errno() {
+    public function errno()
+    {
         return mysqli_errno($this->link_id);
     }
 
-    function result($query, $row) {
+    public function result($query, $row)
+    {
         return @mysqli_result($query, $row);
     }
 
-    function num_rows($query) {
+    public function num_rows($query)
+    {
         return mysqli_num_rows($query);
     }
 
-    function num_fields($query) {
+    public function num_fields($query)
+    {
         return mysqli_num_fields($query);
     }
 
-    function free_result($query) {
+    public function free_result($query)
+    {
         return mysqli_free_result($query);
     }
 
-    function insert_id() {
+    public function insert_id()
+    {
         return mysqli_insert_id($this->link_id);
     }
 
-    function fetchRow($query) {
+    public function fetchRow($query)
+    {
         return mysqli_fetch_assoc($query);
     }
 
-    function fetch_fields($query) {
+    public function fetch_fields($query)
+    {
         return mysqli_fetch_field($query);
     }
 
-    function version() {
+    public function version()
+    {
         return $this->version;
     }
 
-    function ping() {
+    public function ping()
+    {
         if (PHP_VERSION >= '4.3') {
             return mysqli_ping($this->link_id);
         } else {
@@ -264,7 +282,8 @@ class EcsMysql {
         }
     }
 
-    function escape_string($unescaped_string) {
+    public function escape_string($unescaped_string)
+    {
         if (PHP_VERSION >= '4.3') {
             return mysqli_real_escape_string($unescaped_string);
         } else {
@@ -272,11 +291,13 @@ class EcsMysql {
         }
     }
 
-    function close() {
+    public function close()
+    {
         return mysqli_close($this->link_id);
     }
 
-    function ErrorMsg($message = '', $sql = '') {
+    public function ErrorMsg($message = '', $sql = '')
+    {
         if ($message) {
             echo "<b>ECTouch info</b>: $message\n\n<br /><br />";
         } else {
@@ -289,7 +310,8 @@ class EcsMysql {
 
     /* 仿真 Adodb 函数 */
 
-    function selectLimit($sql, $num, $start = 0) {
+    public function selectLimit($sql, $num, $start = 0)
+    {
         if ($start == 0) {
             $sql .= ' LIMIT ' . $num;
         } else {
@@ -299,7 +321,8 @@ class EcsMysql {
         return $this->query($sql);
     }
 
-    function getOne($sql, $limited = false) {
+    public function getOne($sql, $limited = false)
+    {
         if ($limited == true) {
             $sql = trim($sql . ' LIMIT 1');
         }
@@ -318,7 +341,8 @@ class EcsMysql {
         }
     }
 
-    function getOneCached($sql, $cached = 'FILEFIRST') {
+    public function getOneCached($sql, $cached = 'FILEFIRST')
+    {
         $sql = trim($sql . ' LIMIT 1');
 
         $cachefirst = ($cached == 'FILEFIRST' || ($cached == 'MYSQLFIRST' && $this->platform != 'WINDOWS')) && $this->max_cache_time;
@@ -340,7 +364,8 @@ class EcsMysql {
         return $arr;
     }
 
-    function getAll($sql) {
+    public function getAll($sql)
+    {
         $res = $this->query($sql);
         if ($res !== false) {
             $arr = array();
@@ -354,7 +379,8 @@ class EcsMysql {
         }
     }
 
-    function getAllCached($sql, $cached = 'FILEFIRST') {
+    public function getAllCached($sql, $cached = 'FILEFIRST')
+    {
         $cachefirst = ($cached == 'FILEFIRST' || ($cached == 'MYSQLFIRST' && $this->platform != 'WINDOWS')) && $this->max_cache_time;
         if (!$cachefirst) {
             return $this->getAll($sql);
@@ -374,7 +400,8 @@ class EcsMysql {
         return $arr;
     }
 
-    function getRow($sql, $limited = false) {
+    public function getRow($sql, $limited = false)
+    {
         if ($limited == true) {
             $sql = trim($sql . ' LIMIT 1');
         }
@@ -387,7 +414,8 @@ class EcsMysql {
         }
     }
 
-    function getRowCached($sql, $cached = 'FILEFIRST') {
+    public function getRowCached($sql, $cached = 'FILEFIRST')
+    {
         $sql = trim($sql . ' LIMIT 1');
 
         $cachefirst = ($cached == 'FILEFIRST' || ($cached == 'MYSQLFIRST' && $this->platform != 'WINDOWS')) && $this->max_cache_time;
@@ -409,7 +437,8 @@ class EcsMysql {
         return $arr;
     }
 
-    function getCol($sql) {
+    public function getCol($sql)
+    {
         $res = $this->query($sql);
         if ($res !== false) {
             $arr = array();
@@ -423,7 +452,8 @@ class EcsMysql {
         }
     }
 
-    function getColCached($sql, $cached = 'FILEFIRST') {
+    public function getColCached($sql, $cached = 'FILEFIRST')
+    {
         $cachefirst = ($cached == 'FILEFIRST' || ($cached == 'MYSQLFIRST' && $this->platform != 'WINDOWS')) && $this->max_cache_time;
         if (!$cachefirst) {
             return $this->getCol($sql);
@@ -443,13 +473,14 @@ class EcsMysql {
         return $arr;
     }
 
-    function autoExecute($table, $field_values, $mode = 'INSERT', $where = '', $querymode = '') {
+    public function autoExecute($table, $field_values, $mode = 'INSERT', $where = '', $querymode = '')
+    {
         $field_names = $this->getCol('DESC ' . $table);
 
         $sql = '';
         if ($mode == 'INSERT') {
             $fields = $values = array();
-            foreach ($field_names AS $value) {
+            foreach ($field_names as $value) {
                 if (array_key_exists($value, $field_values) == true) {
                     $fields[] = $value;
                     $values[] = "'" . $field_values[$value] . "'";
@@ -461,7 +492,7 @@ class EcsMysql {
             }
         } else {
             $sets = array();
-            foreach ($field_names AS $value) {
+            foreach ($field_names as $value) {
                 if (array_key_exists($value, $field_values) == true) {
                     $sets[] = $value . " = '" . $field_values[$value] . "'";
                 }
@@ -479,11 +510,12 @@ class EcsMysql {
         }
     }
 
-    function autoReplace($table, $field_values, $update_values, $where = '', $querymode = '') {
+    public function autoReplace($table, $field_values, $update_values, $where = '', $querymode = '')
+    {
         $field_descs = $this->getAll('DESC ' . $table);
 
         $primary_keys = array();
-        foreach ($field_descs AS $value) {
+        foreach ($field_descs as $value) {
             $field_names[] = $value['Field'];
             if ($value['Key'] == 'PRI') {
                 $primary_keys[] = $value['Field'];
@@ -491,7 +523,7 @@ class EcsMysql {
         }
 
         $fields = $values = array();
-        foreach ($field_names AS $value) {
+        foreach ($field_names as $value) {
             if (array_key_exists($value, $field_values) == true) {
                 $fields[] = $value;
                 $values[] = "'" . $field_values[$value] . "'";
@@ -499,7 +531,7 @@ class EcsMysql {
         }
 
         $sets = array();
-        foreach ($update_values AS $key => $value) {
+        foreach ($update_values as $key => $value) {
             if (array_key_exists($key, $field_values) == true) {
                 if (is_int($value) || is_float($value)) {
                     $sets[] = $key . ' = ' . $key . ' + ' . $value;
@@ -525,7 +557,7 @@ class EcsMysql {
             } else {
                 if (empty($where)) {
                     $where = array();
-                    foreach ($primary_keys AS $value) {
+                    foreach ($primary_keys as $value) {
                         if (is_numeric($value)) {
                             $where[] = $value . ' = ' . $field_values[$value];
                         } else {
@@ -556,15 +588,18 @@ class EcsMysql {
         }
     }
 
-    function setMaxCacheTime($second) {
+    public function setMaxCacheTime($second)
+    {
         $this->max_cache_time = $second;
     }
 
-    function getMaxCacheTime() {
+    public function getMaxCacheTime()
+    {
         return $this->max_cache_time;
     }
 
-    function getSqlCacheData($sql, $cached = '') {
+    public function getSqlCacheData($sql, $cached = '')
+    {
         $sql = trim($sql);
 
         $result = array();
@@ -592,7 +627,8 @@ class EcsMysql {
         return $result;
     }
 
-    function setSqlCacheData($result, $data) {
+    public function setSqlCacheData($result, $data)
+    {
         if ($result['storecache'] === true && $result['filename']) {
             @file_put_contents($result['filename'], '<?php exit;?>' . time() . serialize($data));
             clearstatcache();
@@ -601,8 +637,9 @@ class EcsMysql {
 
     /* 获取 SQL 语句中最后更新的表的时间，有多个表的情况下，返回最新的表的时间 */
 
-    function table_lastupdate($tables) {
-        if ($this->link_id === NULL) {
+    public function table_lastupdate($tables)
+    {
+        if ($this->link_id === null) {
             $this->connect($this->settings['dbhost'], $this->settings['dbuser'], $this->settings['dbpw'], $this->settings['dbname'], $this->settings['charset'], $this->settings['pconnect']);
             $this->settings = array();
         }
@@ -612,14 +649,14 @@ class EcsMysql {
         $tables = str_replace('`', '', $tables);
         $this->mysql_disable_cache_tables = str_replace('`', '', $this->mysql_disable_cache_tables);
 
-        foreach ($tables AS $table) {
+        foreach ($tables as $table) {
             if (in_array($table, $this->mysql_disable_cache_tables) == true) {
                 $lastupdatetime = '2037-12-31 23:59:59';
 
                 break;
             }
 
-            if (strstr($table, '.') != NULL) {
+            if (strstr($table, '.') != null) {
                 $tmp = explode('.', $table);
                 $sql = 'SHOW TABLE STATUS FROM `' . trim($tmp[0]) . "` LIKE '" . trim($tmp[1]) . "'";
             } else {
@@ -637,7 +674,8 @@ class EcsMysql {
         return $lastupdatetime;
     }
 
-    function get_table_name($query_item) {
+    public function get_table_name($query_item)
+    {
         $query_item = trim($query_item);
         $table_names = array();
 
@@ -664,16 +702,16 @@ class EcsMysql {
 
     /* 设置不允许进行缓存的表 */
 
-    function set_disable_cache_tables($tables) {
+    public function set_disable_cache_tables($tables)
+    {
         if (!is_array($tables)) {
             $tables = explode(',', $tables);
         }
 
-        foreach ($tables AS $table) {
+        foreach ($tables as $table) {
             $this->mysql_disable_cache_tables[] = $table;
         }
 
         array_unique($this->mysql_disable_cache_tables);
     }
-
 }

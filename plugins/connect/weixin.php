@@ -19,11 +19,11 @@ defined('IN_ECTOUCH') or die('Deny Access');
 $payment_lang = ROOT_PATH . 'plugins/connect/languages/' . C('lang') . '/' . basename(__FILE__);
 
 if (file_exists($payment_lang)) {
-    include_once ($payment_lang);
+    include_once($payment_lang);
     L($_LANG);
 }
 /* 模块的基本信息 */
-if (isset($set_modules) && $set_modules == TRUE) {
+if (isset($set_modules) && $set_modules == true) {
     $i = isset($modules) ? count($modules) : 0;
     /* 类名 */
     $modules[$i]['name'] = '微信登录插件';
@@ -60,8 +60,8 @@ if (isset($set_modules) && $set_modules == TRUE) {
 /**
  * WECHAT API client
  */
-class weixin {
-
+class weixin
+{
     private $token = '';
     private $appid = '';
     private $appkey = '';
@@ -73,7 +73,8 @@ class weixin {
      * @param unknown $app
      * @param string $access_token
      */
-    public function __construct($conf) {
+    public function __construct($conf)
+    {
         $this->token = $conf['token'];
         $this->appid = $conf['app_id'];
         $this->appsecret = $conf['app_secret'];
@@ -118,7 +119,7 @@ class weixin {
                     'province' => $userinfo['province'],
                     'country' => $userinfo['country'],
                 );
-                if(is_wechat_browser()) {
+                if (is_wechat_browser()) {
                     $this->update_wechat_unionid($userinfo);
                 }
                 return $data;
@@ -147,9 +148,9 @@ class weixin {
             // 兼容查询用户 已经存在wechat_user 且 unionid 为空的情况 用openid 更新一下 unionid
             $where = array('openid' => $info['openid'], 'wechat_id' => $wechat_id);
             $res = model('Base')->model->table('wechat_user')->field('unionid, ect_uid')->where($where)->find();
-            if(empty($res['unionid'])){
+            if (empty($res['unionid'])) {
                 model('Base')->model->table('wechat_user')->data($data)->where($where)->update();
-                if(!empty($res['ect_uid'])){
+                if (!empty($res['ect_uid'])) {
                     // 更新社会化登录用户信息
                     $connect_userinfo = model('Users')->get_connect_user($info['unionid']);
                     if (empty($connect_userinfo)) {
@@ -161,5 +162,4 @@ class weixin {
             }
         }
     }
-
 }

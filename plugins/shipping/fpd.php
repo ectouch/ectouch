@@ -12,7 +12,7 @@ class fpd
     /**
      * 配置信息
      */
-    var $configure;
+    public $configure;
 
     /*------------------------------------------------------ */
     //-- PUBLIC METHODs
@@ -25,7 +25,7 @@ class fpd
      *
      * @return null
      */
-    function fpd($cfg=array())
+    public function fpd($cfg=array())
     {
     }
 
@@ -36,7 +36,7 @@ class fpd
      * @param   float   $goods_amount   商品金额
      * @return  decimal
      */
-    function calculate($goods_weight, $goods_amount)
+    public function calculate($goods_weight, $goods_amount)
     {
         return 0;
     }
@@ -49,12 +49,12 @@ class fpd
      * @param   string  $invoice_sn     发货单号
      * @return  string
      */
-    function query($invoice_sn)
+    public function query($invoice_sn)
     {
         return $invoice_sn;
     }
 
-    function third_party($invoice_sn)
+    public function third_party($invoice_sn)
     {
         return false;
     }

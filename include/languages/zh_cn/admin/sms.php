@@ -153,10 +153,3 @@ $_LANG['add'] = '添加';
 $_LANG['edited'] = '修改为';
 $_LANG['edit'] = '修改';
 $_LANG['set_default_sign'] = '设置成默认签名';
-
-
-
-
-
-
-?>

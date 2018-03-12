@@ -3,23 +3,25 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class EcMysqlPdo {
-
-    private $_writeLink = NULL; //主
-    private $_readLink = NULL; //从
+class EcMysqlPdo
+{
+    private $_writeLink = null; //主
+    private $_readLink = null; //从
     private $_replication = false; //标志是否支持主从
     private $dbConfig = array();
     public $sql = "";
     protected $affectedRows = -1;
 
-    public function __construct($dbConfig = array()) {
+    public function __construct($dbConfig = array())
+    {
         $this->dbConfig = $dbConfig;
-        //判断是否支持主从				
+        //判断是否支持主从
         $this->_replication = isset($this->dbConfig['DB_SLAVE']) && !empty($this->dbConfig['DB_SLAVE']);
     }
 
-    //执行sql查询	
-    public function query($sql, $params = array()) {
+    //执行sql查询
+    public function query($sql, $params = array())
+    {
         echo $this->sql = $sql;
         $sth = $this->_bindParam($sql, $params, $this->_getReadLink());
         $sth->execute();
@@ -33,7 +35,8 @@ class EcMysqlPdo {
     }
 
     //执行sql命令
-    public function execute($sql, $params = array()) {
+    public function execute($sql, $params = array())
+    {
         $this->sql = $sql;
         $sth = $this->_bindParam($sql, $params, $this->_getWriteLink());
         $sth->execute();
@@ -46,23 +49,27 @@ class EcMysqlPdo {
         }
     }
 
-    //从结果集中取得一行作为关联数组，或数字数组，或二者兼有 
-    public function fetchArray($sth, $result_type = PDO::FETCH_ASSOC) {
+    //从结果集中取得一行作为关联数组，或数字数组，或二者兼有
+    public function fetchArray($sth, $result_type = PDO::FETCH_ASSOC)
+    {
         return $this->unEscape($sth->fetch($result_type));
     }
 
     //取得前一次 MySQL 操作所影响的记录行数
-    public function affectedRows() {
+    public function affectedRows()
+    {
         return $this->affectedRows;
     }
 
     //获取上一次插入的id
-    public function lastId() {
+    public function lastId()
+    {
         return $this->_getWriteLink()->lastInsertId();
     }
 
     //获取表结构
-    public function getFields($table) {
+    public function getFields($table)
+    {
         $this->sql = "SHOW FULL FIELDS FROM {$table}";
         $query = $this->query($this->sql);
         $data = array();
@@ -73,7 +80,8 @@ class EcMysqlPdo {
     }
 
     //获取行数
-    public function count($table, $where) {
+    public function count($table, $where)
+    {
         $this->sql = "SELECT count(*) FROM $table $where";
         $query = $this->query($this->sql);
         $data = $this->fetchArray($query);
@@ -81,7 +89,8 @@ class EcMysqlPdo {
     }
 
     //数据过滤
-    public function escape($value) {
+    public function escape($value)
+    {
         if (isset($this->_readLink)) {
             $link = $this->_readLink;
         } elseif (isset($this->_writeLink)) {
@@ -93,12 +102,15 @@ class EcMysqlPdo {
         if (is_array($value)) {
             return array_map(array($this, 'escape'), $value);
         } else {
-            if (is_null($value))
+            if (is_null($value)) {
                 return 'null';
-            if (is_bool($value))
+            }
+            if (is_bool($value)) {
                 return $value ? 1 : 0;
-            if (is_int($value))
+            }
+            if (is_int($value)) {
                 return (int) $value;
+            }
             if (get_magic_quotes_gpc()) {
                 $value = stripslashes($value);
             }
@@ -107,7 +119,8 @@ class EcMysqlPdo {
     }
 
     //数据过滤
-    public function unEscape($value) {
+    public function unEscape($value)
+    {
         if (is_array($value)) {
             return array_map('stripslashes', $value);
         } else {
@@ -116,7 +129,8 @@ class EcMysqlPdo {
     }
 
     //解析待添加或修改的数据
-    public function parseData($options, $type) {
+    public function parseData($options, $type)
+    {
         //如果数据是字符串，直接返回
         if (is_string($options['data'])) {
             return $options['data'];
@@ -141,13 +155,14 @@ class EcMysqlPdo {
     }
 
     //解析查询条件
-    public function parseCondition($options) {
+    public function parseCondition($options)
+    {
         $condition = "";
         if (!empty($options['where'])) {
             $condition = " WHERE ";
             if (is_string($options['where'])) {
                 $condition .= $options['where'];
-            } else if (is_array($options['where'])) {
+            } elseif (is_array($options['where'])) {
                 foreach ($options['where'] as $key => $value) {
                     $condition .= " `$key` = " . $this->escape($value) . " AND ";
                 }
@@ -169,13 +184,15 @@ class EcMysqlPdo {
         if (!empty($options['limit']) && (is_string($options['limit']) || is_numeric($options['limit']))) {
             $condition .= " LIMIT " . $options['limit'];
         }
-        if (empty($condition))
+        if (empty($condition)) {
             return "";
+        }
         return $condition;
     }
 
     //输出错误信息
-    public function error($message = '', $error = '', $errorno = '') {
+    public function error($message = '', $error = '', $errorno = '')
+    {
         if (DEBUG) {
             $str = " {$message}<br>
 					<b>SQL</b>: {$this->sql}<br>
@@ -188,7 +205,8 @@ class EcMysqlPdo {
     }
 
     //获取从服务器连接
-    private function _getReadLink() {
+    private function _getReadLink()
+    {
         if (isset($this->_readLink)) {
             return $this->_readLink;
         } else {
@@ -202,7 +220,8 @@ class EcMysqlPdo {
     }
 
     //获取主服务器连接
-    private function _getWriteLink() {
+    private function _getWriteLink()
+    {
         if (isset($this->_writeLink)) {
             return $this->_writeLink;
         } else {
@@ -212,7 +231,8 @@ class EcMysqlPdo {
     }
 
     //数据库链接
-    private function _connect($is_master = true) {
+    private function _connect($is_master = true)
+    {
         if (($is_master == false) && $this->_replication) {
             $slave_count = count($this->dbConfig['DB_SLAVE']);
             //遍历所有从机
@@ -251,7 +271,8 @@ class EcMysqlPdo {
         return $pdo;
     }
 
-    private function _bindParam($sql, $params, $link) {
+    private function _bindParam($sql, $params, $link)
+    {
         $sth = $link->prepare($sql);
         foreach ($params as $k => $v) {
             $sth->bindParam(":" . $k, $this->escape($v));
@@ -260,13 +281,13 @@ class EcMysqlPdo {
     }
 
     //关闭数据库
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->_writeLink) {
-            $this->_writeLink = NULL;
+            $this->_writeLink = null;
         }
         if ($this->_readLink) {
-            $this->_readLink = NULL;
+            $this->_readLink = null;
         }
     }
-
 }

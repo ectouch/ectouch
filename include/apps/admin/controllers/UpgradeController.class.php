@@ -18,7 +18,6 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class UpgradeController extends AdminController
 {
-
     private $md5_arr = array();
     private $_filearr = array('admin', 'api', 'include', 'plugins', '');
     private $_wechat = 'wechat';
@@ -113,7 +112,7 @@ class UpgradeController extends AdminController
                             $sqlData = Install::mysql($file_path, 'ecs_', C('DB_PREFIX'));
                             // 执行sql文件
                             $model = new EcModel();
-                            if (is_array($sqlData)){
+                            if (is_array($sqlData)) {
                                 foreach ($sqlData as $sql) {
                                     @$model->db->query($sql);
                                 }
@@ -151,7 +150,6 @@ class UpgradeController extends AdminController
             // 是否升级成功
             $this->message(basename($v, ".zip") . L('upgrade_success') . $next_update, url('init', array('do'=>1, 'cover'=> $cover)));
         }
-        
     }
     
     // 检查文件md5值
@@ -189,7 +187,8 @@ class UpgradeController extends AdminController
     /**
      * 生成核心文件md5
      */
-    public function buildhash(){
+    public function buildhash()
+    {
         $this->ec_readdir('.');
         // file_put_contents(CACHE_PATH . RELEASE . '_' . $this->patch_charset.'.php', json_encode($this->md5_arr));
         file_put_contents(CACHE_PATH . RELEASE . '.php', json_encode($this->md5_arr));
@@ -199,7 +198,8 @@ class UpgradeController extends AdminController
     /**
      * 获取补丁列表
      */
-    private function pathlist(){
+    private function pathlist()
+    {
         $pathlist_str = Http::doGet($this->upgrade_path_base);
         $pathlist = $allpathlist = array();
         $key = - 1;
@@ -234,10 +234,10 @@ class UpgradeController extends AdminController
             }
             closedir($handler);
         } else {
-            if (dirname($path) == '.' || (isset($dir_arr[1]) && in_array($dir_arr[1], $this->_filearr)) ) {
+            if (dirname($path) == '.' || (isset($dir_arr[1]) && in_array($dir_arr[1], $this->_filearr))) {
                 $pos_wechat = strpos(strtolower($path), $this->_wechat);
                 $pos_extend = strpos(strtolower($path), $this->_extend);
-                if($pos_wechat === false && $pos_extend === false){
+                if ($pos_wechat === false && $pos_extend === false) {
                     $this->md5_arr[base64_encode($path)] = md5_file($path);
                 }
             }
@@ -260,7 +260,7 @@ class UpgradeController extends AdminController
         // 循环读取文件
         while (false !== ($file = readdir($handle))) {
             if ($file != '.' && $file != '..') { // 排除"."和"."
-                                                 // 生成源文件名
+                // 生成源文件名
                 $filefrom = $dirfrom . DS . $file;
                 // 生成目标文件名
                 $fileto = $dirto . DS . $file;
@@ -273,7 +273,8 @@ class UpgradeController extends AdminController
                             echo L('copy') . $filefrom . L('to') . $fileto . L('failed') . "<br />";
                         }
                     } else {
-                        if ((get_extension($fileto) == 'dwt' || get_extension($fileto) == 'lbi') && file_exists($fileto)) {} else {
+                        if ((get_extension($fileto) == 'dwt' || get_extension($fileto) == 'lbi') && file_exists($fileto)) {
+                        } else {
                             if (! copy($filefrom, $fileto)) {
                                 $this->copyfailnum ++;
                                 echo L('copy') . $filefrom . L('to') . $fileto . L('failed') . "<br />";
@@ -284,5 +285,4 @@ class UpgradeController extends AdminController
             }
         }
     }
-    
 }

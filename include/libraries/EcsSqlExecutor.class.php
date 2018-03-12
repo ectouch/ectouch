@@ -6,7 +6,8 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP SQL语句执行类。在调用该类方法之前，请参看相应方法的说明。
  */
-class EcsSqlExecutor {
+class EcsSqlExecutor
+{
 
     /**
      * 记录程序执行过程中最后产生的那条错误信息
@@ -14,7 +15,7 @@ class EcsSqlExecutor {
      * @access  public
      * @var     string       $error
      */
-    var $error = '';
+    public $error = '';
 
     /**
      * 存储将被忽略的错误号，这些错误不会记录在$error属性中，
@@ -23,7 +24,7 @@ class EcsSqlExecutor {
      * @access  private
      * @var     array       $ignored_errors
      */
-    var $ignored_errors = array();
+    public $ignored_errors = array();
 
     /**
      * MySQL对象
@@ -31,7 +32,7 @@ class EcsSqlExecutor {
      * @access  private
      * @var     object      $db
      */
-    var $db = '';
+    public $db = '';
 
     /**
      * 数据库字符编码
@@ -39,7 +40,7 @@ class EcsSqlExecutor {
      * @access   private
      * @var      string     $charset
      */
-    var $db_charset = '';
+    public $db_charset = '';
 
     /**
      * 替换前表前缀
@@ -47,7 +48,7 @@ class EcsSqlExecutor {
      * @access  private
      * @var     string      $source_prefix
      */
-    var $source_prefix = '';
+    public $source_prefix = '';
 
     /**
      * 替换后表前缀
@@ -55,7 +56,7 @@ class EcsSqlExecutor {
      * @access  private
      * @var     string      $target_prefix
      */
-    var $target_prefix = '';
+    public $target_prefix = '';
 
     /**
      * 当发生错误时，程序将把日志记录在该指定的文件中
@@ -63,7 +64,7 @@ class EcsSqlExecutor {
      * @access  private
      * @var     string       $log_path
      */
-    var $log_path = '';
+    public $log_path = '';
 
     /**
      * 开启此选项后，程序将进行智能化地查询操作，即使重复运行本程序，也不会引起数据库的查询冲突。这点在浏览器
@@ -73,7 +74,7 @@ class EcsSqlExecutor {
      * @access  private
      * @var     boolean      $auto_match
      */
-    var $auto_match = false;
+    public $auto_match = false;
 
     /**
      * 记录当前正在执行的SQL文件名
@@ -81,7 +82,7 @@ class EcsSqlExecutor {
      * @access  private
      * @var     string       $current_file
      */
-    var $current_file = 'Not a file, but a string.';
+    public $current_file = 'Not a file, but a string.';
 
     /**
      * 构造函数
@@ -96,7 +97,8 @@ class EcsSqlExecutor {
      * @param   array       $ignored_errors 忽略的错误号数组
      * @return  void
      */
-    function __construct($db, $charset = 'gbk', $sprefix = 'ecs_', $tprefix = 'ecs_', $log_path = '', $auto_match = false, $ignored_errors = array()) {
+    public function __construct($db, $charset = 'gbk', $sprefix = 'ecs_', $tprefix = 'ecs_', $log_path = '', $auto_match = false, $ignored_errors = array())
+    {
         $this->db = $db;
         $this->db_charset = $charset;
         $this->source_prefix = $sprefix;
@@ -113,13 +115,14 @@ class EcsSqlExecutor {
      * @param   array       $sql_files     文件绝对路径组成的一维数组
      * @return  boolean     执行成功返回true，失败返回false。
      */
-    function run_all($sql_files) {
+    public function run_all($sql_files)
+    {
         /* 如果传入参数不是数组，程序直接返回 */
         if (!is_array($sql_files)) {
             return false;
         }
 
-        foreach ($sql_files AS $sql_file) {
+        foreach ($sql_files as $sql_file) {
             $query_items = $this->parse_sql_file($sql_file);
 
             /* 如果解析失败，则跳过 */
@@ -127,7 +130,7 @@ class EcsSqlExecutor {
                 continue;
             }
 
-            foreach ($query_items AS $query_item) {
+            foreach ($query_items as $query_item) {
                 /* 如果查询项为空，则跳过 */
                 if (!$query_item) {
                     continue;
@@ -149,7 +152,8 @@ class EcsSqlExecutor {
      * @param   string      $file_path      文件的绝对路径
      * @return  mixed       解析成功返回分散的查询项数组，失败返回false。
      */
-    function parse_sql_file($file_path) {
+    public function parse_sql_file($file_path)
+    {
         /* 如果SQL文件不存在则返回false */
         if (!file_exists($file_path)) {
             return false;
@@ -189,7 +193,8 @@ class EcsSqlExecutor {
      * @param   string      $query_item      查询项
      * @return  boolean     成功返回true，失败返回false。
      */
-    function query($query_item) {
+    public function query($query_item)
+    {
         /* 删除查询项首尾的空白符 */
         $query_item = trim($query_item);
 
@@ -225,7 +230,8 @@ class EcsSqlExecutor {
      * @param   string      $sql        SQL查询串
      * @return  string      返回已过滤掉注释的SQL查询串。
      */
-    function remove_comment($sql) {
+    public function remove_comment($sql)
+    {
         /* 删除SQL行注释，行注释不匹配换行符 */
         $sql = preg_replace('/^\s*(?:--|#).*/m', '', $sql);
 
@@ -244,7 +250,8 @@ class EcsSqlExecutor {
      * @param   string      $sql        SQL查询串
      * @return  string      返回已替换掉前缀的SQL查询串。
      */
-    function replace_prefix($sql) {
+    public function replace_prefix($sql)
+    {
         $keywords = 'CREATE\s+TABLE(?:\s+IF\s+NOT\s+EXISTS)?|'
                 . 'DROP\s+TABLE(?:\s+IF\s+EXISTS)?|'
                 . 'ALTER\s+TABLE|'
@@ -273,7 +280,8 @@ class EcsSqlExecutor {
      * @param   string      $query_type     查询类型
      * @return  mixed       成功返回表的名字，失败返回false。
      */
-    function get_table_name($query_item, $query_type = '') {
+    public function get_table_name($query_item, $query_type = '')
+    {
         $pattern = '';
         $matches = array();
         $table_name = '';
@@ -286,25 +294,25 @@ class EcsSqlExecutor {
         /* 获取相应的正则表达式 */
         $query_type = strtoupper($query_type);
         switch ($query_type) {
-            case 'ALTER' :
+            case 'ALTER':
                 $pattern = '/^\s*ALTER\s+TABLE\s*`?(\w+)/i';
                 break;
-            case 'CREATE' :
+            case 'CREATE':
                 $pattern = '/^\s*CREATE\s+TABLE(?:\s+IF\s+NOT\s+EXISTS)?\s*`?(\w+)/i';
                 break;
-            case 'DROP' :
+            case 'DROP':
                 $pattern = '/^\s*DROP\s+TABLE(?:\s+IF\s+EXISTS)?\s*`?(\w+)/i';
                 break;
-            case 'INSERT' :
+            case 'INSERT':
                 $pattern = '/^\s*INSERT\s+INTO\s*`?(\w+)/i';
                 break;
-            case 'REPLACE' :
+            case 'REPLACE':
                 $pattern = '/^\s*REPLACE\s+INTO\s*`?(\w+)/i';
                 break;
-            case 'UPDATE' :
+            case 'UPDATE':
                 $pattern = '/^\s*UPDATE\s*`?(\w+)/i';
                 break;
-            default :
+            default:
                 return false;
         }
 
@@ -324,7 +332,8 @@ class EcsSqlExecutor {
      * @param   int       $pos             查询项的索引号
      * @return  mixed     成功返回该查询项，失败返回false。
      */
-    function get_spec_query_item($file_path, $pos) {
+    public function get_spec_query_item($file_path, $pos)
+    {
         $query_items = $this->parse_sql_file($file_path);
 
         if (empty($query_items) || empty($query_items[$pos])) {
@@ -341,7 +350,8 @@ class EcsSqlExecutor {
      * @param   string      $query_item     SQL查询项
      * @return  boolean     成功返回true，失败返回false。
      */
-    function create_table($query_item) {
+    public function create_table($query_item)
+    {
         /* 获取建表主体串以及表属性声明串，不区分大小写，匹配换行符，且为贪婪匹配 */
         $pattern = '/^\s*(CREATE\s+TABLE[^(]+\(.*\))(.*)$/is';
         if (!preg_match($pattern, $query_item, $matches)) {
@@ -387,7 +397,8 @@ class EcsSqlExecutor {
      * @param   string      $query_item     SQL查询项
      * @return  boolean     修改成功返回true，否则返回false
      */
-    function alter_table($query_item) {
+    public function alter_table($query_item)
+    {
         /* 获取表名 */
         $table_name = $this->get_table_name($query_item, 'ALTER');
         if (!$table_name) {
@@ -457,7 +468,8 @@ class EcsSqlExecutor {
      * @param   string      $table_name     表名
      * @return  array       返回一个以CHANGE操作串和其它操作串组成的数组
      */
-    function parse_change_query($query_item, $table_name = '') {
+    public function parse_change_query($query_item, $table_name = '')
+    {
         $result = array('', $query_item);
 
         if (!$table_name) {
@@ -501,7 +513,8 @@ class EcsSqlExecutor {
      * @param   string      $table_name     表名
      * @return  array       返回一个以DROP COLUMN操作和其它操作组成的数组
      */
-    function parse_drop_column_query($query_item, $table_name = '') {
+    public function parse_drop_column_query($query_item, $table_name = '')
+    {
         $result = array('', $query_item);
 
         if (!$table_name) {
@@ -539,7 +552,8 @@ class EcsSqlExecutor {
      * @param   string      $table_name     表名
      * @return  array       返回一个以ADD [COLUMN]操作和其它操作组成的数组
      */
-    function parse_add_column_query($query_item, $table_name = '') {
+    public function parse_add_column_query($query_item, $table_name = '')
+    {
         $result = array('', $query_item);
 
         if (!$table_name) {
@@ -583,7 +597,8 @@ class EcsSqlExecutor {
      * @param   string      $table_name     表名
      * @return  array       返回一个以DROP INDEX操作和其它操作组成的数组
      */
-    function parse_drop_index_query($query_item, $table_name = '') {
+    public function parse_drop_index_query($query_item, $table_name = '')
+    {
         $result = array('', $query_item);
 
         if (!$table_name) {
@@ -624,7 +639,8 @@ class EcsSqlExecutor {
      * @param   string      $table_name     表名
      * @return  array       返回一个以ADD INDEX操作和其它操作组成的数组
      */
-    function parse_add_index_query($query_item, $table_name = '') {
+    public function parse_add_index_query($query_item, $table_name = '')
+    {
         $result = array('', $query_item);
 
         if (!$table_name) {
@@ -662,7 +678,8 @@ class EcsSqlExecutor {
      * @param   string      $table_name      数据表名
      * @return  array
      */
-    function get_indexes($table_name) {
+    public function get_indexes($table_name)
+    {
         $indexes = array();
 
         $result = $this->db->query("SHOW INDEX FROM $table_name", 'SILENT');
@@ -683,7 +700,8 @@ class EcsSqlExecutor {
      * @param   string      $table_name      数据表名
      * @return  array
      */
-    function get_fields($table_name) {
+    public function get_fields($table_name)
+    {
         $fields = array();
 
         $result = $this->db->query("SHOW FIELDS FROM $table_name", 'SILENT');
@@ -704,7 +722,8 @@ class EcsSqlExecutor {
      * @param   string      $sql_string     SQL查询串
      * @return  boolean     有返回true，否则返回false
      */
-    function has_other_query($sql_string) {
+    public function has_other_query($sql_string)
+    {
         return preg_match('/^\s*ALTER\s+TABLE\s*`\w+`\s*\w+/i', $sql_string);
     }
 
@@ -715,7 +734,8 @@ class EcsSqlExecutor {
      * @param  string      $sql_string     SQL查询串
      * @return  string     含有字符集设置的SQL查询串
      */
-    function insert_charset($sql_string) {
+    public function insert_charset($sql_string)
+    {
         if ($this->db->version() > '4.1') {
             $sql_string = preg_replace('/(TEXT|CHAR\(.*?\)|VARCHAR\(.*?\))\s+/i', '\1 CHARACTER SET ' . $this->db_charset . ' ', $sql_string);
         }
@@ -730,7 +750,8 @@ class EcsSqlExecutor {
      * @param   string      $query_item     SQL查询项
      * @return  boolean     成功返回true，失败返回false。
      */
-    function do_other($query_item) {
+    public function do_other($query_item)
+    {
         if (!$this->db->query($query_item, 'SILENT')) {
             $this->handle_error($query_item);
             return false;
@@ -746,7 +767,8 @@ class EcsSqlExecutor {
      * @param   string      $query_item     SQL查询项
      * @return  boolean     成功返回true，失败返回false。
      */
-    function handle_error($query_item) {
+    public function handle_error($query_item)
+    {
         $mysql_error = 'ERROR NO: ' . $this->db->errno()
                 . "\r\nERROR MSG: " . $this->db->error();
 
@@ -774,7 +796,4 @@ class EcsSqlExecutor {
 
         return true;
     }
-
 }
-
-?>

@@ -12,12 +12,9 @@ require_once(BASE_PATH . 'languages/' .$_CFG['lang']. '/admin/statistic.php');
 $smarty->assign('lang', $_LANG);
 
 /* act操作项的初始化 */
-if (empty($_REQUEST['act']))
-{
+if (empty($_REQUEST['act'])) {
     $_REQUEST['act'] = 'list';
-}
-else
-{
+} else {
     $_REQUEST['act'] = trim($_REQUEST['act']);
 }
 
@@ -30,18 +27,13 @@ admin_priv('user_account_manage');
 /* 时间参数 */
 
 $start_date = $end_date = '';
-if (isset($_POST) && !empty($_POST))
-{
+if (isset($_POST) && !empty($_POST)) {
     $start_date = local_strtotime($_POST['start_date']);
     $end_date = local_strtotime($_POST['end_date']);
-}
-elseif (isset($_GET['start_date']) && !empty($_GET['end_date']))
-{
+} elseif (isset($_GET['start_date']) && !empty($_GET['end_date'])) {
     $start_date = local_strtotime($_GET['start_date']);
     $end_date = local_strtotime($_GET['end_date']);
-}
-else
-{
+} else {
     $today  = local_strtotime(local_date('Y-m-d'));
     $start_date = $today - 86400 * 7;
     $end_date   = $today;
@@ -50,8 +42,7 @@ else
 /*------------------------------------------------------ */
 //--商品明细列表
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     $account = $money_list = array();
     $account['voucher_amount'] = get_total_amount($start_date, $end_date);//充值总额
     $account['to_cash_amount'] = get_total_amount($start_date, $end_date, 1);//提现总额
@@ -71,27 +62,24 @@ if ($_REQUEST['act'] == 'list')
 
     /* 赋值到模板 */
     $smarty->assign('account', $account);
-    $smarty->assign('start_date',   local_date('Y-m-d', $start_date));
-    $smarty->assign('end_date',     local_date('Y-m-d', $end_date));
-    $smarty->assign('ur_here',      $_LANG['user_account_manage']);
+    $smarty->assign('start_date', local_date('Y-m-d', $start_date));
+    $smarty->assign('end_date', local_date('Y-m-d', $end_date));
+    $smarty->assign('ur_here', $_LANG['user_account_manage']);
 
     /* 显示页面 */
     assign_query_info();
     $smarty->display('user_account_manage.htm');
-}
-
-elseif ($_REQUEST['act'] == 'surplus')
-{
+} elseif ($_REQUEST['act'] == 'surplus') {
     $order_list = order_list();
 
     /* 赋值到模板 */
-    $smarty->assign('order_list',   $order_list['order_list']);
-    $smarty->assign('ur_here',      $_LANG['order_by_surplus']);
-    $smarty->assign('filter',       $order_list['filter']);
+    $smarty->assign('order_list', $order_list['order_list']);
+    $smarty->assign('ur_here', $_LANG['order_by_surplus']);
+    $smarty->assign('filter', $order_list['filter']);
     $smarty->assign('record_count', $order_list['record_count']);
-    $smarty->assign('page_count',   $order_list['page_count']);
-    $smarty->assign('full_page',    1);
-    $smarty->assign('action_link',  array('text' => $_LANG['user_account_manage'], 'href'=>'user_account_manage.php?act=list&start_date='.local_date('Y-m-d', $start_date).'&end_date='.local_date('Y-m-d', $end_date)));
+    $smarty->assign('page_count', $order_list['page_count']);
+    $smarty->assign('full_page', 1);
+    $smarty->assign('action_link', array('text' => $_LANG['user_account_manage'], 'href'=>'user_account_manage.php?act=list&start_date='.local_date('Y-m-d', $start_date).'&end_date='.local_date('Y-m-d', $end_date)));
 
     /* 显示页面 */
     assign_query_info();
@@ -101,15 +89,13 @@ elseif ($_REQUEST['act'] == 'surplus')
 /*------------------------------------------------------ */
 //-- ajax返回用户列表
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'query')
-{
-
+elseif ($_REQUEST['act'] == 'query') {
     $order_list = order_list();
 
-    $smarty->assign('order_list',   $order_list['order_list']);
-    $smarty->assign('filter',       $order_list['filter']);
+    $smarty->assign('order_list', $order_list['order_list']);
+    $smarty->assign('filter', $order_list['filter']);
     $smarty->assign('record_count', $order_list['record_count']);
-    $smarty->assign('page_count',   $order_list['page_count']);
+    $smarty->assign('page_count', $order_list['page_count']);
 
     $sort_flag  = sort_flag($order_list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
@@ -122,7 +108,7 @@ elseif ($_REQUEST['act'] == 'query')
 * @param   string  $type   0,充值 1,提现
 * @return  array
 */
-function get_total_amount ($start_date, $end_date, $type=0)
+function get_total_amount($start_date, $end_date, $type=0)
 {
     $sql = " SELECT IFNULL(SUM(amount), 0) AS total_amount FROM " . $GLOBALS['ecs']->table('user_account') . " AS a, " . $GLOBALS['ecs']->table('users') . " AS u ".
        " WHERE process_type = $type AND is_paid = 1 AND a.user_id = u.user_id AND paid_time >= '$start_date' AND paid_time < '" . ($end_date + 86400) . "'";
@@ -147,12 +133,10 @@ function order_list()
 
     $result = get_filter();
 
-    if ($result === false)
-    {
+    if ($result === false) {
         /* 过滤条件 */
         $filter['keywords'] = empty($_REQUEST['keywords']) ? '' : trim($_REQUEST['keywords']);
-        if (isset($_REQUEST['is_ajax']) && $_REQUEST['is_ajax'] == 1)
-        {
+        if (isset($_REQUEST['is_ajax']) && $_REQUEST['is_ajax'] == 1) {
             $filter['keywords'] = json_str_iconv($filter['keywords']);
         }
 
@@ -162,8 +146,7 @@ function order_list()
         $filter['end_date']   = local_date('Y-m-d', $end_date);
 
         $ex_where = ' WHERE 1 ';
-        if ($filter['keywords'])
-        {
+        if ($filter['keywords']) {
             $ex_where .= " AND user_name LIKE '%" . mysql_like_quote($filter['keywords']) ."%'";
         }
         $ex_where .= " AND o.user_id = u.user_id AND (o.surplus != 0 OR integral_money != 0) AND `add_time` >= " . $start_date ." AND `add_time` < " .($end_date + 86400);
@@ -179,9 +162,7 @@ function order_list()
 
         $filter['keywords'] = stripslashes($filter['keywords']);
         set_filter($filter, $sql);
-    }
-    else
-    {
+    } else {
         $sql    = $result['sql'];
         $filter = $result['filter'];
     }
@@ -189,8 +170,7 @@ function order_list()
     $order_list = $GLOBALS['db']->getAll($sql);
 
     $count = count($order_list);
-    for ($i=0; $i<$count; $i++)
-    {
+    for ($i=0; $i<$count; $i++) {
         $order_list[$i]['add_time'] = local_date($GLOBALS['_CFG']['date_format'], $order_list[$i]['add_time']);
     }
 
@@ -199,4 +179,3 @@ function order_list()
 
     return $arr;
 }
-?>

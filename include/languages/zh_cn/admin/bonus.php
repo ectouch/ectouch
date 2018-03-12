@@ -120,4 +120,3 @@ $_LANG['confirm_send_bonus'] = '确定发送红包';
 $_LANG['bonus_not_exist'] = '该红包不存在';
 $_LANG['success_send_mail'] = '%d 封邮件已被加入邮件列表';
 $_LANG['send_continue'] = '继续发放红包';
-?>

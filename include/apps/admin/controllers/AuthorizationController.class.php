@@ -16,15 +16,16 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class AuthorizationController extends AdminController {
+class AuthorizationController extends AdminController
+{
 
     /**
      * 授权列表
      */
-    public function index() {
+    public function index()
+    {
         $modules = read_modules(ROOT_PATH . 'plugins/connect');
         foreach ($modules as $key => $value) {
-
             $modules[$key]['install'] = $this->model->table('touch_auth')->where(array('from' => $value['type']))->count();
         }
         $this->assign('ur_here', L('09_authorization_list'));
@@ -35,7 +36,8 @@ class AuthorizationController extends AdminController {
     /**
      * 安装授权登录
      */
-    public function install() {
+    public function install()
+    {
         if (IS_POST) {
             $cfg_value = I('cfg_value');
             $data['from'] = I('from');
@@ -85,7 +87,8 @@ class AuthorizationController extends AdminController {
     /**
      * 编辑授权
      */
-    public function edit() {
+    public function edit()
+    {
         if (IS_POST) {
             $cfg_value = I('cfg_value');
             $data['from'] = I('from');
@@ -131,7 +134,6 @@ class AuthorizationController extends AdminController {
         }
         // 循环配置插件中所有属性
         foreach ($info ['config'] as $key => $value) {
-
             if (isset($data [$value ['name']])) {
                 $info ['config'] [$key] ['value'] = $data [$value['name']];
             } else {
@@ -147,14 +149,14 @@ class AuthorizationController extends AdminController {
     /**
      * 卸载授权
      */
-    public function uninstall() {
+    public function uninstall()
+    {
         if (!isset($_GET ['type']) || empty($_GET ['type'])) {
-            $this->message(L('yes_uninstall'), NULL, 'error');
+            $this->message(L('yes_uninstall'), null, 'error');
         }
         $where ['from'] = I('type');
         $this->model->table('touch_auth')->where($where)->delete();
 
         $this->message(L('yes_uninstall'), url('index'));
     }
-
 }

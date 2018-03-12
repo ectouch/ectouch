@@ -41,5 +41,3 @@ $_LANG['drop_msg'] = '删除选中';
 
 $_LANG['batch_drop_success'] = '成功删除了 %d 个留言记录';
 $_LANG['no_select_msg'] = '您现在没有任何留言记录';
-
-?>

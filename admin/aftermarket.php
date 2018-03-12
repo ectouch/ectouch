@@ -36,24 +36,23 @@ if ($_REQUEST['act'] == 'aftermarket_list') {
 /*------------------------------------------------------ */
 //-- 排序、分页、查询
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'query')
-{
+elseif ($_REQUEST['act'] == 'query') {
     /* 检查权限 */
     admin_priv('order_view');
 
     $order_list = return_order_list();
 
-    $smarty->assign('order_list',   $order_list['orders']);
-    $smarty->assign('filter',       $order_list['filter']);
+    $smarty->assign('order_list', $order_list['orders']);
+    $smarty->assign('filter', $order_list['filter']);
     $smarty->assign('record_count', $order_list['record_count']);
-    $smarty->assign('page_count',   $order_list['page_count']);
+    $smarty->assign('page_count', $order_list['page_count']);
     $sort_flag  = sort_flag($order_list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
     make_json_result($smarty->fetch('aftermarket_list.htm'), '', array('filter' => $order_list['filter'], 'page_count' => $order_list['page_count']));
 }
 /* ------------------------------------------------------ */
 //-- 服务类型详情
-/* ------------------------------------------------------ */ 
+/* ------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'aftermarket_info') {
     /* 检查权限 */
     admin_priv('aftermarket_list');
@@ -113,7 +112,7 @@ elseif ($_REQUEST['act'] == 'aftermarket_info') {
     }
     /* 取得配送费用 */
     $total = order_weight_price($order_id);
-    foreach ($shipping_list AS $key => $shipping) {
+    foreach ($shipping_list as $key => $shipping) {
         $shipping_fee = shipping_fee($shipping['shipping_code'], unserialize($shipping['configure']), $total['weight'], $total['amount'], $total['number']); //计算运费
         $free_price = free_price($shipping['configure']);   //免费额度
         $shipping_list[$key]['shipping_fee'] = $shipping_fee;
@@ -155,7 +154,7 @@ elseif ($_REQUEST['act'] == 'aftermarket_info') {
 
 /* ------------------------------------------------------ */
 //-- 显示图片
-/* ------------------------------------------------------ */ 
+/* ------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'show_cert') {
     $rec_id = empty($_REQUEST['rec_id']) ? 0 : intval($_GET['rec_id']);
     $cert_img = get_cert_img($rec_id);
@@ -166,7 +165,6 @@ elseif ($_REQUEST['act'] == 'show_cert') {
 //-- 审核服务订单
 /* ------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'check_service') {
-
     check_authz_json('aftermarket_list');
 
     $ret_id = intval($_POST['id']);
@@ -180,9 +178,8 @@ elseif ($_REQUEST['act'] == 'check_service') {
 }
 /* ------------------------------------------------------ */
 //-- 操作订单状态（载入页面）
-/* ------------------------------------------------------ */ 
+/* ------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'operate') {
-
     $order_id = '';
     $rec_id = ''; //by leah
     $ret_id = ''; //by Leah
@@ -331,8 +328,7 @@ elseif ($_REQUEST['act'] == 'operate') {
 //-- 操作订单状态（处理批量提交）
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'batch_operate_post')
-{
+elseif ($_REQUEST['act'] == 'batch_operate_post') {
 
     /* 检查权限 */
     admin_priv('aftermarket_rf_edit');
@@ -349,17 +345,14 @@ elseif ($_REQUEST['act'] == 'batch_operate_post')
     $sn_not_list = array();
 
     /* 确认 */
-    if ('check' == $operation)
-    {
-        foreach($order_id_list as $id_order)
-        {
+    if ('check' == $operation) {
+        foreach ($order_id_list as $id_order) {
             $sql = "SELECT * FROM " . $ecs->table('order_return') .
                 " WHERE service_sn = '$id_order'" .
                 " AND is_check = '" . OS_UNCONFIRMED . "'";
             $order = $db->getRow($sql);
 
-            if($order)
-            {               
+            if ($order) {
                 $ret_id = $order['ret_id'];
                 $rec_id = $order['rec_id'];
                 $arr = array(
@@ -373,27 +366,22 @@ elseif ($_REQUEST['act'] == 'batch_operate_post')
                 //记录操作
                 return_action($ret_id, RF_APPLICATION, FF_NOREFUND, RC_APPLY_SUCCESS, $action_note);
                 $sn_list[] = $order['service_sn'];
-            }
-            else
-            {
+            } else {
                 $sn_not_list[] = $id_order;
             }
         }
         $sn_str = $_LANG['confirm_order'];
     }
     //取消
-    elseif ('canceled' == $operation)
-    {
-        foreach($order_id_list as $id_order)
-        {
+    elseif ('canceled' == $operation) {
+        foreach ($order_id_list as $id_order) {
             $sql = "SELECT * FROM " . $ecs->table('order_return') .
                 " WHERE service_sn = '$id_order'";
             $order = $db->getRow($sql);
 
-            if($order)
-            {    
+            if ($order) {
                 $ret_id = $order['ret_id'];
-                $rec_id = $order['rec_id'];            
+                $rec_id = $order['rec_id'];
                 $cancel_note = isset($_REQUEST['cancel_note']) ? trim($_REQUEST['cancel_note']) : '';
                 $arr = array(
                     'return_status' => RF_CANCELED,
@@ -408,9 +396,7 @@ elseif ($_REQUEST['act'] == 'batch_operate_post')
                 return_action($ret_id, RF_CANCELED, FF_NOREFUND, RC_APPLY_FALSE, $action_note);
 
                 $sn_list[] = $order['service_sn'];
-             }
-            else
-            {
+            } else {
                 $sn_not_list[] = $id_order;
             }
         }
@@ -418,47 +404,36 @@ elseif ($_REQUEST['act'] == 'batch_operate_post')
         $sn_str = $_LANG['cancel_order'];
     }
     //售后
-    elseif ('after_service' == $operation)
-    {
-        foreach ($order_id_list as $id_order)
-        {
+    elseif ('after_service' == $operation) {
+        foreach ($order_id_list as $id_order) {
             $sql = "SELECT * FROM " . $ecs->table('order_return') .
                 " WHERE service_sn = '$id_order'";
             $order = $db->getRow($sql);
 
             $return_info = return_order_info($order['ret_id']);
-            if($order)
-            {    
+            if ($order) {
                 $ret_id = $order['ret_id'];
-                return_action($ret_id, $return_info['return_status'], FF_REFUND, RC_APPLY_SUCCESS,'[' . 售后 . '] ' . $action_note);
+                return_action($ret_id, $return_info['return_status'], FF_REFUND, RC_APPLY_SUCCESS, '[' . 售后 . '] ' . $action_note);
 
                 $sn_list[] = $order['service_sn'];
-             }
-            else
-            {
+            } else {
                 $sn_not_list[] = $id_order;
             }
         }
 
         $sn_str = $_LANG['after_service_order'];
-    }
-    else
-    {
+    } else {
         die('invalid params');
     }
 
     /* 取得备注信息 */
-    if(empty($sn_not_list))
-    {
+    if (empty($sn_not_list)) {
         $sn_list = empty($sn_list) ? '' : $_LANG['updated_order'] . join($sn_list, ',');
        
         $msg = $sn_list;
         $links[] = array('text' => $_LANG['return_list'], 'href' => 'aftermarket.php?act=aftermarket_list');
         sys_msg($msg, 0, $links);
-    }
-    else
-    {
-        
+    } else {
         $order_list_no_fail = array();
         $sql = "SELECT o.ret_id, o.rec_id, o.service_sn, o.order_sn, o.add_time, o.user_id, o.service_id, o.should_return , o.actual_return, o.is_check," .
                 "o.return_status, o.refund_status, r.back_num, r.out_num, " .
@@ -469,7 +444,7 @@ elseif ($_REQUEST['act'] == 'batch_operate_post')
                 " WHERE service_sn " . db_create_in($sn_not_list);
         $row = $GLOBALS['db']->getAll($sql);
         /* 格式话数据 */
-        foreach ($row AS $key => $value) {
+        foreach ($row as $key => $value) {
             $row[$key]['formated_order_amount'] = price_format($value['order_amount']);
             $row[$key]['formated_money_paid'] = price_format($value['money_paid']);
             $row[$key]['formated_total_fee'] = price_format($value['total_fee']);
@@ -492,7 +467,7 @@ elseif ($_REQUEST['act'] == 'batch_operate_post')
         /* 模板赋值 */
         $smarty->assign('order_info', $sn_str);
         $smarty->assign('action_link', array('href' => 'aftermarket.php?act=list', 'text' => $_LANG['return_list']));
-        $smarty->assign('order_list',   $row);
+        $smarty->assign('order_list', $row);
 
         /* 显示模板 */
         assign_query_info();
@@ -502,7 +477,7 @@ elseif ($_REQUEST['act'] == 'batch_operate_post')
 
 /* ------------------------------------------------------ */
 //-- 操作订单状态（处理提交）
-/* ------------------------------------------------------ */ 
+/* ------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'operate_post') {
 
     /* 检查权限 */
@@ -538,7 +513,6 @@ elseif ($_REQUEST['act'] == 'operate_post') {
         );
         $GLOBALS['db']->autoExecute($GLOBALS['ecs']->table('order_return'), $arr, 'UPDATE', "rec_id = '$rec_id'");
         return_action($ret_id, RF_APPLICATION, FF_NOREFUND, RC_APPLY_SUCCESS, $action_note);
-       
     } /* 收到退换货商品 */ elseif ('receive_goods' == $operation) {
         $arr = array('return_status' => RF_RECEIVE); //收到用户退回商品
         $GLOBALS['db']->autoExecute($GLOBALS['ecs']->table('order_return'), $arr, 'UPDATE', "rec_id = '$rec_id'");
@@ -563,7 +537,7 @@ elseif ($_REQUEST['act'] == 'operate_post') {
         $GLOBALS['db']->autoExecute($GLOBALS['ecs']->table('order_return'), $arr, 'UPDATE', "rec_id = '$rec_id'");
         return_action($ret_id, RF_COMPLETE, $back_order['refund_status'], RC_APPLY_SUCCESS, $action_note);
     } /* 取消 */ elseif ('canceled' == $operation) {
-         /* 标记订单为“取消”，记录取消原因 */
+        /* 标记订单为“取消”，记录取消原因 */
         $cancel_note = isset($_REQUEST['cancel_note']) ? trim($_REQUEST['cancel_note']) : '';
         $arr = array(
             'return_status' => RF_CANCELED,
@@ -576,7 +550,6 @@ elseif ($_REQUEST['act'] == 'operate_post') {
         $GLOBALS['db']->autoExecute($GLOBALS['ecs']->table('order_return'), $arr, 'UPDATE', "rec_id = '$rec_id'");
         /*更新log*/
         return_action($ret_id, RF_CANCELED, FF_NOREFUND, RC_APPLY_FALSE, $action_note);
-        
     } /* 设为无效 */ elseif ('invalid' == $operation) {
         //TODO
     } /* 退款 */ elseif ('refund' == $operation) {
@@ -608,18 +581,17 @@ elseif ($_REQUEST['act'] == 'operate_post') {
         $refund_type = empty($refund_type) ? 1 : $refund_type;
         $refund_amount = $_REQUEST['refund_amount'] + $_REQUEST['shipping'];
         $refund_note = $_REQUEST['refund_note'];
-		
+        
         if ($return_info['refund_status'] == FF_NOREFUND) {
             /* 退款 */
             aftermarket_refund($order, $refund_type, $refund_amount, $refund_note);
-             						
+                                     
             $arr = array(
                 'refund_status' => FF_REFUND,
                 'actual_return' => $refund_amount,
                 'is_check' => RC_APPLY_SUCCESS,
             );
             $GLOBALS['db']->autoExecute($GLOBALS['ecs']->table('order_return'), $arr, 'UPDATE', "rec_id = '$rec_id'");
-			
         }
         /* 退货用积分 */
         return_surplus_integral_bonus($return_info['user_id'], $_REQUEST['refund_amount']);
@@ -627,7 +599,7 @@ elseif ($_REQUEST['act'] == 'operate_post') {
         return_action($ret_id, $return_info['return_status'], FF_REFUND, RC_APPLY_SUCCESS, $action_note);
     } elseif ('after_service' == $operation) {
         /* 记录log */
-        return_action($ret_id, $return_info['return_status'], FF_REFUND, RC_APPLY_SUCCESS,'[' . 售后 . '] ' . $action_note);
+        return_action($ret_id, $return_info['return_status'], FF_REFUND, RC_APPLY_SUCCESS, '[' . 售后 . '] ' . $action_note);
     } else {
         die('invalid params');
     }
@@ -685,7 +657,8 @@ elseif ($_REQUEST['act'] == 'operate_post') {
  * 退换货
  * @return type
  */
-function return_order_list() {
+function return_order_list()
+{
     $result = get_filter();
 
     if ($result === false) {
@@ -783,24 +756,24 @@ function return_order_list() {
 
         //综合状态
         switch ($filter['composite_status']) {
-            case CS_AWAIT_PAY :
+            case CS_AWAIT_PAY:
                 $where .= order_query_sql('await_pay');
                 break;
 
-            case CS_AWAIT_SHIP :
+            case CS_AWAIT_SHIP:
                 $where .= order_query_sql('await_ship');
                 break;
 
-            case CS_FINISHED :
+            case CS_FINISHED:
                 $where .= order_query_sql('finished');
                 break;
 
-            case PS_PAYING :
+            case PS_PAYING:
                 if ($filter['composite_status'] != -1) {
                     $where .= " AND o.pay_status = '$filter[composite_status]' ";
                 }
                 break;
-            case OS_SHIPPED_PART :
+            case OS_SHIPPED_PART:
                 if ($filter['composite_status'] != -1) {
                     $where .= " AND o.shipping_status  = '$filter[composite_status]'-2 ";
                 }
@@ -856,7 +829,7 @@ function return_order_list() {
                 " ORDER BY $filter[sort_by] $filter[sort_order] " .
                 " LIMIT " . ($filter['page'] - 1) * $filter['page_size'] . ",$filter[page_size]";
 
-        foreach (array('service_sn', 'consignee', 'email', 'address', 'zipcode', 'tel', 'user_name') AS $val) {
+        foreach (array('service_sn', 'consignee', 'email', 'address', 'zipcode', 'tel', 'user_name') as $val) {
             $filter[$val] = stripslashes($filter[$val]);
         }
         set_filter($filter, $sql);
@@ -867,7 +840,7 @@ function return_order_list() {
 
     $row = $GLOBALS['db']->getAll($sql);
     /* 格式话数据 */
-    foreach ($row AS $key => $value) {
+    foreach ($row as $key => $value) {
         $row[$key]['formated_order_amount'] = price_format($value['order_amount']);
         $row[$key]['formated_money_paid'] = price_format($value['money_paid']);
         $row[$key]['formated_total_fee'] = price_format($value['total_fee']);
@@ -900,7 +873,8 @@ function return_order_list() {
  *
  * @return array        $user       用户信息数组
  */
-function get_user_info($id) {
+function get_user_info($id)
+{
     $sql = 'SELECT  user_name' .
             ' FROM ' . $GLOBALS['ecs']->table('users') .
             " WHERE user_id = '$id'";
@@ -916,7 +890,8 @@ function get_user_info($id) {
  * @return  array   可执行的操作  confirm, pay, unpay, prepare, ship, unship, receive, cancel, invalid, return, drop
  * 格式 array('confirm' => true, 'pay' => true)
  */
-function operable_list($order) {
+function operable_list($order)
+{
     /* 取得订单状态、发货状态、付款状态 */
     $rf = $order['return_status'];
     $rc = $order['is_check'];
@@ -943,10 +918,9 @@ function operable_list($order) {
         if ($priv_list['rc']) {
             /* 状态：申请=> 未通过审核 */
             $list['check'] = true; // 确认
-            if (RF_CANCELED != $rf){
+            if (RF_CANCELED != $rf) {
                 $list['canceled'] = true;
             }
-            
         }
     } elseif (RC_APPLY_SUCCESS == $rc) {
         //通过审核
@@ -979,7 +953,7 @@ function operable_list($order) {
                 } elseif (FF_REFUND == $ff) {
                     //已退款
                 }
-            }  elseif ($service_info['service_type'] == ST_EXCHANGE) {
+            } elseif ($service_info['service_type'] == ST_EXCHANGE) {
                 if (RF_APPLICATION == $rf) {
                     /* 状态：申请=> 通过审核 */
                     $list['receive_goods'] = true;
@@ -1006,7 +980,7 @@ function operable_list($order) {
                     $list['refund'] = true;
                 } elseif (FF_REFUND == $ff) {
                     //已退款
-                } 
+                }
             }
         }
     }
@@ -1019,7 +993,8 @@ function operable_list($order) {
  * @param   array $order 订单数组
  * @return array
  */
-function get_order_goods($order) {
+function get_order_goods($order)
+{
     $goods_list = array();
     $goods_attr = array();
     $sql = "SELECT o.*, g.suppliers_id AS suppliers_id,IF(o.product_id > 0, p.product_number, g.goods_number) AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name, p.product_sn " .
@@ -1061,8 +1036,8 @@ function get_order_goods($order) {
 
     $attr = array();
     $arr = array();
-    foreach ($goods_attr AS $index => $array_val) {
-        foreach ($array_val AS $value) {
+    foreach ($goods_attr as $index => $array_val) {
+        foreach ($array_val as $value) {
             $arr = explode(':', $value); //以 : 号将属性拆开
             $attr[$index][] = @array('name' => $arr[0], 'value' => $arr[1]);
         }
@@ -1070,5 +1045,3 @@ function get_order_goods($order) {
 
     return array('goods_list' => $goods_list, 'attr' => $attr);
 }
-
-?>

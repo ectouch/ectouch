@@ -1,8 +1,5 @@
 <?php
 
-
-*/
-
 $_LANG['user_guide'] =
         '<br/>使用说明：' .
         '<ol>' .
@@ -246,5 +243,3 @@ $_LANG['custom_goods_field_not_null'] = '输出的商品数据列不能为空';
 $_LANG['export_condition'] = '商品数据批量导出';
 $_LANG['export_condition_search'] = '搜 索';
 $_LANG['export_format'] = '数据格式';
-
-?>

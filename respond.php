@@ -15,7 +15,7 @@
 
 define('IN_ECTOUCH', true);
 define('CONTROLLER_NAME', 'Respond');
-if(!isset($_GET['code'])){
+if (!isset($_GET['code'])) {
     header('location: index.php?'.$_SERVER['QUERY_STRING']);
     exit();
 }

@@ -32,4 +32,3 @@ $_LANG['js_languages']['goods_num_must_over_0'] = '商品数量应该大于0';
 
 $_LANG['js_languages']['rows_num_must_be_int'] = '排列显示条目数应该是整数';
 $_LANG['js_languages']['rows_num_must_over_0'] = '排列显示条目数应该大于0';
-?>

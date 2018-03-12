@@ -13,20 +13,16 @@ require_once(BASE_PATH . 'languages/' .$_CFG['lang']. '/admin/statistic.php');
 $smarty->assign('lang', $_LANG);
 
 /* act操作项的初始化 */
-if (empty($_REQUEST['act']))
-{
+if (empty($_REQUEST['act'])) {
     $_REQUEST['act'] = 'list';
-}
-else
-{
+} else {
     $_REQUEST['act'] = trim($_REQUEST['act']);
 }
 
 /*------------------------------------------------------ */
 //--订单统计
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     admin_priv('report_order');
 
     /* 随机的颜色数组 */
@@ -47,10 +43,10 @@ if ($_REQUEST['act'] == 'list')
     $click_count = floatval($db->getOne($sql));
 
     /* 每千个点击的订单数 */
-    $click_ordernum = $click_count > 0 ? round(($order_general['total_order_num'] * 1000)/$click_count,2) : 0;
+    $click_ordernum = $click_count > 0 ? round(($order_general['total_order_num'] * 1000)/$click_count, 2) : 0;
 
     /* 每千个点击的购物额 */
-    $click_turnover = $click_count > 0 ? round(($order_general['total_turnover'] * 1000)/$click_count,2) : 0;
+    $click_turnover = $click_count > 0 ? round(($order_general['total_turnover'] * 1000)/$click_count, 2) : 0;
 
     /* 时区 */
     $timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : $GLOBALS['_CFG']['timezone'];
@@ -59,17 +55,13 @@ if ($_REQUEST['act'] == 'list')
     $is_multi = empty($_POST['is_multi']) ? false : true;
 
     /* 时间参数 */
-    if (isset($_POST['start_date']) && !empty($_POST['end_date']))
-    {
+    if (isset($_POST['start_date']) && !empty($_POST['end_date'])) {
         $start_date = local_strtotime($_POST['start_date']);
         $end_date = local_strtotime($_POST['end_date']);
-        if ($start_date == $end_date)
-        {
+        if ($start_date == $end_date) {
             $end_date   =   $start_date + 86400;
         }
-    }
-    else
-    {
+    } else {
         $today      = strtotime(local_date('Y-m-d'));   //本地时间
         $start_date = $today - 86400 * 6;
         $end_date   = $today + 86400;               //至明天零时
@@ -77,39 +69,33 @@ if ($_REQUEST['act'] == 'list')
 
     $start_date_arr = array();
     $end_date_arr = array();
-    if(!empty($_POST['year_month']))
-    {
+    if (!empty($_POST['year_month'])) {
         $tmp = $_POST['year_month'];
 
-        for ($i = 0; $i < count($tmp); $i++)
-        {
-            if (!empty($tmp[$i]))
-            {
+        for ($i = 0; $i < count($tmp); $i++) {
+            if (!empty($tmp[$i])) {
                 $tmp_time = local_strtotime($tmp[$i] . '-1');
                 $start_date_arr[] = $tmp_time;
                 $end_date_arr[]   = local_strtotime($tmp[$i] . '-' . date('t', $tmp_time));
             }
         }
-    }
-    else
-    {
+    } else {
         $tmp_time = local_strtotime(local_date('Y-m-d'));
         $start_date_arr[] = local_strtotime(local_date('Y-m') . '-1');
-        $end_date_arr[]   = local_strtotime(local_date('Y-m') . '-31');;
+        $end_date_arr[]   = local_strtotime(local_date('Y-m') . '-31');
+        ;
     }
 
     /* 按月份交叉查询 */
-    if ($is_multi)
-    {
+    if ($is_multi) {
         /* 订单概况 */
         $order_general_xml = "<chart caption='$_LANG[order_circs]' shownames='1' showvalues='0' decimals='0' outCnvBaseFontSize='12' baseFontSize='12' >";
         $order_general_xml .= "<categories><category label='$_LANG[confirmed]' />" .
                                 "<category label='$_LANG[succeed]' />" .
                                 "<category label='$_LANG[unconfirmed]' />" .
                                 "<category label='$_LANG[invalid]' /></categories>";
-        foreach($start_date_arr AS $k => $val)
-        {
-            $seriesName = local_date('Y-m',$val);
+        foreach ($start_date_arr as $k => $val) {
+            $seriesName = local_date('Y-m', $val);
             $order_info = get_orderinfo($start_date_arr[$k], $end_date_arr[$k]);
             $order_general_xml .= "<dataset seriesName='$seriesName' color='$color_array[$k]' showValues='0'>";
             $order_general_xml .= "<set value='$order_info[confirmed_num]' />";
@@ -126,42 +112,36 @@ if ($_REQUEST['act'] == 'list')
         $payment = array();
         $payment_count = array();
 
-        foreach($start_date_arr AS $k => $val)
-        {
-             $sql = 'SELECT i.pay_id, p.pay_name, i.pay_time, COUNT(i.order_id) AS order_num ' .
+        foreach ($start_date_arr as $k => $val) {
+            $sql = 'SELECT i.pay_id, p.pay_name, i.pay_time, COUNT(i.order_id) AS order_num ' .
                 'FROM ' .$ecs->table('payment'). ' AS p, ' .$ecs->table('order_info'). ' AS i '.
                 "WHERE p.pay_id = i.pay_id AND i.order_status = '" .OS_CONFIRMED. "' ".
                 "AND i.pay_status > '" .PS_UNPAYED. "' AND i.shipping_status > '" .SS_UNSHIPPED. "' ".
                 "AND i.add_time >= '$start_date_arr[$k]' AND i.add_time <= '$end_date_arr[$k]'".
                 "GROUP BY i.pay_id ORDER BY order_num DESC";
-             $pay_res = $db->query($sql);
-             while ($pay_item = $db->FetchRow($pay_res))
-             {
+            $pay_res = $db->query($sql);
+            while ($pay_item = $db->FetchRow($pay_res)) {
                 $payment[$pay_item['pay_name']] = null;
 
                 $paydate = local_date('Y-m', $pay_item['pay_time']);
 
                 $payment_count[$pay_item['pay_name']][$paydate] = $pay_item['order_num'];
-             }
+            }
         }
 
         $pay_xml .= "<categories>";
-        foreach ($payment AS $k => $val)
-        {
+        foreach ($payment as $k => $val) {
             $pay_xml .= "<category label='$k' />";
         }
         $pay_xml .= "</categories>";
 
-        foreach($start_date_arr AS $k => $val)
-        {
+        foreach ($start_date_arr as $k => $val) {
             $date = local_date('Y-m', $start_date_arr[$k]);
             $pay_xml .= "<dataset seriesName='$date' color='$color_array[$k]' showValues='0'>";
-            foreach ($payment AS $k => $val)
-            {
+            foreach ($payment as $k => $val) {
                 $count = 0;
-                if (!empty($payment_count[$k][$date]))
-                {
-                  $count = $payment_count[$k][$date];
+                if (!empty($payment_count[$k][$date])) {
+                    $count = $payment_count[$k][$date];
                 }
 
                 $pay_xml .= "<set value='$count' name='$date' />";
@@ -176,42 +156,36 @@ if ($_REQUEST['act'] == 'list')
 
         $ship_xml = "<chart caption='$_LANG[shipping_method]' shownames='1' showvalues='0' decimals='0' outCnvBaseFontSize='12' baseFontSize='12' >";
 
-        foreach($start_date_arr AS $k => $val)
-        {
-             $sql = 'SELECT sp.shipping_id, sp.shipping_name AS ship_name, i.shipping_time, COUNT(i.order_id) AS order_num ' .
+        foreach ($start_date_arr as $k => $val) {
+            $sql = 'SELECT sp.shipping_id, sp.shipping_name AS ship_name, i.shipping_time, COUNT(i.order_id) AS order_num ' .
                'FROM ' .$ecs->table('shipping'). ' AS sp, ' .$ecs->table('order_info'). ' AS i ' .
                'WHERE sp.shipping_id = i.shipping_id ' . order_query_sql('finished') .
                "AND i.add_time >= '$start_date_arr[$k]' AND i.add_time <= '$end_date_arr[$k]' " .
                "GROUP BY i.shipping_id ORDER BY order_num DESC";
 
-             $ship_res = $db->query($sql);
-             while ($ship_item = $db->FetchRow($ship_res))
-             {
+            $ship_res = $db->query($sql);
+            while ($ship_item = $db->FetchRow($ship_res)) {
                 $ship[$ship_item['ship_name']] = null;
 
                 $shipdate = local_date('Y-m', $ship_item['shipping_time']);
 
                 $ship_count[$ship_item['ship_name']][$shipdate] = $ship_item['order_num'];
-             }
+            }
         }
 
         $ship_xml .= "<categories>";
-        foreach ($ship AS $k => $val)
-        {
+        foreach ($ship as $k => $val) {
             $ship_xml .= "<category label='$k' />";
         }
         $ship_xml .= "</categories>";
 
-        foreach($start_date_arr AS $k => $val)
-        {
+        foreach ($start_date_arr as $k => $val) {
             $date = local_date('Y-m', $start_date_arr[$k]);
 
             $ship_xml .= "<dataset seriesName='$date' color='$color_array[$k]' showValues='0'>";
-            foreach ($ship AS $k => $val)
-            {
+            foreach ($ship as $k => $val) {
                 $count = 0;
-                if (!empty($ship_count[$k][$date]))
-                {
+                if (!empty($ship_count[$k][$date])) {
                     $count = $ship_count[$k][$date];
                 }
                 $ship_xml .= "<set value='$count' name='$date' />";
@@ -221,8 +195,7 @@ if ($_REQUEST['act'] == 'list')
         $ship_xml .= "</chart>";
     }
     /* 按时间段查询 */
-    else
-    {
+    else {
         /* 订单概况 */
         $order_info = get_orderinfo($start_date, $end_date);
 
@@ -247,9 +220,8 @@ if ($_REQUEST['act'] == 'list')
            "GROUP BY i.pay_id ORDER BY order_num DESC";
         $pay_res= $db->query($sql);
 
-        while ($pay_item = $db->FetchRow($pay_res))
-        {
-            $pay_xml .= "<set value='".$pay_item['order_num']."' name='".$pay_item['pay_name']."' color='".$color_array[mt_rand(0,7)]."'/>";
+        while ($pay_item = $db->FetchRow($pay_res)) {
+            $pay_xml .= "<set value='".$pay_item['order_num']."' name='".$pay_item['pay_name']."' color='".$color_array[mt_rand(0, 7)]."'/>";
         }
         $pay_xml .= "</graph>";
 
@@ -263,55 +235,46 @@ if ($_REQUEST['act'] == 'list')
                "GROUP BY i.shipping_id ORDER BY order_num DESC";
         $ship_res = $db->query($sql);
 
-        while ($ship_item = $db->fetchRow($ship_res))
-        {
-            $ship_xml .= "<set value='".$ship_item['order_num']."' name='".$ship_item['ship_name']."' color='".$color_array[mt_rand(0,7)]."' />";
+        while ($ship_item = $db->fetchRow($ship_res)) {
+            $ship_xml .= "<set value='".$ship_item['order_num']."' name='".$ship_item['ship_name']."' color='".$color_array[mt_rand(0, 7)]."' />";
         }
 
         $ship_xml .= "</graph>";
-
     }
     /* 赋值到模板 */
-    $smarty->assign('order_general',       $order_general);
-    $smarty->assign('total_turnover',      price_format($order_general['total_turnover']));
-    $smarty->assign('click_count',         $click_count);         //商品总点击数
-    $smarty->assign('click_ordernum',      $click_ordernum);      //每千点订单数
-    $smarty->assign('click_turnover',      price_format($click_turnover));  //每千点购物额
+    $smarty->assign('order_general', $order_general);
+    $smarty->assign('total_turnover', price_format($order_general['total_turnover']));
+    $smarty->assign('click_count', $click_count);         //商品总点击数
+    $smarty->assign('click_ordernum', $click_ordernum);      //每千点订单数
+    $smarty->assign('click_turnover', price_format($click_turnover));  //每千点购物额
 
-    $smarty->assign('is_multi',            $is_multi);
+    $smarty->assign('is_multi', $is_multi);
 
-    $smarty->assign('order_general_xml',   $order_general_xml);
-    $smarty->assign('ship_xml',            $ship_xml);
-    $smarty->assign('pay_xml',             $pay_xml);
+    $smarty->assign('order_general_xml', $order_general_xml);
+    $smarty->assign('ship_xml', $ship_xml);
+    $smarty->assign('pay_xml', $pay_xml);
 
-    $smarty->assign('ur_here',             $_LANG['report_order']);
-    $smarty->assign('start_date',          local_date($_CFG['date_format'], $start_date));
-    $smarty->assign('end_date',            local_date($_CFG['date_format'], $end_date));
+    $smarty->assign('ur_here', $_LANG['report_order']);
+    $smarty->assign('start_date', local_date($_CFG['date_format'], $start_date));
+    $smarty->assign('end_date', local_date($_CFG['date_format'], $end_date));
 
-    for ($i = 0; $i < 5; $i++)
-    {
-        if (isset($start_date_arr[$i]))
-        {
+    for ($i = 0; $i < 5; $i++) {
+        if (isset($start_date_arr[$i])) {
             $start_date_arr[$i] = local_date('Y-m', $start_date_arr[$i]);
-        }
-        else
-        {
+        } else {
             $start_date_arr[$i] = null;
         }
     }
     $smarty->assign('start_date_arr', $start_date_arr);
 
-    if (!$is_multi)
-    {
+    if (!$is_multi) {
         $filename = local_date('Ymd', $start_date) . '_' . local_date('Ymd', $end_date);
-        $smarty->assign('action_link',  array('text' => $_LANG['down_order_statistics'], 'href' => 'order_stats.php?act=download&start_date=' . $start_date . '&end_date=' . $end_date . '&filename=' . $filename));
+        $smarty->assign('action_link', array('text' => $_LANG['down_order_statistics'], 'href' => 'order_stats.php?act=download&start_date=' . $start_date . '&end_date=' . $end_date . '&filename=' . $filename));
     }
 
     assign_query_info();
     $smarty->display('order_stats.htm');
-}
-elseif ($act = 'download')
-{
+} elseif ($act = 'download') {
     $filename = !empty($_REQUEST['filename']) ? trim($_REQUEST['filename']) : '';
 
     header("Content-type: application/vnd.ms-excel; charset=utf-8");
@@ -332,13 +295,11 @@ elseif ($act = 'download')
             "AND i.add_time >= '$start_date' AND i.add_time <= '$end_date' ".
             "GROUP BY i.pay_id ORDER BY order_num DESC";
     $pay_res= $db->getAll($sql);
-    foreach ($pay_res AS $val)
-    {
+    foreach ($pay_res as $val) {
         $data .= $val['pay_name'] . "\t";
     }
     $data .= "\n";
-    foreach ($pay_res AS $val)
-    {
+    foreach ($pay_res as $val) {
         $data .= $val['order_num'] . "\t";
     }
 
@@ -351,19 +312,16 @@ elseif ($act = 'download')
     $ship_res = $db->getAll($sql);
 
     $data .= "\n$_LANG[shipping_method]\n";
-    foreach ($ship_res AS $val)
-    {
+    foreach ($ship_res as $val) {
         $data .= $val['ship_name'] . "\t";
     }
     $data .= "\n";
-    foreach ($ship_res AS $val)
-    {
+    foreach ($ship_res as $val) {
         $data .= $val['order_num'] . "\t";
     }
 
     echo ecs_iconv(CHARSET, 'GB2312', $data) . "\t";
     exit;
-
 }
 
 /*------------------------------------------------------ */
@@ -377,33 +335,31 @@ elseif ($act = 'download')
   */
  function get_orderinfo($start_date, $end_date)
  {
-    $order_info = array();
+     $order_info = array();
 
-    /* 未确认订单数 */
-    $sql = 'SELECT COUNT(*) AS unconfirmed_num FROM ' .$GLOBALS['ecs']->table('order_info').
+     /* 未确认订单数 */
+     $sql = 'SELECT COUNT(*) AS unconfirmed_num FROM ' .$GLOBALS['ecs']->table('order_info').
            " WHERE order_status = '" .OS_UNCONFIRMED. "' AND add_time >= '$start_date'".
            " AND add_time < '" . ($end_date + 86400) . "'";
 
-    $order_info['unconfirmed_num'] = $GLOBALS['db']->getOne($sql);
+     $order_info['unconfirmed_num'] = $GLOBALS['db']->getOne($sql);
 
-    /* 已确认订单数 */
-    $sql = 'SELECT COUNT(*) AS confirmed_num FROM ' .$GLOBALS['ecs']->table('order_info').
+     /* 已确认订单数 */
+     $sql = 'SELECT COUNT(*) AS confirmed_num FROM ' .$GLOBALS['ecs']->table('order_info').
            " WHERE order_status = '" .OS_CONFIRMED. "' AND shipping_status NOT ". db_create_in(array(SS_SHIPPED, SS_RECEIVED)) . " AND pay_status NOT" . db_create_in(array(PS_PAYED, PS_PAYING)) ." AND add_time >= '$start_date'".
            " AND add_time < '" . ($end_date + 86400) . "'";
-    $order_info['confirmed_num'] = $GLOBALS['db']->getOne($sql);
+     $order_info['confirmed_num'] = $GLOBALS['db']->getOne($sql);
 
-    /* 已成交订单数 */
-    $sql = 'SELECT COUNT(*) AS succeed_num FROM ' .$GLOBALS['ecs']->table('order_info').
+     /* 已成交订单数 */
+     $sql = 'SELECT COUNT(*) AS succeed_num FROM ' .$GLOBALS['ecs']->table('order_info').
            " WHERE 1 " . order_query_sql('finished') .
            " AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "'";
-    $order_info['succeed_num'] = $GLOBALS['db']->getOne($sql);
+     $order_info['succeed_num'] = $GLOBALS['db']->getOne($sql);
 
-    /* 无效或已取消订单数 */
-    $sql = "SELECT COUNT(*) AS invalid_num FROM " .$GLOBALS['ecs']->table('order_info').
+     /* 无效或已取消订单数 */
+     $sql = "SELECT COUNT(*) AS invalid_num FROM " .$GLOBALS['ecs']->table('order_info').
            " WHERE order_status > '" .OS_CONFIRMED. "' AND order_status < '".OS_RETURNED."'  ".
            " AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "'";
-    $order_info['invalid_num'] = $GLOBALS['db']->getOne($sql);
-    return $order_info;
+     $order_info['invalid_num'] = $GLOBALS['db']->getOne($sql);
+     return $order_info;
  }
-
-?>

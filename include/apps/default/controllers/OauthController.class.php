@@ -33,7 +33,7 @@ class OauthController extends CommonController
 
         $file = ROOT_PATH . 'plugins/connect/' . $type . '.php';
         if (file_exists($file)) {
-            include_once ($file);
+            include_once($file);
         } else {
             show_message(L('process_false'), L('relogin_lnk'), url('user/login', array('back_act' => $this->back_act)), 'error');
         }
@@ -137,7 +137,7 @@ class OauthController extends CommonController
         // 兼容原users表aite_id
         $aite_id = $res['type'] . '_' . $res['unionid'];
         $users = $this->model->table('users')->field('user_id')->where(array('aite_id' => $aite_id))->find();
-        if(!empty($users)){
+        if (!empty($users)) {
             // 清空aite_id
             // $this->model->table('users')->data(array('aite_id' => ''))->where(array('user_id' => $older_user['user_id']))->update();
             // 同步社会化登录表
@@ -148,7 +148,7 @@ class OauthController extends CommonController
         // 兼容原touch_user_info表
         $aite_id = $res['type'] . '_' . $res['unionid'];
         $old_userinfo = model('Users')->get_one_user($aite_id);
-        if(!empty($old_userinfo)){
+        if (!empty($old_userinfo)) {
             // 同步社会化登录表
             $res['user_id'] = $old_userinfo['user_id'];
             model('Users')->update_connnect_user($res, $type);
@@ -173,7 +173,7 @@ class OauthController extends CommonController
             $res['user_id'] = !empty($userinfo['user_id']) ? $userinfo['user_id'] : $_SESSION['user_id'];
             model('Users')->update_connnect_user($res, $type);
             // 更新微信用户信息
-            if(class_exists('WechatController') && is_wechat_browser() && $type == 'weixin'){
+            if (class_exists('WechatController') && is_wechat_browser() && $type == 'weixin') {
                 $res['openid'] = session('openid');
                 unset($res['user_id']); // 关联账号 登录不更新 ect_uid
                 model('Users')->update_wechat_user($res);
@@ -215,7 +215,7 @@ class OauthController extends CommonController
 
         // 查询是否绑定
         $userinfo = model('Users')->get_connect_user($res['unionid']);
-        if(empty($userinfo)){
+        if (empty($userinfo)) {
             if (model('Users')->register($username, $password, $email, $extend) !== false) {
 
                 // 同步社会化登录用户信息表
@@ -225,7 +225,7 @@ class OauthController extends CommonController
                 model('Users')->update_user_info();
 
                 // 更新微信用户绑定信息
-                if(class_exists('WechatController') && is_wechat_browser() && $type == 'weixin'){
+                if (class_exists('WechatController') && is_wechat_browser() && $type == 'weixin') {
                     // 查找微信用户是否已经绑定过
                     $result = $this->model->table('wechat_user')->where(array('ect_uid' => $_SESSION['user_id'], 'wechat_id' => 1))->find();
                     if (!empty($result)) {
@@ -245,12 +245,10 @@ class OauthController extends CommonController
                 show_message(L('msg_author_register_error'), L('msg_re_registration'), url('user/login'), 'error');
             }
             return;
-
         } else {
             show_message(L('msg_account_bound'), L('msg_go_back'), url('user/login'), 'error');
         }
         return;
-
     }
 
     /**

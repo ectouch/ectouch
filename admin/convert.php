@@ -12,18 +12,15 @@ require(dirname(__FILE__) . '/includes/init.php');
 //-- 转换程序主页面
 /*------------------------------------------------------ */
 
-if ($_REQUEST['act'] == 'main')
-{
+if ($_REQUEST['act'] == 'main') {
     admin_priv('convert');
 
     /* 取得插件文件中的转换程序 */
     $modules = read_modules('../includes/modules/convert');
-    for ($i = 0; $i < count($modules); $i++)
-    {
+    for ($i = 0; $i < count($modules); $i++) {
         $code = $modules[$i]['code'];
         $lang_file = BASE_PATH.'languages/' . $_CFG['lang'] . '/convert/' . $code . '.php';
-        if (file_exists($lang_file))
-        {
+        if (file_exists($lang_file)) {
             include_once($lang_file);
         }
         $modules[$i]['desc'] = $_LANG[$modules[$i]['desc']];
@@ -54,8 +51,7 @@ if ($_REQUEST['act'] == 'main')
 //-- 转换前检查
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'check')
-{
+elseif ($_REQUEST['act'] == 'check') {
     /* 检查权限 */
     check_authz_json('convert');
 
@@ -79,37 +75,31 @@ elseif ($_REQUEST['act'] == 'check')
     $table_list = $sdb->getCol($sql);
 
     $diff_arr = array_diff($required_table_list, $table_list);
-    if ($diff_arr)
-    {
+    if ($diff_arr) {
         make_json_error(sprintf($_LANG['table_error'], join(',', $table_list)));
     }
 
     /* 检查源目录是否存在，是否可读 */
     $dir_list = $convert->required_dirs();
-    foreach ($dir_list AS $dir)
-    {
+    foreach ($dir_list as $dir) {
         $cur_dir = ($config->path . $dir);
-        if (!file_exists($cur_dir) || !is_dir($cur_dir))
-        {
+        if (!file_exists($cur_dir) || !is_dir($cur_dir)) {
             make_json_error(sprintf($_LANG['dir_error'], $cur_dir));
         }
 
-        if (file_mode_info($cur_dir) & 1 != 1)
-        {
+        if (file_mode_info($cur_dir) & 1 != 1) {
             make_json_error(sprintf($_LANG['dir_not_readable'], $cur_dir));
         }
 
         $res = check_files_readable($cur_dir);
-        if ($res !== true)
-        {
+        if ($res !== true) {
             make_json_error(sprintf($_LANG['file_not_readable'], $res));
         }
     }
 
     /* 创建图片目录 */
     $img_dir = ROOT_PATH . IMAGE_DIR . '/' . date('Ym') . '/';
-    if (!file_exists($img_dir))
-    {
+    if (!file_exists($img_dir)) {
         make_dir($img_dir);
     }
 
@@ -122,15 +112,12 @@ elseif ($_REQUEST['act'] == 'check')
     );
 
     /* 检查目的目录是否存在，是否可写 */
-    foreach ($to_dir_list AS $to_dir)
-    {
-        if (!file_exists($to_dir) || !is_dir($to_dir))
-        {
+    foreach ($to_dir_list as $to_dir) {
+        if (!file_exists($to_dir) || !is_dir($to_dir)) {
             make_json_error(sprintf($_LANG['dir_error'], $to_dir));
         }
 
-        if (file_mode_info($to_dir) & 4 != 4)
-        {
+        if (file_mode_info($to_dir) & 4 != 4) {
             make_json_error(sprintf($_LANG['dir_not_writable'], $to_dir));
         }
     }
@@ -152,8 +139,7 @@ elseif ($_REQUEST['act'] == 'check')
 //-- 转换操作
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'process')
-{
+elseif ($_REQUEST['act'] == 'process') {
     /* 设置执行时间 */
     set_time_limit(0);
 
@@ -178,8 +164,7 @@ elseif ($_REQUEST['act'] == 'process')
 
     /* 执行步骤 */
     $result = $convert->process($step);
-    if ($result !== true)
-    {
+    if ($result !== true) {
         make_json_error($result);
     }
 
@@ -200,14 +185,10 @@ elseif ($_REQUEST['act'] == 'process')
 function check_files_readable($dirname)
 {
     /* 遍历文件，检查文件是否可读 */
-    if ($dh = opendir($dirname))
-    {
-        while (($file = readdir($dh)) !== false)
-        {
-            if (filetype($dirname . $file) == 'file' && strtolower($file) != 'thumbs.db')
-            {
-                if (file_mode_info($dirname . $file) & 1 != 1)
-                {
+    if ($dh = opendir($dirname)) {
+        while (($file = readdir($dh)) !== false) {
+            if (filetype($dirname . $file) == 'file' && strtolower($file) != 'thumbs.db') {
+                if (file_mode_info($dirname . $file) & 1 != 1) {
                     return $dirname . $file;
                 }
             }
@@ -231,14 +212,10 @@ function check_files_readable($dirname)
 function copy_files($from_dir, $to_dir, $file_prefix = '')
 {
     /* 遍历并复制文件 */
-    if ($dh = opendir($from_dir))
-    {
-        while (($file = readdir($dh)) !== false)
-        {
-            if (filetype($from_dir . $file) == 'file' && strtolower($file) != 'thumbs.db')
-            {
-                if (!copy($from_dir . $file, $to_dir . $file_prefix . $file))
-                {
+    if ($dh = opendir($from_dir)) {
+        while (($file = readdir($dh)) !== false) {
+            if (filetype($from_dir . $file) == 'file' && strtolower($file) != 'thumbs.db') {
+                if (!copy($from_dir . $file, $to_dir . $file_prefix . $file)) {
                     return $from_dir . $file;
                 }
             }
@@ -262,32 +239,23 @@ function copy_files($from_dir, $to_dir, $file_prefix = '')
 function copy_dirs($from_dir, $to_dir, $file_prefix = '')
 {
     $result = true;
-    if(! is_dir($from_dir))
-    {
+    if (! is_dir($from_dir)) {
         die("It's not a dir");
     }
-    if(! is_dir($to_dir))
-    {
-        if(! mkdir($to_dir, 0700))
-        {
+    if (! is_dir($to_dir)) {
+        if (! mkdir($to_dir, 0700)) {
             die("can't mkdir");
         }
     }
     $handle = opendir($from_dir);
-    while(($file = readdir($handle)) !== false)
-    {
-        if($file != '.' && $file != '..')
-        {
+    while (($file = readdir($handle)) !== false) {
+        if ($file != '.' && $file != '..') {
             $src = $from_dir . DIRECTORY_SEPARATOR . $file;
             $dtn = $to_dir . DIRECTORY_SEPARATOR . $file_prefix . $file;
-            if(is_dir($src))
-            {
+            if (is_dir($src)) {
                 copy_dirs($src, $dtn);
-            }
-            else
-            {
-                if(! copy($src, $dtn))
-                {
+            } else {
+                if (! copy($src, $dtn)) {
                     $result = false;
                     break;
                 }
@@ -297,5 +265,3 @@ function copy_dirs($from_dir, $to_dir, $file_prefix = '')
     closedir($handle);
     return $result;
 }
-
-?>

@@ -41,5 +41,3 @@ $_LANG['js_languages']['act_name_not_null'] = '请输入批发方案名称';
 /* post */
 $_LANG['pls_set_user_rank'] = '请设置会员等级';
 $_LANG['user_rank_exist'] = '已经存在该商品针对您选择的会员等级的批发方案了';
-
-?>

@@ -15,12 +15,14 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class TopicController extends AdminController {
+class TopicController extends AdminController
+{
 
     /**
      * 专题管理列表
      */
-    public function index() {
+    public function index()
+    {
         /* 模板赋值 */
         $filter['page'] = '{page}';
         $offset = $this->pageLimit(url('index', $filter), 12);
@@ -37,7 +39,8 @@ class TopicController extends AdminController {
     /**
      * 添加专题
      */
-    public function add() {
+    public function add()
+    {
         if (IS_POST) {
             $data = I('data');
             /* 数据验证 */
@@ -48,22 +51,22 @@ class TopicController extends AdminController {
             ));
             /* 提示信息 */
             if ($msg !== true) {
-                $this->message($msg, NULL, 'error');
+                $this->message($msg, null, 'error');
             }
             $topic_type = empty($data['topic_type']) ? 0 : intval($data['topic_type']);
 
             switch ($topic_type) {
-                case '0' :
-                case '1' :
+                case '0':
+                case '1':
                     // 主图上传
                     if ($_FILES['topic_img']['name'] && $_FILES['topic_img']['size'] > 0) {
                         $result = $this->ectouchUpload('topic_img', 'topic_image');
                         if ($result['error'] > 0) {
-                            $this->message($result['message'], NULL, 'error');
+                            $this->message($result['message'], null, 'error');
                         }
                         /* 生成logo链接 */
                         $topic_img = substr($result['message']['topic_img']['savepath'], 2) . $result['message']['topic_img']['savename'];
-                    } else if (!empty($_POST['url'])) {
+                    } elseif (!empty($_POST['url'])) {
                         /* 来自互联网图片 不可以是服务器地址 */
                         if (strstr(I('post.url'), 'http') && !strstr(I('post.url'), $_SERVER['SERVER_NAME'])) {
                             /* 取互联网图片至本地 */
@@ -75,7 +78,7 @@ class TopicController extends AdminController {
                     $data['topic_img'] = empty($topic_img) ? I('post.img_url') : $topic_img;
                     $htmls = '';
                     break;
-                case '2' :
+                case '2':
                     $htmls = I('post.content');
 
                     $data['topic_img'] = '';
@@ -85,11 +88,11 @@ class TopicController extends AdminController {
             if ($_FILES['title_pic']['name'] && $_FILES['title_pic']['size'] > 0) {
                 $result = $this->ectouchUpload('title_pic', 'topic_image');
                 if ($result['error'] > 0) {
-                    $this->message($result['message'], NULL, 'error');
+                    $this->message($result['message'], null, 'error');
                 }
                 /* 生成logo链接 */
                 $data['title_pic'] = substr($result['message']['title_pic']['savepath'], 2) . $result['message']['title_pic']['savename'];
-            } else if (!empty($_REQUEST['title_url'])) {
+            } elseif (!empty($_REQUEST['title_url'])) {
                 /* 来自互联网图片 不可以是服务器地址 */
                 if (strstr(I('post.title_url'), 'http') && !strstr(I('post.title_url'), $_SERVER['SERVER_NAME'])) {
                     /* 取互联网图片至本地 */
@@ -124,7 +127,8 @@ class TopicController extends AdminController {
     /**
      * 编辑专题
      */
-    public function edit() {
+    public function edit()
+    {
         $id = I('id');
         if (!$id) {
             $this->redirect(url('index'));
@@ -139,22 +143,22 @@ class TopicController extends AdminController {
             ));
             /* 提示信息 */
             if ($msg !== true) {
-                $this->message($msg, NULL, 'error');
+                $this->message($msg, null, 'error');
             }
             $topic_type = empty($data['topic_type']) ? 0 : intval($data['topic_type']);
 
             switch ($topic_type) {
-                case '0' :
-                case '1' :
+                case '0':
+                case '1':
                     // 主图上传
                     if ($_FILES['topic_img']['name'] && $_FILES['topic_img']['size'] > 0) {
                         $result = $this->ectouchUpload('topic_img', 'topic_image');
                         if ($result['error'] > 0) {
-                            $this->message($result['message'], NULL, 'error');
+                            $this->message($result['message'], null, 'error');
                         }
                         /* 生成logo链接 */
                         $topic_img = substr($result['message']['topic_img']['savepath'], 2) . $result['message']['topic_img']['savename'];
-                    } else if (!empty($_POST['url'])) {
+                    } elseif (!empty($_POST['url'])) {
                         /* 来自互联网图片 不可以是服务器地址 */
                         if (strstr(I('post.url'), 'http') && !strstr(I('post.url'), $_SERVER['SERVER_NAME'])) {
                             /* 取互联网图片至本地 */
@@ -166,7 +170,7 @@ class TopicController extends AdminController {
                     $data['topic_img'] = empty($topic_img) ? I('post.img_url') : $topic_img;
                     $htmls = '';
                     break;
-                case '2' :
+                case '2':
                     $htmls = I('post.content');
                     $data['topic_img'] = '';
                     break;
@@ -175,11 +179,11 @@ class TopicController extends AdminController {
             if ($_FILES['title_pic']['name'] && $_FILES['title_pic']['size'] > 0) {
                 $result = $this->ectouchUpload('title_pic', 'topic_image');
                 if ($result['error'] > 0) {
-                    $this->message($result['message'], NULL, 'error');
+                    $this->message($result['message'], null, 'error');
                 }
                 /* 生成logo链接 */
                 $data['title_pic'] = substr($result['message']['title_pic']['savepath'], 2) . $result['message']['title_pic']['savename'];
-            } else if (!empty($_REQUEST['title_url'])) {
+            } elseif (!empty($_REQUEST['title_url'])) {
                 /* 来自互联网图片 不可以是服务器地址 */
                 if (strstr(I('post.title_url'), 'http') && !strstr(I('post.title_url'), $_SERVER['SERVER_NAME'])) {
                     /* 取互联网图片至本地 */
@@ -234,7 +238,8 @@ class TopicController extends AdminController {
     /**
      * 删除专题
      */
-    public function del() {
+    public function del()
+    {
         $id = I('id');
         if (!$id) {
             $this->redirect(url('index'));
@@ -275,7 +280,8 @@ class TopicController extends AdminController {
      * @access  public
      * @return void
      */
-    function get_topic_list($offset = '0, 12') {
+    public function get_topic_list($offset = '0, 12')
+    {
         $result = get_filter();
         if ($result === false) {
             /* 查询条件 */
@@ -312,14 +318,15 @@ class TopicController extends AdminController {
     /**
      * 异步调用商品列表
      */
-    public function get_goods_list() {
+    public function get_goods_list()
+    {
         $_POST['filters'] = strip_tags(urldecode($_POST ['filters']));
         $_POST['filters'] = json_str_iconv($_POST['filters']);
         $json = new EcsJson;
         $filters = $json->decode($_POST['filters']);
         $arr = get_goods_list($filters);
         $opt = array();
-        foreach ($arr AS $key => $val) {
+        foreach ($arr as $key => $val) {
             $opt[] = array('value' => $val['goods_id'],
                 'text' => $val['goods_name']);
         }
@@ -330,7 +337,8 @@ class TopicController extends AdminController {
      * 查找主题模版
      * @return array
      */
-    private function get_topic_temp_list() {
+    private function get_topic_temp_list()
+    {
         $tmp_dir = ROOT_PATH . 'themes/' . C('template'); // 模板所在路径
         $dir = @opendir($tmp_dir);
         $tmp[] = 'topic.dwt';
@@ -341,5 +349,4 @@ class TopicController extends AdminController {
         }
         return $tmp;
     }
-
 }

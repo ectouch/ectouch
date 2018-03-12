@@ -15,20 +15,21 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ArticleBaseModel extends BaseModel {
-
+class ArticleBaseModel extends BaseModel
+{
     protected $table = 'article';
 
     /**
      * 获得文章分类下的文章列表
-     * 
+     *
      * @access public
-     * @param integer $cat_id            
-     * @param integer $page            
-     * @param integer $size            
+     * @param integer $cat_id
+     * @param integer $page
+     * @param integer $size
      * @return array
      */
-    public function get_cat_articles($cat_id, $page = 1, $size = 20, $requirement = '') {
+    public function get_cat_articles($cat_id, $page = 1, $size = 20, $requirement = '')
+    {
         // 取出所有非0的文章
         if ($cat_id == '-1') {
             $cat_str = 'cat_id > 0';
@@ -65,11 +66,12 @@ class ArticleBaseModel extends BaseModel {
 
     /**
      * 获得指定分类下的文章总数
-     * 
-     * @param integer $cat_id            
+     *
+     * @param integer $cat_id
      * @return integer
      */
-    public function get_article_count($cat_id, $requirement = '') {
+    public function get_article_count($cat_id, $requirement = '')
+    {
         $condition = get_article_children($cat_id) . ' AND is_open = 1';
         if ($requirement != '') {
             $condition .= ' AND title like \'%' . $requirement . '%\'';
@@ -83,10 +85,11 @@ class ArticleBaseModel extends BaseModel {
      * @access public
      * @param integer $cat
      *            指定的分类ID
-     *            
+     *
      * @return void
      */
-    function get_article_children($cat = 0) {
+    public function get_article_children($cat = 0)
+    {
         return db_create_in(array_unique(array_merge(array(
             $cat
                                 ), array_keys($this->article_cat_list($cat, 0, false)))), 'cat_id');
@@ -106,12 +109,13 @@ class ArticleBaseModel extends BaseModel {
      *            限定返回的级数。为0时返回所有级数
      * @return mix
      */
-    function article_cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0) {
-        static $res = NULL;
-        if ($res === NULL) {
+    public function article_cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0)
+    {
+        static $res = null;
+        if ($res === null) {
             $data = read_static_cache('art_cat_pid_releate');
             if ($data === false) {
-                $sql = "SELECT s.*, COUNT(s.cat_id) AS has_children, COUNT(a.article_id) AS aricle_num " . ' FROM ' . 
+                $sql = "SELECT s.*, COUNT(s.cat_id) AS has_children, COUNT(a.article_id) AS aricle_num " . ' FROM ' .
                 $this->pre . "article_cat AS s" . " LEFT JOIN " . $this->pre . "article AS a ON a.cat_id=s.cat_id" . " GROUP BY s.cat_id " . " ORDER BY parent_id, sort_order ASC";
                 $res = $this->query($sql);
                 write_static_cache('art_cat_pid_releate', $res);
@@ -154,7 +158,7 @@ class ArticleBaseModel extends BaseModel {
         }
 
         if ($re_type == true) {
-            $select = '';    
+            $select = '';
             foreach ($options as $var) {
                 $select .= '<option value="' . $var['cat_id'] . '" ';
                 $select .= ($selected == $var['cat_id']) ? "selected='ture'" : '';
@@ -188,7 +192,8 @@ class ArticleBaseModel extends BaseModel {
      *            级别
      * @return void
      */
-    function article_cat_options($spec_cat_id, $arr) {
+    public function article_cat_options($spec_cat_id, $arr)
+    {
         static $cat_options = array();
 
         if (isset($cat_options[$spec_cat_id])) {
@@ -301,7 +306,8 @@ class ArticleBaseModel extends BaseModel {
 
     /* 获得文章列表 */
 
-    function get_articleslist($offset) {
+    public function get_articleslist($offset)
+    {
         $result = get_filter();
         if ($result === false) {
             $filter = array();
@@ -345,11 +351,10 @@ class ArticleBaseModel extends BaseModel {
         }
         $arr = array();
         $res  = $this->query($sql);
-        foreach( $res as $rows){
+        foreach ($res as $rows) {
             $rows['date'] = local_date(C('time_format'), $rows['add_time']);
             $arr[] = $rows;
-        }    
+        }
         return array('arr' => $arr, 'filter' => $filter, 'page_count' => $filter['page_count'], 'record_count' => $filter['record_count']);
     }
-
 }

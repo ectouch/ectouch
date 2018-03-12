@@ -8,20 +8,16 @@ define('IN_ECTOUCH', true);
 require(dirname(__FILE__) . '/includes/init.php');
 
 /* act操作项的初始化 */
-if (empty($_REQUEST['act']))
-{
+if (empty($_REQUEST['act'])) {
     $_REQUEST['act'] = 'list';
-}
-else
-{
+} else {
     $_REQUEST['act'] = trim($_REQUEST['act']);
 }
 
 /*------------------------------------------------------ */
 //-- 获取所有日志列表
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     /* 权限的判断 */
     admin_priv('logs_manage');
 
@@ -32,21 +28,20 @@ if ($_REQUEST['act'] == 'list')
     /* 查询IP地址列表 */
     $ip_list = array();
     $res = $db->query("SELECT DISTINCT ip_address FROM " .$ecs->table('admin_log'));
-    while ($row = $db->FetchRow($res))
-    {
+    while ($row = $db->FetchRow($res)) {
         $ip_list[$row['ip_address']] = $row['ip_address'];
     }
 
-    $smarty->assign('ur_here',   $_LANG['admin_logs']);
-    $smarty->assign('ip_list',   $ip_list);
+    $smarty->assign('ur_here', $_LANG['admin_logs']);
+    $smarty->assign('ip_list', $ip_list);
     $smarty->assign('full_page', 1);
 
     $log_list = get_admin_logs();
 
-    $smarty->assign('log_list',        $log_list['list']);
-    $smarty->assign('filter',          $log_list['filter']);
-    $smarty->assign('record_count',    $log_list['record_count']);
-    $smarty->assign('page_count',      $log_list['page_count']);
+    $smarty->assign('log_list', $log_list['list']);
+    $smarty->assign('filter', $log_list['filter']);
+    $smarty->assign('record_count', $log_list['record_count']);
+    $smarty->assign('page_count', $log_list['page_count']);
 
     $sort_flag  = sort_flag($log_list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
@@ -58,44 +53,40 @@ if ($_REQUEST['act'] == 'list')
 /*------------------------------------------------------ */
 //-- 排序、分页、查询
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'query')
-{
+elseif ($_REQUEST['act'] == 'query') {
     $log_list = get_admin_logs();
 
-    $smarty->assign('log_list',        $log_list['list']);
-    $smarty->assign('filter',          $log_list['filter']);
-    $smarty->assign('record_count',    $log_list['record_count']);
-    $smarty->assign('page_count',      $log_list['page_count']);
+    $smarty->assign('log_list', $log_list['list']);
+    $smarty->assign('filter', $log_list['filter']);
+    $smarty->assign('record_count', $log_list['record_count']);
+    $smarty->assign('page_count', $log_list['page_count']);
 
     $sort_flag  = sort_flag($log_list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
 
-    make_json_result($smarty->fetch('admin_logs.htm'), '',
-        array('filter' => $log_list['filter'], 'page_count' => $log_list['page_count']));
+    make_json_result(
+        $smarty->fetch('admin_logs.htm'),
+        '',
+        array('filter' => $log_list['filter'], 'page_count' => $log_list['page_count'])
+    );
 }
 
 /*------------------------------------------------------ */
 //-- 批量删除日志记录
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'batch_drop')
-{
+if ($_REQUEST['act'] == 'batch_drop') {
     admin_priv('logs_drop');
 
     $drop_type_date = isset($_POST['drop_type_date']) ? $_POST['drop_type_date'] : '';
 
     /* 按日期删除日志 */
-    if ($drop_type_date)
-    {
-        if ($_POST['log_date'] == '0')
-        {
+    if ($drop_type_date) {
+        if ($_POST['log_date'] == '0') {
             ecs_header("Location: admin_logs.php?act=list\n");
             exit;
-        }
-        elseif ($_POST['log_date'] > '0')
-        {
+        } elseif ($_POST['log_date'] > '0') {
             $where = " WHERE 1 ";
-            switch ($_POST['log_date'])
-            {
+            switch ($_POST['log_date']) {
                 case '1':
                     $a_week = gmtime()-(3600 * 24 * 7);
                     $where .= " AND log_time <= '".$a_week."'";
@@ -119,9 +110,8 @@ if ($_REQUEST['act'] == 'batch_drop')
             }
             $sql = "DELETE FROM " .$ecs->table('admin_log').$where;
             $res = $db->query($sql);
-            if ($res)
-            {
-                admin_log('','remove', 'adminlog');
+            if ($res) {
+                admin_log('', 'remove', 'adminlog');
 
                 $link[] = array('text' => $_LANG['back_list'], 'href' => 'admin_logs.php?act=list');
                 sys_msg($_LANG['drop_sueeccud'], 1, $link);
@@ -129,18 +119,15 @@ if ($_REQUEST['act'] == 'batch_drop')
         }
     }
     /* 如果不是按日期来删除, 就按ID删除日志 */
-    else
-    {
+    else {
         $count = 0;
-        foreach ($_POST['checkboxes'] AS $key => $id)
-        {
+        foreach ($_POST['checkboxes'] as $key => $id) {
             $sql = "DELETE FROM " .$ecs->table('admin_log'). " WHERE log_id = '$id'";
             $result = $db->query($sql);
 
             $count++;
         }
-        if ($result)
-        {
+        if ($result) {
             admin_log('', 'remove', 'adminlog');
 
             $link[] = array('text' => $_LANG['back_list'], 'href' => 'admin_logs.php?act=list');
@@ -161,12 +148,9 @@ function get_admin_logs()
 
     //查询条件
     $where = " WHERE 1 ";
-    if (!empty($user_id))
-    {
+    if (!empty($user_id)) {
         $where .= " AND al.user_id = '$user_id' ";
-    }
-    elseif (!empty($admin_ip))
-    {
+    } elseif (!empty($admin_ip)) {
         $where .= " AND al.ip_address = '$admin_ip' ";
     }
 
@@ -183,8 +167,7 @@ function get_admin_logs()
             $where .' ORDER by '.$filter['sort_by'].' '.$filter['sort_order'];
     $res  = $GLOBALS['db']->selectLimit($sql, $filter['page_size'], $filter['start']);
 
-    while ($rows = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($rows = $GLOBALS['db']->fetchRow($res)) {
         $rows['log_time'] = local_date($GLOBALS['_CFG']['time_format'], $rows['log_time']);
 
         $list[] = $rows;
@@ -192,5 +175,3 @@ function get_admin_logs()
 
     return array('list' => $list, 'filter' => $filter, 'page_count' =>  $filter['page_count'], 'record_count' => $filter['record_count']);
 }
-
-?>

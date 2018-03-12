@@ -12,41 +12,37 @@ include_once(BASE_PATH . 'helpers/order_helper.php');
 /*------------------------------------------------------ */
 //-- 办事处列表
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     /* 检查参数 */
     $user_id = empty($_REQUEST['user_id']) ? 0 : intval($_REQUEST['user_id']);
-    if ($user_id <= 0)
-    {
+    if ($user_id <= 0) {
         sys_msg('invalid param');
     }
     $user = user_info($user_id);
-    if (empty($user))
-    {
+    if (empty($user)) {
         sys_msg($_LANG['user_not_exist']);
     }
     $smarty->assign('user', $user);
 
-    if (empty($_REQUEST['account_type']) || !in_array($_REQUEST['account_type'],
-        array('user_money', 'frozen_money', 'rank_points', 'pay_points')))
-    {
+    if (empty($_REQUEST['account_type']) || !in_array(
+        $_REQUEST['account_type'],
+        array('user_money', 'frozen_money', 'rank_points', 'pay_points')
+    )) {
         $account_type = '';
-    }
-    else
-    {
+    } else {
         $account_type = $_REQUEST['account_type'];
     }
     $smarty->assign('account_type', $account_type);
 
-    $smarty->assign('ur_here',      $_LANG['account_list']);
-    $smarty->assign('action_link',  array('text' => $_LANG['add_account'], 'href' => 'account_log.php?act=add&user_id=' . $user_id));
-    $smarty->assign('full_page',    1);
+    $smarty->assign('ur_here', $_LANG['account_list']);
+    $smarty->assign('action_link', array('text' => $_LANG['add_account'], 'href' => 'account_log.php?act=add&user_id=' . $user_id));
+    $smarty->assign('full_page', 1);
 
     $account_list = get_accountlist($user_id, $account_type);
     $smarty->assign('account_list', $account_list['account']);
-    $smarty->assign('filter',       $account_list['filter']);
+    $smarty->assign('filter', $account_list['filter']);
     $smarty->assign('record_count', $account_list['record_count']);
-    $smarty->assign('page_count',   $account_list['page_count']);
+    $smarty->assign('page_count', $account_list['page_count']);
 
     assign_query_info();
     $smarty->display('account_list.htm');
@@ -55,58 +51,54 @@ if ($_REQUEST['act'] == 'list')
 /*------------------------------------------------------ */
 //-- 排序、分页、查询
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'query')
-{
+elseif ($_REQUEST['act'] == 'query') {
     /* 检查参数 */
     $user_id = empty($_REQUEST['user_id']) ? 0 : intval($_REQUEST['user_id']);
-    if ($user_id <= 0)
-    {
+    if ($user_id <= 0) {
         sys_msg('invalid param');
     }
     $user = user_info($user_id);
-    if (empty($user))
-    {
+    if (empty($user)) {
         sys_msg($_LANG['user_not_exist']);
     }
     $smarty->assign('user', $user);
 
-    if (empty($_REQUEST['account_type']) || !in_array($_REQUEST['account_type'],
-        array('user_money', 'frozen_money', 'rank_points', 'pay_points')))
-    {
+    if (empty($_REQUEST['account_type']) || !in_array(
+        $_REQUEST['account_type'],
+        array('user_money', 'frozen_money', 'rank_points', 'pay_points')
+    )) {
         $account_type = '';
-    }
-    else
-    {
+    } else {
         $account_type = $_REQUEST['account_type'];
     }
     $smarty->assign('account_type', $account_type);
 
     $account_list = get_accountlist($user_id, $account_type);
     $smarty->assign('account_list', $account_list['account']);
-    $smarty->assign('filter',       $account_list['filter']);
+    $smarty->assign('filter', $account_list['filter']);
     $smarty->assign('record_count', $account_list['record_count']);
-    $smarty->assign('page_count',   $account_list['page_count']);
+    $smarty->assign('page_count', $account_list['page_count']);
 
-    make_json_result($smarty->fetch('account_list.htm'), '',
-        array('filter' => $account_list['filter'], 'page_count' => $account_list['page_count']));
+    make_json_result(
+        $smarty->fetch('account_list.htm'),
+        '',
+        array('filter' => $account_list['filter'], 'page_count' => $account_list['page_count'])
+    );
 }
 
 /*------------------------------------------------------ */
 //-- 调节帐户
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'add')
-{
+elseif ($_REQUEST['act'] == 'add') {
     /* 检查权限 */
     admin_priv('account_manage');
     /* 检查参数 */
     $user_id = empty($_REQUEST['user_id']) ? 0 : intval($_REQUEST['user_id']);
-    if ($user_id <= 0)
-    {
+    if ($user_id <= 0) {
         sys_msg('invalid param');
     }
     $user = user_info($user_id);
-    if (empty($user))
-    {
+    if (empty($user)) {
         sys_msg($_LANG['user_not_exist']);
     }
     $smarty->assign('user', $user);
@@ -121,13 +113,11 @@ elseif ($_REQUEST['act'] == 'add')
 /*------------------------------------------------------ */
 //-- 提交添加、编辑办事处
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
-{
+elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update') {
     /* 检查权限 */
     admin_priv('account_manage');
     $token=trim($_POST['token']);
-    if($token!=$_CFG['token'])
-    {
+    if ($token!=$_CFG['token']) {
         sys_msg($_LANG['no_account_change'], 1);
     }
 
@@ -135,13 +125,11 @@ elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
 
     /* 检查参数 */
     $user_id = empty($_REQUEST['user_id']) ? 0 : intval($_REQUEST['user_id']);
-    if ($user_id <= 0)
-    {
+    if ($user_id <= 0) {
         sys_msg('invalid param');
     }
     $user = user_info($user_id);
-    if (empty($user))
-    {
+    if (empty($user)) {
         sys_msg($_LANG['user_not_exist']);
     }
 
@@ -152,8 +140,7 @@ elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
     $rank_points    = floatval($_POST['add_sub_rank_points']) * abs(floatval($_POST['rank_points']));
     $pay_points     = floatval($_POST['add_sub_pay_points']) * abs(floatval($_POST['pay_points']));
 
-    if ($user_money == 0 && $frozen_money == 0 && $rank_points == 0 && $pay_points == 0)
-    {
+    if ($user_money == 0 && $frozen_money == 0 && $rank_points == 0 && $pay_points == 0) {
         sys_msg($_LANG['no_account_change']);
     }
 
@@ -178,8 +165,7 @@ function get_accountlist($user_id, $account_type = '')
 {
     /* 检查参数 */
     $where = " WHERE user_id = '$user_id' ";
-    if (in_array($account_type, array('user_money', 'frozen_money', 'rank_points', 'pay_points')))
-    {
+    if (in_array($account_type, array('user_money', 'frozen_money', 'rank_points', 'pay_points'))) {
         $where .= " AND $account_type <> 0 ";
     }
 
@@ -200,13 +186,10 @@ function get_accountlist($user_id, $account_type = '')
     $res = $GLOBALS['db']->selectLimit($sql, $filter['page_size'], $filter['start']);
 
     $arr = array();
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $row['change_time'] = local_date($GLOBALS['_CFG']['time_format'], $row['change_time']);
         $arr[] = $row;
     }
 
     return array('account' => $arr, 'filter' => $filter, 'page_count' => $filter['page_count'], 'record_count' => $filter['record_count']);
 }
-
-?>

@@ -444,4 +444,3 @@ $_LANG['mail_settings'] = '邮件服务器设置';
 
 $_LANG['sms_url'] = '<a href="'.$url.'" target="_blank">点此注册手机短信服务</a>';
 $_LANG['cfg_name']['sender_name'] = '寄件人姓名';
-?>

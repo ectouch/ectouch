@@ -22,7 +22,7 @@ if (! defined('IN_ECTOUCH')) {
  * 砸金蛋
  *
  * @author wanglu
- *        
+ *
  */
 class dzp extends PluginWechatController
 {
@@ -34,7 +34,7 @@ class dzp extends PluginWechatController
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -101,8 +101,8 @@ class dzp extends PluginWechatController
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -148,7 +148,7 @@ class dzp extends PluginWechatController
         
         $file = ROOT_PATH . 'plugins/wechat/' . $this->plugin_name . '/view/index.html';
         if (file_exists($file)) {
-            require_once ($file);
+            require_once($file);
         }
     }
 
@@ -193,7 +193,7 @@ class dzp extends PluginWechatController
             }
             $file = ROOT_PATH . 'plugins/wechat/' . $this->plugin_name . '/view/user_info.html';
             if (file_exists($file)) {
-                require_once ($file);
+                require_once($file);
             }
             exit();
         }
@@ -227,14 +227,14 @@ class dzp extends PluginWechatController
                 exit();
             }
             // 超过次数
-			$num = model('Base')->model->table('wechat_prize')
-				->where('openid = "' . $openid . '" and activity_type = "'.$this->plugin_name.'" and dateline between "' . $starttime . '" and "' . $endtime . '"')
-				->count();
-			if ($num <= 0) {
-				$num = 1;
-			} else {
-				$num = $num + 1;
-			}
+            $num = model('Base')->model->table('wechat_prize')
+                ->where('openid = "' . $openid . '" and activity_type = "'.$this->plugin_name.'" and dateline between "' . $starttime . '" and "' . $endtime . '"')
+                ->count();
+            if ($num <= 0) {
+                $num = 1;
+            } else {
+                $num = $num + 1;
+            }
             
             if ($num > $config['prize_num']) {
                 $rs['status'] = 2;
@@ -268,22 +268,21 @@ class dzp extends PluginWechatController
                     $prob = $prob + $val['prize_prob'];
                 }
                 //未中奖的概率项
-                if($prob < 100){
-                	$prob = 100 - $prob;
-                	$arr['not'] = $prob;
+                if ($prob < 100) {
+                    $prob = 100 - $prob;
+                    $arr['not'] = $prob;
                 }
                 //抽奖
                 $level = $this->get_rand($arr);
-                if($level == 'not'){
-                	$data['prize_type'] = 0;
-                	$rs['msg'] = '没有中奖';
-                	$rs['status'] = 0;
-                }
-                else{
-                	$data['prize_type'] = 1;
-                	$rs['msg'] = $prize_name[$level];
-                	$rs['status'] = 1;
-                	$rs['level'] = $level;	
+                if ($level == 'not') {
+                    $data['prize_type'] = 0;
+                    $rs['msg'] = '没有中奖';
+                    $rs['status'] = 0;
+                } else {
+                    $data['prize_type'] = 1;
+                    $rs['msg'] = $prize_name[$level];
+                    $rs['status'] = 1;
+                    $rs['level'] = $level;
                 }
                 
                 
@@ -295,9 +294,9 @@ class dzp extends PluginWechatController
                 $data['dateline'] = gmtime();
                 $data['activity_type'] = $this->plugin_name;
                 $id = model('Base')->model->table('wechat_prize')->data($data)->insert();
-                 //参与人数增加
+                //参与人数增加
                 $extend_cfg = model('Base')->model->table('wechat_extend')->where(array('wechat_id'=>$wxid, 'command'=>$this->plugin_name, 'enable'=>1))->field('config')->getOne();
-                if($extend_cfg){
+                if ($extend_cfg) {
                     $cfg_new = unserialize($extend_cfg);
                 }
                 $cfg_new['people_num'] = $cfg_new['people_num'] + 1;
@@ -321,7 +320,7 @@ class dzp extends PluginWechatController
     /**
      * 获取插件配置信息
      *
-     * @param string $code            
+     * @param string $code
      * @return multitype:unknown
      */
     private function get_config($code = '')

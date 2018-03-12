@@ -46,5 +46,3 @@ $_LANG['js_languages']['remove_confirm'] = '你确认要删除该记录吗？';;
 $_LANG['js_languages']['no_title'] = '没有输入文章标题';;
 $_LANG['js_languages']['no_cat'] = '没有选择帮助文章分类';
 $_LANG['js_languages']['chap'] = '篇';
-
-?>

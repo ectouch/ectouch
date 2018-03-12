@@ -35,4 +35,3 @@ $_LANG['ctenpay_url']       = 'http://union.tenpay.com/mch/mch_register_b2c.shtm
 $_LANG['ctenpayc2c_url']    = 'https://www.tenpay.com/mchhelper/mch_register_c2c.shtml';
 $_LANG['tenpay']  = '即时到账';
 $_LANG['tenpayc2c'] = '中介担保';
-?>

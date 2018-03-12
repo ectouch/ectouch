@@ -15,14 +15,15 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class GroupbuyController extends CommonController {
-
+class GroupbuyController extends CommonController
+{
     private $size = 10;
     private $page = 1;
     private $sort = 'last_update';
     private $order = 'ASC';
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         if (ACTION_NAME == 'list') {
@@ -34,8 +35,8 @@ class GroupbuyController extends CommonController {
     //-- 团购商品 --> 团购活动商品列表
     /* ------------------------------------------------------ */
 
-    public function index() {
-
+    public function index()
+    {
         $this->parameter();
         $this->assign('page', $this->page);
         $this->assign('size', $this->size);
@@ -55,7 +56,8 @@ class GroupbuyController extends CommonController {
     /* ------------------------------------------------------ */
     //--异步加载团购商品列表
     /* ------------------------------------------------------ */
-    public function asynclist() {
+    public function asynclist()
+    {
         $this->parameter();
         $asyn_last = intval(I('post.last')) + 1;
         $this->size = I('post.amount');
@@ -75,7 +77,8 @@ class GroupbuyController extends CommonController {
     /* ------------------------------------------------------ */
     //-- 团购商品 --> 商品详情
     /* ------------------------------------------------------ */
-    public function info() {
+    public function info()
+    {
         /* 取得参数：团购活动id */
         $group_buy_id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
         $sql= "SELECT goods_id ".
@@ -129,7 +132,7 @@ class GroupbuyController extends CommonController {
         }
         $this->assign('now_time', gmtime());           // 当前系统时间
         $this->assign('goods_id', $group_buy_id);     // 商品的id
-		$this->assign('pictures', model('GoodsBase')->get_goods_gallery($goods_id));
+        $this->assign('pictures', model('GoodsBase')->get_goods_gallery($goods_id));
 
         // 微信JSSDK分享
         $share_data = array(
@@ -150,7 +153,8 @@ class GroupbuyController extends CommonController {
 
     //-- 团购商品 --> 购买
     /* ------------------------------------------------------ */
-    public function buy() {
+    public function buy()
+    {
 
         /* 查询：判断是否登录 */
         if ($_SESSION['user_id'] <= 0) {
@@ -251,7 +255,7 @@ class GroupbuyController extends CommonController {
             'is_gift' => 0
         );
         //商品是否是免邮商品
-        if($goods['is_shipping']){
+        if ($goods['is_shipping']) {
             $cart['is_shipping'] = 1;
         }
         
@@ -271,7 +275,8 @@ class GroupbuyController extends CommonController {
     /**
      * 处理参数便于搜索商品信息
      */
-    private function parameter() {
+    private function parameter()
+    {
         $this->assign('show_asynclist', C('show_asynclist'));
         $page_size = C('page_size');
         $brand = I('request.brand');
@@ -306,6 +311,4 @@ class GroupbuyController extends CommonController {
         $this->assign('display', $display);
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
     }
-
 }
-

@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class CategoryBaseModel extends BaseModel {
+class CategoryBaseModel extends BaseModel
+{
 
     /**
      * 获得指定分类同级的所有分类以及该分类下的子分类
@@ -25,11 +26,12 @@ class CategoryBaseModel extends BaseModel {
      * @param   integer     $cat_id     分类编号
      * @return  array
      */
-    function get_categories_tree($cat_id = 0) {
+    public function get_categories_tree($cat_id = 0)
+    {
         $data = read_static_cache('categories_tree');
         if ($data === false) {
             if ($cat_id > 0) {
-                    $sql = 'SELECT parent_id FROM ' . $this->pre . "category  WHERE cat_id = '$cat_id'";
+                $sql = 'SELECT parent_id FROM ' . $this->pre . "category  WHERE cat_id = '$cat_id'";
                 $result = $this->row($sql);
                 $parent_id = $result['parent_id'];
             } else {
@@ -45,12 +47,12 @@ class CategoryBaseModel extends BaseModel {
             if ($this->row($sql) || $parent_id == 0) {
                 /* 获取当前分类及其子分类 */
 
-                 $sql = 'SELECT c.cat_id,c.cat_name,c.parent_id,c.is_show ' .
+                $sql = 'SELECT c.cat_id,c.cat_name,c.parent_id,c.is_show ' .
                         'FROM ' . $this->pre . 'category as c ' .
                         "WHERE c.parent_id = 0 AND c.is_show = 1 ORDER BY c.sort_order ASC, c.cat_id ASC";
 
                 $res = $this->query($sql);
-                foreach ($res AS $row) {
+                foreach ($res as $row) {
                     if ($row['is_show']) {
                         $cat_arr[$row['cat_id']]['id'] = $row['cat_id'];
                         $cat_arr[$row['cat_id']]['name'] = $row['cat_name'];
@@ -70,7 +72,8 @@ class CategoryBaseModel extends BaseModel {
         return $data;
     }
 
-    function get_child_tree($tree_id = 0) {
+    public function get_child_tree($tree_id = 0)
+    {
         $three_arr = array();
         $sql = 'SELECT count(*) FROM ' . $this->pre . "category WHERE parent_id = '$tree_id' AND is_show = 1 ";
         if ($this->row($sql) || $tree_id == 0) {
@@ -78,24 +81,24 @@ class CategoryBaseModel extends BaseModel {
                     'FROM ' . $this->pre . 'category as c ' .
                     " WHERE c.parent_id = '$tree_id' AND c.is_show = 1 GROUP BY c.cat_id ORDER BY c.sort_order ASC, c.cat_id ASC";
             $res = $this->query($child_sql);
-            foreach ($res AS $row) {
+            foreach ($res as $row) {
                 if ($row['is_show']) {
                     $three_arr[$row['cat_id']]['id'] = $row['cat_id'];
                     $three_arr[$row['cat_id']]['name'] = $row['cat_name'];
                     //如果上传分类图片则使用上传的图片，没有上传分类图片使用默认的分类图片
-                    if($row['cat_id']) {
+                    if ($row['cat_id']) {
                         $sql = 'SELECT t.cat_image' .' FROM ' . $this->pre . 'touch_category as t ' ." WHERE t.cat_id = ".$row['cat_id'] . " group by id desc limit 0 , 1";
-                         $imgres = $this->model->getRow($sql);
-                         if(!empty($imgres['cat_image'])){
+                        $imgres = $this->model->getRow($sql);
+                        if (!empty($imgres['cat_image'])) {
                             $row['cat_img'] =$imgres['cat_image'];
-                        }else{
+                        } else {
                             $row['cat_img'] =  $this->get_cat_goods_img($row['cat_id']);
-                        }                            
+                        }
                     }
-                    $three_arr[$row['cat_id']]['img'] = get_image_path(0,$row['cat_img'],false);
+                    $three_arr[$row['cat_id']]['img'] = get_image_path(0, $row['cat_img'], false);
                     $three_arr[$row['cat_id']]['url'] = url('category/index', array('id' => $row['cat_id']));
                 }
-                if (isset($row['cat_id']) != NULL) {
+                if (isset($row['cat_id']) != null) {
                     $three_arr[$row['cat_id']]['cat_id'] = $this->get_child_tree($row['cat_id']);
                 }
             }
@@ -108,22 +111,23 @@ class CategoryBaseModel extends BaseModel {
      * @param  [type] $cat_id 　add by 20160204
      * @return [type]
      */
-    function get_cat_goods_img($cat_id){
-    	$extension_goods_array = '';
-    	$sql = 'SELECT goods_id FROM ' . $this->model->pre. "goods_cat AS g WHERE g.cat_id  IN ('".$cat_id."')";
-    	$res = $this->model->query($sql);
-    	if ($res !== false) {
-    		$arr = array();
-    		foreach ($res as $key => $value) {
-    			$arr[] = $value['goods_id'];
-    		}
-    	}
-    	$extension_goods_array =  db_create_in($arr, 'g.goods_id');
-    	$where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 ";
-    	if ($cat_id !== 0) {
-    		$where .= "AND(g.cat_id = $cat_id OR " .$extension_goods_array .")";
-    		//$where .= "AND(g.cat_id = $cat_id OR " .model('Goods')->get_extension_goods($cat_id) .")";
-    	}
+    public function get_cat_goods_img($cat_id)
+    {
+        $extension_goods_array = '';
+        $sql = 'SELECT goods_id FROM ' . $this->model->pre. "goods_cat AS g WHERE g.cat_id  IN ('".$cat_id."')";
+        $res = $this->model->query($sql);
+        if ($res !== false) {
+            $arr = array();
+            foreach ($res as $key => $value) {
+                $arr[] = $value['goods_id'];
+            }
+        }
+        $extension_goods_array =  db_create_in($arr, 'g.goods_id');
+        $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 ";
+        if ($cat_id !== 0) {
+            $where .= "AND(g.cat_id = $cat_id OR " .$extension_goods_array .")";
+            //$where .= "AND(g.cat_id = $cat_id OR " .model('Goods')->get_extension_goods($cat_id) .")";
+        }
         /* 获得商品列表 */
         $sql = 'SELECT g.goods_id,  g.goods_thumb as cat_img , g.goods_img ' . 'FROM ' . $this->model->pre . 'goods AS g ' . ' LEFT JOIN ' . $this->model->pre . 'touch_goods AS xl ' . ' ON g.goods_id=xl.goods_id ' .
             ' LEFT JOIN ' . $this->model->pre . 'member_price AS mp ' . "ON mp.goods_id = g.goods_id " . "WHERE $where GROUP BY g.goods_id ORDER BY g.sort_order DESC";
@@ -133,7 +137,8 @@ class CategoryBaseModel extends BaseModel {
     /**
      * 获取一级分类信息
      */
-    function get_top_category() {
+    public function get_top_category()
+    {
         $sql = 'SELECT c.cat_id,c.cat_name,c.parent_id,c.is_show,t.cat_image ' .
                 'FROM ' . $this->pre . 'category as c ' .
                 'left join ' . $this->pre . 'touch_category as t on t.cat_id = c.cat_id ' .
@@ -141,11 +146,11 @@ class CategoryBaseModel extends BaseModel {
 
         $res = $this->query($sql);
 
-        foreach ($res AS $row) {
+        foreach ($res as $row) {
             if ($row['is_show']) {
                 $cat_arr[$row['cat_id']]['id'] = $row['cat_id'];
                 $cat_arr[$row['cat_id']]['name'] = $row['cat_name'];
-                $cat_arr[$row['cat_id']]['cat_image'] = get_image_path(0,$row['cat_image'],false);
+                $cat_arr[$row['cat_id']]['cat_image'] = get_image_path(0, $row['cat_image'], false);
                 $cat_arr[$row['cat_id']]['url'] = url('category/index', array('id' => $row['cat_id']));
             }
         }
@@ -155,12 +160,13 @@ class CategoryBaseModel extends BaseModel {
     /**
      * 获取品牌二级分类
      */
-    function get_cagtegory_goods($cat_id){
+    public function get_cagtegory_goods($cat_id)
+    {
         $sql = "SELECT a.*,b.cat_image FROM  ".$this->pre."category AS a LEFT JOIN ".$this->pre."touch_category AS b ON a.cat_id = b.cat_id WHERE a.is_show = 1 AND a.parent_id = ".$cat_id;
         $cate = $this->query($sql);
-        if($cate){
-            foreach($cate as $key=>$val){
-                $cate[$key]['cat_image'] = get_image_path($val['goods_id'],$val['goods_img']); //设置默认图片
+        if ($cate) {
+            foreach ($cate as $key=>$val) {
+                $cate[$key]['cat_image'] = get_image_path($val['goods_id'], $val['goods_img']); //设置默认图片
             }
         }
         return $cate;
@@ -173,7 +179,8 @@ class CategoryBaseModel extends BaseModel {
      * @param   string  $cats   查询的分类
      * @return  array
      */
-    function get_top10($cats = '') {
+    public function get_top10($cats = '')
+    {
         $cats = get_children($cats);
         $where = !empty($cats) ? "AND ($cats OR " . model('Goods')->get_extension_goods($cats) . ") " : '';
 
@@ -222,5 +229,4 @@ class CategoryBaseModel extends BaseModel {
 
         return $arr;
     }
-
 }

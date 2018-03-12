@@ -16,13 +16,15 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class OrderModel extends BaseModel {
+class OrderModel extends BaseModel
+{
 
     /**
      * 取得包装列表
      * @return  array   包装列表
      */
-    function pack_list() {
+    public function pack_list()
+    {
         $sql = 'SELECT * FROM ' . $this->pre . "pack";
         $res = $this->query($sql);
         $list = array();
@@ -39,7 +41,8 @@ class OrderModel extends BaseModel {
      * @param   int     $pack_id    包装id
      * @return  array   包装信息
      */
-    function pack_info($pack_id) {
+    public function pack_info($pack_id)
+    {
         $sql = "SELECT * FROM " . $this->pre .
                 "pack WHERE pack_id = '$pack_id'";
 
@@ -53,7 +56,8 @@ class OrderModel extends BaseModel {
      * @param   int     $is_online          是否支持在线支付
      * @return  array   配送方式数组
      */
-    function available_payment_list($support_cod, $cod_fee = 0, $is_online = false) {
+    public function available_payment_list($support_cod, $cod_fee = 0, $is_online = false)
+    {
         $sql = 'SELECT pay_id, pay_code, pay_name, pay_fee, pay_desc, pay_config, is_cod' .
                 ' FROM ' . $this->pre .'payment WHERE enabled = 1 ';
         if (!$support_cod) {
@@ -83,7 +87,8 @@ class OrderModel extends BaseModel {
      * 取得贺卡列表
      * @return  array   贺卡列表
      */
-    function card_list() {
+    public function card_list()
+    {
         $sql = "SELECT * FROM " . $this->pre . 'card';
         $res = $this->query($sql);
 
@@ -101,7 +106,8 @@ class OrderModel extends BaseModel {
      * @param   int     $card_id    贺卡id
      * @return  array   贺卡信息
      */
-    function card_info($card_id) {
+    public function card_info($card_id)
+    {
         $sql = "SELECT * FROM " . $this->pre .
                 "card WHERE card_id = '$card_id'";
 
@@ -112,7 +118,8 @@ class OrderModel extends BaseModel {
      * 取得已安装的支付方式列表
      * @return  array   已安装的配送方式列表
      */
-    function payment_list() {
+    public function payment_list()
+    {
         $sql = 'SELECT pay_id, pay_name ' .
                 'FROM ' . $this->pre .
                 'payment WHERE enabled = 1';
@@ -125,7 +132,8 @@ class OrderModel extends BaseModel {
      * @param   int     $pay_id     支付方式id
      * @return  array   支付方式信息
      */
-    function payment_info($pay_id) {
+    public function payment_info($pay_id)
+    {
         $sql = 'SELECT * FROM ' . $this->pre . "payment WHERE pay_id = '$pay_id' AND enabled = 1";
 
         return $this->row($sql);
@@ -136,7 +144,8 @@ class OrderModel extends BaseModel {
      * @param   int     $pay_code     支付方式
      * @return  array   支付方式信息
      */
-    function payment_code_info($pay_code) {
+    public function payment_code_info($pay_code)
+    {
         $sql = 'SELECT * FROM ' . $this->pre . "payment WHERE pay_code = '$pay_code' AND enabled = 1";
         return $this->row($sql);
     }
@@ -147,7 +156,8 @@ class OrderModel extends BaseModel {
      * @param   string  $order_sn   订单号
      * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
      */
-    function order_info($order_id, $order_sn = '') {
+    public function order_info($order_id, $order_sn = '')
+    {
         /* 计算订单各种费用之和的语句 */
         $total_fee = " (goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee) AS total_fee ";
         $order_id = intval($order_id);
@@ -187,8 +197,8 @@ class OrderModel extends BaseModel {
      * @param   int     $order_id   订单id
      * @return  array   订单商品数组
      */
-    function order_goods($order_id) {
-
+    public function order_goods($order_id)
+    {
         $sql = "SELECT og.rec_id, og.goods_id, og.goods_name, og.goods_sn, og.market_price, og.goods_number, " .
                 "og.goods_price, og.goods_attr, og.is_real, og.parent_id, og.is_gift, " .
                 "og.goods_price * og.goods_number AS subtotal, og.extension_code, g.goods_thumb " .
@@ -210,7 +220,8 @@ class OrderModel extends BaseModel {
      * @param   int     $order_id   订单id
      * @return  array
      */
-    function order_bonus($order_id) {
+    public function order_bonus($order_id)
+    {
         /* 查询按商品发的红包 */
         $day = getdate();
         $today = local_mktime(23, 59, 59, $day['mon'], $day['mday'], $day['year']);
@@ -255,7 +266,8 @@ class OrderModel extends BaseModel {
      * @param   bool    $include_gift   是否包括赠品
      * @return  float   订单总金额
      */
-    function order_amount($order_id, $include_gift = true) {
+    public function order_amount($order_id, $include_gift = true)
+    {
         $sql = "SELECT SUM(goods_price * goods_number) " .
                 "as amount FROM " . $this->pre .
                 "order_goods WHERE order_id = '$order_id'";
@@ -271,7 +283,8 @@ class OrderModel extends BaseModel {
      * @param   int     $order_id   订单id
      * @return  array   ('weight' => **, 'amount' => **, 'formated_weight' => **)
      */
-    function order_weight_price($order_id) {
+    public function order_weight_price($order_id)
+    {
         $sql = "SELECT SUM(g.goods_weight * o.goods_number) AS weight, " .
                 "SUM(o.goods_price * o.goods_number) AS amount ," .
                 "SUM(o.goods_number) AS number " .
@@ -296,13 +309,14 @@ class OrderModel extends BaseModel {
      * @param   int     $type   类型：默认普通商品
      * @return  array   购物车商品数组
      */
-    function cart_goods($type = CART_GENERAL_GOODS) {
+    public function cart_goods($type = CART_GENERAL_GOODS)
+    {
         $sql = "SELECT ca.rec_id, ca.user_id, ca.goods_id, ca.goods_name, ca.goods_sn, ca.goods_number, " .
                 "ca.market_price, ca.goods_price, ca.goods_attr, ca.is_real, ca.extension_code, ca.parent_id, ca.is_gift, ca.is_shipping, g.goods_thumb, " .
                 "ca.goods_price * ca.goods_number AS subtotal " .
                 "FROM " . $this->pre .
                 "cart AS ca, " .$this->pre ."goods AS g " ."WHERE session_id = '" . SESS_ID . "' " .
-                "AND rec_type = '$type'" . 
+                "AND rec_type = '$type'" .
                 "AND ca.goods_id = g.goods_id";
 
         $arr = $this->query($sql);
@@ -326,7 +340,8 @@ class OrderModel extends BaseModel {
      * @param   int     $type           类型：默认普通商品
      * @return  float   购物车总金额
      */
-    function cart_amount($include_gift = true, $type = CART_GENERAL_GOODS) {
+    public function cart_amount($include_gift = true, $type = CART_GENERAL_GOODS)
+    {
         $sql = "SELECT SUM(goods_price * goods_number) " .
                 " as amount FROM " . $this->pre .
                 "cart WHERE session_id = '" . SESS_ID . "' " .
@@ -348,7 +363,8 @@ class OrderModel extends BaseModel {
      * @param   int         $type   类型：默认普通商品
      * @return  boolean
      */
-    function cart_goods_exists($id, $spec, $type = CART_GENERAL_GOODS) {
+    public function cart_goods_exists($id, $spec, $type = CART_GENERAL_GOODS)
+    {
         /* 检查该商品是否已经存在在购物车中 */
         $sql = "SELECT COUNT(*) as count FROM " . $this->pre .
                 "cart WHERE session_id = '" . SESS_ID . "' AND goods_id = '$id' " .
@@ -365,7 +381,8 @@ class OrderModel extends BaseModel {
      * @param   int     $type   类型：默认普通商品
      * @return  array
      */
-    function cart_weight_price($type = CART_GENERAL_GOODS) {
+    public function cart_weight_price($type = CART_GENERAL_GOODS)
+    {
         $package_row['weight'] = 0;
         $package_row['amount'] = 0;
         $package_row['number'] = 0;
@@ -438,7 +455,8 @@ class OrderModel extends BaseModel {
      * @param   integer $parent     基本件
      * @return  boolean
      */
-    function addto_cart($goods_id, $num = 1, $spec = array(), $parent = 0) {
+    public function addto_cart($goods_id, $num = 1, $spec = array(), $parent = 0)
+    {
         ECTouch::err()->clean();
         $_parent_id = $parent;
 
@@ -673,7 +691,8 @@ class OrderModel extends BaseModel {
      * 清空购物车
      * @param   int     $type   类型：默认普通商品
      */
-    function clear_cart($type = CART_GENERAL_GOODS) {
+    public function clear_cart($type = CART_GENERAL_GOODS)
+    {
         $sql = "DELETE FROM " . $this->pre .
                 "cart WHERE session_id = '" . SESS_ID . "' AND rec_type = '$type'";
         $this->query($sql);
@@ -688,7 +707,8 @@ class OrderModel extends BaseModel {
      *
      * @return      string
      */
-    function get_goods_attr_info($arr, $type = 'pice') {
+    public function get_goods_attr_info($arr, $type = 'pice')
+    {
         $attr = '';
 
         if (!empty($arr)) {
@@ -714,7 +734,8 @@ class OrderModel extends BaseModel {
      * @param   int     $user_id    用户id
      * @return  array   用户信息
      */
-    function user_info($user_id) {
+    public function user_info($user_id)
+    {
         $sql = "SELECT * FROM " . $this->pre .
                 "users WHERE user_id = '$user_id'";
         $user = $this->row($sql);
@@ -736,7 +757,8 @@ class OrderModel extends BaseModel {
      * @param   array   $user      key => value
      * @return  bool
      */
-    function update_user($user_id, $user) {
+    public function update_user($user_id, $user)
+    {
         $this->talbe = 'users';
         return $this->update("user_id = '$user_id'", $user);
     }
@@ -746,7 +768,8 @@ class OrderModel extends BaseModel {
      * @param   int     $user_id    用户id
      * @return  array
      */
-    function address_list($user_id) {
+    public function address_list($user_id)
+    {
         $sql = "SELECT * FROM " . $this->pre .
                 "user_address WHERE user_id = '$user_id'";
         return $this->query($sql);
@@ -757,7 +780,8 @@ class OrderModel extends BaseModel {
      * @param   int     $address_id     地址id
      * @return  array
      */
-    function address_info($address_id) {
+    public function address_info($address_id)
+    {
         $sql = "SELECT * FROM " . $this->pre .
                 "user_address WHERE address_id = '$address_id'";
         return $this->row($sql);
@@ -769,7 +793,8 @@ class OrderModel extends BaseModel {
      * @param   float   $goods_amount   订单商品金额
      * @return  array   红包数组
      */
-    function user_bonus($user_id, $goods_amount = 0) {
+    public function user_bonus($user_id, $goods_amount = 0)
+    {
         $day = getdate();
         $today = local_mktime(23, 59, 59, $day['mon'], $day['mday'], $day['year']);
 
@@ -792,7 +817,8 @@ class OrderModel extends BaseModel {
      * @param   string  $bonus_sn   红包序列号
      * @param   array   红包信息
      */
-    function bonus_info($bonus_id, $bonus_sn = '') {
+    public function bonus_info($bonus_id, $bonus_sn = '')
+    {
         $sql = "SELECT t.*, b.* " .
                 "FROM " . $this->pre . "bonus_type AS t," .
                 $this->pre . "user_bonus AS b " .
@@ -811,7 +837,8 @@ class OrderModel extends BaseModel {
      * @param   int $bonus_id   红包id
      * @return  bool
      */
-    function bonus_used($bonus_id) {
+    public function bonus_used($bonus_id)
+    {
         $sql = "SELECT order_id FROM " . $this->pre .
                 "user_bonus WHERE bonus_id = '$bonus_id'";
         $res = $this->row($sql);
@@ -824,7 +851,8 @@ class OrderModel extends BaseModel {
      * @param   int     $order_id   订单id
      * @return  bool
      */
-    function use_bonus($bonus_id, $order_id) {
+    public function use_bonus($bonus_id, $order_id)
+    {
         $sql = "UPDATE " . $this->pre .
                 "user_bonus SET order_id = '$order_id', used_time = '" . gmtime() . "' " .
                 "WHERE bonus_id = '$bonus_id' LIMIT 1";
@@ -838,7 +866,8 @@ class OrderModel extends BaseModel {
      * @param   int     $order_id   订单id
      * @return  bool
      */
-    function unuse_bonus($bonus_id) {
+    public function unuse_bonus($bonus_id)
+    {
         $sql = "UPDATE " . $this->pre .
                 "user_bonus SET order_id = 0, used_time = 0 " .
                 "WHERE bonus_id = '$bonus_id' LIMIT 1";
@@ -854,7 +883,8 @@ class OrderModel extends BaseModel {
      * @param   float   $refund_amount  退款金额（如果为0，取订单已付款金额）
      * @return  bool
      */
-    function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
+    public function order_refund($order, $refund_type, $refund_note, $refund_amount = 0)
+    {
         /* 检查参数 */
         $user_id = $order['user_id'];
         if ($user_id == 0 && $refund_type == 1) {
@@ -915,7 +945,8 @@ class OrderModel extends BaseModel {
      * @access  public
      * @return  array
      */
-    function get_cart_goods() {
+    public function get_cart_goods()
+    {
         /* 初始化 */
         $goods_list = array();
         $total = array(
@@ -994,7 +1025,8 @@ class OrderModel extends BaseModel {
      * @param   int     $user_id    用户编号
      * @return  array
      */
-    function get_consignee($user_id) {
+    public function get_consignee($user_id)
+    {
         if (isset($_SESSION['flow_consignee'])) {
             /* 如果存在session，则直接返回session中的收货人信息 */
 
@@ -1022,7 +1054,8 @@ class OrderModel extends BaseModel {
      * @param   int     $flow_type  购物流程类型
      * @return  bool
      */
-    function exist_real_goods($order_id = 0, $flow_type = CART_GENERAL_GOODS) {
+    public function exist_real_goods($order_id = 0, $flow_type = CART_GENERAL_GOODS)
+    {
         if ($order_id <= 0) {
             $sql = "SELECT COUNT(*) as count FROM " . $this->pre .
                     "cart WHERE session_id = '" . SESS_ID . "' AND is_real = 1 " .
@@ -1041,7 +1074,8 @@ class OrderModel extends BaseModel {
      * @param   int     $flow_type  购物流程类型
      * @return  bool    true 完整 false 不完整
      */
-    function check_consignee_info($consignee, $flow_type) {
+    public function check_consignee_info($consignee, $flow_type)
+    {
         if (model('Order')->exist_real_goods(0, $flow_type)) {
             /* 如果存在实体商品 */
             $res = !empty($consignee['consignee']) &&
@@ -1076,7 +1110,8 @@ class OrderModel extends BaseModel {
      * @access  public
      * @return  void
      */
-    function last_shipping_and_payment() {
+    public function last_shipping_and_payment()
+    {
         $sql = "SELECT shipping_id, pay_id " .
                 " FROM " . $this->pre .
                 "order_info WHERE user_id = '$_SESSION[user_id]' " .
@@ -1094,7 +1129,8 @@ class OrderModel extends BaseModel {
     /**
      * 取得当前用户应该得到的红包总额
      */
-    function get_total_bonus() {
+    public function get_total_bonus()
+    {
         $day = getdate();
         $today = local_mktime(23, 59, 59, $day['mon'], $day['mday'], $day['year']);
 
@@ -1133,9 +1169,9 @@ class OrderModel extends BaseModel {
                 "order by min_amount desc ";
         $res = $this->query($sql);
         //找出第一个不为0的红包金额，并且只发最大类型的红包
-        foreach($res as $row){
+        foreach ($res as $row) {
             $res1 = $row['count'];
-            if($res1 > 0){
+            if ($res1 > 0) {
                 $res2 = $res1;
                 break;
             }
@@ -1150,7 +1186,8 @@ class OrderModel extends BaseModel {
      * @param   int     $order_id   订单号
      * @param   int     $is_used    是否使用了
      */
-    function change_user_bonus($bonus_id, $order_id, $is_used = true) {
+    public function change_user_bonus($bonus_id, $order_id, $is_used = true)
+    {
         if ($is_used) {
             $sql = 'UPDATE ' . $this->pre . 'user_bonus SET ' .
                     'used_time = ' . gmtime() . ', ' .
@@ -1171,7 +1208,8 @@ class OrderModel extends BaseModel {
      * @access  private
      * @return  array
      */
-    function flow_order_info() {
+    public function flow_order_info()
+    {
         $order = isset($_SESSION['flow_order']) ? $_SESSION['flow_order'] : array();
 
         /* 初始化配送和支付方式 */
@@ -1228,7 +1266,8 @@ class OrderModel extends BaseModel {
      * @param   string  $to_order_sn    主订单号
      * @return  成功返回true，失败返回错误信息
      */
-    function merge_order($from_order_sn, $to_order_sn) {
+    public function merge_order($from_order_sn, $to_order_sn)
+    {
         /* 订单号不能为空 */
         if (trim($from_order_sn) == '' || trim($to_order_sn) == '') {
             return L('order_sn_not_null');
@@ -1386,7 +1425,8 @@ class OrderModel extends BaseModel {
      * @param   array   $regions    配送区域（1、2、3、4级按顺序）
      * @return  int     办事处id，可能为0
      */
-    function get_agency_by_regions($regions) {
+    public function get_agency_by_regions($regions)
+    {
         if (!is_array($regions) || empty($regions)) {
             return 0;
         }
@@ -1418,15 +1458,16 @@ class OrderModel extends BaseModel {
      * @param   bool    $is_dec     是否减少库存
      * @param   bool    $storage     减库存的时机，1，下订单时；0，发货时；
      */
-    function change_order_goods_storage($order_id, $is_dec = true, $storage = 0) {
+    public function change_order_goods_storage($order_id, $is_dec = true, $storage = 0)
+    {
         /* 查询订单商品信息 */
         switch ($storage) {
-            case 0 :
+            case 0:
                 $sql = "SELECT goods_id, SUM(send_number) AS num, MAX(extension_code) AS extension_code, product_id FROM " . $this->pre .
                         "order_goods WHERE order_id = '$order_id' AND is_real = 1 GROUP BY goods_id, product_id";
                 break;
 
-            case 1 :
+            case 1:
                 $sql = "SELECT goods_id, SUM(goods_number) AS num, MAX(extension_code) AS extension_code, product_id FROM " . $this->pre .
                         "order_goods WHERE order_id = '$order_id' AND is_real = 1 GROUP BY goods_id, product_id";
                 break;
@@ -1469,7 +1510,8 @@ class OrderModel extends BaseModel {
      *
      * @return  bool               true，成功；false，失败；
      */
-    function change_goods_storage($good_id, $product_id, $number = 0) {
+    public function change_goods_storage($good_id, $product_id, $number = 0)
+    {
         if ($number == 0) {
             return true; // 值为0即不做、增减操作，返回true
         }
@@ -1510,7 +1552,8 @@ class OrderModel extends BaseModel {
      * @param   bool    $is_cod 是否货到付款
      * @return  array
      */
-    function payment_id_list($is_cod) {
+    public function payment_id_list($is_cod)
+    {
         $sql = "SELECT pay_id FROM " . $this->pre . 'payment';
         if ($is_cod) {
             $sql .= " WHERE is_cod = 1";
@@ -1520,7 +1563,6 @@ class OrderModel extends BaseModel {
         $list = $this->query($sql);
         $merge = array();
         foreach ($list as $key => $value) {
-
             $merge[] = $value['order_sn'];
         }
         return $merge;
@@ -1530,7 +1572,8 @@ class OrderModel extends BaseModel {
      * 计算折扣：根据购物车和优惠活动
      * @return  float   折扣
      */
-    function compute_discount() {
+    public function compute_discount()
+    {
         /* 查询优惠活动 */
         $now = gmtime();
         $user_rank = ',' . $_SESSION['user_rank'] . ',';
@@ -1603,20 +1646,20 @@ class OrderModel extends BaseModel {
             if ($total_amount > 0 && $total_amount >= $favourable['min_amount'] && ($total_amount <= $favourable['max_amount'] || $favourable['max_amount'] == 0)) {
                 if ($favourable['act_type'] == FAT_DISCOUNT) {
                     $discount += $total_amount * (1 - $favourable['act_type_ext'] / 100);
-					$total_amountd = $total_amount;
+                    $total_amountd = $total_amount;
                     $favourable_name[] = $favourable['act_name'];
                 } elseif ($favourable['act_type'] == FAT_PRICE) {
                     $discount += $favourable['act_type_ext'];
-					$total_amountd = $total_amount;
+                    $total_amountd = $total_amount;
                     $favourable_name[] = $favourable['act_name'];
                 }
-				/*手机专享价*/
-				elseif ($favourable['act_type'] == FAT_PREMIUM) {
+                /*手机专享价*/
+                elseif ($favourable['act_type'] == FAT_PREMIUM) {
                     $discount += $favourable['act_type_ext'];
-					$total_amountd = $total_amount;
+                    $total_amountd = $total_amount;
                     $favourable_name[] = $favourable['act_name'];
                 }
-				/*手机专享价*/
+                /*手机专享价*/
             }
         }
         //折扣减免金额大于订单额判断
@@ -1628,7 +1671,8 @@ class OrderModel extends BaseModel {
      * 取得购物车该赠送的积分数
      * @return  int     积分数
      */
-    function get_give_integral() {
+    public function get_give_integral()
+    {
         $sql = "SELECT SUM(c.goods_number * IF(g.give_integral > -1, g.give_integral, c.goods_price))" .
                 " as count FROM " . $this->pre . "cart AS c, " .
                 $this->pre . "goods AS g " .
@@ -1647,7 +1691,8 @@ class OrderModel extends BaseModel {
      * @param   array   $order  订单
      * @return  int     积分数
      */
-    function integral_to_give($order) {
+    public function integral_to_give($order)
+    {
         /* 判断是否团购 */
         if ($order['extension_code'] == 'group_buy') {
             include_once(ROOT_PATH . 'includes/lib_goods.php');
@@ -1673,7 +1718,8 @@ class OrderModel extends BaseModel {
      * @param   int     $order_id   订单号
      * @return  bool
      */
-    function send_order_bonus($order_id) {
+    public function send_order_bonus($order_id)
+    {
         /* 取得订单应该发放的红包 */
         $bonus_list = model('Order')->order_bonus($order_id);
 
@@ -1690,7 +1736,7 @@ class OrderModel extends BaseModel {
             /* 统计 */
             $count = 0;
             $money = '';
-            foreach ($bonus_list AS $bonus) {
+            foreach ($bonus_list as $bonus) {
                 $count += $bonus['number'];
                 $money .= price_format($bonus['type_money']) . ' [' . $bonus['number'] . '], ';
 
@@ -1725,7 +1771,8 @@ class OrderModel extends BaseModel {
      * 返回订单发放的红包
      * @param   int     $order_id   订单id
      */
-    function return_order_bonus($order_id) {
+    public function return_order_bonus($order_id)
+    {
         /* 取得订单应该发放的红包 */
         $bonus_list = model('Order')->order_bonus($order_id);
 
@@ -1735,7 +1782,7 @@ class OrderModel extends BaseModel {
             $order = model('Order')->order_info($order_id);
             $user_id = $order['user_id'];
 
-            foreach ($bonus_list AS $bonus) {
+            foreach ($bonus_list as $bonus) {
                 $sql = "DELETE FROM " . $this->pre .
                         "user_bonus WHERE bonus_type_id = '$bonus[type_id]' " .
                         "AND user_id = '$user_id' " .
@@ -1749,7 +1796,8 @@ class OrderModel extends BaseModel {
      * 计算购物车中的商品能享受红包支付的总额
      * @return  float   享受红包支付的总额
      */
-    function compute_discount_amount() {
+    public function compute_discount_amount()
+    {
         /* 查询优惠活动 */
         $now = gmtime();
         $user_rank = ',' . $_SESSION['user_rank'] . ',';
@@ -1823,15 +1871,15 @@ class OrderModel extends BaseModel {
                 } elseif ($favourable['act_type'] == FAT_PRICE) {
                     $discount += $favourable['act_type_ext'];
                 }/*手机专享价*/
-				elseif ($favourable['act_type'] == FAT_PREMIUM) {
+                elseif ($favourable['act_type'] == FAT_PREMIUM) {
                     $discount += $favourable['act_type_ext'];
                     $favourable_name[] = $favourable['act_name'];
                 }
-				/*手机专享价*/
+                /*手机专享价*/
             }
         }
         //折扣减免金额大于订单额判断
-        $discount = $total_amount >= $discount ? $discount : $total_amount; 
+        $discount = $total_amount >= $discount ? $discount : $total_amount;
         return $discount;
     }
 
@@ -1843,7 +1891,8 @@ class OrderModel extends BaseModel {
      * @param   integer $num          礼包数量
      * @return  boolean
      */
-    function add_package_to_cart($package_id, $num = 1) {
+    public function add_package_to_cart($package_id, $num = 1)
+    {
         ECTouch::err()->clean();
 
         /* 取得礼包信息 */
@@ -1935,7 +1984,8 @@ class OrderModel extends BaseModel {
      * 检查礼包内商品的库存
      * @return  boolen
      */
-    function judge_package_stock($package_id, $package_num = 1) {
+    public function judge_package_stock($package_id, $package_num = 1)
+    {
         $sql = "SELECT goods_id, product_id, goods_number
             FROM " . $this->pre .
                 "package_goods WHERE package_id = '" . $package_id . "'";
@@ -1993,8 +2043,8 @@ class OrderModel extends BaseModel {
      * @param type $order_id
      * @return type
      */
-    function get_order_thumb($order_id) {
-
+    public function get_order_thumb($order_id)
+    {
         $arr = $this->model->query("SELECT g.goods_thumb FROM " . $this->model->pre . "order_goods as og left join " . $this->model->pre . "goods g on og.goods_id = g.goods_id WHERE og.order_id = " . $order_id . " limit 1");
         return $arr[0]['goods_thumb'];
     }
@@ -2006,7 +2056,8 @@ class OrderModel extends BaseModel {
      * @param   int $rec_id 订单商品自增id
      * @return  array   订单商品数组
      */
-    function order_goods_info($rec_id) {
+    public function order_goods_info($rec_id)
+    {
         $goods = $this->model->table('order_goods')->field('goods_id,goods_name,goods_sn,goods_price,goods_number')->where('rec_id = ' . $rec_id)->find();
         return $goods;
     }
@@ -2016,7 +2067,8 @@ class OrderModel extends BaseModel {
      * @param   int $rec_id 订单商品自增id
      * @return  array   订单商品数组
      */
-    function aftermarket_goods($rec_id) {
+    public function aftermarket_goods($rec_id)
+    {
         $sql = "SELECT rg.rec_id, rg.goods_id, rg.goods_name, rg.goods_sn,g.goods_thumb," .
                 "rg.goods_attr, rg.back_num, rg.out_num ,og.market_price, og.goods_price,og.goods_number,og.goods_price * og.goods_number AS subtotal " .
                 " FROM " . $this->pre . "return_goods rg LEFT JOIN " . $this->pre . "goods g ON rg.goods_id = g.goods_id" .
@@ -2041,7 +2093,8 @@ class OrderModel extends BaseModel {
      * @param   string $username 用户名，用户自己的操作则为 buyer
      * @return  void
      */
-    function service_action_log($ret_id, $username, $return_status, $refund_status, $note = '', $action_info, $time) {
+    public function service_action_log($ret_id, $username, $return_status, $refund_status, $note = '', $action_info, $time)
+    {
         if (is_null($username)) {
             $username = $_SESSION['user_id'];
         }
@@ -2070,7 +2123,8 @@ class OrderModel extends BaseModel {
      * @param   string $action_info
      * @return  void
      */
-    public function return_action($ret_id, $return_status = 0, $refund_status = 0, $is_check = 0, $note = '', $username = null, $place = 0, $action_info = null) {
+    public function return_action($ret_id, $return_status = 0, $refund_status = 0, $is_check = 0, $note = '', $username = null, $place = 0, $action_info = null)
+    {
         if (is_null($username)) {
             $username = '买家';
         }
@@ -2085,7 +2139,8 @@ class OrderModel extends BaseModel {
     /**
      * 获得退换货操作log
      */
-    public function get_return_action($ret_id) {
+    public function get_return_action($ret_id)
+    {
         $act_list = array();
         $sql = "SELECT * FROM " . $this->pre . "return_action WHERE ret_id = '" . $ret_id . "'  ORDER BY action_id ASC,ret_id DESC";
         $res = $this->query($sql);
@@ -2121,7 +2176,8 @@ class OrderModel extends BaseModel {
      * 获取服务类型
      * @param $type
      */
-    public function get_service_type($service_id) {
+    public function get_service_type($service_id)
+    {
         $result = $this->model->table('service_type')->where('service_id = ' . $service_id)->find();
         return $result;
     }
@@ -2132,7 +2188,8 @@ class OrderModel extends BaseModel {
      * @param $return_staus  服务订单状态
      * @param is_check  审核是否通过
      * */
-    public function get_return_operate($order) {
+    public function get_return_operate($order)
+    {
         if ($order['is_check'] == RC_APPLY_FALSE && $order['return_status'] == RF_APPLICATION) {
             //申请 未审核 可以取消申请服务
             @$handler = "<a class=\"btn btn-info ect-colorf\" href=\"" . url('user/cancel_service', array(
@@ -2143,7 +2200,6 @@ class OrderModel extends BaseModel {
             $server = $this->get_service_type($order['service_id']);
             /* 退货退款 */
             if ($server['service_type'] == ST_RETURN_GOODS) {
-
                 if ($order['return_status'] == RF_APPLICATION) {
                     @$handler = "<a class=\"btn btn-info ect-colorf\" href=\"" . url('user/to_return', array(
                                 'ret_id' => $order['ret_id']
@@ -2182,7 +2238,8 @@ class OrderModel extends BaseModel {
      * @param   string $order_sn 订单号
      * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
      */
-    function aftermarket_info($ret_id) {
+    public function aftermarket_info($ret_id)
+    {
         /* 计算订单各种费用之和的语句 */
         $order_id = intval($ret_id);
         $sql = "SELECT r.*, t.service_name FROM " . $this->pre . "order_return r LEFT JOIN " . $this->pre .
@@ -2203,8 +2260,8 @@ class OrderModel extends BaseModel {
      * @param type $rec_id
      * @return type
      */
-    function get_cert_img($rec_id) {
-
+    public function get_cert_img($rec_id)
+    {
         $img = $this->model->table('aftermarket_attachments')->field('img_id,goods_id,rec_id,img_url')->where('rec_id = ' . $rec_id)->select();
         foreach ($img as $key => $value) {
             $img[$key]['img_url'] = get_image_path($value['goods_id'], $value['img_url']);
@@ -2221,7 +2278,7 @@ class OrderModel extends BaseModel {
      * @param   integer $parent     基本件
      * @return  boolean
      */
-    function addto_cart_combo($goods_id, $num = 1, $spec = array(), $parent = 0, $group = 0)
+    public function addto_cart_combo($goods_id, $num = 1, $spec = array(), $parent = 0, $group = 0)
     {
         ECTouch::err()->clean();
         $_parent_id = $parent;
@@ -2239,35 +2296,30 @@ class OrderModel extends BaseModel {
             " AND g.is_delete = 0";
         $goods = $this->query($sql);
         $goods = $goods[0];
-        if (empty($goods))
-        {
-           ECTouch::err()->add(L('goods_not_exists'), ERR_NOT_EXISTS);
+        if (empty($goods)) {
+            ECTouch::err()->add(L('goods_not_exists'), ERR_NOT_EXISTS);
             return false;
         }
     
         /* 如果是作为配件添加到购物车的，需要先检查购物车里面是否已经有基本件 */
-        if ($parent > 0)
-        {
+        if ($parent > 0) {
             $this->table = 'cart_combo';
             $count =$this->count("goods_id='$parent' AND session_id='" . SESS_ID . "' AND extension_code <> 'package_buy' AND group_id = '$group'");
             
-            if ($count == 0)
-            {
+            if ($count == 0) {
                 ECTouch::err()->add(L('no_basic_goods'), ERR_NO_BASIC_GOODS);
                 return false;
             }
         }
     
         /* 是否正在销售 */
-        if ($goods['is_on_sale'] == 0)
-        {
+        if ($goods['is_on_sale'] == 0) {
             ECTouch::err()->add(L('not_on_sale'), ERR_NOT_ON_SALE);
             return false;
         }
     
         /* 不是配件时检查是否允许单独销售 */
-        if (empty($parent) && $goods['is_alone_sale'] == 0)
-        {
+        if (empty($parent) && $goods['is_alone_sale'] == 0) {
             ECTouch::err()->add(L('cannt_alone_sale'), ERR_CANNT_ALONE_SALE);
             return false;
         }
@@ -2276,33 +2328,26 @@ class OrderModel extends BaseModel {
         $sql = "SELECT * FROM " .$this->pre . 'products ' .  " WHERE goods_id = '$goods_id' LIMIT 0, 1";
         $prod = $this->query($sql);
         $prod = $prod[0];
-        if (model('GoodsBase')->is_spec($spec) && !empty($prod))
-        {
+        if (model('GoodsBase')->is_spec($spec) && !empty($prod)) {
             $product_info =  model('ProductsBase')->get_products_info($goods_id, $spec);
         }
-        if (empty($product_info))
-        {
+        if (empty($product_info)) {
             $product_info = array('product_number' => '', 'product_id' => 0);
         }
         
         /* 检查：库存 */
-        if (C('use_storage') == 1)
-        {
+        if (C('use_storage') == 1) {
             //检查：商品购买数量是否大于总库存
-            if ($num > $goods['goods_number'])
-            {
+            if ($num > $goods['goods_number']) {
                 ECTouch::err()->add(sprintf(L('shortage'), $goods['goods_number']), ERR_OUT_OF_STOCK);
                 return false;
             }
     
             //商品存在规格 是货品 检查该货品库存
-            if (model('GoodsBase')->is_spec($spec) && !empty($prod))
-            {
-                if (!empty($spec))
-                {
+            if (model('GoodsBase')->is_spec($spec) && !empty($prod)) {
+                if (!empty($spec)) {
                     /* 取规格的货品库存 */
-                    if ($num > $product_info['product_number'])
-                    {
+                    if ($num > $product_info['product_number']) {
                         ECTouch::err()->add(sprintf('测试不足', $product_info['product_number']), ERR_OUT_OF_STOCK);
                         return false;
                     }
@@ -2347,14 +2392,13 @@ class OrderModel extends BaseModel {
         " AND parent_id = '$_parent_id'" .
         " ORDER BY goods_price";
         $res = $this->query($sql);
-        foreach ($res as $row){
+        foreach ($res as $row) {
             $basic_list[$row['parent_id']] = $row['goods_price'];
         }
     
      
         /* 循环插入配件 如果是配件则用其添加数量依次为购物车中所有属于其的基本件添加足够数量的该配件 */
-        foreach ($basic_list as $parent_id => $fitting_price)
-        {    
+        foreach ($basic_list as $parent_id => $fitting_price) {
             /* 检查该商品是否已经存在在购物车中 */
             $sql = "SELECT goods_number FROM " .$this->pre . 'cart_combo' .
             " WHERE session_id = '" .SESS_ID. "' AND goods_id = '$goods_id' ".
@@ -2364,19 +2408,14 @@ class OrderModel extends BaseModel {
     
             $row = $this->query($sql);
             $row = $row[0];
-            if($row) //如果购物车已经有此物品，则更新
-            {
+            if ($row) { //如果购物车已经有此物品，则更新
                 $num = 1; //临时保存到数据库，无数量限制
-                if(model('GoodsBase')->is_spec($spec) && !empty($prod) )
-                {
+                if (model('GoodsBase')->is_spec($spec) && !empty($prod)) {
                     $goods_storage=$product_info['product_number'];
-                }
-                else
-                {
+                } else {
                     $goods_storage=$goods['goods_number'];
                 }
-                if (C('use_storage') == 0 || $num <= $goods_storage)
-                {
+                if (C('use_storage') == 0 || $num <= $goods_storage) {
                     $goods_price = model('GoodsBase')->get_final_price($goods_id, $num, true, $spec);
                     $sql = "UPDATE " . $GLOBALS['ecs']->table('cart_combo') . " SET goods_number = '$num'" .
                     " , goods_price = '$goods_price', goods_attr = '" .$this->get_goods_attr_info($spec). "' ".
@@ -2384,16 +2423,12 @@ class OrderModel extends BaseModel {
                     " AND parent_id = '$parent_id' ". //AND goods_attr = '" .get_goods_attr_info($spec). "' " .
                     " AND extension_code <> 'package_buy' " .
                     "AND rec_type = 'CART_GENERAL_GOODS' AND group_id='$group'";
-                   $this->query($sql);
-                }
-                else
-                {
+                    $this->query($sql);
+                } else {
                     ECTouch::err()->add(sprintf(L('shortage'), $num), ERR_OUT_OF_STOCK);
                     return false;
                 }
-            }
-            else //购物车没有此物品，则插入
-            {
+            } else { //购物车没有此物品，则插入
                 /* 作为该基本件的配件插入 */
                 $parent['goods_price']  = max($fitting_price, 0) + $spec_price; //允许该配件优惠价格为0
                 $parent['goods_number'] = 1; //临时保存到数据库，无数量限制
@@ -2408,8 +2443,7 @@ class OrderModel extends BaseModel {
         }
     
         /* 如果数量不为0，作为基本件插入 */
-        if ($_parent_id <= 0)
-        {
+        if ($_parent_id <= 0) {
             /* 检查该商品是否已经存在在购物车中 */
             $sql = "SELECT goods_number FROM " .$this->pre . 'cart_combo' .
             " WHERE session_id = '" .SESS_ID. "' AND goods_id = '$goods_id' ".
@@ -2419,23 +2453,18 @@ class OrderModel extends BaseModel {
     
             $row = $this->query($sql);
             $row = $row['0'];
-            if($row) //如果购物车已经有此物品，则更新
-            {
+            if ($row) { //如果购物车已经有此物品，则更新
                 //添加基本件的同时清空该基本件下的配件
                 $sql = "DELETE FROM " . $this->pre . 'cart_combo' . " WHERE session_id='" . SESS_ID . "'".
                     " AND parent_id = '".$goods_id."' AND group_id = '" . $group . "'";
                 $this->query($sql);
                 $num = 1; //临时保存到数据库，无数量限制
-                if(model('GoodsBase')->is_spec($spec) && !empty($prod) )
-                {
+                if (model('GoodsBase')->is_spec($spec) && !empty($prod)) {
                     $goods_storage=$product_info['product_number'];
-                }
-                else
-                {
+                } else {
                     $goods_storage=$goods['goods_number'];
                 }
-                if (C('use_storage') == 0 || $num <= $goods_storage)
-                {
+                if (C('use_storage') == 0 || $num <= $goods_storage) {
                     $goods_price = model('GoodsBase')->get_final_price($goods_id, $num, true, $spec);
                     $sql = "UPDATE " . $this->pre . 'cart_combo' . " SET goods_number = '$num'" .
                     " , goods_price = '$goods_price', goods_attr = '" .$this->get_goods_attr_info($spec). "' ".
@@ -2444,15 +2473,11 @@ class OrderModel extends BaseModel {
                     " AND extension_code <> 'package_buy' " .
                     "AND rec_type = 'CART_GENERAL_GOODS' AND group_id='$group'";
                     $this->query($sql);
-                }
-                else
-                {
+                } else {
                     ECTOUCH::err()->add(sprintf(L('shortage'), $num), ERR_OUT_OF_STOCK);
                     return false;
                 }
-            }
-            else //购物车没有此物品，则插入
-            {
+            } else { //购物车没有此物品，则插入
                 $goods_price = model('GoodsBase')->get_final_price($goods_id, $num, true, $spec);
                 $parent['goods_price']  = max($goods_price, 0);
                 $parent['goods_number'] = $num;
@@ -2472,7 +2497,7 @@ class OrderModel extends BaseModel {
      * 获取商品的原价、配件价、库存（配件组合 )
      * 返回数组
      */
-    function get_combo_goods_info($goods_id, $num = 1, $spec = array(), $parent = 0)
+    public function get_combo_goods_info($goods_id, $num = 1, $spec = array(), $parent = 0)
     {
         $result = array();
     
@@ -2485,12 +2510,10 @@ class OrderModel extends BaseModel {
         $prod = $this->query($sql);
         $prod = $prod['0'];
         
-        if (model('GoodsBase')->is_spec($spec) && !empty($prod))
-        {
+        if (model('GoodsBase')->is_spec($spec) && !empty($prod)) {
             $product_info =  model('ProductsBase')->get_products_info($goods_id, $_specs);
         }
-        if (empty($product_info))
-        {
+        if (empty($product_info)) {
             $product_info = array('product_number' => '', 'product_id' => 0);
         }
     
@@ -2498,10 +2521,8 @@ class OrderModel extends BaseModel {
         $result['stock'] = $goods['goods_number'];
     
         //商品存在规格 是货品 检查该货品库存
-        if (model('GoodsBase')->is_spec($spec) && !empty($prod))
-        {
-            if (!empty($spec))
-            {
+        if (model('GoodsBase')->is_spec($spec) && !empty($prod)) {
+            if (!empty($spec)) {
                 /* 取规格的货品库存 */
                 $result['stock'] = $product_info['product_number'];
             }
@@ -2514,7 +2535,7 @@ class OrderModel extends BaseModel {
             " AND parent_id = '$parent'" .
             " ORDER BY goods_price";
         $res = $this->query($sql);
-        foreach ($res as $key=>$val){
+        foreach ($res as $key=>$val) {
             $result['fittings_price'] = $val['goods_price'];
         }
     
@@ -2525,6 +2546,4 @@ class OrderModel extends BaseModel {
     
         return $result;
     }
-
-
 }

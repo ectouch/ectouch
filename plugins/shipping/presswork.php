@@ -12,7 +12,7 @@ class presswork
     /**
      * 配置信息
      */
-    var $configure;
+    public $configure;
 
     /*------------------------------------------------------ */
     //-- PUBLIC METHODs
@@ -25,10 +25,9 @@ class presswork
      *
      * @return null
      */
-    function presswork($cfg=array())
+    public function presswork($cfg=array())
     {
-        foreach ($cfg AS $key=>$val)
-        {
+        foreach ($cfg as $key=>$val) {
             $this->configure[$val['name']] = $val['value'];
         }
     }
@@ -40,18 +39,14 @@ class presswork
      * @param   float   $goods_amount   商品金额
      * @return  decimal
      */
-    function calculate($goods_weight, $goods_amount)
+    public function calculate($goods_weight, $goods_amount)
     {
-        if ($this->configure['free_money'] > 0 && $goods_amount >= $this->configure['free_money'])
-        {
+        if ($this->configure['free_money'] > 0 && $goods_amount >= $this->configure['free_money']) {
             return 0;
-        }
-        else
-        {
+        } else {
             $fee    = $goods_weight * 4 + 3.4;
 
-            if ($goods_weight > 0.1)
-            {
+            if ($goods_weight > 0.1) {
                 $fee += (ceil(($goods_weight - 0.1) / 0.1)) * 0.4;
             }
 
@@ -67,13 +62,13 @@ class presswork
      * @param   string  $invoice_sn     发货单号
      * @return  string
      */
-    function query($invoice_sn)
+    public function query($invoice_sn)
     {
         $url = 'http://m.kuaidi100.com/query?type=youzhengguonei&id=1&postid=' .$invoice_sn. '&temp='.time();
         return $url;
     }
 
-    function third_party($invoice_sn)
+    public function third_party($invoice_sn)
     {
         $url = 'http://m.kuaidi100.com/index_all.html?type=youzhengguonei&postid=' .$invoice_sn;
         return $url;
@@ -88,12 +83,11 @@ class presswork
      *
      * @return  decimal $price        保价费用
      */
-    function calculate_insure($total_price, $insure_rate)
+    public function calculate_insure($total_price, $insure_rate)
     {
         $total_price = ceil($total_price);
         $price = $total_price * $insure_rate;
-        if ($price < 1)
-        {
+        if ($price < 1) {
             $price = 1;
         }
         return ceil($price);

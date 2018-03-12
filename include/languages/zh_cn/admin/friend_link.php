@@ -43,5 +43,3 @@ $_LANG['enter_int'] = '显示顺序的类型必须为数字!';
 /* 帮助信息 */
 $_LANG['url_logo_value'] = '在指定远程LOGO图片时, LOGO图片的URL网址必须为http:// 或 https://开头的正确URL格式!';
 $_LANG['link_name_desc'] = '当你添加文字链接时, 链接LOGO为你的链接名称.';
-
-?>

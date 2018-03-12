@@ -44,7 +44,7 @@
 						<td><div id="J_install_tip_dbprefix"><span class="gray">建议使用默认</span></div></td>
 					</tr>
 				</table>
-				<?php if($independent):?>
+				<?php if ($independent):?>
 				<table width="100%">
 					<tr>
 						<td class="td1" width="100">网站配置</td>

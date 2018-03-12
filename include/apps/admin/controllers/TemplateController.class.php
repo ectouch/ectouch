@@ -55,7 +55,8 @@ class TemplateController extends AdminController
     /**
      * 模板安装
      */
-    public function install(){
+    public function install()
+    {
         $tpl_name = I('get.tpl_name');
         $tpl_fg = I('get.tpl_fg', 0);
         $data['value'] = $tpl_name;
@@ -95,10 +96,8 @@ class TemplateController extends AdminController
         $dir = ROOT_PATH . 'themes/' . $tpl_name . '/css/';
         $tpl_style_dir = @opendir($dir);
         while ($file = readdir($tpl_style_dir)) {
-
             if ($file != '.' && $file != '..' && is_file($dir . $file) && $file != '.svn' && $file != 'index.htm') {
-                if (preg_match("/^(ectouch|ectouch_)(.*)*/i", $file))                 // 取模板风格缩略图
-                {
+                if (preg_match("/^(ectouch|ectouch_)(.*)*/i", $file)) {                 // 取模板风格缩略图
                     $start = strpos($file, '.');
                     $temp = substr($file, 0, $start);
                     $temp = explode('_', $temp);
@@ -154,18 +153,13 @@ class TemplateController extends AdminController
         $tpl_style_info = array();
         $tpl_style_info = $this->read_tpl_style($tpl_name, 2);
         $tpl_style_list = '';
-        if (count($tpl_style_info) > 1)
-        {
-            foreach ($tpl_style_info as $value)
-            {
+        if (count($tpl_style_info) > 1) {
+            foreach ($tpl_style_info as $value) {
                 $tpl_style_list .= '<span style="cursor:pointer;" onMouseOver="javascript:onSOver(\'screenshot\', \'' . $value . '\', this);" onMouseOut="onSOut(\'screenshot\', this, \'' . $style_info['screenshot'] . '\');" onclick="javascript:setupTemplateFG(\'' . $tpl_name . '\', \'' . $value . '\', \'\');" id="templateType_' . $value . '"><img src="'.__URL__.'/themes/' . $tpl_name . '/images/type' . $value . '_';
 
-                if ($value == $tpl_style)
-                {
+                if ($value == $tpl_style) {
                     $tpl_style_list .= '1';
-                }
-                else
-                {
+                } else {
                     $tpl_style_list .= '0';
                 }
                 $tpl_style_list .= '.gif" border="0"></span>&nbsp;';
@@ -179,23 +173,21 @@ class TemplateController extends AdminController
      * 库项目管理
      * @return
      */
-    public function library(){
+    public function library()
+    {
         $curr_template = C('template');
         $arr_library   = array();
         $library_path  = ROOT_PATH .'themes/' . $curr_template . '/library';
         $library_dir   = @opendir($library_path);
         $curr_library  = '';
 
-        while ($file = @readdir($library_dir))
-        {
-            if (substr($file, -3) == "lbi")
-            {
+        while ($file = @readdir($library_dir)) {
+            if (substr($file, -3) == "lbi") {
                 $filename               = substr($file, 0, -4);
                 $template_libs = L('template_libs');
                 $arr_library[$filename] = $file. ' - ' . $template_libs[$filename];
 
-                if ($curr_library == '')
-                {
+                if ($curr_library == '') {
                     $curr_library = $filename;
                 }
             }
@@ -208,19 +200,19 @@ class TemplateController extends AdminController
 
         $lib = $this->load_library($curr_template, $curr_library);
         // print_r($arr_library);
-        $this->assign('ur_here',      L('04_template_library'));
+        $this->assign('ur_here', L('04_template_library'));
         $this->assign('curr_library', $curr_library);
-        $this->assign('libraries',    $arr_library);
+        $this->assign('libraries', $arr_library);
         $this->assign('library_html', $lib['html']);
         $this->display('template_library');
-
     }
     /**
      * 动态加载库项目内容
      *
      */
-    public function load_library_ajax(){
-        if(IS_AJAX && IS_GET){
+    public function load_library_ajax()
+    {
+        if (IS_AJAX && IS_GET) {
             $lib = I('get.lib');
             $library = $this->load_library(C('template'), $lib);
             $message = ($library['mark'] & 7) ? '' : L('library_not_written');
@@ -233,7 +225,8 @@ class TemplateController extends AdminController
      * 更新库项目内容
      * @return [type] [description]
      */
-    public function update_library(){
+    public function update_library()
+    {
         if (IS_POST) {
             $html = stripslashes(json_str_iconv($_POST['html']));
             $lib = I('post.lib');
@@ -242,14 +235,11 @@ class TemplateController extends AdminController
 
             $org_html = str_replace("\xEF\xBB\xBF", '', file_get_contents($lib_file));
 
-            if (@file_exists($lib_file) === true && @file_put_contents($lib_file, $html))
-            {
+            if (@file_exists($lib_file) === true && @file_put_contents($lib_file, $html)) {
                 @file_put_contents(ROOT_PATH . 'data/backup/library/' . C('template') . '-' . $lib . '.lbi', $org_html);
 
                 make_json_result('', L('update_lib_success'));
-            }
-            else
-            {
+            } else {
                 make_json_error(sprintf(L('update_lib_failed'), 'themes/' . C('template') . '/library'));
             }
         }
@@ -259,31 +249,29 @@ class TemplateController extends AdminController
      * 还原库项目
      * @return [type] [description]
      */
-    public function restore_library(){
+    public function restore_library()
+    {
         $lib_name   = I('get.lib');
         $lib_file   = ROOT_PATH . 'themes/' . C('template') . '/library/' . $lib_name . '.lbi';
         $lib_file   = str_replace("0xa", '', $lib_file); // 过滤 0xa 非法字符
         $lib_backup = ROOT_PATH . 'data/backup/library/' . C('template') . '-' . $lib_name . '.lbi';
         $lib_backup = str_replace("0xa", '', $lib_backup); // 过滤 0xa 非法字符
 
-        if (file_exists($lib_backup) && filemtime($lib_backup) >= filemtime($lib_file))
-        {
-            make_json_result(str_replace("\xEF\xBB\xBF", '',file_get_contents($lib_backup)));
-        }
-        else
-        {
-            make_json_result(str_replace("\xEF\xBB\xBF", '',file_get_contents($lib_file)));
+        if (file_exists($lib_backup) && filemtime($lib_backup) >= filemtime($lib_file)) {
+            make_json_result(str_replace("\xEF\xBB\xBF", '', file_get_contents($lib_backup)));
+        } else {
+            make_json_result(str_replace("\xEF\xBB\xBF", '', file_get_contents($lib_file)));
         }
     }
 
-     /**
-     * 载入库项目内容
-     *
-     * @access  public
-     * @param   string  $curr_template  模版名称
-     * @param   string  $lib_name       库项目名称
-     * @return  array
-     */
+    /**
+    * 载入库项目内容
+    *
+    * @access  public
+    * @param   string  $curr_template  模版名称
+    * @param   string  $lib_name       库项目名称
+    * @return  array
+    */
     private function load_library($curr_template, $lib_name)
     {
         $lib_name = str_replace("0xa", '', $lib_name); // 过滤 0xa 非法字符

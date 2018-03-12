@@ -15,8 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class AuctionController extends CommonController {
-
+class AuctionController extends CommonController
+{
     private $size = 10;
     private $page = 1;
     private $sort = 'last_update';
@@ -25,14 +25,16 @@ class AuctionController extends CommonController {
     /**
      * 构造函数
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
     /**
      * 拍卖活动列表
      */
-    public function index() {
+    public function index()
+    {
         $this->parameter();
         $this->assign('page', $this->page);
         $this->assign('size', $this->size);
@@ -54,7 +56,8 @@ class AuctionController extends CommonController {
     /**
      * 怕卖活动异步加载列表
      */
-    public function asynclist(){
+    public function asynclist()
+    {
         $this->parameter();
         $asyn_last = intval(I('post.last')) + 1;
         $this->size = I('post.amount');
@@ -73,7 +76,8 @@ class AuctionController extends CommonController {
     /**
      * 拍卖 详情
      */
-    public function info() {
+    public function info()
+    {
         /* 取得参数：拍卖活动id */
         $id = isset($_REQUEST['id']) ? intval(I('request.id')) : 0;
         if ($id <= 0) {
@@ -160,7 +164,8 @@ class AuctionController extends CommonController {
     /**
      * 出家记录
      */
-    public function record() {
+    public function record()
+    {
         /* 取得参数：拍卖活动id */
         $id = isset($_REQUEST['id']) ? intval(I('request.id')) : 0;
         if ($id <= 0) {
@@ -185,7 +190,8 @@ class AuctionController extends CommonController {
     /**
      * 拍卖商品 --> 拍卖出价
      */
-    public function bid() {
+    public function bid()
+    {
         /* 取得参数：拍卖活动id */
         $id = isset($_REQUEST['id']) ? intval(I('request.id')) : 0;
         if ($id <= 0) {
@@ -289,7 +295,8 @@ class AuctionController extends CommonController {
     /**
      * 拍卖商品 --> 购买
      */
-    public function buy() {
+    public function buy()
+    {
         /* 取得参数：拍卖活动id */
         $id = isset($_REQUEST['id']) ? intval(I('request.id')) : 0;
         if ($id <= 0) {
@@ -390,7 +397,8 @@ class AuctionController extends CommonController {
     /**
      * 处理参数便于搜索商品信息
      */
-    private function parameter() {
+    private function parameter()
+    {
         // 如果分类ID为0，则返回总分类页
         $page_size = C('page_size');
         $this->size = intval($page_size) > 0 ? intval($page_size) : 10;
@@ -419,5 +427,4 @@ class AuctionController extends CommonController {
         $this->assign('display', $display);
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
     }
-
 }

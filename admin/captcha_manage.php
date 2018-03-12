@@ -10,10 +10,8 @@ admin_priv('shop_config');
 /*------------------------------------------------------ */
 //-- 验证码设置
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'main')
-{
-    if (gd_version() == 0)
-    {
+if ($_REQUEST['act'] == 'main') {
+    if (gd_version() == 0) {
         sys_msg($_LANG['captcha_note'], 1);
     }
 
@@ -21,47 +19,38 @@ if ($_REQUEST['act'] == 'main')
     $captcha = intval($_CFG['captcha']);
 
     $captcha_check = array();
-    if ($captcha & CAPTCHA_REGISTER)
-    {
+    if ($captcha & CAPTCHA_REGISTER) {
         $captcha_check['register']          = 'checked="checked"';
     }
-    if ($captcha & CAPTCHA_LOGIN)
-    {
+    if ($captcha & CAPTCHA_LOGIN) {
         $captcha_check['login']             = 'checked="checked"';
     }
-    if ($captcha & CAPTCHA_COMMENT)
-    {
+    if ($captcha & CAPTCHA_COMMENT) {
         $captcha_check['comment']           = 'checked="checked"';
     }
-    if ($captcha & CAPTCHA_ADMIN)
-    {
+    if ($captcha & CAPTCHA_ADMIN) {
         $captcha_check['admin']             = 'checked="checked"';
     }
-    if ($captcha & CAPTCHA_MESSAGE)
-    {
+    if ($captcha & CAPTCHA_MESSAGE) {
         $captcha_check['message']    = 'checked="checked"';
     }
-    if ($captcha & CAPTCHA_LOGIN_FAIL)
-    {
+    if ($captcha & CAPTCHA_LOGIN_FAIL) {
         $captcha_check['login_fail_yes']    = 'checked="checked"';
-    }
-    else
-    {
+    } else {
         $captcha_check['login_fail_no']     = 'checked="checked"';
     }
 
-    $smarty->assign('captcha',          $captcha_check);
-    $smarty->assign('captcha_width',    $_CFG['captcha_width']);
-    $smarty->assign('captcha_height',   $_CFG['captcha_height']);
-    $smarty->assign('ur_here',          $_LANG['captcha_manage']);
+    $smarty->assign('captcha', $captcha_check);
+    $smarty->assign('captcha_width', $_CFG['captcha_width']);
+    $smarty->assign('captcha_height', $_CFG['captcha_height']);
+    $smarty->assign('ur_here', $_LANG['captcha_manage']);
     $smarty->display('captcha_manage.htm');
 }
 
 /*------------------------------------------------------ */
 //-- 保存设置
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'save_config')
-{
+if ($_REQUEST['act'] == 'save_config') {
     $captcha = 0;
     $captcha = empty($_POST['captcha_register'])    ? $captcha : $captcha | CAPTCHA_REGISTER;
     $captcha = empty($_POST['captcha_login'])       ? $captcha : $captcha | CAPTCHA_LOGIN;
@@ -85,6 +74,3 @@ if ($_REQUEST['act'] == 'save_config')
 
     sys_msg($_LANG['save_ok'], 0, array(array('href'=>'captcha_manage.php?act=main', 'text'=>$_LANG['captcha_manage'])));
 }
-
-
-?>

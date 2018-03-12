@@ -16,16 +16,17 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class EcHtmlCache {
-
-    static private $cacheFile = "";
+class EcHtmlCache
+{
+    private static $cacheFile = "";
 
     /**
      * 检查规则，看是否满足生成静态页面的条件
      * @param unknown $cachePath
      * @return string
-     */ 
-    static public function getCacheFile($cachePath) {
+     */
+    public static function getCacheFile($cachePath)
+    {
         if (isset($_SERVER['PATH_INFO'])) {
             $url = $_SERVER['PATH_INFO'];
         } else {
@@ -48,7 +49,7 @@ class EcHtmlCache {
 
         if (empty($url)) { //首页
             $file = 'index.html';
-        } else if (empty($_SERVER['QUERY_STRING']) && preg_match("#^[a-z0-9_\-\/%]+\.(shtml|html|htm)$#i", $url)) { //静态页面
+        } elseif (empty($_SERVER['QUERY_STRING']) && preg_match("#^[a-z0-9_\-\/%]+\.(shtml|html|htm)$#i", $url)) { //静态页面
             $file = $url;
         } else { //静态缓存
             $url_md5 = md5($url);
@@ -68,10 +69,11 @@ class EcHtmlCache {
      * @param number $expire
      * @return number|boolean
      */
-    static public function read($cachePath = "", $expire = 1800) {
+    public static function read($cachePath = "", $expire = 1800)
+    {
         self::$cacheFile = self::getCacheFile($cachePath);
         //静态缓存文件存在，且没有过期，则直接读取
-        if (file_exists(self::$cacheFile) && (time() < ( filemtime(self::$cacheFile) + $expire ))) {
+        if (file_exists(self::$cacheFile) && (time() < (filemtime(self::$cacheFile) + $expire))) {
             return readfile(self::$cacheFile);
         } else {
             ob_start();
@@ -82,7 +84,8 @@ class EcHtmlCache {
     /**
      * 写入静态缓存文件
      */
-    static public function write() {
+    public static function write()
+    {
         $contents = ob_get_contents();
         if (strlen($contents) > 0) {
             file_put_contents(self::$cacheFile, $contents);
@@ -90,5 +93,4 @@ class EcHtmlCache {
         ob_end_flush();
         flush();
     }
-
 }

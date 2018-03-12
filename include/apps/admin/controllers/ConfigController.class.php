@@ -16,12 +16,14 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ConfigController extends AdminController {
+class ConfigController extends AdminController
+{
 
     /**
      * 基本设置
      */
-    public function index() {
+    public function index()
+    {
         /* 可选语言 */
         $path = APP_PATH . APP_NAME . '/languages/';
         $dir = opendir($path);
@@ -58,7 +60,8 @@ class ConfigController extends AdminController {
     /**
      * 更新系统配置
      */
-    public function post() {
+    public function post()
+    {
         /* 允许上传的文件类型 */
         $allow_file_types = '|GIF|JPG|PNG|BMP|SWF|DOC|XLS|PPT|MID|WAV|ZIP|RAR|PDF|CHM|RM|TXT|CERT|';
         $arr = array();
@@ -68,7 +71,7 @@ class ConfigController extends AdminController {
                 $arr[$vo['id']] = $vo['value'];
             }
         }
-        foreach (I('value') AS $key => $val) {
+        foreach (I('value') as $key => $val) {
             if ($arr[$key] != $val) {
                 $data['value'] = $val;
                 $condition['id'] = $key;
@@ -84,18 +87,17 @@ class ConfigController extends AdminController {
                 $file_var_list[$vo['code']] = $vo;
             }
         }
-        foreach ($_FILES AS $code => $file) {
+        foreach ($_FILES as $code => $file) {
             /* 判断用户是否选择了文件 */
             if ((isset($file['error']) && $file['error'] == 0) || (!isset($file['error']) && $file['tmp_name'] != 'none')) {
                 /* 检查上传的文件类型是否合法 */
                 if (!check_file_type($file['tmp_name'], $file['name'], $allow_file_types)) {
-                    $this->message(sprintf(L('msg_invalid_file'), $file['name']), NULL, 'error');
+                    $this->message(sprintf(L('msg_invalid_file'), $file['name']), null, 'error');
                 } else {
                     if ($code == 'shop_logo') {
                         $info = get_template_info(C('template'));
                         $info['logo'] = empty($info['logo']) ? 'logo.png' : $info['logo'];
                         $file_name = str_replace('{$template}', C('template'), $file_var_list[$code]['store_dir']) . $info['logo'];
-                        
                     } elseif ($code == 'watermark') {
                         $name = explode('.', $file['name']);
                         $ext = array_pop($name);
@@ -119,7 +121,7 @@ class ConfigController extends AdminController {
                         $data2['value'] = __ROOT__ . str_replace(array('./', '../'), '/', $file_name);
                         $this->model->table('touch_shop_config')->data($data2)->where("code = '$code'")->update();
                     } else {
-                        $this->message(sprintf(L('msg_upload_failed'), $file['name'], $file_var_list[$code]['store_dir']), NULL, 'error');
+                        $this->message(sprintf(L('msg_upload_failed'), $file['name'], $file_var_list[$code]['store_dir']), null, 'error');
                     }
                 }
             }
@@ -153,7 +155,8 @@ class ConfigController extends AdminController {
     /**
      * 删除上传文件
      */
-    public function del() {
+    public function del()
+    {
         /* 取得参数 */
         $code = I('code');
         $filename = C($code);
@@ -172,7 +175,8 @@ class ConfigController extends AdminController {
      * @param   string  $val
      * @return  boolean
      */
-    private function update_configure($key, $val = '') {
+    private function update_configure($key, $val = '')
+    {
         if (!empty($key)) {
             $data['value'] = $val;
             $condition['code'] = $key;
@@ -187,18 +191,19 @@ class ConfigController extends AdminController {
      * @param   array   $excludes   不需要获得的设置组
      * @return  array
      */
-    private function get_settings($groups = null, $excludes = null) {
+    private function get_settings($groups = null, $excludes = null)
+    {
         $config_groups = '';
         $excludes_groups = '';
 
         if (!empty($groups)) {
-            foreach ($groups AS $key => $val) {
+            foreach ($groups as $key => $val) {
                 $config_groups .= " AND (id='$val' OR parent_id='$val')";
             }
         }
 
         if (!empty($excludes)) {
-            foreach ($excludes AS $key => $val) {
+            foreach ($excludes as $key => $val) {
                 $excludes_groups .= " AND (parent_id<>'$val' AND id<>'$val')";
             }
         }
@@ -209,7 +214,7 @@ class ConfigController extends AdminController {
 
         /* 整理数据 */
         $group_list = array();
-        foreach ($item_list AS $key => $item) {
+        foreach ($item_list as $key => $item) {
             $pid = $item['parent_id'];
             $cfg_name = L('cfg_name.' . $item['code']);
             $cfg_desc = L('cfg_desc.' . $item['code']);
@@ -230,7 +235,7 @@ class ConfigController extends AdminController {
                     if ($item['store_range']) {
                         $item['store_options'] = explode(',', $item['store_range']);
 
-                        foreach ($item['store_options'] AS $k => $v) {
+                        foreach ($item['store_options'] as $k => $v) {
                             $cfg_range = L('cfg_range.' . $item['code']);
                             $item['display_options'][$k] = isset($cfg_range[$v]) ? $cfg_range[$v] : $v;
                         }
@@ -242,5 +247,4 @@ class ConfigController extends AdminController {
 
         return $group_list;
     }
-
 }

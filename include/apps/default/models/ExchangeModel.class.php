@@ -15,7 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ExchangeModel extends BaseModel {
+class ExchangeModel extends BaseModel
+{
 
     /**
      * 获得分类下的商品
@@ -24,7 +25,8 @@ class ExchangeModel extends BaseModel {
      * @param   string  $children
      * @return  array
      */
-    function exchange_get_goods($children, $min, $max, $ext, $size, $page, $sort, $order) {
+    public function exchange_get_goods($children, $min, $max, $ext, $size, $page, $sort, $order)
+    {
         $display = $GLOBALS['display'];
         $where = "eg.is_exchange = 1 AND g.is_delete = 0 AND " .
                 "($children OR " . model('Goods')->get_extension_goods($children) . ')';
@@ -65,7 +67,7 @@ class ExchangeModel extends BaseModel {
             $arr[$key]['goods_img'] = get_image_path($row['goods_id'], $row['goods_img']);
             $arr[$key]['url'] = url('exchange_goods', array('gid' => $row['goods_id']));
             $arr[$key]['sc'] = model('GoodsBase')->get_goods_collect($row['goods_id']);
-			$arr[$key]['sales_count'] = model('GoodsBase')->get_sales_count($row['goods_id']); // 销售数量
+            $arr[$key]['sales_count'] = model('GoodsBase')->get_sales_count($row['goods_id']); // 销售数量
             $arr[$key]['mysc'] = 0;
             // 检查是否已经存在于用户的收藏夹
             if ($_SESSION ['user_id']) {
@@ -87,7 +89,8 @@ class ExchangeModel extends BaseModel {
      * @param   integer     $goods_id
      * @return  void
      */
-    function get_exchange_goods_info($goods_id) {
+    public function get_exchange_goods_info($goods_id)
+    {
         $time = gmtime();
         $sql = 'SELECT g.*, c.measure_unit, b.brand_id, b.brand_name AS goods_brand, eg.exchange_integral, eg.is_exchange ' .
                 'FROM ' . $this->pre . 'goods AS g ' .
@@ -142,7 +145,8 @@ class ExchangeModel extends BaseModel {
      * @param   string     $cat_id
      * @return  integer
      */
-    function get_exchange_goods_count($children, $min = 0, $max = 0, $ext = '') {
+    public function get_exchange_goods_count($children, $min = 0, $max = 0, $ext = '')
+    {
         $where = "eg.is_exchange = 1 AND g.is_delete = 0 AND ($children OR " . model('Goods')->get_extension_goods($children) . ')';
 
 
@@ -158,8 +162,7 @@ class ExchangeModel extends BaseModel {
                 $this->pre . "goods AS g WHERE eg.goods_id = g.goods_id AND $where $ext";
         
         /* 返回商品总数 */
-        $res = $this->row($sql); 
+        $res = $this->row($sql);
         return $res['count'];
     }
-
 }

@@ -3,61 +3,70 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class EcMysql {
-
-    private $_writeLink = NULL; //主
-    private $_readLink = NULL; //从
+class EcMysql
+{
+    private $_writeLink = null; //主
+    private $_readLink = null; //从
     private $_replication = false; //标志是否支持主从
     private $dbConfig = array();
     public $sql = "";
 
-    public function __construct($dbConfig = array()) {
+    public function __construct($dbConfig = array())
+    {
         $this->dbConfig = $dbConfig;
-        //判断是否支持主从              
+        //判断是否支持主从
         $this->_replication = isset($this->dbConfig['DB_SLAVE']) && !empty($this->dbConfig['DB_SLAVE']);
     }
 
-    //执行sql查询   
-    public function query($sql, $params = array()) {
+    //执行sql查询
+    public function query($sql, $params = array())
+    {
         foreach ($params as $k => $v) {
             $sql = str_replace(':' . $k, $this->escape($v), $sql);
         }
         $this->sql = $sql;
-        if ($query = $this->_getReadLink()->query($sql))
+        if ($query = $this->_getReadLink()->query($sql)) {
             return $query;
-        else
+        } else {
             $this->error('MySQL Query Error', $this->_getReadLink()->error, $this->_getReadLink()->errno);
+        }
     }
 
     //执行sql命令
-    public function execute($sql, $params = array()) {
+    public function execute($sql, $params = array())
+    {
         foreach ($params as $k => $v) {
             $sql = str_replace(':' . $k, $this->escape($v), $sql);
         }
         $this->sql = $sql;
-        if ($query = $this->_getWriteLink()->query($sql))
+        if ($query = $this->_getWriteLink()->query($sql)) {
             return $query;
-        else
+        } else {
             $this->error('MySQL Query Error', $this->_getWriteLink()->error, $this->_getWriteLink()->errno);
+        }
     }
 
-    //从结果集中取得一行作为关联数组，或数字数组，或二者兼有 
-    public function fetchArray($query, $result_type = MYSQLI_ASSOC) {
+    //从结果集中取得一行作为关联数组，或数字数组，或二者兼有
+    public function fetchArray($query, $result_type = MYSQLI_ASSOC)
+    {
         return $this->unEscape($query->fetch_array($result_type));
     }
 
     //取得前一次 MySQL 操作所影响的记录行数
-    public function affectedRows() {
+    public function affectedRows()
+    {
         return $this->_getWriteLink()->affected_rows;
     }
 
     //获取上一次插入的id
-    public function lastId() {
+    public function lastId()
+    {
         return $this->_getWriteLink()->insert_id;
     }
 
     //获取表结构
-    public function getFields($table) {
+    public function getFields($table)
+    {
         $this->sql = "SHOW FULL FIELDS FROM {$table}";
         $query = $this->query($this->sql);
         $data = array();
@@ -68,7 +77,8 @@ class EcMysql {
     }
 
     //获取行数
-    public function count($table, $where) {
+    public function count($table, $where)
+    {
         $this->sql = "SELECT count(*) FROM $table $where";
         $query = $this->query($this->sql);
         $data = $this->fetchArray($query);
@@ -76,7 +86,8 @@ class EcMysql {
     }
 
     //数据过滤
-    public function escape($value) {
+    public function escape($value)
+    {
         if (isset($this->_readLink)) {
             $mysqli = $this->_readLink;
         } elseif (isset($this->_writeLink)) {
@@ -96,7 +107,8 @@ class EcMysql {
     }
 
     //数据过滤
-    public function unEscape($value) {
+    public function unEscape($value)
+    {
         if (is_array($value)) {
             return array_map('stripslashes', $value);
         } else {
@@ -105,7 +117,8 @@ class EcMysql {
     }
 
     //解析待添加或修改的数据
-    public function parseData($options, $type) {
+    public function parseData($options, $type)
+    {
         //如果数据是字符串，直接返回
         if (is_string($options['data'])) {
             return $options['data'];
@@ -130,13 +143,14 @@ class EcMysql {
     }
 
     //解析查询条件
-    public function parseCondition($options) {
+    public function parseCondition($options)
+    {
         $condition = "";
         if (!empty($options['where'])) {
             $condition = " WHERE ";
             if (is_string($options['where'])) {
                 $condition .= $options['where'];
-            } else if (is_array($options['where'])) {
+            } elseif (is_array($options['where'])) {
                 foreach ($options['where'] as $key => $value) {
                     $condition .= " `$key` = " . $this->escape($value) . " AND ";
                 }
@@ -158,13 +172,15 @@ class EcMysql {
         if (!empty($options['limit']) && (is_string($options['limit']) || is_numeric($options['limit']))) {
             $condition .= " LIMIT " . $options['limit'];
         }
-        if (empty($condition))
+        if (empty($condition)) {
             return "";
+        }
         return $condition;
     }
 
     //输出错误信息
-    public function error($message = '', $error = '', $errorno = '') {
+    public function error($message = '', $error = '', $errorno = '')
+    {
         if (DEBUG) {
             $str = " {$message}<br>
                     <b>SQL</b>: {$this->sql}<br>
@@ -177,7 +193,8 @@ class EcMysql {
     }
 
     //获取从服务器连接
-    private function _getReadLink() {
+    private function _getReadLink()
+    {
         if (isset($this->_readLink)) {
             return $this->_readLink;
         } else {
@@ -191,7 +208,8 @@ class EcMysql {
     }
 
     //获取主服务器连接
-    private function _getWriteLink() {
+    private function _getWriteLink()
+    {
         if (isset($this->_writeLink)) {
             return $this->_writeLink;
         } else {
@@ -201,7 +219,8 @@ class EcMysql {
     }
 
     //数据库链接
-    private function _connect($is_master = true) {
+    private function _connect($is_master = true)
+    {
         if (($is_master == false) && $this->_replication) {
             $slave_count = count($this->dbConfig['DB_SLAVE']);
             //遍历所有从机
@@ -233,7 +252,8 @@ class EcMysql {
     }
 
     //关闭数据库
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->_writeLink) {
             $this->_writeLink->close();
         }
@@ -241,5 +261,4 @@ class EcMysql {
             $this->_readLink->close();
         }
     }
-
 }

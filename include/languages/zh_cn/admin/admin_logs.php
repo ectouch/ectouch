@@ -30,5 +30,3 @@ $_LANG['js_languages']['select_date_value'] = '如果您要清除日志,请选�
 /* 提示信息 */
 $_LANG['drop_sueeccud'] = '操作成功!';
 $_LANG['batch_drop_success'] = '成功删除了 %d 个日志记录';
-
-?>

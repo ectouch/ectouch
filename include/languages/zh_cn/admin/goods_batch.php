@@ -89,4 +89,3 @@ $_LANG['upload_goods']['is_real'] = '是否实体商品';
 
 $_LANG['batch_upload_ok'] = '批量上传成功';
 $_LANG['goods_upload_confirm'] = '批量上传确认';
-?>

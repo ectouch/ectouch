@@ -16,12 +16,14 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class PaymentController extends AdminController {
+class PaymentController extends AdminController
+{
 
     /**
      * 支付方式列表
      */
-    public function index() {
+    public function index()
+    {
         // 查询数据库中启用的支付方式
         $pay_list = array();
         $where ['enabled'] = 1;
@@ -62,7 +64,8 @@ class PaymentController extends AdminController {
     /**
      * 安装支付方式
      */
-    public function install() {
+    public function install()
+    {
         if (IS_POST) {
             // 数据过滤
             $data = I('post.data');
@@ -72,12 +75,12 @@ class PaymentController extends AdminController {
             $cfg_lang = I('cfg_lang');
             // 检查数据
             if (empty($data ['pay_name'])) {
-                $this->message(L('payment_name') . L('empty'), NULL, 'error');
+                $this->message(L('payment_name') . L('empty'), null, 'error');
             }
             $where = 'pay_name = "' . $data ['pay_name'] . '" AND pay_code <> "' . $data ['pay_code'] . '"';
             $count = $this->model->table('touch_payment')->where($where)->count();
             if ($count > 0) {
-                $this->message(L('payment_name') . L('repeat'), NULL, 'error');
+                $this->message(L('payment_name') . L('repeat'), null, 'error');
             }
             // 取得配置信息
             $pay_config = array();
@@ -121,7 +124,7 @@ class PaymentController extends AdminController {
         }
         // 取相应插件信息
         $set_modules = true;
-        include_once (ROOT_PATH . 'plugins/payment/' . $_REQUEST ['code'] . '.php');
+        include_once(ROOT_PATH . 'plugins/payment/' . $_REQUEST ['code'] . '.php');
 
         $data = $modules [0];
         // 对支付费用判断。如果data['pay_fee']为false无支付费用，为空则说明以配送有关，其它可以修改
@@ -155,7 +158,8 @@ class PaymentController extends AdminController {
     /**
      * 编辑支付方式
      */
-    public function edit() {
+    public function edit()
+    {
         if (IS_POST) {
             // 数据过滤
             $data = I('data');
@@ -165,12 +169,12 @@ class PaymentController extends AdminController {
             $cfg_lang = I('cfg_lang');
             // 检查数据
             if (empty($data ['pay_name'])) {
-                $this->message(L('payment_name') . L('empty'), NULL, 'error');
+                $this->message(L('payment_name') . L('empty'), null, 'error');
             }
             $where = 'pay_name = "' . $data ['pay_name'] . '" AND pay_code <> "' . $data ['pay_code'] . '"';
             $count = $this->model->table('touch_payment')->where($where)->count();
             if ($count > 0) {
-                $this->message(L('payment_name') . L('repeat'), NULL, 'error');
+                $this->message(L('payment_name') . L('repeat'), null, 'error');
             }
             // 取得配置信息
             $pay_config = array();
@@ -192,7 +196,7 @@ class PaymentController extends AdminController {
             $this->message(L('edit_ok'), url('index'));
         }
         if (!isset($_GET ['code']) || empty($_GET ['code'])) {
-            $this->message(L('payment_not_available'), NULL, 'error');
+            $this->message(L('payment_not_available'), null, 'error');
         }
         $code = I('code');
         // 查询支付方式信息
@@ -200,7 +204,7 @@ class PaymentController extends AdminController {
         $where ['enabled'] = 1;
         $pay = $this->model->table('touch_payment')->where($where)->find();
         if (empty($pay)) {
-            $this->message(L('payment_not_available'), NULL, 'error');
+            $this->message(L('payment_not_available'), null, 'error');
         }
 
         // 查询电脑端支付方式
@@ -217,7 +221,7 @@ class PaymentController extends AdminController {
         }
         // 取相应插件信息
         $set_modules = true;
-        include_once (ROOT_PATH . 'plugins/payment/' . $code . '.php');
+        include_once(ROOT_PATH . 'plugins/payment/' . $code . '.php');
         $data = $modules [0];
 
         // 取得配置信息
@@ -264,9 +268,10 @@ class PaymentController extends AdminController {
     /**
      * 卸载支付方式
      */
-    public function uninstall() {
+    public function uninstall()
+    {
         if (!isset($_GET ['code']) || empty($_GET ['code'])) {
-            $this->message(L('payment_not_available'), NULL, 'error');
+            $this->message(L('payment_not_available'), null, 'error');
         }
         $code = I('code');
         $where ['pay_code'] = $code;
@@ -275,5 +280,4 @@ class PaymentController extends AdminController {
 
         $this->message(L('uninstall_ok'), url('index'));
     }
-
 }

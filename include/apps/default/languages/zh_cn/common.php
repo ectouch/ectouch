@@ -1006,4 +1006,3 @@ $_LANG['shopping_package'] = '超值礼包列表';
 
 
 $_LANG['brand_hj'] = '品牌合集页';
-

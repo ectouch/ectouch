@@ -15,7 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class GroupbuyModel extends BaseModel {
+class GroupbuyModel extends BaseModel
+{
 
     /**
      * 取得某页的所有团购活动
@@ -23,7 +24,8 @@ class GroupbuyModel extends BaseModel {
      * @param   int     $page   当前页
      * @return  array
      */
-    function group_buy_list($size, $page, $sort, $order) {
+    public function group_buy_list($size, $page, $sort, $order)
+    {
         /* 取得团购活动 */
         $gb_list = array();
         $now = gmtime();
@@ -111,7 +113,8 @@ class GroupbuyModel extends BaseModel {
      * 取得团购活动总数
      * @return type
      */
-    function group_buy_count() {
+    public function group_buy_count()
+    {
         $now = gmtime();
         $sql = "SELECT COUNT(*) as count " .
                 "FROM " . $this->pre .
@@ -120,5 +123,4 @@ class GroupbuyModel extends BaseModel {
         $res = $this->row($sql);
         return $res['count'];
     }
-
 }

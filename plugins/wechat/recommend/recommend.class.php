@@ -22,9 +22,10 @@ if (! defined('IN_ECTOUCH')) {
  * 推荐商品
  *
  * @author wanglu
- *        
+ *
  */
-class recommend extends PluginWechatController{
+class recommend extends PluginWechatController
+{
     // 插件名称
     protected $plugin_name = '';
     // 配置
@@ -33,7 +34,7 @@ class recommend extends PluginWechatController{
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -56,7 +57,7 @@ class recommend extends PluginWechatController{
     public function show($fromusername, $info)
     {
         $articles = array();
-    	$data = model('base')->model->table('goods')->field('goods_id, goods_name, goods_img')->where('is_on_sale = 1 and is_delete = 0 and goods_name like "%' . $info['user_keywords'] . '%"')->order('last_update desc')->limit(4)->select();
+        $data = model('base')->model->table('goods')->field('goods_id, goods_name, goods_img')->where('is_on_sale = 1 and is_delete = 0 and goods_name like "%' . $info['user_keywords'] . '%"')->order('last_update desc')->limit(4)->select();
         if (! empty($data)) {
             $articles['type'] = 'news';
             foreach ($data as $key => $val) {
@@ -71,8 +72,7 @@ class recommend extends PluginWechatController{
                     'id' => $val['goods_id']
                 ));
             }
-        }
-        else{
+        } else {
             $goods = model('Base')->model->table('goods')
                 ->field('goods_id, goods_name')
                 ->where('is_best = 1 and is_on_sale = 1 and is_delete = 0')
@@ -91,8 +91,8 @@ class recommend extends PluginWechatController{
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -120,5 +120,6 @@ class recommend extends PluginWechatController{
      * 行为操作
      */
     public function action()
-    {}
+    {
+    }
 }

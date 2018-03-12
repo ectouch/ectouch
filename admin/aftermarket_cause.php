@@ -18,7 +18,7 @@ if ($_REQUEST['act'] == 'back_cause_list') {
     /* 检查权限 */
     admin_priv('back_cause_list');
     /* 查询 */
-    $result = cause_list(0, 0, FALSE);
+    $result = cause_list(0, 0, false);
     /* 模板赋值 */
     $smarty->assign('ur_here', $_LANG['11_back_cause']);
     $smarty->assign('action_link', array('href' => 'aftermarket_cause.php?act=add_return_cause', 'text' => $_LANG['10_cause_add']));
@@ -158,16 +158,13 @@ elseif ($_REQUEST['act'] == 'remove_cause') {
  */
 function cause_info($c_id)
 {
-
     $sql = "SELECT * FROM " . $GLOBALS['ecs']->table('return_cause') . " WHERE cause_id = " . $c_id;
 
     $res = $GLOBALS['db']->getRow($sql);
 
     if ($res) {
-
         return $res;
     } else {
-
         return array();
     }
 }
@@ -179,15 +176,10 @@ function cause_info($c_id)
  */
 function cause_exists($cause_name, $cause_id = 0)
 {
-
     $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('return_cause') .
 " WHERE cause_name = '" . $cause_name . "'";
     if ($cause_id) {
         $sql .= "AND cause_id = '" . $cause_id . "'";
     }
     return ($GLOBALS['db']->getOne($sql) > 0) ? true : false;
-
 }
-
-
-?>

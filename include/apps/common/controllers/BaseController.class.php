@@ -16,15 +16,16 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class BaseController extends Controller {
-
-    protected static $ecs = NULL;
-    protected static $db = NULL;
-    protected static $err = NULL;
+class BaseController extends Controller
+{
+    protected static $ecs = null;
+    protected static $db = null;
+    protected static $err = null;
     protected $appConfig = array();
     protected $load = null;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->appConfig = C('APP');
         if ($this->_readHtmlCache()) {
@@ -36,23 +37,28 @@ class BaseController extends Controller {
         Migrate::init();
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->_writeHtmlCache();
     }
 
-    static function ecs() {
+    public static function ecs()
+    {
         return self::$ecs;
     }
 
-    static function & db() {
+    public static function & db()
+    {
         return self::$db;
     }
 
-    static function err() {
+    public static function err()
+    {
         return self::$err;
     }
 
-    private function _initialize() {
+    private function _initialize()
+    {
         //初始化设置
         @ini_set('memory_limit', '512M');
         @ini_set('session.cache_expire', 180);
@@ -84,7 +90,7 @@ class BaseController extends Controller {
         //载入系统参数
         C('CFG', model('Base')->load_config());
 
-        if(C('rewrite') > 0){
+        if (C('rewrite') > 0) {
             C('URL_MODEL', 2);
         }
 
@@ -92,13 +98,14 @@ class BaseController extends Controller {
     }
 
     //载入函数、语言文件
-    private function _common() {
+    private function _common()
+    {
         //加载公共语言
         require(APP_PATH . C('_APP_NAME') . '/languages/' . C('LANG') . '/common.php');
         //加载控制器语言
         if (file_exists(APP_PATH . C('_APP_NAME') . '/languages/' . C('LANG') . '/' . strtolower(CONTROLLER_NAME) . '.php')) {
             require(APP_PATH . C('_APP_NAME') . '/languages/' . C('LANG') . '/' . strtolower(CONTROLLER_NAME) . '.php');
-        }	
+        }
         L($_LANG); //语言包赋值
         if (file_exists(APP_PATH . C('_APP_NAME') . '/helpers/insert.php')) {
             require(APP_PATH . C('_APP_NAME') . '/helpers/insert.php');
@@ -108,14 +115,15 @@ class BaseController extends Controller {
     }
 
     //读取静态缓存
-    private function _readHtmlCache() {
+    private function _readHtmlCache()
+    {
         if (($this->appConfig['HTML_CACHE_ON'] == false) || empty($this->appConfig['HTML_CACHE_RULE'])) {
             $this->appConfig['HTML_CACHE_ON'] = false;
             return false;
         }
         if (isset($this->appConfig['HTML_CACHE_RULE'][APP_NAME][CONTROLLER_NAME][ACTION_NAME])) {
             $expire = $this->appConfig['HTML_CACHE_RULE'][APP_NAME][CONTROLLER_NAME][ACTION_NAME];
-        } else if (isset($this->appConfig['HTML_CACHE_RULE'][APP_NAME][CONTROLLER_NAME]['*'])) {
+        } elseif (isset($this->appConfig['HTML_CACHE_RULE'][APP_NAME][CONTROLLER_NAME]['*'])) {
             $expire = $this->appConfig['HTML_CACHE_RULE'][APP_NAME][CONTROLLER_NAME]['*'];
         } else {
             $this->appConfig['HTML_CACHE_ON'] = false;
@@ -125,10 +133,10 @@ class BaseController extends Controller {
     }
 
     //写入静态页面缓存
-    private function _writeHtmlCache() {
+    private function _writeHtmlCache()
+    {
         if ($this->appConfig['HTML_CACHE_ON']) {
             EcHtmlCache::write();
         }
     }
-
 }

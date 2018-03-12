@@ -6,8 +6,8 @@
 
 class ecshop
 {
-    var $db_name = '';
-    var $prefix  = 'ecs_';
+    public $db_name = '';
+    public $prefix  = 'ecs_';
 
     /**
      * 构造函数
@@ -62,37 +62,25 @@ class ecshop
         $protocol = $this->http();
 
         /* 域名或IP地址 */
-        if (isset($_SERVER['HTTP_X_FORWARDED_HOST']))
-        {
+        if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
             $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
-        }
-        elseif (isset($_SERVER['HTTP_HOST']))
-        {
+        } elseif (isset($_SERVER['HTTP_HOST'])) {
             $host = $_SERVER['HTTP_HOST'];
-        }
-        else
-        {
+        } else {
             /* 端口 */
-            if (isset($_SERVER['SERVER_PORT']))
-            {
+            if (isset($_SERVER['SERVER_PORT'])) {
                 $port = ':' . $_SERVER['SERVER_PORT'];
 
-                if ((':80' == $port && 'http://' == $protocol) || (':443' == $port && 'https://' == $protocol))
-                {
+                if ((':80' == $port && 'http://' == $protocol) || (':443' == $port && 'https://' == $protocol)) {
                     $port = '';
                 }
-            }
-            else
-            {
+            } else {
                 $port = '';
             }
 
-            if (isset($_SERVER['SERVER_NAME']))
-            {
+            if (isset($_SERVER['SERVER_NAME'])) {
                 $host = $_SERVER['SERVER_NAME'] . $port;
-            }
-            elseif (isset($_SERVER['SERVER_ADDR']))
-            {
+            } elseif (isset($_SERVER['SERVER_ADDR'])) {
                 $host = $_SERVER['SERVER_ADDR'] . $port;
             }
         }
@@ -115,8 +103,7 @@ class ecshop
 
         $root = str_replace('\\', '/', $curr);
 
-        if (substr($root, -1) != '/')
-        {
+        if (substr($root, -1) != '/') {
             $root .= '/';
         }
 
@@ -144,12 +131,9 @@ class ecshop
      */
     public function data_dir($sid = 0)
     {
-        if (empty($sid))
-        {
+        if (empty($sid)) {
             $s = 'data';
-        }
-        else
-        {
+        } else {
             $s = 'user_files/';
             $s .= ceil($sid / 3000) . '/';
             $s .= $sid % 3000;
@@ -166,12 +150,9 @@ class ecshop
      */
     public function image_dir($sid = 0)
     {
-        if (empty($sid))
-        {
+        if (empty($sid)) {
             $s = 'data/attached/images';
-        }
-        else
-        {
+        } else {
             $s = 'user_files/';
             $s .= ceil($sid / 3000) . '/';
             $s .= ($sid % 3000) . '/';
@@ -179,5 +160,4 @@ class ecshop
         }
         return $s;
     }
-
 }

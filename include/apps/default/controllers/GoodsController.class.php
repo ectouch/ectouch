@@ -17,7 +17,6 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class GoodsController extends CommonController
 {
-
     protected $goods_id;
 
     /**
@@ -39,12 +38,12 @@ class GoodsController extends CommonController
         //购物车商品数量
         $cart_goods = insert_cart_info_number();
         $this->assign('seller_cart_total_number', $cart_goods);
-		//获取qq客户号码
-		$shop_qq = $this->model->table('shop_config')->field('value')->where(array("code"=>qq))->getOne();
-		if($shop_qq){
-			$infoqq['centent'] = explode(',',$shop_qq);
-		}
-		$this->assign('shop_qq', $infoqq);
+        //获取qq客户号码
+        $shop_qq = $this->model->table('shop_config')->field('value')->where(array("code"=>qq))->getOne();
+        if ($shop_qq) {
+            $infoqq['centent'] = explode(',', $shop_qq);
+        }
+        $this->assign('shop_qq', $infoqq);
         // 如果没有找到任何记录则跳回到首页
         if ($goods === false) {
             ecs_header("Location: ./\n");
@@ -121,7 +120,7 @@ class GoodsController extends CommonController
         } else {
             setcookie('ECS[history]', $this->goods_id, gmtime() + 3600 * 24 * 30);
         }
-        $comment_list = model('Comment')->get_comment($this->goods_id, 1,4);
+        $comment_list = model('Comment')->get_comment($this->goods_id, 1, 4);
         $this->assign('comment_list', $comment_list);
         // 更新点击次数
         $data = 'click_count = click_count + 1';
@@ -155,12 +154,12 @@ class GoodsController extends CommonController
         $this->assign('share_data', $this->get_wechat_share_content($share_data));
         //组合套餐名 start
         $comboTabIndex = array(' ','一', '二', '三','四','五','六','七','八','九','十');
-        $this->assign('comboTab',$comboTabIndex);
+        $this->assign('comboTab', $comboTabIndex);
         //组合套餐组
         $fittings_list = model('Goods')->get_goods_fittings(array($this->goods_id));
         $fittings_index = array();
-        if(is_array($fittings_list)){
-            foreach($fittings_list as $vo){
+        if (is_array($fittings_list)) {
+            foreach ($fittings_list as $vo) {
                 $fittings_index[$vo['group_id']] = 1;//关联数组
             }
         }
@@ -177,7 +176,7 @@ class GoodsController extends CommonController
     {
         /* 获得商品的信息 */
         $goods = model('Goods')->get_goods_info($this->goods_id);
-		//购物车商品数量
+        //购物车商品数量
         $cart_goods = insert_cart_info_number();
         $this->assign('seller_cart_total_number', $cart_goods);
         /* 页面标题 */
@@ -204,7 +203,7 @@ class GoodsController extends CommonController
         $cmt->id = !empty($_GET['id']) ? intval($_GET['id']) : 0;
         $cmt->type = !empty($_GET['type']) ? intval($_GET['type']) : 0;
         $cmt->page = isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']) : 1;
-        $com = model('Comment')->get_comment_info($cmt->id,0);
+        $com = model('Comment')->get_comment_info($cmt->id, 0);
         $this->assign('comments_info', $com);
         $pay = 0;
         $size = I(C('page_size'), 10);
@@ -258,14 +257,14 @@ class GoodsController extends CommonController
             $product = $this->model->table('products')->field('product_number')->where($condition)->find();
 
             // 查询：系统启用了库存，检查输入的商品数量是否有效
-// 			if (intval ( C('use_storage') ) > 0 && $goods ['extension_code'] != 'package_buy') {
-// 				if ($goods ['goods_number'] < $number) {
-// 					$res ['err_no'] = 1;
+            // 			if (intval ( C('use_storage') ) > 0 && $goods ['extension_code'] != 'package_buy') {
+            // 				if ($goods ['goods_number'] < $number) {
+            // 					$res ['err_no'] = 1;
             //	$res ['err_msg'] = sprintf ( L('stock_insufficiency'), $goods ['goods_name'], $goods ['goods_number'], $goods ['goods_number'] );
-// 					$res ['err_max_number'] = $goods ['goods_number'];
-// 					die ( json_encode ( $res ) );
-// 				}
-// 			}
+            // 					$res ['err_max_number'] = $goods ['goods_number'];
+            // 					die ( json_encode ( $res ) );
+            // 				}
+            // 			}
             if ($number <= 0) {
                 $res ['qty'] = $number = 1;
             } else {
@@ -273,11 +272,10 @@ class GoodsController extends CommonController
             }
             $shop_price = model('GoodsBase')->get_final_price($this->goods_id, $number, true, $attr_id);
             $res ['result'] = price_format($shop_price * $number);
-            if(!empty($product['product_number'])) {
+            if (!empty($product['product_number'])) {
                 $res ['product_number'] = '库存：'.$product['product_number'];
             }
         }
         die(json_encode($res));
     }
-
 }

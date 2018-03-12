@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class PackageBaseModel extends BaseModel {
+class PackageBaseModel extends BaseModel
+{
 
     /**
      * 获取指定id package 的信息
@@ -26,7 +27,8 @@ class PackageBaseModel extends BaseModel {
      *
      * @return array       array(package_id, package_name, goods_id,start_time, end_time, min_price, integral)
      */
-    function get_package_info($id) {
+    public function get_package_info($id)
+    {
         global $ecs, $db, $_CFG;
         $id = is_numeric($id) ? intval($id) : 0;
         $now = gmtime();
@@ -104,7 +106,8 @@ class PackageBaseModel extends BaseModel {
      * @param   integer $package_id
      * @return  array
      */
-    function get_package_goods($package_id) {
+    public function get_package_goods($package_id)
+    {
         $sql = "SELECT pg.goods_id, g.goods_name, pg.goods_number, p.goods_attr, p.product_number, p.product_id
             FROM " . $this->pre . 'package_goods ' . " AS pg
                 LEFT JOIN " . $this->pre . 'goods ' . " AS g ON pg.goods_id = g.goods_id
@@ -122,7 +125,7 @@ class PackageBaseModel extends BaseModel {
 
         /* 生成结果数组 取存在货品的商品id 组合商品id与货品id */
         $good_product_str = '';
-        foreach ($resource as $key=>$_row){
+        foreach ($resource as $key=>$_row) {
             if ($_row['product_id'] > 0) {
                 /* 取存商品id */
                 $good_product_str .= ',' . $_row['goods_id'];
@@ -173,5 +176,4 @@ class PackageBaseModel extends BaseModel {
 
         return $row;
     }
-
 }

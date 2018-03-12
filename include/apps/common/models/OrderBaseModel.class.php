@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class OrderBaseModel extends BaseModel {
+class OrderBaseModel extends BaseModel
+{
 
     /**
      * 记录订单操作记录
@@ -29,7 +30,8 @@ class OrderBaseModel extends BaseModel {
      * @param   string  $username           用户名，用户自己的操作则为 buyer
      * @return  void
      */
-    function order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0) {
+    public function order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0)
+    {
         if (is_null($username)) {
             $username = $_SESSION['admin_name'];
         }
@@ -47,7 +49,8 @@ class OrderBaseModel extends BaseModel {
      * @param   bool  $shipping   是否已经发货
      * @return array()
      */
-    function get_virtual_goods($order_id, $shipping = false) {
+    public function get_virtual_goods($order_id, $shipping = false)
+    {
         if ($shipping) {
             $sql = 'SELECT goods_id, goods_name, send_number AS num, extension_code FROM ' . $this->pre .
                     "order_goods WHERE order_id = '$order_id' AND extension_code > ''";
@@ -58,10 +61,11 @@ class OrderBaseModel extends BaseModel {
         $res = $this->query($sql);
 
         $virtual_goods = array();
-        if (is_array($res))
-            foreach ($res AS $row) {
+        if (is_array($res)) {
+            foreach ($res as $row) {
                 $virtual_goods[$row['extension_code']][] = array('goods_id' => $row['goods_id'], 'goods_name' => $row['goods_name'], 'num' => $row['num']);
             }
+        }
 
         return $virtual_goods;
     }
@@ -77,9 +81,10 @@ class OrderBaseModel extends BaseModel {
      *
      * @return bool
      */
-    function virtual_goods_ship(&$virtual_goods, &$msg, $order_sn, $return_result = false, $process = 'other') {
+    public function virtual_goods_ship(&$virtual_goods, &$msg, $order_sn, $return_result = false, $process = 'other')
+    {
         $virtual_card = array();
-        foreach ($virtual_goods AS $code => $goods_list) {
+        foreach ($virtual_goods as $code => $goods_list) {
             /* 只处理虚拟卡 */
             if ($code == 'virtual_card') {
                 foreach ($goods_list as $goods) {
@@ -109,7 +114,8 @@ class OrderBaseModel extends BaseModel {
      *
      * @return  boolen
      */
-    function virtual_card_shipping($goods, $order_sn, &$msg, $process = 'other') {
+    public function virtual_card_shipping($goods, $order_sn, &$msg, $process = 'other')
+    {
         /* 检查有没有缺货 */
         $sql = "SELECT COUNT(*) as count FROM " . $this->pre . "virtual_card WHERE goods_id = '$goods[goods_id]' AND is_saled = 0 ";
         $result = $this->row($sql);
@@ -209,13 +215,14 @@ class OrderBaseModel extends BaseModel {
      *
      * @return void
      */
-    function virtual_card_result($order_sn, $goods) {
+    public function virtual_card_result($order_sn, $goods)
+    {
         /* 获取已经发送的卡片数据 */
         $sql = "SELECT card_sn, card_password, end_date, crc32 FROM " . $this->pre . "virtual_card WHERE goods_id= '$goods[goods_id]' AND order_sn = '$order_sn' ";
 
         $cards = array();
         $array = $this->query($sql);
-        foreach ($array as $key=>$row){
+        foreach ($array as $key=>$row) {
             /* 卡号和密码解密 */
             if ($row['crc32'] == 0 || $row['crc32'] == crc32(AUTH_KEY)) {
                 $row['card_sn'] = decrypt($row['card_sn']);
@@ -233,5 +240,4 @@ class OrderBaseModel extends BaseModel {
 
         return $cards;
     }
-
 }

@@ -4,59 +4,45 @@
  * ZIP 处理类
  */
 
-if (!defined('IN_ECTOUCH'))
-{
+if (!defined('IN_ECTOUCH')) {
     die('Hacking attempt');
 }
 
 class PHPZip
 {
-    function zip($dir, $zipfilename, $drop=false)
+    public function zip($dir, $zipfilename, $drop=false)
     {
-        if (substr($dir, -1) != '/')
-        {
+        if (substr($dir, -1) != '/') {
             $dir = ($dir == '') ? './' : $dir . '/';
         }
 
-        if (@function_exists('gzcompress'))
-        {
+        if (@function_exists('gzcompress')) {
             $curdir = getcwd();
-            if (is_array($dir))
-            {
+            if (is_array($dir)) {
                 $filelist = $dir;
-            }
-            else
-            {
+            } else {
                 $filelist = $this -> get_filelist($dir);
             }
 
-            if ((!empty($dir)) && (!is_array($dir))&&(file_exists($dir)))
-            {
+            if ((!empty($dir)) && (!is_array($dir))&&(file_exists($dir))) {
                 chdir($dir);
-            }
-            else
-            {
+            } else {
                 chdir($curdir);
             }
 
-            if (count($filelist) > 0)
-            {
-                foreach ($filelist AS $filename)
-                {
-                    if (is_file($filename))
-                    {
-                        $fd = fopen ($filename, 'rb');
-                        $content = fread ($fd, filesize ($filename));
-                        fclose ($fd);
+            if (count($filelist) > 0) {
+                foreach ($filelist as $filename) {
+                    if (is_file($filename)) {
+                        $fd = fopen($filename, 'rb');
+                        $content = fread($fd, filesize($filename));
+                        fclose($fd);
 
-                        if (is_array($dir))
-                        {
+                        if (is_array($dir)) {
                             $filename = basename($filename);
                         }
                         $this -> add_file($content, $filename);
 
-                        if ($drop)
-                        {
+                        if ($drop) {
                             @unlink($filename);
                         }
                     }
@@ -70,33 +56,25 @@ class PHPZip
             }
 
             return 1;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
 
-    function get_filelist($dir)
+    public function get_filelist($dir)
     {
         $file = array();
-        $dir = rtrim($dir,'/');
-        if (file_exists($dir))
-        {
+        $dir = rtrim($dir, '/');
+        if (file_exists($dir)) {
             $args = func_get_args();
             $pref = isset($args[1]) ? $args[1] : '';
 
             $dh = opendir($dir);
-            while (($files = readdir($dh)) !== false)
-            {
-                if (($files != '.') && ($files != '..'))
-                {
-                    if (is_dir($dir .'/'. $files))
-                    {
+            while (($files = readdir($dh)) !== false) {
+                if (($files != '.') && ($files != '..')) {
+                    if (is_dir($dir .'/'. $files)) {
                         $file = array_merge($file, $this -> get_filelist($dir .'/'. $files, "$pref$files/"));
-                    }
-                    else
-                    {
+                    } else {
                         $file[] = $pref . $files;
                     }
                 }
@@ -107,10 +85,10 @@ class PHPZip
         return $file;
     }
 
-    var $datasec      = array();
-    var $ctrl_dir     = array();
-    var $eof_ctrl_dir = "\x50\x4b\x05\x06\x00\x00\x00\x00";
-    var $old_offset   = 0;
+    public $datasec      = array();
+    public $ctrl_dir     = array();
+    public $eof_ctrl_dir = "\x50\x4b\x05\x06\x00\x00\x00\x00";
+    public $old_offset   = 0;
 
     /**
      * Converts an Unix timestamp to a four byte DOS date and time format (date
@@ -122,7 +100,7 @@ class PHPZip
      *
      * @access private
      */
-    function unix2DosTime($unixtime = 0)
+    public function unix2DosTime($unixtime = 0)
     {
         $timearray = ($unixtime == 0) ? getdate() : getdate($unixtime);
 
@@ -148,7 +126,7 @@ class PHPZip
      *
      * @access public
      */
-    function add_file($data, $name, $time = 0)
+    public function add_file($data, $name, $time = 0)
     {
         $name     = str_replace('\\', '/', $name);
 
@@ -201,14 +179,14 @@ class PHPZip
         $cdrec .= pack('V', $crc);           // crc32
         $cdrec .= pack('V', $c_len);         // compressed filesize
         $cdrec .= pack('V', $unc_len);       // uncompressed filesize
-        $cdrec .= pack('v', strlen($name) ); // length of filename
-        $cdrec .= pack('v', 0 );             // extra field length
-        $cdrec .= pack('v', 0 );             // file comment length
-        $cdrec .= pack('v', 0 );             // disk number start
-        $cdrec .= pack('v', 0 );             // internal file attributes
-        $cdrec .= pack('V', 32 );            // external file attributes - 'archive' bit set
+        $cdrec .= pack('v', strlen($name)); // length of filename
+        $cdrec .= pack('v', 0);             // extra field length
+        $cdrec .= pack('v', 0);             // file comment length
+        $cdrec .= pack('v', 0);             // disk number start
+        $cdrec .= pack('v', 0);             // internal file attributes
+        $cdrec .= pack('V', 32);            // external file attributes - 'archive' bit set
 
-        $cdrec .= pack('V', $this -> old_offset ); // relative offset of local header
+        $cdrec .= pack('V', $this -> old_offset); // relative offset of local header
         $this -> old_offset = $new_offset;
 
         $cdrec .= $name;
@@ -225,7 +203,7 @@ class PHPZip
      *
      * @access public
      */
-    function file()
+    public function file()
     {
         $data    = implode('', $this -> datasec);
         $ctrldir = implode('', $this -> ctrl_dir);
@@ -241,5 +219,3 @@ class PHPZip
             "\x00\x00";                             // .zip file comment length
     } // end of the 'file()' method
 } // end of the 'PHPZip' class
-
-?>

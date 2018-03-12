@@ -9,7 +9,8 @@ defined('IN_ECTOUCH') or die('Deny Access');
  * @access  public
  * @return  string
  */
-function insert_query_info() {
+function insert_query_info()
+{
     if (M()->queryTime == '') {
         $query_time = 0;
     } else {
@@ -47,7 +48,8 @@ function insert_query_info() {
  * @access  public
  * @return  string
  */
-function insert_history() {
+function insert_history()
+{
     $str = '';
     $history = array();
     if (!empty($_COOKIE['ECS']['history'])) {
@@ -58,7 +60,7 @@ function insert_history() {
         $res = array();
         foreach ($query as $key => $row) {
             $goods['goods_id'] = $row['goods_id'];
-            $name = mb_substr($row['goods_name'],0,15, 'utf-8');
+            $name = mb_substr($row['goods_name'], 0, 15, 'utf-8');
             $goods['goods_name'] = $name;
             $goods['short_name'] = C('goods_name_length') > 0 ? sub_str($row['goods_name'], C('goods_name_length')) : $row['goods_name'];
             $goods['goods_thumb'] = get_image_path($row['goods_id'], $row['goods_thumb'], true);
@@ -73,7 +75,8 @@ function insert_history() {
 /**
  * 调用购物车商品数目
  */
-function insert_cart_info_number() {
+function insert_cart_info_number()
+{
     $sql = 'SELECT SUM(goods_number) AS number FROM ' . M()->pre . 'cart ' .
             " WHERE session_id = '" . SESS_ID . "' AND rec_type = '" . CART_GENERAL_GOODS . "'";
     $res = M()->getRow($sql);
@@ -87,7 +90,8 @@ function insert_cart_info_number() {
  * @access  public
  * @return  string
  */
-function insert_cart_info() {
+function insert_cart_info()
+{
     $sql = 'SELECT SUM(goods_number) AS number, SUM(goods_price * goods_number) AS amount' .
             ' FROM ' . M()->pre . 'cart ' .
             " WHERE session_id = '" . SESS_ID . "' AND rec_type = '" . CART_GENERAL_GOODS . "'";
@@ -114,8 +118,9 @@ function insert_cart_info() {
  * @param   integer $num    广告数量
  * @return  string
  */
-function insert_ads($arr) {
-    static $static_res = NULL;
+function insert_ads($arr)
+{
+    static $static_res = null;
 
     $time = gmtime();
     if (!empty($arr['num']) && $arr['num'] != 1) {
@@ -128,7 +133,7 @@ function insert_ads($arr) {
                 'ORDER BY a.ad_id LIMIT ' . $arr['num'];
         $res = M()->query($sql);
     } else {
-        if ($static_res[$arr['id']] === NULL) {
+        if ($static_res[$arr['id']] === null) {
             $sql = 'SELECT a.ad_id, a.position_id, a.media_type, a.ad_link, a.ad_code, a.ad_name, p.ad_width, ' .
                     'p.ad_height, p.position_style ' .
                     'FROM ' . M()->pre . 'ad ' . ' AS a ' .
@@ -143,7 +148,7 @@ function insert_ads($arr) {
     $ads = array();
     $position_style = '';
 
-    foreach ($res AS $row) {
+    foreach ($res as $row) {
         if ($row['position_id'] != $arr['id']) {
             continue;
         }
@@ -197,7 +202,8 @@ function insert_ads($arr) {
  * @access  public
  * @return  string
  */
-function insert_member_info() {
+function insert_member_info()
+{
     $need_cache = ECTouch::view()->caching;
     ECTouch::view()->caching = false;
 
@@ -226,7 +232,8 @@ function insert_member_info() {
  * @access  public
  * @return  string
  */
-function insert_comments($arr) {
+function insert_comments($arr)
+{
     $need_cache = ECTouch::view()->caching;
     $need_compile = ECTouch::view()->force_compile;
 
@@ -274,7 +281,8 @@ function insert_comments($arr) {
  * @access  public
  * @return  string
  */
-function insert_bought_notes($arr) {
+function insert_bought_notes($arr)
+{
     $need_cache = ECTouch::view()->caching;
     $need_compile = ECTouch::view()->force_compile;
 
@@ -327,7 +335,8 @@ function insert_bought_notes($arr) {
  * @access  public
  * @return  string
  */
-function insert_vote() {
+function insert_vote()
+{
     $vote = get_vote();
     if (!empty($vote)) {
         ECTouch::view()->assign('vote_id', $vote['id']);
@@ -337,4 +346,3 @@ function insert_vote() {
 
     return $val;
 }
-

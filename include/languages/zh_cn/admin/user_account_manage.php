@@ -34,5 +34,3 @@ $_LANG['surplus_info'] = '余额使用信息';
 $_LANG['order_surplus'] = '交易使用余额';
 $_LANG['integral_money'] = '积分使用余额';
 $_LANG['view'] = '查看';
-
-?>

@@ -15,8 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ExchangeController extends CommonController {
-
+class ExchangeController extends CommonController
+{
     private $cat_id = 0;
     private $ext = '';
     private $children = '';
@@ -28,7 +28,8 @@ class ExchangeController extends CommonController {
     private $integral_min = 0;
 
     // 构造函数
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -36,7 +37,8 @@ class ExchangeController extends CommonController {
 
     //-- 积分商城 - 商品列表
     /* ------------------------------------------------------ */
-    public function index() {
+    public function index()
+    {
         $this->parameter();
         $this->assign('page', $this->page);
         $this->assign('size', $this->size);
@@ -46,9 +48,9 @@ class ExchangeController extends CommonController {
         $count = model('Exchange')->get_exchange_goods_count($this->children, $this->integral_min, $this->integral_max);
         $this->pageLimit(url('index', array('sort' => $this->sort, 'order' => $this->order)), $this->size);
         $this->assign('goods_list', $goods_list);
-        if($this->pageShow($count) > 0){
+        if ($this->pageShow($count) > 0) {
             $this->assign('pager', $this->pageShow($count));
-        }        
+        }
         $this->display('exchange_list.dwt');
     }
 
@@ -56,13 +58,22 @@ class ExchangeController extends CommonController {
 
     //-- 积分商城 - 商品列表 -异步加载
     /* ------------------------------------------------------ */
-    public function asynclist_list() {
+    public function asynclist_list()
+    {
         $this->parameter();
         $asyn_last = intval(I('post.last')) + 1;
-		$this->page = I('post.page');
-        $list = model('Exchange')->exchange_get_goods($this->children, $this->integral_min, $this->integral_max, $this->ext, $this->size,
-		$this->page, $this->sort, $this->order);
-		die(json_encode(array('list' => $list)));
+        $this->page = I('post.page');
+        $list = model('Exchange')->exchange_get_goods(
+            $this->children,
+            $this->integral_min,
+            $this->integral_max,
+            $this->ext,
+            $this->size,
+        $this->page,
+            $this->sort,
+            $this->order
+        );
+        die(json_encode(array('list' => $list)));
         exit();
     }
 
@@ -70,8 +81,8 @@ class ExchangeController extends CommonController {
 
     //-- 积分商城 - 积分兑换商品详情
     /* ------------------------------------------------------ */
-    public function exchange_goods() {
-
+    public function exchange_goods()
+    {
         $goods_id = $id = intval(I('request.gid'));
         if (!$goods_id) {
             ecs_header("Location: ./\n");
@@ -132,7 +143,8 @@ class ExchangeController extends CommonController {
     /* ------------------------------------------------------ */
     //-- 积分商城 -  积分兑换
     /* ------------------------------------------------------ */
-    public function buy() {
+    public function buy()
+    {
         if (!isset($back_act)) {
             $back_act = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : __HOST__ . $_SERVER['REQUEST_URI'];
         }
@@ -243,7 +255,8 @@ class ExchangeController extends CommonController {
     /**
      * 处理参数便于搜索商品信息
      */
-    private function parameter() {
+    private function parameter()
+    {
         // 如果分类ID为0，则返回总分类页
         $page_size = C('page_size');
         $this->size = intval($page_size) > 0 ? intval($page_size) : 10;
@@ -277,5 +290,4 @@ class ExchangeController extends CommonController {
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
         $this->children = get_children($this->cat_id);
     }
-
 }

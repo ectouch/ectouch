@@ -23,5 +23,3 @@ $_LANG['title_empty'] = '文章标题不能为空！';
 /*JS 语言项*/
 $_LANG['js_languages']['no_title'] = '没有文章标题';
 $_LANG['js_languages']['remove_confirm'] = '你确定要删除这条记录吗？';
-
-?>

@@ -6,8 +6,8 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * 文件缓存类 基于secache修改
  */
-class EcFileCache {
-
+class EcFileCache
+{
     private $idx_node_size = 40;
     private $data_base_pos = 262588; //40+20+24*16+16*16*16*16*4;
     private $schema_item_size = 24;
@@ -22,13 +22,14 @@ class EcFileCache {
     private $ver = '$Rev: 3 $';
     public $config = array();
 
-    public function __construct($config = array()) {
+    public function __construct($config = array())
+    {
         $this->config = array(
             'DB_CACHE_PATH' => 'data/caches/', //缓存目录
             'DB_CACHE_CHECK' => 'false', //是否验证数据
             'DB_CACHE_FILE' => 'cachedata', //缓存的数据文件名
             'DB_CACHE_SIZE' => '15M', //预设的缓存大小
-            'DB_CACHE_FLOCK' => 'true', //是否存在文件锁，设置为false，将模拟文件锁									
+            'DB_CACHE_FLOCK' => 'true', //是否存在文件锁，设置为false，将模拟文件锁
         );
         $this->config = array_merge($this->config, (array) $config);
         //检查缓存目录
@@ -37,8 +38,9 @@ class EcFileCache {
     }
 
     //读取缓存
-    public function get($key) {
-        $key = md5($key); //设置索引值		
+    public function get($key)
+    {
+        $key = md5($key); //设置索引值
         if ($this->fetch($key, $content)) {
             $expire = (int) substr($content, 0, 12);
             if ($expire != -1 && time() >= $expire) {
@@ -61,8 +63,9 @@ class EcFileCache {
     }
 
     //设置缓存
-    public function set($key, $value, $expire = 1800) {
-        $key = md5($key); //设置索引值				
+    public function set($key, $value, $expire = 1800)
+    {
+        $key = md5($key); //设置索引值
         $value = serialize($value); //将数据序列化
         $expire = ($expire == -1) ? $expire : (time() + $expire); //过期时间
         //是否开启数据校验
@@ -72,29 +75,34 @@ class EcFileCache {
     }
 
     //自增1
-    public function inc($key, $value = 1) {
+    public function inc($key, $value = 1)
+    {
         return $this->set($key, intval($this->get($key)) + intval($value), -1);
     }
 
     //自减1
-    public function des($key, $value = 1) {
+    public function des($key, $value = 1)
+    {
         return $this->set($key, intval($this->get($key)) - intval($value), -1);
     }
 
     //删除
-    public function del($key) {
+    public function del($key)
+    {
         return $this->set($key, '', 0);
     }
 
     //清空缓存
-    public function clear() {
+    public function clear()
+    {
         return $this->_format(true);
     }
 
     /*     * ******** 下面是缓存算法的具体实现 ********* */
 
     //检查缓存目录
-    private function _checkDir() {
+    private function _checkDir()
+    {
         // 如果缓存目录不存在或者不是目录，则创建缓存目录
         if ((!file_exists($this->config['DB_CACHE_PATH'])) || (!is_dir($this->config['DB_CACHE_PATH']))) {
             //创建缓存目录
@@ -109,8 +117,8 @@ class EcFileCache {
         return true;
     }
 
-    public function workat($file) {
-
+    public function workat($file)
+    {
         $this->_file = $file . '.php';
         $this->_bsize_list = array(
             512 => 10,
@@ -157,8 +165,8 @@ class EcFileCache {
         return true;
     }
 
-    public function fetch($key, &$return) {
-
+    public function fetch($key, &$return)
+    {
         if ($this->lock(false)) {
             $locked = true;
         }
@@ -167,8 +175,9 @@ class EcFileCache {
             $info = $this->_get_node($offset);
             $schema_id = $this->_get_size_schema_id($info['size']);
             if ($schema_id === false) {
-                if ($locked)
+                if ($locked) {
                     $this->unlock();
+                }
                 return false;
             }
 
@@ -178,8 +187,9 @@ class EcFileCache {
             // $return = unserialize($data);
             $return = fread($this->_rs, $info['size']);
             if ($return === false) {
-                if ($locked)
+                if ($locked) {
                     $this->unlock();
+                }
                 return false;
             }
 
@@ -191,14 +201,15 @@ class EcFileCache {
                 return true;
             }
         } else {
-            if ($locked)
+            if ($locked) {
                 $this->unlock();
+            }
             return false;
         }
     }
 
-    public function store($key, $data) {
-
+    public function store($key, $data)
+    {
         if ($this->lock(true)) {
             //save data
             //去除序列化数据
@@ -233,7 +244,6 @@ class EcFileCache {
                 $this->_set_node($hdseq, 'size', $size);
                 $this->_set_node($hdseq, 'data', $dataoffset);
             } else {
-
                 if (!($dataoffset = $this->_dalloc($schema_id))) {
                     $this->unlock();
                     return false;
@@ -273,10 +283,11 @@ class EcFileCache {
     }
 
     //锁定文件
-    protected function lock($is_block, $whatever = false) {
-
-        if ($this->config['DB_CACHE_FLOCK'])
+    protected function lock($is_block, $whatever = false)
+    {
+        if ($this->config['DB_CACHE_FLOCK']) {
             return flock($this->_rs, $is_block ? LOCK_EX : LOCK_EX + LOCK_NB);
+        }
 
         ignore_user_abort(true);
         $support_usleep = version_compare(PHP_VERSION, 5, '>=') ? 20 : 1;
@@ -304,15 +315,18 @@ class EcFileCache {
     }
 
     //解除文件锁定
-    protected function unlock() {
-        if ($this->config['DB_CACHE_FLOCK'])
+    protected function unlock()
+    {
+        if ($this->config['DB_CACHE_FLOCK']) {
             return flock($this->_rs, LOCK_UN);
+        }
 
         ignore_user_abort(false);
         return @unlink($this->_file . '.lck');
     }
 
-    protected function create() {
+    protected function create()
+    {
         $this->_rs = @fopen($this->_file, 'wb+') or $this->trigger_error('创建缓存文件失败: ' . $this->_file, E_USER_ERROR);
         ;
         fseek($this->_rs, 0);
@@ -320,7 +334,8 @@ class EcFileCache {
         return $this->_format();
     }
 
-    private function _puts($offset, $data) {
+    private function _puts($offset, $data)
+    {
         if ($offset < $this->max_size * 1.5) {
             $this->_seek($offset);
             return fputs($this->_rs, $data);
@@ -329,11 +344,13 @@ class EcFileCache {
         }
     }
 
-    private function _seek($offset) {
+    private function _seek($offset)
+    {
         return fseek($this->_rs, $offset);
     }
 
-    protected function delete($key, $pos = false) {
+    protected function delete($key, $pos = false)
+    {
         if ($pos || $this->search($key, $pos)) {
             if ($info = $this->_get_node($pos)) {
                 //删除data区域
@@ -354,20 +371,22 @@ class EcFileCache {
     }
 
     /**
-     * search 
+     * search
      * 查找指定的key
      * 如果找到节点则$pos=节点本身 返回true
      * 否则 $pos=树的末端 返回false
-     * 
-     * @param mixed $key 
+     *
+     * @param mixed $key
      * @access public
      * @return void
      */
-    protected function search($key, &$pos) {
+    protected function search($key, &$pos)
+    {
         return $this->_get_pos_by_key($this->_get_node_root($key), $key, $pos);
     }
 
-    private function _get_size_schema_id($size) {
+    private function _get_size_schema_id($size)
+    {
         foreach ($this->_block_size_list as $k => $block_size) {
             if ($size <= $block_size) {
                 return $k;
@@ -376,7 +395,8 @@ class EcFileCache {
         return false;
     }
 
-    private function _parse_str_size($str_size, $default) {
+    private function _parse_str_size($str_size, $default)
+    {
         if (preg_match('/^([0-9]+)\s*([gmk]|)$/i', $str_size, $match)) {
             switch (strtolower($match[2])) {
                 case 'g':
@@ -407,9 +427,9 @@ class EcFileCache {
         }
     }
 
-    private function _format($truncate = false) {
+    private function _format($truncate = false)
+    {
         if ($this->lock(true, true)) {
-
             if ($truncate) {
                 $this->_seek(0);
                 ftruncate($this->_rs, $this->idx_node_base);
@@ -449,19 +469,21 @@ class EcFileCache {
         }
     }
 
-    private function _get_node_root($key) {
+    private function _get_node_root($key)
+    {
         $this->_seek(hexdec(substr($key, 0, 4)) * 4 + $this->idx_base_pos);
         $a = fread($this->_rs, 4);
         list(, $offset) = unpack('V', $a);
         return $offset;
     }
 
-    private function _set_node_root($key, $value) {
+    private function _set_node_root($key, $value)
+    {
         return $this->_puts(hexdec(substr($key, 0, 4)) * 4 + $this->idx_base_pos, pack('V', $value));
     }
 
-    private function _set_node($pos, $key, $value) {
-
+    private function _set_node($pos, $key, $value)
+    {
         if (!$pos) {
             return false;
         }
@@ -473,7 +495,8 @@ class EcFileCache {
         }
     }
 
-    private function _get_pos_by_key($offset, $key, &$pos) {
+    private function _get_pos_by_key($offset, $key, &$pos)
+    {
         if (!$offset) {
             $pos = 0;
             return false;
@@ -492,8 +515,8 @@ class EcFileCache {
         }
     }
 
-    private function _lru_delete($info) {
-
+    private function _lru_delete($info)
+    {
         if ($info['lru_right']) {
             $this->_set_node($info['lru_right'], 'lru_left', $info['lru_left']);
         } else {
@@ -509,12 +532,14 @@ class EcFileCache {
         return true;
     }
 
-    private function _lru_push($schema_id, $offset) {
+    private function _lru_push($schema_id, $offset)
+    {
         $lru_head = $this->_get_schema($schema_id, 'lru_head');
         $lru_tail = $this->_get_schema($schema_id, 'lru_tail');
 
-        if ((!$offset) || ($lru_head == $offset))
+        if ((!$offset) || ($lru_head == $offset)) {
             return;
+        }
 
         $info = $this->_get_node($offset);
 
@@ -535,14 +560,16 @@ class EcFileCache {
         return true;
     }
 
-    private function _get_node($offset) {
+    private function _get_node($offset)
+    {
         $this->_seek($offset * $this->idx_node_size + $this->idx_node_base);
         $info = unpack('V1next/V1prev/V1data/V1size/V1lru_right/V1lru_left/H*key', fread($this->_rs, $this->idx_node_size));
         $info['offset'] = $offset;
         return $info;
     }
 
-    private function _lru_pop($schema_id) {
+    private function _lru_pop($schema_id)
+    {
         if ($node = $this->_get_schema($schema_id, 'lru_tail')) {
             $info = $this->_get_node($node);
             if (!$info['data']) {
@@ -558,8 +585,8 @@ class EcFileCache {
         }
     }
 
-    private function _dalloc($schema_id, $lru_freed = false) {
-
+    private function _dalloc($schema_id, $lru_freed = false)
+    {
         if ($free = $this->_get_schema($schema_id, 'free')) { //如果lru里有链表
             $this->_seek($free);
             list(, $next) = unpack('V', fread($this->_rs, 4));
@@ -586,18 +613,20 @@ class EcFileCache {
         }
     }
 
-    private function _get_dcur_pos() {
+    private function _get_dcur_pos()
+    {
         $this->_seek($this->dfile_cur_pos);
         list(, $ds_offset) = unpack('V', fread($this->_rs, 4));
         return $ds_offset;
     }
 
-    private function _set_dcur_pos($pos) {
+    private function _set_dcur_pos($pos)
+    {
         return $this->_puts($this->dfile_cur_pos, pack('V', $pos));
     }
 
-    private function _free_dspace($size, $pos) {
-
+    private function _free_dspace($size, $pos)
+    {
         if ($pos > $this->max_size) {
             $this->trigger_error('free dspace over quota:' . $pos, E_USER_ERROR);
             return false;
@@ -612,7 +641,8 @@ class EcFileCache {
         $this->_puts($pos, pack('V1', 0));
     }
 
-    private function _dfollow($pos, &$c) {
+    private function _dfollow($pos, &$c)
+    {
         $c++;
         $this->_seek($pos);
         list(, $next) = unpack('V1', fread($this->_rs, 4));
@@ -623,18 +653,19 @@ class EcFileCache {
         }
     }
 
-    private function _free_node($pos) {
+    private function _free_node($pos)
+    {
         $this->_seek($this->idx_free_pos);
         list(, $prev_free_node) = unpack('V', fread($this->_rs, 4));
         $this->_puts($pos * $this->idx_node_size + $this->idx_node_base, pack('V', $prev_free_node) . str_repeat("\0", $this->idx_node_size - 4));
         return $this->_puts($this->idx_free_pos, pack('V', $pos));
     }
 
-    private function _alloc_idx($data) {
+    private function _alloc_idx($data)
+    {
         $this->_seek($this->idx_free_pos);
         list(, $list_pos) = unpack('V', fread($this->_rs, 4));
         if ($list_pos) {
-
             $this->_seek($list_pos * $this->idx_node_size + $this->idx_node_base);
             list(, $prev_free_node) = unpack('V', fread($this->_rs, 4));
             $this->_puts($this->idx_free_pos, pack('V', $prev_free_node));
@@ -646,18 +677,20 @@ class EcFileCache {
         return $this->_create_node($list_pos, $data);
     }
 
-    private function _create_node($pos, $data) {
-        $this->_puts($pos * $this->idx_node_size + $this->idx_node_base
-                , pack('V1V1V1V1V1V1H*', $data['next'], $data['prev'], $data['data'], $data['size'], $data['lru_right'], $data['lru_left'], $data['key']));
+    private function _create_node($pos, $data)
+    {
+        $this->_puts($pos * $this->idx_node_size + $this->idx_node_base, pack('V1V1V1V1V1V1H*', $data['next'], $data['prev'], $data['data'], $data['size'], $data['lru_right'], $data['lru_left'], $data['key']));
         return $pos;
     }
 
-    private function _set_schema($schema_id, $key, $value) {
+    private function _set_schema($schema_id, $key, $value)
+    {
         $info = array_flip($this->schema_struct);
         return $this->_puts(60 + $schema_id * $this->schema_item_size + $info[$key] * 4, pack('V', $value));
     }
 
-    private function _get_schema($id, $key) {
+    private function _get_schema($id, $key)
+    {
         $info = array_flip($this->schema_struct);
 
         $this->_seek(60 + $id * $this->schema_item_size);
@@ -668,7 +701,8 @@ class EcFileCache {
         return $value;
     }
 
-    private function _all_schemas() {
+    private function _all_schemas()
+    {
         $schema = array();
         for ($i = 0; $i < 16; $i++) {
             $this->_seek(60 + $i * $this->schema_item_size);
@@ -682,7 +716,8 @@ class EcFileCache {
         }
     }
 
-    protected function schemaStatus() {
+    protected function schemaStatus()
+    {
         $return = array();
         foreach ($this->_all_schemas() as $k => $schemaItem) {
             if ($schemaItem['free']) {
@@ -693,7 +728,8 @@ class EcFileCache {
         return $return;
     }
 
-    protected function status(&$curBytes, &$totalBytes) {
+    protected function status(&$curBytes, &$totalBytes)
+    {
         $totalBytes = $curBytes = 0;
         $hits = $miss = 0;
 
@@ -713,8 +749,8 @@ class EcFileCache {
         return $return;
     }
 
-    protected function trigger_error($errstr, $errno) {
+    protected function trigger_error($errstr, $errno)
+    {
         throw new Exception($errstr); //输出错误信息
     }
-
 }

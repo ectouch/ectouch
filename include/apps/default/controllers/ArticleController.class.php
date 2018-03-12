@@ -15,14 +15,15 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ArticleController extends CommonController {
-
+class ArticleController extends CommonController
+{
     private $size = 10;
     private $page = 1;
     private $cat_id = 0;
     private $keywords = '';
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->cat_id = intval(I('get.id'));
     }
@@ -31,14 +32,15 @@ class ArticleController extends CommonController {
 
     //-- 文章分类
     /* ------------------------------------------------------ */
-    public function index() {
+    public function index()
+    {
         $cat_id = I('get.id', 0, 'intval');
         $sql = 'SELECT cat_id, cat_name' .
             ' FROM {pre}article_cat ' .
             ' WHERE cat_type = 1 AND parent_id = '. $cat_id .
             ' ORDER BY sort_order ASC';
         $data = $this->model->query($sql);
-        foreach($data as $key=>$vo){
+        foreach ($data as $key=>$vo) {
             $data[$key]['url'] = url('art_list', array('id'=>$vo['cat_id']));
         }
         $this->assign('article_categories', $data); //文章分类树
@@ -49,7 +51,8 @@ class ArticleController extends CommonController {
 
     //-- 文章列表
     /* ------------------------------------------------------ */
-    public function art_list() {
+    public function art_list()
+    {
         $this->parameter();
         $this->assign('keywords', $this->keywords);
         $this->assign('id', $this->cat_id);
@@ -63,10 +66,10 @@ class ArticleController extends CommonController {
         $sql = "select * from ".M()->pre."article_cat where cat_id = ".$this->cat_id;
         $cat = M()->query($sql);
         if (!empty($cat['0']['keywords'])) {
-            $this->assign('meta_keywords',htmlspecialchars($cat['0']['keywords']));
+            $this->assign('meta_keywords', htmlspecialchars($cat['0']['keywords']));
         }
         if (!empty($cat['0']['cat_desc'])) {
-            $this->assign('meta_description',htmlspecialchars($cat['0']['cat_desc']));
+            $this->assign('meta_description', htmlspecialchars($cat['0']['cat_desc']));
         }
 
         $this->display('article_list.dwt');
@@ -75,7 +78,8 @@ class ArticleController extends CommonController {
     /**
      * 文章列表异步加载
      */
-    public function asynclist() {
+    public function asynclist()
+    {
         $this->parameter();
         $asyn_last = intval(I('post.last')) + 1;
         $this->size = I('post.amount');
@@ -97,13 +101,14 @@ class ArticleController extends CommonController {
     /* ------------------------------------------------------ */
     //-- 文章详情
     /* ------------------------------------------------------ */
-    public function info() {
+    public function info()
+    {
         /* 文章详情 */
         $article_id = intval(I('get.aid'));
         $article = model('Article')->get_article_info($article_id);
         $this->assign('article', $article);
         $article_goods = model('Article')->get_article_goods($article_id);
-        $this->assign('article_goods',$article_goods);
+        $this->assign('article_goods', $article_goods);
         //dump($article_goods);
         /* 页面标题 */
         $page_info = get_page_title($article['cat_id'], $article['title']);
@@ -132,7 +137,8 @@ class ArticleController extends CommonController {
     /* ------------------------------------------------------ */
     //-- 微信图文详情
     /* ------------------------------------------------------ */
-    public function wechat_news_info() {
+    public function wechat_news_info()
+    {
         /* 文章详情 */
         $news_id = I('get.id', 0, 'intval');
         $data = $this->model->table('wechat_media')->field('title, content, file, is_show, digest')->where('id = ' . $news_id)->find();
@@ -158,7 +164,8 @@ class ArticleController extends CommonController {
     /**
      * 处理参数便于搜索商品信息
      */
-    private function parameter() {
+    private function parameter()
+    {
         $this->assign('show_asynclist', C('show_asynclist'));
         // 如果分类ID为0，则返回总分类页
         $page_size = C('article_number');
@@ -167,5 +174,4 @@ class ArticleController extends CommonController {
         $this->cat_id = intval(I('request.id'));
         $this->keywords = I('request.keywords');
     }
-
 }

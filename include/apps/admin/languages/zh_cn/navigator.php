@@ -33,4 +33,3 @@ $_LANG['namecannotnull'] = '请输入导航栏名称！';
 $_LANG['linkcannotnull'] = '请输入链接地址！';
 
 $_LANG['notice_url'] = '如果是本站的网址，可缩写为与商城根目录相对地址<br>其他情况都应该输入完整的网址';
-?>

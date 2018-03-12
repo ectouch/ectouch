@@ -25,7 +25,7 @@ class cod
     /**
      * 提交函数
      */
-    function get_code()
+    public function get_code()
     {
         return '';
     }
@@ -33,10 +33,8 @@ class cod
     /**
      * 处理函数
      */
-    function response()
+    public function response()
     {
         return;
     }
 }
-
-?>

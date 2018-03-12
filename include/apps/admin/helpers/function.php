@@ -31,7 +31,7 @@ function read_modules($directory = '.')
     
     while (false !== ($file = @readdir($dir))) {
         if (preg_match("/^.*?\.php$/", $file)) {
-            include_once ($directory . '/' . $file);
+            include_once($directory . '/' . $file);
         }
     }
     @closedir($dir);
@@ -152,7 +152,7 @@ function admin_priv($priv_str, $msg_type = '', $msg_output = true)
  * 检查管理员权限
  *
  * @access public
- * @param string $authz            
+ * @param string $authz
  * @return boolean
  */
 function check_authz($authz)
@@ -164,7 +164,7 @@ function check_authz($authz)
  * 检查管理员权限，返回JSON格式数剧
  *
  * @access public
- * @param string $authz            
+ * @param string $authz
  * @return void
  */
 function check_authz_json($authz)
@@ -323,7 +323,7 @@ function get_yes_no($var)
 /**
  * 生成过滤条件：用于 get_goodslist 和 get_goods_list
  *
- * @param object $filter            
+ * @param object $filter
  * @return string
  */
 function get_where_sql($filter)
@@ -443,7 +443,7 @@ function truncate_table($table_name)
  * 返回字符集列表数组
  *
  * @access public
- * @param            
+ * @param
  *
  * @return void
  */
@@ -460,10 +460,10 @@ function get_charset_list()
  * 创建一个JSON格式的数据
  *
  * @access public
- * @param string $content            
- * @param integer $error            
- * @param string $message            
- * @param array $append            
+ * @param string $content
+ * @param integer $error
+ * @param string $message
+ * @param array $append
  * @return void
  */
 function make_json_response($content = '', $error = "0", $message = '', $append = array())
@@ -488,7 +488,7 @@ function make_json_response($content = '', $error = "0", $message = '', $append 
 /**
  *
  * @access public
- * @param            
+ * @param
  *
  * @return void
  */
@@ -501,7 +501,7 @@ function make_json_result($content, $message = '', $append = array())
  * 创建一个JSON格式的错误信息
  *
  * @access public
- * @param string $msg            
+ * @param string $msg
  * @return void
  */
 function make_json_error($msg)
@@ -513,7 +513,7 @@ function make_json_error($msg)
  * 根据过滤条件获得排序的标记
  *
  * @access public
- * @param array $filter            
+ * @param array $filter
  * @return array
  */
 function sort_flag($filter)
@@ -562,7 +562,7 @@ function page_and_size($filter)
  * @access public
  * @param string $val
  *            带单位的数字
- *            
+ *
  * @return int $val
  */
 function return_bytes($val)
@@ -572,8 +572,10 @@ function return_bytes($val)
     switch ($last) {
         case 'g':
             $val *= 1024;
+            // no break
         case 'm':
             $val *= 1024;
+            // no break
         case 'k':
             $val *= 1024;
     }
@@ -586,7 +588,7 @@ function return_bytes($val)
  *
  * @param integer $cat_id
  *            商品类型ID
- *            
+ *
  * @return array
  */
 function get_attr_groups($cat_id)
@@ -678,7 +680,7 @@ function sanitize_url($url, $check = 'http://')
  *            上级分类
  * @param integer $exclude
  *            排除的分类ID
- *            
+ *
  * @return boolean
  */
 function cat_exists($cat_name, $parent_cat, $exclude = 0)
@@ -701,7 +703,7 @@ function brand_exists($brand_name)
  * 获取当前管理员信息
  *
  * @access public
- * @param            
+ * @param
  *
  * @return Array
  */
@@ -722,7 +724,7 @@ function admin_info()
 /**
  * 供货商列表信息
  *
- * @param string $conditions            
+ * @param string $conditions
  * @return array
  */
 function suppliers_list_info($conditions = '')
@@ -972,7 +974,7 @@ function handle_other_cat($goods_id, $cat_list)
 /**
  * 保存某商品的关联商品
  *
- * @param int $goods_id            
+ * @param int $goods_id
  * @return void
  */
 function handle_link_goods($goods_id)
@@ -987,7 +989,7 @@ function handle_link_goods($goods_id)
 /**
  * 保存某商品的配件
  *
- * @param int $goods_id            
+ * @param int $goods_id
  * @return void
  */
 function handle_group_goods($goods_id)
@@ -999,7 +1001,7 @@ function handle_group_goods($goods_id)
 /**
  * 保存某商品的关联文章
  *
- * @param int $goods_id            
+ * @param int $goods_id
  * @return void
  */
 function handle_goods_article($goods_id)
@@ -1011,9 +1013,9 @@ function handle_goods_article($goods_id)
 /**
  * 保存某商品的相册图片
  *
- * @param int $goods_id            
- * @param array $image_files            
- * @param array $image_descs            
+ * @param int $goods_id
+ * @param array $image_files
+ * @param array $image_descs
  * @return void
  */
 function handle_gallery_image($goods_id, $image_files, $image_descs, $image_urls)
@@ -1390,7 +1392,7 @@ function build_attr_html($cat_id, $goods_id = 0)
  * 获得指定商品相关的商品
  *
  * @access public
- * @param integer $goods_id            
+ * @param integer $goods_id
  * @return array
  */
 function get_linked_goods($goods_id)
@@ -1416,7 +1418,7 @@ function get_linked_goods($goods_id)
  * 获得指定商品的配件
  *
  * @access public
- * @param integer $goods_id            
+ * @param integer $goods_id
  * @return array
  */
 function get_group_goods($goods_id)
@@ -1434,7 +1436,7 @@ function get_group_goods($goods_id)
  * 获得商品的关联文章
  *
  * @access public
- * @param integer $goods_id            
+ * @param integer $goods_id
  * @return array
  */
 function get_goods_articles($goods_id)
@@ -1735,7 +1737,7 @@ function product_list($goods_id, $conditions = '')
                 ORDER BY $filter[sort_by] $filter[sort_order]";
         
         $filter['keyword'] = stripslashes($filter['keyword']);
-        // set_filter($filter, $sql, $param_str);
+    // set_filter($filter, $sql, $param_str);
     } else {
         $sql = $result['sql'];
         $filter = $result['filter'];
@@ -1897,10 +1899,10 @@ function check_product_sn_exist($product_sn, $product_id = 0)
 /**
  * 格式化商品图片名称（按目录存储）
  *
- * @param type $type            
- * @param type $goods_id            
- * @param type $source_img            
- * @param type $position            
+ * @param type $type
+ * @param type $goods_id
+ * @param type $source_img
+ * @param type $position
  * @return boolean
  */
 function reformat_image_name($type, $goods_id, $source_img, $position = '')
@@ -1957,8 +1959,8 @@ function reformat_image_name($type, $goods_id, $source_img, $position = '')
 /**
  * 移动文件
  *
- * @param type $source            
- * @param type $dest            
+ * @param type $source
+ * @param type $dest
  * @return boolean
  */
 function move_image_file($source, $dest)

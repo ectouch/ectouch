@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ActivityBaseModel extends BaseModel {
+class ActivityBaseModel extends BaseModel
+{
 
     /**
      * 获取指定 id snatch 活动的结果
@@ -24,11 +25,12 @@ class ActivityBaseModel extends BaseModel {
      * @access public
      * @param int $id
      *            snatch_id
-     *            
+     *
      * @return array array(user_name, bie_price, bid_time, num)
      *         num通常为1，如果为2表示有2个用户取到最小值，但结果只返回最早出价用户。
      */
-    function get_snatch_result($id) {
+    public function get_snatch_result($id)
+    {
         $sql = 'SELECT u.user_id, u.user_name, u.email, lg.bid_price, lg.bid_time, count(*) as num' . ' FROM ' . $this->pre . 'snatch_log AS lg ' . ' LEFT JOIN ' . $this->pre . 'users AS u ON lg.user_id = u.user_id' . " WHERE lg.snatch_id = '$id'" . ' GROUP BY lg.bid_price' . ' ORDER BY num ASC, lg.bid_price ASC, lg.bid_time ASC LIMIT 1';
         $rec = $this->row($sql);
 
@@ -59,5 +61,4 @@ class ActivityBaseModel extends BaseModel {
 
         return $rec;
     }
-
 }

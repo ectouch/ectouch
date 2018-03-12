@@ -6,29 +6,27 @@ require(dirname(__FILE__) . '/includes/init.php');
 
 /* act鎿嶄綔椤圭殑鍒濆?鍖 */
 $_REQUEST['act'] = trim($_REQUEST['act']);
-if (empty($_REQUEST['act']))
-{
+if (empty($_REQUEST['act'])) {
     $_REQUEST['act'] = 'list';
 }
 
 /*------------------------------------------------------ */
 //-- 鑾峰彇鏍囩?鏁版嵁鍒楄〃
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     /* 鏉冮檺鍒ゆ柇 */
     admin_priv('tag_manage');
 
     /* 妯℃澘璧嬪€ */
-    $smarty->assign('ur_here',      $_LANG['tag_list']);
+    $smarty->assign('ur_here', $_LANG['tag_list']);
     $smarty->assign('action_link', array('href' => 'tag_manage.php?act=add', 'text' => $_LANG['add_tag']));
-    $smarty->assign('full_page',    1);
+    $smarty->assign('full_page', 1);
 
     $tag_list = get_tag_list();
-    $smarty->assign('tag_list',     $tag_list['tags']);
-    $smarty->assign('filter',       $tag_list['filter']);
+    $smarty->assign('tag_list', $tag_list['tags']);
+    $smarty->assign('filter', $tag_list['filter']);
     $smarty->assign('record_count', $tag_list['record_count']);
-    $smarty->assign('page_count',   $tag_list['page_count']);
+    $smarty->assign('page_count', $tag_list['page_count']);
 
     $sort_flag  = sort_flag($tag_list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
@@ -42,29 +40,25 @@ if ($_REQUEST['act'] == 'list')
 //-- 娣诲姞 ,缂栬緫
 /*------------------------------------------------------ */
 
-elseif($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit')
-{
+elseif ($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit') {
     admin_priv('tag_manage');
 
     $is_add = $_REQUEST['act'] == 'add';
     $smarty->assign('insert_or_update', $is_add ? 'insert' : 'update');
 
-    if($is_add)
-    {
+    if ($is_add) {
         $tag = array(
             'tag_id' => 0,
             'tag_words' => '',
             'goods_id' => 0,
             'goods_name' => $_LANG['pls_select_goods']
         );
-        $smarty->assign('ur_here',      $_LANG['add_tag']);
-    }
-    else
-    {
+        $smarty->assign('ur_here', $_LANG['add_tag']);
+    } else {
         $tag_id = $_GET['id'];
         $tag = get_tag_info($tag_id);
         $tag['tag_words']=htmlspecialchars($tag['tag_words']);
-        $smarty->assign('ur_here',      $_LANG['tag_edit']);
+        $smarty->assign('ur_here', $_LANG['tag_edit']);
     }
     $smarty->assign('tag', $tag);
     $smarty->assign('action_link', array('href' => 'tag_manage.php?act=list', 'text' => $_LANG['tag_list']));
@@ -77,8 +71,7 @@ elseif($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit')
 //-- 鏇存柊
 /*------------------------------------------------------ */
 
-elseif($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
-{
+elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update') {
     admin_priv('tag_manage');
 
     $is_insert = $_REQUEST['act'] == 'insert';
@@ -86,35 +79,29 @@ elseif($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
     $tag_words = empty($_POST['tag_name']) ? '' : trim($_POST['tag_name']);
     $id = intval($_POST['id']);
     $goods_id = intval($_POST['goods_id']);
-    if ($goods_id <= 0)
-    {
+    if ($goods_id <= 0) {
         sys_msg($_LANG['pls_select_goods']);
     }
 
-    if (!tag_is_only($tag_words, $id, $goods_id))
-    {
+    if (!tag_is_only($tag_words, $id, $goods_id)) {
         sys_msg(sprintf($_LANG['tagword_exist'], $tag_words));
     }
 
-    if($is_insert)
-    {
+    if ($is_insert) {
         $sql = 'INSERT INTO ' . $ecs->table('tag') . '(tag_id, goods_id, tag_words)' .
                " VALUES('$id', '$goods_id', '$tag_words')";
         $db->query($sql);
 
         admin_log($tag_words, 'add', 'tag');
 
-         /* 娓呴櫎缂撳瓨 */
+        /* 娓呴櫎缂撳瓨 */
         clear_cache_files();
 
         $link[0]['text'] = $_LANG['back_list'];
         $link[0]['href'] = 'tag_manage.php?act=list';
 
         sys_msg($_LANG['tag_add_success'], 0, $link);
-    }
-    else
-    {
-
+    } else {
         edit_tag($tag_words, $id, $goods_id);
 
         /* 娓呴櫎缂撳瓨 */
@@ -131,29 +118,30 @@ elseif($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
 //-- 缈婚〉锛屾帓搴
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'query')
-{
+elseif ($_REQUEST['act'] == 'query') {
     check_authz_json('tag_manage');
 
     $tag_list = get_tag_list();
-    $smarty->assign('tag_list',     $tag_list['tags']);
-    $smarty->assign('filter',       $tag_list['filter']);
+    $smarty->assign('tag_list', $tag_list['tags']);
+    $smarty->assign('filter', $tag_list['filter']);
     $smarty->assign('record_count', $tag_list['record_count']);
-    $smarty->assign('page_count',   $tag_list['page_count']);
+    $smarty->assign('page_count', $tag_list['page_count']);
 
     $sort_flag  = sort_flag($tag_list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
 
-    make_json_result($smarty->fetch('tag_manage.htm'), '',
-        array('filter' => $tag_list['filter'], 'page_count' => $tag_list['page_count']));
+    make_json_result(
+        $smarty->fetch('tag_manage.htm'),
+        '',
+        array('filter' => $tag_list['filter'], 'page_count' => $tag_list['page_count'])
+    );
 }
 
 /*------------------------------------------------------ */
 //-- 鎼滅储
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'search_goods')
-{
+elseif ($_REQUEST['act'] == 'search_goods') {
     check_authz_json('tag_manage');
 
     // include_once(ROOT_PATH . 'includes/cls_json.php');
@@ -161,8 +149,7 @@ elseif ($_REQUEST['act'] == 'search_goods')
     $json   = new JSON;
     $filter = $json->decode($_GET['JSON']);
     $arr    = get_goods_list($filter);
-    if (empty($arr))
-    {
+    if (empty($arr)) {
         $arr[0] = array(
             'goods_id'   => 0,
             'goods_name' => ''
@@ -175,15 +162,12 @@ elseif ($_REQUEST['act'] == 'search_goods')
 /*------------------------------------------------------ */
 //-- 鎵归噺鍒犻櫎鏍囩?
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'batch_drop')
-{
+elseif ($_REQUEST['act'] == 'batch_drop') {
     admin_priv('tag_manage');
 
-    if (isset($_POST['checkboxes']))
-    {
+    if (isset($_POST['checkboxes'])) {
         $count = 0;
-        foreach ($_POST['checkboxes'] AS $key => $id)
-        {
+        foreach ($_POST['checkboxes'] as $key => $id) {
             $sql = "DELETE FROM " .$ecs->table('tag'). " WHERE tag_id='$id'";
             $db->query($sql);
 
@@ -195,9 +179,7 @@ elseif ($_REQUEST['act'] == 'batch_drop')
 
         $link[] = array('text' => $_LANG['back_list'], 'href'=>'tag_manage.php?act=list');
         sys_msg(sprintf($_LANG['drop_success'], $count), 0, $link);
-    }
-    else
-    {
+    } else {
         $link[] = array('text' => $_LANG['back_list'], 'href'=>'tag_manage.php?act=list');
         sys_msg($_LANG['no_select_tag'], 0, $link);
     }
@@ -207,8 +189,7 @@ elseif ($_REQUEST['act'] == 'batch_drop')
 //-- 鍒犻櫎鏍囩?
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'remove')
-{
+elseif ($_REQUEST['act'] == 'remove') {
     check_authz_json('tag_manage');
 
     // include_once(ROOT_PATH . 'includes/cls_json.php');
@@ -221,18 +202,15 @@ elseif ($_REQUEST['act'] == 'remove')
 
     $sql = "DELETE FROM " .$ecs->table('tag'). " WHERE tag_id = '$id'";
     $result = $GLOBALS['db']->query($sql);
-    if ($result)
-    {
+    if ($result) {
         /* 绠＄悊鍛樻棩蹇 */
         admin_log(addslashes($tag_name), 'remove', 'tag_manage');
 
         $url = 'tag_manage.php?act=query&' . str_replace('act=remove', '', $_SERVER['QUERY_STRING']);
         ecs_header("Location: $url\n");
         exit;
-    }
-    else
-    {
-       make_json_error($db->error());
+    } else {
+        make_json_error($db->error());
     }
 }
 
@@ -240,19 +218,15 @@ elseif ($_REQUEST['act'] == 'remove')
 //-- 缂栬緫鏍囩?鍚嶇О
 /*------------------------------------------------------ */
 
-elseif($_REQUEST['act'] == "edit_tag_name")
-{
+elseif ($_REQUEST['act'] == "edit_tag_name") {
     check_authz_json('tag_manage');
 
     $name = json_str_iconv(trim($_POST['val']));
     $id = intval($_POST['id']);
 
-    if (!tag_is_only($name, $id))
-    {
+    if (!tag_is_only($name, $id)) {
         make_json_error(sprintf($_LANG['tagword_exist'], $name));
-    }
-    else
-    {
+    } else {
         edit_tag($name, $id);
         make_json_result(stripslashes($name));
     }
@@ -267,8 +241,7 @@ elseif($_REQUEST['act'] == "edit_tag_name")
  */
 function tag_is_only($name, $tag_id, $goods_id = '')
 {
-    if(empty($goods_id))
-    {
+    if (empty($goods_id)) {
         $db = $GLOBALS['db'];
         $sql = 'SELECT goods_id FROM ' . $GLOBALS['ecs']->table('tag') . " WHERE tag_id = '$tag_id'";
         $row = $GLOBALS['db']->getRow($sql);
@@ -278,12 +251,9 @@ function tag_is_only($name, $tag_id, $goods_id = '')
     $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['ecs']->table('tag') . " WHERE tag_words = '$name'" .
            " AND goods_id = '$goods_id' AND tag_id != '$tag_id'";
 
-    if($GLOBALS['db']->getOne($sql) > 0)
-    {
+    if ($GLOBALS['db']->getOne($sql) > 0) {
         return false;
-    }
-    else
-    {
+    } else {
         return true;
     }
 }
@@ -299,8 +269,7 @@ function edit_tag($name, $id, $goods_id = '')
 {
     $db = $GLOBALS['db'];
     $sql = 'UPDATE ' . $GLOBALS['ecs']->table('tag') . " SET tag_words = '$name'";
-    if(!empty($goods_id))
-    {
+    if (!empty($goods_id)) {
         $sql .= ", goods_id = '$goods_id'";
     }
     $sql .= " WHERE tag_id = '$id'";
@@ -330,8 +299,7 @@ function get_tag_list()
             "LEFT JOIN " .$GLOBALS['ecs']->table('goods'). " AS g ON g.goods_id=t.goods_id ".
             "ORDER by $filter[sort_by] $filter[sort_order] LIMIT ". $filter['start'] .", ". $filter['page_size'];
     $row = $GLOBALS['db']->getAll($sql);
-    foreach($row as $k=>$v)
-    {
+    foreach ($row as $k=>$v) {
         $row[$k]['tag_words'] = htmlspecialchars($v['tag_words']);
     }
 
@@ -354,5 +322,3 @@ function get_tag_info($tag_id)
 
     return $row;
 }
-
-?>

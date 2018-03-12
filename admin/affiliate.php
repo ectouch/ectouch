@@ -9,20 +9,16 @@ $config = get_affiliate();
 /*------------------------------------------------------ */
 //-- 分成管理页
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     assign_query_info();
-    if (empty($_REQUEST['is_ajax']))
-    {
+    if (empty($_REQUEST['is_ajax'])) {
         $smarty->assign('full_page', 1);
     }
 
     $smarty->assign('ur_here', $_LANG['affiliate']);
     $smarty->assign('config', $config);
     $smarty->display('affiliate.htm');
-}
-elseif ($_REQUEST['act'] == 'query')
-{
+} elseif ($_REQUEST['act'] == 'query') {
     $smarty->assign('ur_here', $_LANG['affiliate']);
     $smarty->assign('config', $config);
     make_json_result($smarty->fetch('affiliate.htm'), '', null);
@@ -30,27 +26,22 @@ elseif ($_REQUEST['act'] == 'query')
 /*------------------------------------------------------ */
 //-- 增加下线分配方案
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'add')
-{
-    if (count($config['item']) < 5)
-    {
+elseif ($_REQUEST['act'] == 'add') {
+    if (count($config['item']) < 5) {
         //下线不能超过5层
         $_POST['level_point'] = (float)$_POST['level_point'];
         $_POST['level_money'] = (float)$_POST['level_money'];
         $maxpoint = $maxmoney = 100;
-        foreach ($config['item'] as $key => $val)
-        {
+        foreach ($config['item'] as $key => $val) {
             $maxpoint -= $val['level_point'];
             $maxmoney -= $val['level_money'];
         }
         $_POST['level_point'] > $maxpoint && $_POST['level_point'] = $maxpoint;
         $_POST['level_money'] > $maxmoney && $_POST['level_money'] = $maxmoney;
-        if (!empty($_POST['level_point']) && strpos($_POST['level_point'],'%') === false)
-        {
+        if (!empty($_POST['level_point']) && strpos($_POST['level_point'], '%') === false) {
             $_POST['level_point'] .= '%';
         }
-        if (!empty($_POST['level_money']) && strpos($_POST['level_money'],'%') === false)
-        {
+        if (!empty($_POST['level_money']) && strpos($_POST['level_money'], '%') === false) {
             $_POST['level_money'] .= '%';
         }
         $items = array('level_point'=>$_POST['level_point'],'level_money'=>$_POST['level_money']);
@@ -60,10 +51,8 @@ elseif ($_REQUEST['act'] == 'add')
         $config['config']['separate_by'] = 0;
 
         put_affiliate($config);
-    }
-    else
-    {
-       make_json_error($_LANG['level_error']);
+    } else {
+        make_json_error($_LANG['level_error']);
     }
 
     ecs_header("Location: affiliate.php?act=query\n");
@@ -72,9 +61,7 @@ elseif ($_REQUEST['act'] == 'add')
 /*------------------------------------------------------ */
 //-- 修改配置
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'updata')
-{
-
+elseif ($_REQUEST['act'] == 'updata') {
     $separate_by = (intval($_POST['separate_by']) == 1) ? 1 : 0;
 
     $_POST['expire'] = (float) $_POST['expire'];
@@ -83,12 +70,10 @@ elseif ($_REQUEST['act'] == 'updata')
     $_POST['level_money_all'] > 100 && $_POST['level_money_all'] = 100;
     $_POST['level_point_all'] > 100 && $_POST['level_point_all'] = 100;
 
-    if (!empty($_POST['level_point_all']) && strpos($_POST['level_point_all'],'%') === false)
-    {
+    if (!empty($_POST['level_point_all']) && strpos($_POST['level_point_all'], '%') === false) {
         $_POST['level_point_all'] .= '%';
     }
-    if (!empty($_POST['level_money_all']) && strpos($_POST['level_money_all'],'%') === false)
-    {
+    if (!empty($_POST['level_money_all']) && strpos($_POST['level_money_all'], '%') === false) {
         $_POST['level_money_all'] .= '%';
     }
     $_POST['level_register_all'] = intval($_POST['level_register_all']);
@@ -106,41 +91,35 @@ elseif ($_REQUEST['act'] == 'updata')
     $temp['on'] = 1;
     put_affiliate($temp);
     $links[] = array('text' => $_LANG['affiliate'], 'href' => 'affiliate.php?act=list');
-    sys_msg($_LANG['edit_ok'], 0 ,$links);
+    sys_msg($_LANG['edit_ok'], 0, $links);
 }
 /*------------------------------------------------------ */
 //-- 推荐开关
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'on')
-{
-
+elseif ($_REQUEST['act'] == 'on') {
     $on = (intval($_POST['on']) == 1) ? 1 : 0;
 
     $config['on'] = $on;
     put_affiliate($config);
     $links[] = array('text' => $_LANG['affiliate'], 'href' => 'affiliate.php?act=list');
-    sys_msg($_LANG['edit_ok'], 0 ,$links);
+    sys_msg($_LANG['edit_ok'], 0, $links);
 }
 /*------------------------------------------------------ */
 //-- Ajax修改设置
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'edit_point')
-{
+elseif ($_REQUEST['act'] == 'edit_point') {
 
     /* 取得参数 */
     $key = trim($_POST['id']) - 1;
     $val = (float)trim($_POST['val']);
     $maxpoint = 100;
-    foreach ($config['item'] as $k => $v)
-    {
-        if ($k != $key)
-        {
+    foreach ($config['item'] as $k => $v) {
+        if ($k != $key) {
             $maxpoint -= $v['level_point'];
         }
     }
     $val > $maxpoint && $val = $maxpoint;
-    if (!empty($val) && strpos($val,'%') === false)
-    {
+    if (!empty($val) && strpos($val, '%') === false) {
         $val .= '%';
     }
     $config['item'][$key]['level_point'] = $val;
@@ -151,21 +130,17 @@ elseif ($_REQUEST['act'] == 'edit_point')
 /*------------------------------------------------------ */
 //-- Ajax修改设置
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'edit_money')
-{
+elseif ($_REQUEST['act'] == 'edit_money') {
     $key = trim($_POST['id']) - 1;
     $val = (float)trim($_POST['val']);
     $maxmoney = 100;
-    foreach ($config['item'] as $k => $v)
-    {
-        if ($k != $key)
-        {
+    foreach ($config['item'] as $k => $v) {
+        if ($k != $key) {
             $maxmoney -= $v['level_money'];
         }
     }
     $val > $maxmoney && $val = $maxmoney;
-    if (!empty($val) && strpos($val,'%') === false)
-    {
+    if (!empty($val) && strpos($val, '%') === false) {
         $val .= '%';
     }
     $config['item'][$key]['level_money'] = $val;
@@ -176,13 +151,11 @@ elseif ($_REQUEST['act'] == 'edit_money')
 /*------------------------------------------------------ */
 //-- 删除下线分成
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'del')
-{
+elseif ($_REQUEST['act'] == 'del') {
     $key = trim($_GET['id']) - 1;
     unset($config['item'][$key]);
     $temp = array();
-    foreach ($config['item'] as $key => $val)
-    {
+    foreach ($config['item'] as $key => $val) {
         $temp[] = $val;
     }
     $config['item'] = $temp;
@@ -210,4 +183,3 @@ function put_affiliate($config)
     $GLOBALS['db']->query($sql);
     clear_all_files();
 }
-?>

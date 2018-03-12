@@ -22,7 +22,7 @@ if (! defined('IN_ECTOUCH')) {
  * 精品查询类
  *
  * @author wanglu
- *        
+ *
  */
 class bdsjh extends PluginWechatController
 {
@@ -34,7 +34,7 @@ class bdsjh extends PluginWechatController
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -87,7 +87,6 @@ class bdsjh extends PluginWechatController
             $articles['content'][0]['Url'] = html_out($media['link']);
             // 积分赠送
             $this->give_point($fromusername, $info);
-            
         }
         return $articles;
     }
@@ -95,8 +94,8 @@ class bdsjh extends PluginWechatController
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -125,13 +124,12 @@ class bdsjh extends PluginWechatController
      */
     public function html_show()
     {
-        if(isset($_SESSION['openid']) && !empty($_SESSION['openid'])){
+        if (isset($_SESSION['openid']) && !empty($_SESSION['openid'])) {
             $file = ADDONS_PATH . 'wechat/' . $this->plugin_name . '/view/index.php';
             if (file_exists($file)) {
-                require_once ($file);
+                require_once($file);
             }
-        }
-        else{
+        } else {
             show_message('您未登陆，不能进行绑定手机号操作！', '首页', url('index/index'));
         }
     }
@@ -146,7 +144,7 @@ class bdsjh extends PluginWechatController
             $rs = Check::rule(
                 array(
                     Check::must($data['username']),'手机号不能为空'
-                ), 
+                ),
                 array(
                     Check::mobile($data['username']),'手机号格式不正确'
                 )
@@ -154,7 +152,7 @@ class bdsjh extends PluginWechatController
             if ($rs !== true) {
                 show_message($rs, '绑定手机号', url('wechat/plugin_show', array('name' => $this->plugin_name)));
             }
-            if(!isset($_SESSION['openid'])){
+            if (!isset($_SESSION['openid'])) {
                 show_message('您需要微信授权登录，才能进行绑定手机号操作！', '返回首页', url('index/index'));
             }
             //会员信息
@@ -180,16 +178,14 @@ class bdsjh extends PluginWechatController
 
             $mobile_count = model('Base')->model->table('users')->where('mobile_phone = "'.$data['username'].'"')->count();
 
-            if(empty($mobile_phone) && $ect_uid == $_SESSION['user_id'] && $mobile_count < 1){
+            if (empty($mobile_phone) && $ect_uid == $_SESSION['user_id'] && $mobile_count < 1) {
                 model('Base')->model->table('users')->data('mobile_phone = '.$data['username'])->where('user_id = '.$ect_uid)->update();
                 model('Users')->update_user_info();
                 model('Users')->recalculate_price();
                 show_message('您的手机号:'.$data['username'].'已绑定成功', '返回首页', url('index/index'));
+            } else {
+                show_message('绑定失败！手机号已经被绑定或已经存在', '返回手机号绑定', url('wechat/plugin_show', array('name'=> $this->plugin_name)));
             }
-            else{
-              show_message('绑定失败！手机号已经被绑定或已经存在', '返回手机号绑定', url('wechat/plugin_show', array('name'=> $this->plugin_name)));
-            }
-            
         }
     }
 }

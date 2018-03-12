@@ -52,37 +52,41 @@
 					<td class="td1" width="25%">读取</td>
 				</tr>
 				<?php
-				foreach($folder as $dir){
-					$Testdir = $site_path.$dir;
-					dir_create($Testdir);
-					if(TestWrite($Testdir)){
-						$w = '<span class="correct_span">&radic;</span>可写 ';
-					}else{
-						$w = '<span class="correct_span error_span">&radic;</span>不可写 ';
-						$error++;
-					}
-					if(is_readable($Testdir)){
-						$r = '<span class="correct_span">&radic;</span>可读' ;
-					}else{
-						$r = '<span class="correct_span error_span">&radic;</span>不可读';
-						$error++;
-					}
-				?>
+                foreach ($folder as $dir) {
+                    $Testdir = $site_path.$dir;
+                    dir_create($Testdir);
+                    if (TestWrite($Testdir)) {
+                        $w = '<span class="correct_span">&radic;</span>可写 ';
+                    } else {
+                        $w = '<span class="correct_span error_span">&radic;</span>不可写 ';
+                        $error++;
+                    }
+                    if (is_readable($Testdir)) {
+                        $r = '<span class="correct_span">&radic;</span>可读' ;
+                    } else {
+                        $r = '<span class="correct_span error_span">&radic;</span>不可读';
+                        $error++;
+                    } ?>
 				<tr>
 					<td><?php echo $dir; ?></td>
 					<td><?php echo $w; ?></td>
 					<td><?php echo $r; ?></td>
 				</tr>
-				<?php } ?>
+				<?php
+                } ?>
 			</table>
 			</div>
 		</div>
 		<div class="btn-box">
 		<a href="./index.php?step=2" class="btn">重新检测</a>
-		<?php if(empty($error)){ ?>
+		<?php if (empty($error)) {
+                    ?>
 			<a href="./index.php?step=3" class="btn">下一步</a>
-		<?php } else { ?>
+		<?php
+                } else {
+                    ?>
 			<button href="#" class="btn error" disabled>当前有误</button>
-		<?php } ?>
+		<?php
+                } ?>
 		</div>
 <?php require INSTALL_PATH . 'templates/footer.php';?>

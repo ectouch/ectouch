@@ -6,14 +6,15 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP 字符集转换类
  */
-class EcsIconv {
+class EcsIconv
+{
 
     /**
      * 存放 GB <-> UNICODE 对照表的内容
      * @变量类型
      * @访问      内部
      */
-    var $unicode_table = array();
+    public $unicode_table = array();
 
     /**
      * 访问中文繁简互换表的文件指针
@@ -21,14 +22,14 @@ class EcsIconv {
      * @变量类型  对象
      * @访问      内部
      */
-    var $ctf;
+    public $ctf;
 
     /**
      * 等待转换的字符串
      * @变量类型
      * @访问      内部
      */
-    var $SourceText = '';
+    public $SourceText = '';
 
     /**
      * Chinese 的运行配置
@@ -36,7 +37,7 @@ class EcsIconv {
      * @变量类型  数组
      * @访问      公开
      */
-    var $config = array(
+    public $config = array(
         'codetable_dir' => '', // 存放各种语言互换表的目录
         'source_lang' => '', // 字符的原编码
         'target_lang' => '', // 转换后的编码
@@ -45,8 +46,8 @@ class EcsIconv {
         'GBtoUTF8_table' => 'gb_utf8.php', // 简体中文转换为UTF-8的对照表
         'BIG5toUTF8_table' => 'big5_utf8.php'    // 繁体中文转换为UTF-8的对照表
     );
-    var $iconv_enabled = false; // 是否存在 ICONV 模块，默认为否
-    var $mbstring_enabled = false; // 是否存在 MBSTRING 模块，默认为否
+    public $iconv_enabled = false; // 是否存在 ICONV 模块，默认为否
+    public $mbstring_enabled = false; // 是否存在 MBSTRING 模块，默认为否
 
     /**
      * Chinese 的悉构函数
@@ -60,7 +61,8 @@ class EcsIconv {
      * @throws
      */
 
-    function __construct($dir = './') {
+    public function __construct($dir = './')
+    {
         $this->config['codetable_dir'] = $dir . "data/codetable/";
 
         if (function_exists('iconv')) {
@@ -76,7 +78,8 @@ class EcsIconv {
         }
     }
 
-    function Convert($source_lang, $target_lang, $source_string = '') {
+    public function Convert($source_lang, $target_lang, $source_string = '')
+    {
         /* 如果字符串为空或者字符串不需要转换，直接返回 */
         if ($source_string == '' || preg_match("/[\x80-\xFF]+/", $source_string) == 0) {
             return $source_string;
@@ -182,7 +185,8 @@ class EcsIconv {
         }
     }
 
-    function _lang($lang) {
+    public function _lang($lang)
+    {
         $lang = strtoupper($lang);
 
         if (substr($lang, 0, 2) == 'GB') {
@@ -204,7 +208,8 @@ class EcsIconv {
         }
     }
 
-    function _convert_iconv_mbstring($string, $target_lang, $source_lang) {
+    public function _convert_iconv_mbstring($string, $target_lang, $source_lang)
+    {
         if ($this->iconv_enabled) {
             $return_string = @iconv($source_lang, $target_lang, $string);
             if ($return_string !== false) {
@@ -238,7 +243,8 @@ class EcsIconv {
      * @返回      字符串
      * @throws
      */
-    function _hex2bin($hexdata) {
+    public function _hex2bin($hexdata)
+    {
         $bindata = '';
 
         for ($i = 0, $count = strlen($hexdata); $i < $count; $i += 2) {
@@ -257,14 +263,15 @@ class EcsIconv {
      * @返回      无
      * @throws
      */
-    function OpenTable() {
-        static $gb_utf8_table = NULL;
-        static $gb_unicode_table = NULL;
-        static $utf8_gb_table = NULL;
+    public function OpenTable()
+    {
+        static $gb_utf8_table = null;
+        static $gb_unicode_table = null;
+        static $utf8_gb_table = null;
 
-        static $big5_utf8_table = NULL;
-        static $big5_unicode_table = NULL;
-        static $utf8_big5_table = NULL;
+        static $big5_utf8_table = null;
+        static $big5_unicode_table = null;
+        static $utf8_big5_table = null;
 
         // 假如原编码为简体中文的话
         if ($this->config['source_lang'] == 'GBK') {
@@ -280,7 +287,7 @@ class EcsIconv {
 
             // 假如转换目标编码为 UTF8 的话
             if ($this->config['target_lang'] == 'UTF-8') {
-                if ($gb_utf8_table === NULL) {
+                if ($gb_utf8_table === null) {
                     require_once($this->config['codetable_dir'] . $this->config['GBtoUTF8_table']);
                 }
                 $this->unicode_table = $gb_utf8_table;
@@ -288,11 +295,11 @@ class EcsIconv {
 
             // 假如转换目标编码为 UNICODE 的话
             if ($this->config['target_lang'] == 'UNICODE') {
-                if ($gb_unicode_table === NULL) {
+                if ($gb_unicode_table === null) {
                     if (isset($gb_utf8_table) === false) {
                         require_once($this->config['codetable_dir'] . $this->config['GBtoUTF8_table']);
                     }
-                    foreach ($gb_utf8_table AS $key => $value) {
+                    foreach ($gb_utf8_table as $key => $value) {
                         $gb_unicode_table[$key] = substr($value, 2);
                     }
                 }
@@ -313,7 +320,7 @@ class EcsIconv {
             }
             // 假如转换目标编码为 UTF8 的话
             if ($this->config['target_lang'] == 'UTF-8') {
-                if ($big5_utf8_table === NULL) {
+                if ($big5_utf8_table === null) {
                     require_once($this->config['codetable_dir'] . $this->config['BIG5toUTF8_table']);
                 }
                 $this->unicode_table = $big5_utf8_table;
@@ -321,11 +328,11 @@ class EcsIconv {
 
             // 假如转换目标编码为 UNICODE 的话
             if ($this->config['target_lang'] == 'UNICODE') {
-                if ($big5_unicode_table === NULL) {
+                if ($big5_unicode_table === null) {
                     if (isset($big5_utf8_table) === false) {
                         require_once($this->config['codetable_dir'] . $this->config['BIG5toUTF8_table']);
                     }
-                    foreach ($big5_utf8_table AS $key => $value) {
+                    foreach ($big5_utf8_table as $key => $value) {
                         $big5_unicode_table[$key] = substr($value, 2);
                     }
                 }
@@ -337,11 +344,11 @@ class EcsIconv {
         if ($this->config['source_lang'] == 'UTF-8') {
             // 假如转换目标编码为 GBK 的话
             if ($this->config['target_lang'] == 'GBK') {
-                if ($utf8_gb_table === NULL) {
+                if ($utf8_gb_table === null) {
                     if (isset($gb_utf8_table) === false) {
                         require_once($this->config['codetable_dir'] . $this->config['GBtoUTF8_table']);
                     }
-                    foreach ($gb_utf8_table AS $key => $value) {
+                    foreach ($gb_utf8_table as $key => $value) {
                         $utf8_gb_table[hexdec($value)] = '0x' . dechex($key);
                     }
                 }
@@ -350,11 +357,11 @@ class EcsIconv {
 
             // 假如转换目标编码为 BIG5 的话
             if ($this->config['target_lang'] == 'BIG-5') {
-                if ($utf8_big5_table === NULL) {
+                if ($utf8_big5_table === null) {
                     if (isset($big5_utf8_table) === false) {
                         require_once($this->config['codetable_dir'] . $this->config['BIG5toUTF8_table']);
                     }
-                    foreach ($big5_utf8_table AS $key => $value) {
+                    foreach ($big5_utf8_table as $key => $value) {
                         $utf8_big5_table[hexdec($value)] = '0x' . dechex($key);
                     }
                 }
@@ -372,7 +379,8 @@ class EcsIconv {
      * @返回      字符串
      * @throws
      */
-    function CHSUtoUTF8($c) {
+    public function CHSUtoUTF8($c)
+    {
         $str = '';
 
         if ($c < 0x80) {
@@ -403,7 +411,8 @@ class EcsIconv {
      * @返回      字符串
      * @throws
      */
-    function CHStoUTF8() {
+    public function CHStoUTF8()
+    {
         if ($this->config['source_lang'] == 'BIG-5' || $this->config['source_lang'] == 'GBK') {
             $ret = '';
 
@@ -483,7 +492,8 @@ class EcsIconv {
      * @返回      字符串
      * @throws
      */
-    function CHStoUNICODE() {
+    public function CHStoUNICODE()
+    {
         $utf = '';
 
         while ($this->SourceText) {
@@ -512,7 +522,8 @@ class EcsIconv {
      * @返回值    经过编码的utf8字符
      * @throws
      */
-    function GBtoBIG5() {
+    public function GBtoBIG5()
+    {
         // 获取等待转换的字符串的总长度
         $max = strlen($this->SourceText) - 1;
 
@@ -545,7 +556,4 @@ class EcsIconv {
         // 返回转换结果
         return $result;
     }
-
 }
-
-?>

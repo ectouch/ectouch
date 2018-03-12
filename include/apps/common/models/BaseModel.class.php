@@ -16,13 +16,15 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class BaseModel extends Model {
+class BaseModel extends Model
+{
 
     /**
      * 查询全部分类列表
      * @param type $area_id
      */
-    public function get_all_cat_list() {
+    public function get_all_cat_list()
+    {
         $sql = "SELECT c.cat_id, c.cat_name, c.measure_unit, c.parent_id, c.is_show, c.show_in_nav, c.grade, c.sort_order, COUNT(s.cat_id) AS has_children " .
                 'FROM ' . $this->pre . "category AS c " .
                 "LEFT JOIN " . $this->pre . "category AS s ON s.parent_id=c.cat_id " .
@@ -42,16 +44,18 @@ class BaseModel extends Model {
         $res3 = $this->query($sql);
 
         $newres = array();
-        if (is_array($res2))
+        if (is_array($res2)) {
             foreach ($res2 as $k => $v) {
                 $newres[$v['cat_id']] = $v['goods_num'];
-                if (is_array($res3))
+                if (is_array($res3)) {
                     foreach ($res3 as $ks => $vs) {
                         if ($v['cat_id'] == $vs['cat_id']) {
                             $newres[$v['cat_id']] = $v['goods_num'] + $vs['goods_num'];
                         }
                     }
+                }
             }
+        }
 
         foreach ($res as $k => $v) {
             $res[$k]['goods_num'] = !empty($newres[$v['cat_id']]) ? $newres[$v['cat_id']] : 0;
@@ -59,7 +63,8 @@ class BaseModel extends Model {
 
         return $res;
     }
-     public function get_all_cat_lists() {
+    public function get_all_cat_lists()
+    {
         $sql = "SELECT c.cat_id, c.cat_name, c.parent_id, c.is_show,c.sort_order, COUNT(s.cat_id) AS has_children " .
                 'FROM ' . $this->pre . "crowd_category AS c " .
                 "LEFT JOIN " . $this->pre . "crowd_category AS s ON s.parent_id=c.cat_id " .
@@ -79,16 +84,18 @@ class BaseModel extends Model {
         $res3 = $this->query($sql);
 
         $newres = array();
-        if (is_array($res2))
+        if (is_array($res2)) {
             foreach ($res2 as $k => $v) {
                 $newres[$v['cat_id']] = $v['goods_num'];
-                if (is_array($res3))
+                if (is_array($res3)) {
                     foreach ($res3 as $ks => $vs) {
                         if ($v['cat_id'] == $vs['cat_id']) {
                             $newres[$v['cat_id']] = $v['goods_num'] + $vs['goods_num'];
                         }
                     }
+                }
             }
+        }
 
         foreach ($res as $k => $v) {
             $res[$k]['goods_num'] = !empty($newres[$v['cat_id']]) ? $newres[$v['cat_id']] : 0;
@@ -102,14 +109,14 @@ class BaseModel extends Model {
      * @access  public
      * @return  array
      */
-    public function load_config() {
+    public function load_config()
+    {
         $data = read_static_cache('shop_config');
         if ($data === false) {
-
             $sql = 'SELECT code, value FROM ' . $this->pre . 'shop_config WHERE parent_id > 0';
             $res = $this->query($sql);
             $arr = array();
-            foreach ($res AS $row) {
+            foreach ($res as $row) {
                 $arr[$row['code']] = $row['value'];
             }
 
@@ -170,7 +177,7 @@ class BaseModel extends Model {
             $arr = $data;
         }
         $config = array();
-        foreach ($arr AS $key=>$vo) {
+        foreach ($arr as $key=>$vo) {
             $config[strtoupper($key)] = $vo;
         }
         
@@ -183,9 +190,9 @@ class BaseModel extends Model {
      * @param:  $tpl_name[string]       模板代码
      * @return array
      */
-    function get_mail_template($tpl_name) {
+    public function get_mail_template($tpl_name)
+    {
         $sql = 'SELECT template_subject, is_html, template_content FROM ' . $this->pre . "mail_templates WHERE template_code = '$tpl_name'";
         return $this->row($sql);
     }
-
 }

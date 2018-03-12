@@ -13,7 +13,7 @@
 defined('IN_ECTOUCH') or die('Deny Access');
 
 /* 模块的基本信息 */
-if (isset($set_modules) && $set_modules == TRUE) {
+if (isset($set_modules) && $set_modules == true) {
     $i = (isset($modules)) ? count($modules) : 0;
     /* 会员数据整合插件的代码必须和文件名保持一致 */
     $modules[$i]['code'] = 'ecshop';
@@ -28,20 +28,19 @@ if (isset($set_modules) && $set_modules == TRUE) {
     return;
 }
 
-require_once (ROOT_PATH . 'plugins/integrates/integrate.php');
+require_once(ROOT_PATH . 'plugins/integrates/integrate.php');
 
 /**
  * ECSHOP 会员数据处理类
  */
 class ecshop extends integrate
 {
-
     public $is_ecshop = 1;
 
     /**
      * 构造函数
      *
-     * @param unknown $cfg 
+     * @param unknown $cfg
      */
     public function __construct($cfg)
     {
@@ -146,5 +145,3 @@ class ecshop extends integrate
         }
     }
 }
-
-?>

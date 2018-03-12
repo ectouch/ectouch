@@ -15,12 +15,13 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class WholesaleController extends CommonController {
-
+class WholesaleController extends CommonController
+{
     private $size = 10;
     private $page = 1;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         if (ACTION_NAME == 'list') {
@@ -33,7 +34,8 @@ class WholesaleController extends CommonController {
     //-- 批发列表
     /* ------------------------------------------------------ */
 
-    public function index() {
+    public function index()
+    {
         $this->parameter();
         /* 查询条件：当前用户的会员等级（搜索关键字） */
         $where = " WHERE g.goods_id = w.goods_id
@@ -73,7 +75,8 @@ class WholesaleController extends CommonController {
 
     //--异步加载团购商品列表
     /* ------------------------------------------------------ */
-    public function asynclist() {
+    public function asynclist()
+    {
         $this->parameter();
         $asyn_last = intval(I('post.last')) + 1;
         $this->size = I('post.amount');
@@ -114,7 +117,8 @@ class WholesaleController extends CommonController {
 
     //-- 批发详情
     /* ------------------------------------------------------ */
-    public function info() {
+    public function info()
+    {
         $id = isset($_REQUEST['id']) ? intval(I('request.id')) : 0;
         if ($id <= 0) {
             $this->redirect(url('index'));
@@ -131,9 +135,9 @@ class WholesaleController extends CommonController {
         $this->assign('specification', $properties ['spe']);
         /* 批发商品购物车 */
         $this->assign('cart_goods', isset($_SESSION['wholesale_goods']) ? $_SESSION['wholesale_goods'] : array());
-        $comments = model('Comment')->get_comment_info($id,0);
+        $comments = model('Comment')->get_comment_info($id, 0);
         $this->assign('comments', $comments);
-        $this->assign('title',L('wholesale_goods_info'));
+        $this->assign('title', L('wholesale_goods_info'));
         $this->display('wholesale.dwt');
     }
 
@@ -141,7 +145,8 @@ class WholesaleController extends CommonController {
 
     //-- 团购商品 --> 购买
     /* ------------------------------------------------------ */
-    public function add_to_cart() {
+    public function add_to_cart()
+    {
         /* 取得参数 */
         $act_id = intval($_POST['act_id']);
         $goods_number = $_POST['goods_number'][$act_id];
@@ -255,7 +260,8 @@ class WholesaleController extends CommonController {
     /**
      * 提交订单
      */
-    public function submit_order() {
+    public function submit_order()
+    {
         /* 检查购物车中是否有商品 */
         if (count($_SESSION['wholesale_goods']) == 0) {
             show_message(L('no_goods_in_cart'));
@@ -350,7 +356,8 @@ class WholesaleController extends CommonController {
     /**
      * /-- 从购物车删除
      */
-    public function drop_goods() {
+    public function drop_goods()
+    {
         $key = intval(I('request.key'));
         if (isset($_SESSION['wholesale_goods'][$key])) {
             unset($_SESSION['wholesale_goods'][$key]);
@@ -363,7 +370,8 @@ class WholesaleController extends CommonController {
     /**
      * 处理参数便于搜索商品信息
      */
-    private function parameter() {
+    private function parameter()
+    {
         /* 如果没登录，提示登录 */
         if ($_SESSION['user_rank'] <= 0) {
             show_message(L('ws_user_rank'), L('ws_return_home'), 'index.php');
@@ -382,6 +390,4 @@ class WholesaleController extends CommonController {
         $this->assign('display', $display);
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
     }
-
 }
-

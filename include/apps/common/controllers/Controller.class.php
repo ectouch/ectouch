@@ -16,37 +16,41 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class Controller {
-
-    protected $model = NULL; // 数据库模型
-    protected $layout = NULL; // 布局视图
+class Controller
+{
+    protected $model = null; // 数据库模型
+    protected $layout = null; // 布局视图
     private $_data = array();
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->model = model('Base')->model;
         $this->cloud = Cloud::getInstance();
         // 定义当前请求的系统常量
         define('NOW_TIME', $_SERVER ['REQUEST_TIME']);
         define('REQUEST_METHOD', $_SERVER ['REQUEST_METHOD']);
-        define('IS_GET', REQUEST_METHOD == 'GET' ? true : false );
-        define('IS_POST', REQUEST_METHOD == 'POST' ? true : false );
-        define('IS_PUT', REQUEST_METHOD == 'PUT' ? true : false );
-        define('IS_DELETE', REQUEST_METHOD == 'DELETE' ? true : false );
+        define('IS_GET', REQUEST_METHOD == 'GET' ? true : false);
+        define('IS_POST', REQUEST_METHOD == 'POST' ? true : false);
+        define('IS_PUT', REQUEST_METHOD == 'PUT' ? true : false);
+        define('IS_DELETE', REQUEST_METHOD == 'DELETE' ? true : false);
         define('IS_AJAX', (isset($_SERVER ['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER ['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'));
         load_file(ROOT_PATH . 'data/certificate/appkey.php');
     }
 
-    public function __get($name) {
-        return isset($this->_data [$name]) ? $this->_data [$name] : NULL;
+    public function __get($name)
+    {
+        return isset($this->_data [$name]) ? $this->_data [$name] : null;
     }
 
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         $this->_data [$name] = $value;
     }
 
     // 获取模板对象
-    protected function tpl() {
-        static $view = NULL;
+    protected function tpl()
+    {
+        static $view = null;
         if (empty($view)) {
             $view = new EcTemplate(C('TPL'));
         }
@@ -54,12 +58,14 @@ class Controller {
     }
 
     // 模板赋值
-    protected function assign($name, $value) {
+    protected function assign($name, $value)
+    {
         return $this->tpl()->assign($name, $value);
     }
 
     // 模板显示
-    protected function display($tpl = '', $return = false, $is_tpl = true) {
+    protected function display($tpl = '', $return = false, $is_tpl = true)
+    {
         if ($is_tpl) {
             $tpl = empty($tpl) ? strtolower(CONTROLLER_NAME . '_' . ACTION_NAME) : $tpl;
             if ($is_tpl && $this->layout) {
@@ -73,15 +79,18 @@ class Controller {
     }
 
     // 直接跳转
-    protected function redirect($url, $code = 302) {
+    protected function redirect($url, $code = 302)
+    {
         header('location:' . $url, true, $code);
         exit();
     }
 
     // 操作成功之后跳转,默认三秒钟跳转
-    protected function message($msg, $url = NULL, $type = 'succeed', $waitSecond = 2) {
-        if ($url == NULL)
+    protected function message($msg, $url = null, $type = 'succeed', $waitSecond = 2)
+    {
+        if ($url == null) {
             $url = 'javascript:history.back();';
+        }
         if ($type == 'error') {
             $title = '错误信息';
         } else {
@@ -98,7 +107,8 @@ class Controller {
     }
 
     // 弹出信息
-    protected function alert($msg, $url = NULL, $parent = false) {
+    protected function alert($msg, $url = null, $parent = false)
+    {
         header("Content-type: text/html; charset=utf-8");
         $alert_msg = "alert('$msg');";
         if (empty($url)) {
@@ -111,7 +121,8 @@ class Controller {
     }
 
     // 出错之后返回json数据
-    protected function jserror($msg) {
+    protected function jserror($msg)
+    {
         echo json_encode(array(
             "msg" => $msg,
             "result" => '0'
@@ -120,7 +131,8 @@ class Controller {
     }
 
     // 成功之后返回json
-    protected function jssuccess($msg, $url = 'back') {
+    protected function jssuccess($msg, $url = 'back')
+    {
         echo json_encode(array(
             "msg" => $msg,
             "url" => $url,
@@ -130,9 +142,10 @@ class Controller {
     }
 
     // 获取分页查询limit
-    protected function pageLimit($url, $num = 10) {
+    protected function pageLimit($url, $num = 10)
+    {
         $url = str_replace(urlencode('{page}'), '{page}', $url);
-        $page = is_object($this->pager ['obj']) ? $this->pager ['obj'] : new Page ();
+        $page = is_object($this->pager ['obj']) ? $this->pager ['obj'] : new Page();
         $cur_page = $page->getCurPage($url);
         $limit_start = ($cur_page - 1) * $num;
         $limit = $limit_start . ',' . $num;
@@ -147,8 +160,8 @@ class Controller {
     }
 
     // 分页结果显示
-    protected function pageShow($count) {
+    protected function pageShow($count)
+    {
         return $this->pager ['obj']->show($this->pager ['url'], $count, $this->pager ['num']);
     }
-
 }

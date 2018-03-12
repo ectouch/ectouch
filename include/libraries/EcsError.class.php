@@ -6,11 +6,11 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP 用户级错误处理类
  */
-class EcsError {
-
-    var $_message = array();
-    var $_template = '';
-    var $error_no = 0;
+class EcsError
+{
+    public $_message = array();
+    public $_template = '';
+    public $error_no = 0;
 
     /**
      * 构造函数
@@ -19,7 +19,8 @@ class EcsError {
      * @param   string  $tpl
      * @return  void
      */
-    function __construct($tpl) {
+    public function __construct($tpl)
+    {
         $this->_template = $tpl;
     }
 
@@ -31,7 +32,8 @@ class EcsError {
      * @param   integer $errno
      * @return  void
      */
-    function add($msg, $errno = 1) {
+    public function add($msg, $errno = 1)
+    {
         if (is_array($msg)) {
             $this->_message = array_merge($this->_message, $msg);
         } else {
@@ -47,7 +49,8 @@ class EcsError {
      * @access  public
      * @return  void
      */
-    function clean() {
+    public function clean()
+    {
         $this->_message = array();
         $this->error_no = 0;
     }
@@ -58,7 +61,8 @@ class EcsError {
      * @access  public
      * @return  array
      */
-    function get_all() {
+    public function get_all()
+    {
         return $this->_message;
     }
 
@@ -68,7 +72,8 @@ class EcsError {
      * @access  public
      * @return  void
      */
-    function last_message() {
+    public function last_message()
+    {
         return array_slice($this->_message, -1);
     }
 
@@ -80,7 +85,8 @@ class EcsError {
      * @param   string  $href
      * @return  void
      */
-    function show($link = '', $href = '') {
+    public function show($link = '', $href = '')
+    {
         if ($this->error_no > 0) {
             $message = array();
 
@@ -89,10 +95,10 @@ class EcsError {
             $message['url_info'][$link] = $href;
             $message['back_url'] = $href;
 
-            foreach ($this->_message AS $msg) {
+            foreach ($this->_message as $msg) {
                 $message['content'] =  htmlspecialchars($msg);
             }
-			$view = ECTouch::view();
+            $view = ECTouch::view();
             if (isset($view)) {
                 assign_template();
                 ECTouch::view()->assign('title', L('tips_message'));
@@ -106,7 +112,4 @@ class EcsError {
             exit;
         }
     }
-
 }
-
-?>

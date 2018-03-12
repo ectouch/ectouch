@@ -24,7 +24,7 @@ class WholesaleModel extends BaseModel
      * @param $where
      * @return mixed
      */
-    function wholesale_count($search_category, $search_keywords, $where)
+    public function wholesale_count($search_category, $search_keywords, $where)
     {
         /* 搜索 */
         /* 搜索类别 */
@@ -45,7 +45,6 @@ class WholesaleModel extends BaseModel
         $sql = "SELECT COUNT(*) as count FROM " . $this->pre . "wholesale AS w, " . $this->model->pre . "goods AS g " . $where;
         $res = $this->row($sql);
         return $res['count'];
-
     }
 
     /**
@@ -55,7 +54,7 @@ class WholesaleModel extends BaseModel
      * @param   string $where 查询条件
      * @return  array
      */
-    function wholesale_list($size, $page, $where)
+    public function wholesale_list($size, $page, $where)
     {
         $list = array();
 
@@ -83,7 +82,7 @@ class WholesaleModel extends BaseModel
      * @param   int $goods_id 商品ID
      * @return  array
      */
-    function get_price_ladder($goods_id)
+    public function get_price_ladder($goods_id)
     {
         /* 显示商品规格 */
         $goods_attr_list = array_values(model('GoodsBase')->get_goods_attr($goods_id));
@@ -134,7 +133,7 @@ class WholesaleModel extends BaseModel
      * @param $price_ladder
      * @return mixed
      */
-    function  get_low_price($price_ladder)
+    public function get_low_price($price_ladder)
     {
         $price = $price_ladder[0]['low_price'];
         foreach ($price_ladder as $value) {
@@ -150,7 +149,8 @@ class WholesaleModel extends BaseModel
      * @param $id
      * @return bool
      */
-    function wholesale_info($id){
+    public function wholesale_info($id)
+    {
         $sql = "SELECT w.*, g.goods_img, g.goods_name as goods_name, g.shop_price, g.market_price ".
             "FROM " . $this->pre . "wholesale AS w " .
             "LEFT JOIN ".$this->pre."goods as g ON g.goods_id = w.goods_id WHERE w.enabled = 1 AND w.goods_id = ".$id;
@@ -167,7 +167,6 @@ class WholesaleModel extends BaseModel
         $res['price_ladder'] = $price_ladder;
         $res['low_price'] = empty($price_ladder) ? price_format($row['shop_price']) : price_format($this->get_low_price($price_ladder));
         return $res;
-
     }
 
     /**
@@ -176,31 +175,25 @@ class WholesaleModel extends BaseModel
      * @param   array   $reference      参照的商品属性
      * @return  bool
      */
-    function is_attr_matching(&$goods_list, $reference)
+    public function is_attr_matching(&$goods_list, $reference)
     {
-        foreach ($goods_list as $key => $goods)
-        {
+        foreach ($goods_list as $key => $goods) {
             // 需要相同的元素个数
-            if (count($goods['goods_attr']) != count($reference))
-            {
+            if (count($goods['goods_attr']) != count($reference)) {
                 break;
             }
 
             // 判断用户提交与批发属性是否相同
             $is_check = true;
-            if (is_array($goods['goods_attr']))
-            {
-                foreach ($goods['goods_attr'] as $attr)
-                {
-                    if (!(array_key_exists($attr['attr_id'], $reference) && $attr['attr_val_id'] == $reference[$attr['attr_id']]))
-                    {
+            if (is_array($goods['goods_attr'])) {
+                foreach ($goods['goods_attr'] as $attr) {
+                    if (!(array_key_exists($attr['attr_id'], $reference) && $attr['attr_val_id'] == $reference[$attr['attr_id']])) {
                         $is_check = false;
                         break;
                     }
                 }
             }
-            if ($is_check)
-            {
+            if ($is_check) {
                 return $key;
                 break;
             }

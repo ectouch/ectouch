@@ -34,5 +34,3 @@ $_LANG['js_languages']['lang_remove'] = '移除';
 $_LANG['js_languages']['attribute'] = '属性';
 $_LANG['js_languages']['remove_confirm'] = "删除商品类型将会清除该类型下的所有属性。\\\n您确定要删除选定的商品类型吗？";
 $_LANG['js_languages']['type_name_empty'] = '商品类型名称不能为空！';
-
-?>

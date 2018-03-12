@@ -11,18 +11,17 @@ $exc = new exchange($ecs->table("nav"), $db, 'id', 'name');
 /*------------------------------------------------------ */
 //-- 自定义导航栏列表
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     $smarty->assign('ur_here', $_LANG['navigator']);
     $smarty->assign('action_link', array('text' => $_LANG['add_new'], 'href' => 'navigator.php?act=add'));
-    $smarty->assign('full_page',  1);
+    $smarty->assign('full_page', 1);
 
     $navdb = get_nav();
 
-    $smarty->assign('navdb',   $navdb['navdb']);
-    $smarty->assign('filter',       $navdb['filter']);
+    $smarty->assign('navdb', $navdb['navdb']);
+    $smarty->assign('filter', $navdb['filter']);
     $smarty->assign('record_count', $navdb['record_count']);
-    $smarty->assign('page_count',   $navdb['page_count']);
+    $smarty->assign('page_count', $navdb['page_count']);
 
     assign_query_info();
     $smarty->display('navigator.htm');
@@ -30,13 +29,12 @@ if ($_REQUEST['act'] == 'list')
 /*------------------------------------------------------ */
 //-- 自定义导航栏列表Ajax
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'query')
-{
+elseif ($_REQUEST['act'] == 'query') {
     $navdb = get_nav();
-    $smarty->assign('navdb',    $navdb['navdb']);
-    $smarty->assign('filter',       $navdb['filter']);
+    $smarty->assign('navdb', $navdb['navdb']);
+    $smarty->assign('filter', $navdb['filter']);
     $smarty->assign('record_count', $navdb['record_count']);
-    $smarty->assign('page_count',   $navdb['page_count']);
+    $smarty->assign('page_count', $navdb['page_count']);
 
     $sort_flag  = sort_flag($navdb['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
@@ -46,10 +44,8 @@ elseif ($_REQUEST['act'] == 'query')
 /*------------------------------------------------------ */
 //-- 自定义导航栏增加
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'add')
-{
-    if (empty($_REQUEST['step']))
-    {
+elseif ($_REQUEST['act'] == 'add') {
+    if (empty($_REQUEST['step'])) {
         $rt = array('act'=>'add');
 
         $sysmain = get_sysnav();
@@ -57,12 +53,10 @@ elseif ($_REQUEST['act'] == 'add')
         $smarty->assign('action_link', array('text' => $_LANG['go_list'], 'href' => 'navigator.php?act=list'));
         $smarty->assign('ur_here', $_LANG['navigator']);
         assign_query_info();
-        $smarty->assign('sysmain',$sysmain);
+        $smarty->assign('sysmain', $sysmain);
         $smarty->assign('rt', $rt);
         $smarty->display('navigator_add.htm');
-    }
-    elseif ($_REQUEST['step'] == 2)
-    {
+    } elseif ($_REQUEST['step'] == 2) {
         $item_name = $_REQUEST['item_name'];
         $item_url = $_REQUEST['item_url'];
         $item_ifshow = $_REQUEST['item_ifshow'];
@@ -73,21 +67,18 @@ elseif ($_REQUEST['act'] == 'add')
 
         $item_vieworder = empty($_REQUEST['item_vieworder']) ? $vieworder+1 : $_REQUEST['item_vieworder'];
 
-        if($item_ifshow == 1 && $item_type == 'middle')
-        {
+        if ($item_ifshow == 1 && $item_type == 'middle') {
             //如果设置为在中部显示
 
             $arr = analyse_uri($item_url);  //分析URI
-            if($arr)
-            {
+            if ($arr) {
                 //如果为分类
                 set_show_in_nav($arr['type'], $arr['id'], 1);   //设置显示
                 $sql = "INSERT INTO " . $GLOBALS['ecs']->table('nav') . " (name,ctype,cid,ifshow,vieworder,opennew,url,type) VALUES('$item_name','".$arr['type']."','".$arr['id']."','$item_ifshow','$item_vieworder','$item_opennew','$item_url','$item_type')";
             }
         }
 
-        if(empty($sql))
-        {
+        if (empty($sql)) {
             $sql = "INSERT INTO " . $GLOBALS['ecs']->table('nav') . " (name,ifshow,vieworder,opennew,url,type) VALUES('$item_name','$item_ifshow','$item_vieworder','$item_opennew','$item_url','$item_type')";
         }
         $db->query($sql);
@@ -100,11 +91,9 @@ elseif ($_REQUEST['act'] == 'add')
 /*------------------------------------------------------ */
 //-- 自定义导航栏编辑
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'edit')
-{
+elseif ($_REQUEST['act'] == 'edit') {
     $id = $_REQUEST['id'];
-    if (empty($_REQUEST['step']))
-    {
+    if (empty($_REQUEST['step'])) {
         $rt = array('act'=>'edit','id'=>$id);
         $row = $db->getRow("SELECT * FROM " . $GLOBALS['ecs']->table('nav') . " WHERE id='$id'");
         $rt['item_name'] = $row['name'];
@@ -119,12 +108,10 @@ elseif ($_REQUEST['act'] == 'edit')
         $smarty->assign('action_link', array('text' => $_LANG['go_list'], 'href' => 'navigator.php?act=list'));
         $smarty->assign('ur_here', $_LANG['navigator']);
         assign_query_info();
-        $smarty->assign('sysmain',$sysmain);
+        $smarty->assign('sysmain', $sysmain);
         $smarty->assign('rt', $rt);
         $smarty->display('navigator_add.htm');
-    }
-    elseif ($_REQUEST['step'] == 2)
-    {
+    } elseif ($_REQUEST['step'] == 2) {
         $item_name = $_REQUEST['item_name'];
         $item_url = $_REQUEST['item_url'];
         $item_ifshow = $_REQUEST['item_ifshow'];
@@ -135,45 +122,33 @@ elseif ($_REQUEST['act'] == 'edit')
         $row = $db->getRow("SELECT ctype,cid,ifshow,type FROM " . $GLOBALS['ecs']->table('nav') . " WHERE id = '$id'");
         $arr = analyse_uri($item_url);
 
-        if($arr)
-        {
+        if ($arr) {
             //目标为分类
-            if($row['ctype'] == $arr['type'] && $row['cid'] == $arr['id'])
-            {
+            if ($row['ctype'] == $arr['type'] && $row['cid'] == $arr['id']) {
                 //没有修改分类
-                if($item_type != 'middle')
-                {
+                if ($item_type != 'middle') {
                     //位置不在中部
                     set_show_in_nav($arr['type'], $arr['id'], 0);
                 }
-            }
-            else
-            {
+            } else {
                 //修改了分类
-                if($row['ifshow'] == 1 && $row['type'] == 'middle')
-                {
+                if ($row['ifshow'] == 1 && $row['type'] == 'middle') {
                     //原来在中部显示
                     set_show_in_nav($row['ctype'], $row['cid'], 0); //设置成不显示
-                }
-                elseif($row['ifshow'] == 0 && $row['type'] == 'middle')
-                {
+                } elseif ($row['ifshow'] == 0 && $row['type'] == 'middle') {
                     //原来不显示
                 }
             }
 
             //分类判断
-            if($item_ifshow != is_show_in_nav($arr['type'], $arr['id']) && $item_type == 'middle')
-            {
-                 set_show_in_nav($arr['type'], $arr['id'], $item_ifshow);
+            if ($item_ifshow != is_show_in_nav($arr['type'], $arr['id']) && $item_type == 'middle') {
+                set_show_in_nav($arr['type'], $arr['id'], $item_ifshow);
             }
             $sql = "UPDATE " . $GLOBALS['ecs']->table('nav') .
                 " SET name='$item_name',ctype='" . $arr['type'] . "',cid='" . $arr['id'] . "',ifshow='$item_ifshow',vieworder='$item_vieworder',opennew='$item_opennew',url='$item_url',type='$item_type' WHERE id='$id'";
-        }
-        else
-        {
+        } else {
             //目标不是分类
-            if($row['ctype'] && $row['cid'])
-            {
+            if ($row['ctype'] && $row['cid']) {
                 //原来是分类
                 set_show_in_nav($row['ctype'], $row['cid'], 0);
             }
@@ -192,13 +167,11 @@ elseif ($_REQUEST['act'] == 'edit')
 /*------------------------------------------------------ */
 //-- 自定义导航栏删除
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'del')
-{
+elseif ($_REQUEST['act'] == 'del') {
     $id = (int)$_GET['id'];
     $row = $db->getRow("SELECT ctype,cid,type FROM " . $GLOBALS['ecs']->table('nav') . " WHERE id = '$id' LIMIT 1");
 
-    if($row['type'] == 'middle' && $row['ctype'] && $row['cid'])
-    {
+    if ($row['type'] == 'middle' && $row['ctype'] && $row['cid']) {
         set_show_in_nav($row['ctype'], $row['cid'], 0);
     }
 
@@ -212,27 +185,20 @@ elseif ($_REQUEST['act'] == 'del')
 /*------------------------------------------------------ */
 //-- 编辑排序
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'edit_sort_order')
-{
+elseif ($_REQUEST['act'] == 'edit_sort_order') {
     check_authz_json('nav');
 
     $id    = intval($_POST['id']);
     $order = json_str_iconv(trim($_POST['val']));
 
     /* 检查输入的值是否合法 */
-    if (!preg_match("/^[0-9]+$/", $order))
-    {
+    if (!preg_match("/^[0-9]+$/", $order)) {
         make_json_error(sprintf($_LANG['enter_int'], $order));
-    }
-    else
-    {
-        if ($exc->edit("vieworder = '$order'", $id))
-        {
+    } else {
+        if ($exc->edit("vieworder = '$order'", $id)) {
             clear_cache_files();
             make_json_result(stripslashes($order));
-        }
-        else
-        {
+        } else {
             make_json_error($db->error());
         }
     }
@@ -242,25 +208,20 @@ elseif ($_REQUEST['act'] == 'edit_sort_order')
 //-- 切换是否显示
 /*------------------------------------------------------ */
 
-if ($_REQUEST['act'] == 'toggle_ifshow')
-{
+if ($_REQUEST['act'] == 'toggle_ifshow') {
     $id = intval($_POST['id']);
     $val = intval($_POST['val']);
 
     $row = $db->getRow("SELECT type,ctype,cid FROM " . $GLOBALS['ecs']->table('nav') . " WHERE id = '$id' LIMIT 1");
 
-    if($row['type'] == 'middle' && $row['ctype'] && $row['cid'])
-    {
+    if ($row['type'] == 'middle' && $row['ctype'] && $row['cid']) {
         set_show_in_nav($row['ctype'], $row['cid'], $val);
     }
 
-    if (nav_update($id, array('ifshow' => $val)) != false)
-    {
+    if (nav_update($id, array('ifshow' => $val)) != false) {
         clear_cache_files();
         make_json_result($val);
-    }
-    else
-    {
+    } else {
         make_json_error($db->error());
     }
 }
@@ -269,18 +230,14 @@ if ($_REQUEST['act'] == 'toggle_ifshow')
 //-- 切换是否新窗口
 /*------------------------------------------------------ */
 
-if ($_REQUEST['act'] == 'toggle_opennew')
-{
+if ($_REQUEST['act'] == 'toggle_opennew') {
     $id = intval($_POST['id']);
     $val = intval($_POST['val']);
 
-    if (nav_update($id, array('opennew' => $val)) != false)
-    {
+    if (nav_update($id, array('opennew' => $val)) != false) {
         clear_cache_files();
         make_json_result($val);
-    }
-    else
-    {
+    } else {
         make_json_error($db->error());
     }
 }
@@ -290,8 +247,7 @@ if ($_REQUEST['act'] == 'toggle_opennew')
 function get_nav()
 {
     $result = get_filter();
-    if($result === false)
-    {
+    if ($result === false) {
         $filter['sort_by']      = empty($_REQUEST['sort_by']) ? 'type DESC, vieworder' : 'type DESC, '.trim($_REQUEST['sort_by']);
         $filter['sort_order']   = empty($_REQUEST['sort_order']) ? 'ASC' : trim($_REQUEST['sort_order']);
 
@@ -308,9 +264,7 @@ function get_nav()
                " LIMIT " . $filter['start'] . ',' . $filter['page_size'];
 
         set_filter($filter, $sql);
-    }
-    else
-    {
+    } else {
         $sql    = $result['sql'];
         $filter = $result['filter'];
     }
@@ -319,10 +273,8 @@ function get_nav()
 
     $type = "";
     $navdb2 = array();
-    foreach($navdb as $k=>$v)
-    {
-        if(!empty($type) && $type != $v['type'])
-        {
+    foreach ($navdb as $k=>$v) {
+        if (!empty($type) && $type != $v['type']) {
             $navdb2[] = array();
         }
         $navdb2[] = $v;
@@ -337,7 +289,7 @@ function get_nav()
 /*------------------------------------------------------ */
 //-- 排序相关
 /*------------------------------------------------------ */
-function sort_nav($a,$b)
+function sort_nav($a, $b)
 {
     return  $a['vieworder'] > $b['vieworder'] ? 1 : -1;
 }
@@ -365,15 +317,13 @@ function get_sysnav()
     $sysmain[] = array('-','-');
 
     $catlist = array_merge(cat_list(0, 0, false), array('-'), article_cat_list(0, 0, false));
-    foreach($catlist as $key => $val)
-    {
+    foreach ($catlist as $key => $val) {
         $val['view_name'] = $val['cat_name'];
-        for($i=0;$i<$val['level'];$i++)
-        {
+        for ($i=0;$i<$val['level'];$i++) {
             $val['view_name'] = '&nbsp;&nbsp;&nbsp;&nbsp;' . $val['view_name'];
         }
-        $val['url'] = str_replace( '&amp;', '&', $val['url']);
-        $val['url'] = str_replace( '&', '&amp;', $val['url']);
+        $val['url'] = str_replace('&amp;', '&', $val['url']);
+        $val['url'] = str_replace('&', '&amp;', $val['url']);
         $sysmain[] = array($val['cat_name'], $val['url'], $val['view_name']);
     }
     return $sysmain;
@@ -384,8 +334,7 @@ function get_sysnav()
 /*------------------------------------------------------ */
 function nav_update($id, $args)
 {
-    if (empty($args) || empty($id))
-    {
+    if (empty($args) || empty($id)) {
         return false;
     }
 
@@ -399,12 +348,11 @@ function analyse_uri($uri)
 {
     $uri = strtolower(str_replace('&amp;', '&', $uri));
     $arr = explode('-', $uri);
-    switch($arr[0])
-    {
-        case 'category' :
+    switch ($arr[0]) {
+        case 'category':
             return array('type' => 'c', 'id' => $arr[1]);
         break;
-        case 'article_cat' :
+        case 'article_cat':
             return array('type' => 'a', 'id' => $arr[1]);
         break;
         default:
@@ -414,34 +362,26 @@ function analyse_uri($uri)
 
     list($fn, $pm) = explode('?', $uri);
 
-    if(strpos($uri, '&') === FALSE)
-    {
+    if (strpos($uri, '&') === false) {
         $arr = array($pm);
-    }
-    else
-    {
+    } else {
         $arr = explode('&', $pm);
     }
-    switch($fn)
-    {
-        case 'category.php' :
+    switch ($fn) {
+        case 'category.php':
             //商品分类
-            foreach($arr as $k => $v)
-            {
+            foreach ($arr as $k => $v) {
                 list($key, $val) = explode('=', $v);
-                if($key == 'id')
-                {
+                if ($key == 'id') {
                     return array('type' => 'c', 'id'=> $val);
                 }
             }
         break;
-        case 'article_cat.php'  :
+        case 'article_cat.php':
             //文章分类
-            foreach($arr as $k => $v)
-            {
+            foreach ($arr as $k => $v) {
                 list($key, $val) = explode('=', $v);
-                if($key == 'id')
-                {
+                if ($key == 'id') {
                     return array('type' => 'a', 'id'=> $val);
                 }
             }
@@ -451,7 +391,6 @@ function analyse_uri($uri)
             return false;
         break;
     }
-
 }
 
 /*------------------------------------------------------ */
@@ -459,12 +398,9 @@ function analyse_uri($uri)
 /*------------------------------------------------------ */
 function is_show_in_nav($type, $id)
 {
-    if($type == 'c')
-    {
+    if ($type == 'c') {
         $tablename = $GLOBALS['ecs']->table('category');
-    }
-    else
-    {
+    } else {
         $tablename = $GLOBALS['ecs']->table('article_cat');
     }
     return $GLOBALS['db']->getOne("SELECT show_in_nav FROM $tablename WHERE cat_id = '$id'");
@@ -475,15 +411,11 @@ function is_show_in_nav($type, $id)
 /*------------------------------------------------------ */
 function set_show_in_nav($type, $id, $val)
 {
-    if($type == 'c')
-    {
+    if ($type == 'c') {
         $tablename = $GLOBALS['ecs']->table('category');
-    }
-    else
-    {
+    } else {
         $tablename = $GLOBALS['ecs']->table('article_cat');
     }
     $GLOBALS['db']->query("UPDATE $tablename SET show_in_nav = '$val' WHERE cat_id = '$id'");
     clear_cache_files();
 }
-?>

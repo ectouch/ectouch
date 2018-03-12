@@ -12,7 +12,7 @@ class yto
     /**
      * 配置信息
      */
-    var $configure;
+    public $configure;
 
     /*------------------------------------------------------ */
     //-- PUBLIC METHODs
@@ -25,10 +25,9 @@ class yto
      *
      * @return null
      */
-    function yto($cfg = array())
+    public function yto($cfg = array())
     {
-        foreach ($cfg AS $key=>$val)
-        {
+        foreach ($cfg as $key=>$val) {
             $this->configure[$val['name']] = $val['value'];
         }
     }
@@ -41,25 +40,18 @@ class yto
      * @param   float   $goods_number   商品件数
      * @return  decimal
      */
-    function calculate($goods_weight, $goods_amount, $goods_number)
+    public function calculate($goods_weight, $goods_amount, $goods_number)
     {
-        if ($this->configure['free_money'] > 0 && $goods_amount >= $this->configure['free_money'])
-        {
+        if ($this->configure['free_money'] > 0 && $goods_amount >= $this->configure['free_money']) {
             return 0;
-        }
-        else
-        {
+        } else {
             @$fee = $this->configure['base_fee'];
             $this->configure['fee_compute_mode'] = !empty($this->configure['fee_compute_mode']) ? $this->configure['fee_compute_mode'] : 'by_weight';
 
-            if ($this->configure['fee_compute_mode'] == 'by_number')
-            {
+            if ($this->configure['fee_compute_mode'] == 'by_number') {
                 $fee = $goods_number * $this->configure['item_fee'];
-            }
-            else
-            {
-                if ($goods_weight > 1)
-                {
+            } else {
+                if ($goods_weight > 1) {
                     $fee += (ceil(($goods_weight - 1))) * $this->configure['step_fee'];
                 }
             }
@@ -76,16 +68,15 @@ class yto
      * @param   string  $invoice_sn     发货单号
      * @return  string
      */
-    function query($invoice_sn)
+    public function query($invoice_sn)
     {
         $url = 'http://m.kuaidi100.com/query?type=yuantong&id=1&postid=' .$invoice_sn. '&temp='.time();
         return $url;
     }
 
-    function third_party($invoice_sn)
+    public function third_party($invoice_sn)
     {
         $url = 'http://m.kuaidi100.com/index_all.html?type=yuantong&postid=' .$invoice_sn;
         return $url;
     }
-    
 }

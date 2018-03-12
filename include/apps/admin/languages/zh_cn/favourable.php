@@ -81,4 +81,3 @@ $_LANG['amount_error'] = '金额下限不能大于金额上限';
 $_LANG['act_name_exists'] = '该优惠活动名称已存在，请您换一个';
 
 $_LANG['nolimit'] = '没有限制';
-?>

@@ -16,4 +16,3 @@ $_LANG['unwrite'] = '不可写';
 $_LANG['unmodify'] = '不可修改';
 
 $_LANG['unrename'] = '目录需要执行rename权限';
-?>

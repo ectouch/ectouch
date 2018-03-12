@@ -21,7 +21,7 @@ class sf_express
     /**
      * 配置信息参数
      */
-    var $configure;
+    public $configure;
 
     /*------------------------------------------------------ */
     //-- PUBLIC METHODs
@@ -34,13 +34,11 @@ class sf_express
      *
      * @return null
      */
-    function sf_express($cfg=array())
+    public function sf_express($cfg=array())
     {
-        foreach ($cfg AS $key=>$val)
-        {
+        foreach ($cfg as $key=>$val) {
             $this->configure[$val['name']] = $val['value'];
         }
-
     }
 
     /**
@@ -51,29 +49,22 @@ class sf_express
      * @param   float   $goods_number   商品数量
      * @return  decimal
      */
-    function calculate($goods_weight, $goods_amount, $goods_number)
+    public function calculate($goods_weight, $goods_amount, $goods_number)
     {
-        if ($this->configure['free_money'] > 0 && $goods_amount >= $this->configure['free_money'])
-        {
+        if ($this->configure['free_money'] > 0 && $goods_amount >= $this->configure['free_money']) {
             return 0;
-        }
-        else
-        {
+        } else {
             @$fee = $this->configure['base_fee'];
             $this->configure['fee_compute_mode'] = !empty($this->configure['fee_compute_mode']) ? $this->configure['fee_compute_mode'] : 'by_weight';
 
-            if ($this->configure['fee_compute_mode'] == 'by_number')
-            {
+            if ($this->configure['fee_compute_mode'] == 'by_number') {
                 $fee = $goods_number * $this->configure['item_fee'];
-            }
-            else
-            {
-                if ($goods_weight > 1)
-                {
+            } else {
+                if ($goods_weight > 1) {
                     $fee += (ceil(($goods_weight - 1))) * $this->configure['step_fee'];
                 }
             }
-           // $_SESSION['cart_weight'] = $goods_weight;
+            // $_SESSION['cart_weight'] = $goods_weight;
             return $fee;
         }
     }
@@ -84,13 +75,13 @@ class sf_express
      * @access  public
      * @return  string  查询窗口的链接地址
      */
-    function query($invoice_sn)
+    public function query($invoice_sn)
     {
         $url = 'http://m.kuaidi100.com/query?type=shunfeng&id=1&postid=' .$invoice_sn. '&temp='.time();
         return $url;
     }
 
-    function third_party($invoice_sn)
+    public function third_party($invoice_sn)
     {
         $url = 'http://m.kuaidi100.com/index_all.html?type=shunfeng&postid=' .$invoice_sn;
         return $url;

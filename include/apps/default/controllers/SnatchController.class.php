@@ -15,14 +15,15 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class SnatchController extends CommonController {
-
+class SnatchController extends CommonController
+{
     protected $id;
 
     /**
      * 构造函数
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->id = isset($_REQUEST ['id']) ? intval($_REQUEST ['id']) : model('Snatch')->get_last_snatch();
     }
@@ -30,16 +31,17 @@ class SnatchController extends CommonController {
     /**
      * 夺宝骑兵列表
      */
-    public function index() {
+    public function index()
+    {
         $size = I(C('page_size'), 10);
-		$now = gmtime();
+        $now = gmtime();
         $sql = 'SELECT count(*) as num FROM ' . $this->model->pre .
                 "goods_activity " . " WHERE start_time <= '$now' AND act_type= 0 ";
-		$counts = $this->model->query($sql);
+        $counts = $this->model->query($sql);
         $filter['page'] = '{page}';
         $offset = $this->pageLimit(url('index', $filter), $size);
         $offset_page = explode(',', $offset);
-        $this->assign('pager', $this->pageShow($counts[0]['num']));	
+        $this->assign('pager', $this->pageShow($counts[0]['num']));
         $this->assign('goods_list', model('Snatch')->get_snatch_list($offset_page[1], $offset_page[0]));     //所有有效的夺宝奇兵列表
         //$this->assign('show_asynclist', C('show_asynclist'));
         $this->assign('title', L('snatch_list'));
@@ -49,7 +51,8 @@ class SnatchController extends CommonController {
     /**
      * 夺宝奇兵详情
      */
-    public function info() {
+    public function info()
+    {
         $goods = model('Snatch')->get_snatch($this->id);
         if ($goods) {
             if ($goods['is_end']) {
@@ -85,14 +88,15 @@ class SnatchController extends CommonController {
         $this->assign('price_list', model('Snatch')->get_price_list($this->id));
         $this->assign('promotion_info', model('GoodsBase')->get_promotion_info());
         $this->assign('feed_url', (C('rewrite') == 1) ? "feed-typesnatch.xml" : 'feed.php?type=snatch'); // RSS URL
-		$this->assign('title', L('snatch'));
+        $this->assign('title', L('snatch'));
         $this->display('snatch.dwt');
     }
 
     /**
      * 最新出价列表
      */
-    public function new_price_list() {
+    public function new_price_list()
+    {
         $id = I('get.id');
         $this->assign('price_list', model('Snatch')->get_price_list($id));
         $this->display('library/snatch_price.lbi');
@@ -102,7 +106,8 @@ class SnatchController extends CommonController {
     /**
      * 用户出价处理
      */
-    public function bid() {
+    public function bid()
+    {
         $json = new EcsJson;
         $result = array('error' => 0, 'content' => '');
 
@@ -175,7 +180,8 @@ class SnatchController extends CommonController {
     /**
      * 购买商品
      */
-    public function buy() {
+    public function buy()
+    {
         if (empty($this->id)) {
             $this->redirect(url('Snatch/info', array('id' => $this->id)));
             exit;
@@ -262,5 +268,4 @@ class SnatchController extends CommonController {
         $this->redirect(url('flow/consignee'));
         exit;
     }
-
 }

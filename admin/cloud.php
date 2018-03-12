@@ -35,189 +35,137 @@ $data['ent_email'] = $_CFG['ent_email'];
 $act = !empty($_REQUEST['act']) ? $_REQUEST['act'] :  'index';
 
 $must = array('version','ecs_lang','charset','patch','stamp','api_ver');
-if($act =='menu_api')
-{
-
-    if (!admin_priv('all','',false))
-    {
+if ($act =='menu_api') {
+    if (!admin_priv('all', '', false)) {
         make_json_result('0');
     }
     $api_data = read_static_cache('menu_api');
 
-    if($api_data === false || (isset($api_data['api_time']) && $api_data['api_time']<date('Ymd')))
-    {
+    if ($api_data === false || (isset($api_data['api_time']) && $api_data['api_time']<date('Ymd'))) {
         $t = new transport;
-       $apiget = "ver= $data[version] &ecs_lang= $data[ecs_lang] &charset= $data[charset]&ent_id=$data[ent_id]& certificate_id=$data[certificate_id]";
+        $apiget = "ver= $data[version] &ecs_lang= $data[ecs_lang] &charset= $data[charset]&ent_id=$data[ent_id]& certificate_id=$data[certificate_id]";
         $api_comment = $t->request('http://cloud.ectouch.cn/menu_api.php', $apiget);
         $api_str = $api_comment["body"];
-        if (!empty($api_str))
-        {
+        if (!empty($api_str)) {
             $json = new Services_JSON;
-            $api_arr = @$json->decode($api_str,1);
-            if (!empty($api_arr) && $api_arr['error'] == 0 && md5($api_arr['content']) == $api_arr['hash'])
-            {
+            $api_arr = @$json->decode($api_str, 1);
+            if (!empty($api_arr) && $api_arr['error'] == 0 && md5($api_arr['content']) == $api_arr['hash']) {
                 $api_arr['content'] = urldecode($api_arr['content']);
-                if ($data['charset'] != 'UTF-8')
-                {
-                    $api_arr['content'] = ecs_iconv('UTF-8',$data['charset'],$api_arr['content']);
+                if ($data['charset'] != 'UTF-8') {
+                    $api_arr['content'] = ecs_iconv('UTF-8', $data['charset'], $api_arr['content']);
                 }
                 $api_arr['api_time'] = date('Ymd');
                 write_static_cache('menu_api', $api_arr);
                 make_json_result($api_arr['content']);
-            }
-            else
-            {
+            } else {
                 make_json_result('0');
             }
-        }
-        else
-        {
+        } else {
             make_json_result('0');
         }
-    }
-    else 
-    {
+    } else {
         make_json_result($api_data['content']);
     }
-}
-elseif($act == 'cloud_remind')
-{
+} elseif ($act == 'cloud_remind') {
     $api_data = read_static_cache('cloud_remind');
     
-    if($api_data === false || (isset($api_data['api_time']) && $api_data['api_time']<date('Ymd')) )
-    {
-        $t = new transport('-1',5);
+    if ($api_data === false || (isset($api_data['api_time']) && $api_data['api_time']<date('Ymd'))) {
+        $t = new transport('-1', 5);
         $apiget = "ver=$data[version]&ecs_lang=$data[ecs_lang]&charset=$data[charset]&certificate_id=$data[certificate_id]&ent_id=$data[ent_id]";
         $api_comment = $t->request('http://cloud.ectouch.cn/cloud_remind.php', $apiget);
         $api_str=    $api_comment["body"];
         $json = new JSON;
-        $api_arr = @$json->decode($api_str,1);
-        if(!empty($api_str))
-        {
-            if (!empty($api_arr) && $api_arr['error'] == 0 && md5($api_arr['content']) == $api_arr['hash'])
-            {
+        $api_arr = @$json->decode($api_str, 1);
+        if (!empty($api_str)) {
+            if (!empty($api_arr) && $api_arr['error'] == 0 && md5($api_arr['content']) == $api_arr['hash']) {
                 $api_arr['content'] = urldecode($api_arr['content']);
-                $message =explode('|',$api_arr['content']);
+                $message =explode('|', $api_arr['content']);
                 $api_arr['content']='<li  class="cloud_close">'.$message['0'].'<img onclick="cloud_close('.$message['1'].')" src="images/no.gif"></li>';
-                if ($data['charset'] != 'UTF-8')
-                {
-                    $api_arr['content'] = ecs_iconv('UTF-8',$data['charset'],$api_arr['content']);
+                if ($data['charset'] != 'UTF-8') {
+                    $api_arr['content'] = ecs_iconv('UTF-8', $data['charset'], $api_arr['content']);
                 }
                 $api_arr['api_time'] = date('Ymd');
                 write_static_cache('cloud_remind', $api_arr);
                 make_json_result($api_arr['content']);
-            }
-            else
-            {
+            } else {
                 make_json_result('0');
             }
-       }
-       else
-      {
-          make_json_result('0');
-      }
-    }
-    else
-    {
+        } else {
+            make_json_result('0');
+        }
+    } else {
         make_json_result($api_data['content']);
     }
-}
-elseif($act == 'close_remind')
-{
-
+} elseif ($act == 'close_remind') {
     $remind_id=$_REQUEST['remind_id'];
-    $t = new transport('-1',5);
+    $t = new transport('-1', 5);
     $apiget = "ver= $data[version] &ecs_lang= $data[ecs_lang] &charset= $data[charset] &certificate_id=$data[certificate_id]&ent_id=$data[ent_id]&remind_id=$remind_id";
     $api_comment = $t->request('http://cloud.ectouch.cn/cloud_remind.php', $apiget);
 
     $api_str = $api_comment["body"];
     $json = new Services_JSON;
     $api_arr = array();
-    $api_arr = @$json->decode($api_str,1);
-    if(!empty($api_str))
-    {
-        if (!empty($api_arr) && $api_arr['error'] == 0 && md5($api_arr['content']) == $api_arr['hash'])
-        {
+    $api_arr = @$json->decode($api_str, 1);
+    if (!empty($api_str)) {
+        if (!empty($api_arr) && $api_arr['error'] == 0 && md5($api_arr['content']) == $api_arr['hash']) {
             $api_arr['content'] = urldecode($api_arr['content']);
-            if($data['charset'] != 'UTF-8')
-            {
-                $api_arr['content'] = ecs_iconv('UTF-8',$data['charset'],$api_arr['content']);
+            if ($data['charset'] != 'UTF-8') {
+                $api_arr['content'] = ecs_iconv('UTF-8', $data['charset'], $api_arr['content']);
             }
-            if (admin_priv('all','',false))
-            {
+            if (admin_priv('all', '', false)) {
                 $apiget.="&act=close_remind&ent_ac=$data[ent_ac]";
                 $result=$t->request('http://cloud.ectouch.cn/cloud_remind.php', $apiget);
                 $api_str = $result["body"];
                 //var_dump($api_str);
                 $api_arr = array();
-                $api_arr = @$json->decode($api_str,1);
+                $api_arr = @$json->decode($api_str, 1);
                 $api_arr['content'] = urldecode($api_arr['content']);
-                if ($data['charset'] != 'UTF-8')
-                {
-                    $api_arr['content'] = ecs_iconv('UTF-8',$data['charset'],$api_arr['content']);
+                if ($data['charset'] != 'UTF-8') {
+                    $api_arr['content'] = ecs_iconv('UTF-8', $data['charset'], $api_arr['content']);
                 }
-                if($api_arr['error'] == 1)
-                {
-                    $message =explode('|',$api_arr['content']);
+                if ($api_arr['error'] == 1) {
+                    $message =explode('|', $api_arr['content']);
                     $api_arr['content']='<li  class="cloud_close">'.$message['0'].'&nbsp;&nbsp;&nbsp;&nbsp;'.$message['2'].'</li>';
-                   make_json_result($api_arr['content']);
-                }
-                else
-                {
+                    make_json_result($api_arr['content']);
+                } else {
                     clear_all_files();
                     make_json_result('0');
                 }
-            }
-            else
-            {
-                $message =explode('|',$api_arr['content']);
+            } else {
+                $message =explode('|', $api_arr['content']);
 
                 $api_arr['content']='<li  class="cloud_close">'.$message['0'].'&nbsp;&nbsp;&nbsp;&nbsp;'.$_LANG['cloud_no_priv'].'<img onclick="cloud_close( '.$message['1'].')" src="images/no.gif"></li>';
 
                 make_json_result($api_arr['content']);
             }
-        }
-        else
-        {
-                make_json_result('0');
+        } else {
+            make_json_result('0');
         }
     }
-}
-else
-{
+} else {
     admin_priv('all');
-    if (empty($_GET['act']))
-    {
+    if (empty($_GET['act'])) {
         $act = 'index';
-    }
-    else
-    {
+    } else {
         $query = '';
         $act = trim($_GET['act']);
-        foreach ($_GET as $k=>$v)
-        {
-            if (array_key_exists($k, $data))
-            {
+        foreach ($_GET as $k=>$v) {
+            if (array_key_exists($k, $data)) {
                 $query .= '&'.$k.'='.$data[$k];
             }
         }
     }
-    if (!empty($_GET['link']))
-    {
+    if (!empty($_GET['link'])) {
         $url = parse_url($_GET['link']);
-        if (!empty($url['host']))
-        {
+        if (!empty($url['host'])) {
             ecs_header("Location: ".$url['scheme']."://".$url['host'].$url['path']."?".$url['query'].$query."\n");
             exit();
         }
     }
 
-    foreach ($must as $v)
-    {
+    foreach ($must as $v) {
         $query .= '&'.$v.'='.$data[$v];
     }
     ecs_header("Location: http://cloud.ectouch.cn/api.php?act=".$act.$query."\n");
     exit();
 }
-
-?>

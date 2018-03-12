@@ -4,8 +4,7 @@
  * 管理中心公用函数库
  */
 
-if (!defined('IN_ECTOUCH'))
-{
+if (!defined('IN_ECTOUCH')) {
     die('Hacking attempt');
 }
 
@@ -24,18 +23,15 @@ function read_modules($directory = '.')
     $set_modules = true;
     $modules     = array();
 
-    while (false !== ($file = @readdir($dir)))
-    {
-        if (preg_match("/^.*?\.php$/", $file))
-        {
+    while (false !== ($file = @readdir($dir))) {
+        if (preg_match("/^.*?\.php$/", $file)) {
             include_once($directory. '/' .$file);
         }
     }
     @closedir($dir);
     unset($set_modules);
 
-    foreach ($modules AS $key => $value)
-    {
+    foreach ($modules as $key => $value) {
         ksort($modules[$key]);
     }
     ksort($modules);
@@ -55,18 +51,17 @@ function read_modules($directory = '.')
  */
 function sys_msg($msg_detail, $msg_type = 0, $links = array(), $auto_redirect = true)
 {
-    if (count($links) == 0)
-    {
+    if (count($links) == 0) {
         $links[0]['text'] = $GLOBALS['_LANG']['go_back'];
         $links[0]['href'] = 'javascript:history.go(-1)';
     }
 
     assign_query_info();
 
-    $GLOBALS['smarty']->assign('ur_here',     $GLOBALS['_LANG']['system_message']);
-    $GLOBALS['smarty']->assign('msg_detail',  $msg_detail);
-    $GLOBALS['smarty']->assign('msg_type',    $msg_type);
-    $GLOBALS['smarty']->assign('links',       $links);
+    $GLOBALS['smarty']->assign('ur_here', $GLOBALS['_LANG']['system_message']);
+    $GLOBALS['smarty']->assign('msg_detail', $msg_detail);
+    $GLOBALS['smarty']->assign('msg_type', $msg_type);
+    $GLOBALS['smarty']->assign('links', $links);
     $GLOBALS['smarty']->assign('default_url', $links[0]['href']);
     $GLOBALS['smarty']->assign('auto_redirect', $auto_redirect);
 
@@ -158,26 +153,21 @@ function insert_config($parent, $code, $value)
  * @param     string    $msg_type       返回的类型
  * @return true/false
  */
-function admin_priv($priv_str, $msg_type = '' , $msg_output = true)
+function admin_priv($priv_str, $msg_type = '', $msg_output = true)
 {
     global $_LANG;
 
-    if ($_SESSION['action_list'] == 'all')
-    {
+    if ($_SESSION['action_list'] == 'all') {
         return true;
     }
 
-    if (strpos(',' . $_SESSION['action_list'] . ',', ',' . $priv_str . ',') === false)
-    {
+    if (strpos(',' . $_SESSION['action_list'] . ',', ',' . $priv_str . ',') === false) {
         $link[] = array('text' => $_LANG['go_back'], 'href' => 'javascript:history.back(-1)');
-        if ( $msg_output)
-        {
+        if ($msg_output) {
             sys_msg($_LANG['priv_error'], 0, $link);
         }
         return false;
-    }
-    else
-    {
+    } else {
         return true;
     }
 }
@@ -203,8 +193,7 @@ function check_authz($authz)
  */
 function check_authz_json($authz)
 {
-    if (!check_authz($authz))
-    {
+    if (!check_authz($authz)) {
         make_json_error($GLOBALS['_LANG']['priv_error']);
     }
 }
@@ -221,8 +210,7 @@ function get_bonus_type()
            ' WHERE send_type = 3';
     $res = $GLOBALS['db']->query($sql);
 
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $bonus[$row['type_id']] = $row['type_name'].' [' .sprintf($GLOBALS['_CFG']['currency_format'], $row['type_money']).']';
     }
 
@@ -238,16 +226,14 @@ function get_rank_list($is_special = false)
 {
     $rank_list = array();
     $sql = 'SELECT rank_id, rank_name, min_points FROM ' . $GLOBALS['ecs']->table('user_rank');
-    if ($is_special)
-    {
+    if ($is_special) {
         $sql .= ' WHERE special_rank = 1';
     }
     $sql .= ' ORDER BY min_points';
 
     $res = $GLOBALS['db']->query($sql);
 
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $rank_list[$row['rank_id']] = $row['rank_name'];
     }
 
@@ -266,8 +252,7 @@ function get_user_rank($rankid, $where)
            ' ORDER BY user_id DESC';
     $res = $GLOBALS['db']->query($sql);
 
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $user_list[$row['user_id']] = $row['user_name'];
     }
 
@@ -286,8 +271,7 @@ function get_position_list()
            'FROM ' . $GLOBALS['ecs']->table('ad_position');
     $res = $GLOBALS['db']->query($sql);
 
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $position_list[$row['position_id']] = addslashes($row['position_name']). ' [' .$row['ad_width']. 'x' .$row['ad_height']. ']';
     }
 
@@ -344,8 +328,7 @@ function get_article_list($filter)
            'FROM ' .$GLOBALS['ecs']->table('article'). ' AS a, ' .$GLOBALS['ecs']->table('article_cat'). ' AS c ' . $where;
     $res = $GLOBALS['db']->query($sql);
 
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $ol->add_option($row['article_id'], $row['title']);
     }
 
@@ -405,8 +388,7 @@ function area_list($region_id)
     $sql = 'SELECT * FROM ' . $GLOBALS['ecs']->table('region').
            " WHERE parent_id = '$region_id' ORDER BY region_id";
     $res = $GLOBALS['db']->query($sql);
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $row['type']  = ($row['region_type'] == 0) ? $GLOBALS['_LANG']['country']  : '';
         $row['type'] .= ($row['region_type'] == 1) ? $GLOBALS['_LANG']['province'] : '';
         $row['type'] .= ($row['region_type'] == 2) ? $GLOBALS['_LANG']['city']     : '';
@@ -430,8 +412,7 @@ function chart_color($n)
     /* 随机显示颜色代码 */
     $arr = array('33FF66', 'FF6600', '3399FF', '009966', 'CC3399', 'FFCC33', '6699CC', 'CC3366', '33FF66', 'FF6600', '3399FF');
 
-    if ($n > 8)
-    {
+    if ($n > 8) {
         $n = $n % 8;
     }
 
@@ -451,8 +432,7 @@ function goods_type_list($selected)
     $res = $GLOBALS['db']->query($sql);
 
     $lst = '';
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $lst .= "<option value='$row[cat_id]'";
         $lst .= ($selected == $row['cat_id']) ? ' selected="true"' : '';
         $lst .= '>' . htmlspecialchars($row['cat_name']). '</option>';
@@ -471,14 +451,10 @@ function get_pay_ids()
     $sql = 'SELECT pay_id, is_cod FROM ' .$GLOBALS['ecs']->table('payment'). ' WHERE enabled = 1';
     $res = $GLOBALS['db']->query($sql);
 
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
-        if ($row['is_cod'])
-        {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
+        if ($row['is_cod']) {
             $ids['is_cod'] .= ',' . $row['pay_id'];
-        }
-        else
-        {
+        } else {
             $ids['is_not_cod'] .= ',' . $row['pay_id'];
         }
     }
@@ -533,10 +509,8 @@ function make_json_response($content='', $error="0", $message='', $append=array(
 
     $res = array('error' => $error, 'message' => $message, 'content' => $content);
 
-    if (!empty($append))
-    {
-        foreach ($append AS $key => $val)
-        {
+    if (!empty($append)) {
+        foreach ($append as $key => $val) {
             $res[$key] = $val;
         }
     }
@@ -593,16 +567,11 @@ function sort_flag($filter)
  */
 function page_and_size($filter)
 {
-    if (isset($_REQUEST['page_size']) && intval($_REQUEST['page_size']) > 0)
-    {
+    if (isset($_REQUEST['page_size']) && intval($_REQUEST['page_size']) > 0) {
         $filter['page_size'] = intval($_REQUEST['page_size']);
-    }
-    elseif (isset($_COOKIE['ECSCP']['page_size']) && intval($_COOKIE['ECSCP']['page_size']) > 0)
-    {
+    } elseif (isset($_COOKIE['ECSCP']['page_size']) && intval($_COOKIE['ECSCP']['page_size']) > 0) {
         $filter['page_size'] = intval($_COOKIE['ECSCP']['page_size']);
-    }
-    else
-    {
+    } else {
         $filter['page_size'] = 15;
     }
 
@@ -613,8 +582,7 @@ function page_and_size($filter)
     $filter['page_count'] = (!empty($filter['record_count']) && $filter['record_count'] > 0) ? ceil($filter['record_count'] / $filter['page_size']) : 1;
 
     /* 边界处理 */
-    if ($filter['page'] > $filter['page_count'])
-    {
+    if ($filter['page'] > $filter['page_count']) {
         $filter['page'] = $filter['page_count'];
     }
 
@@ -635,12 +603,13 @@ function return_bytes($val)
 {
     $val = trim($val);
     $last = strtolower($val{strlen($val)-1});
-    switch($last)
-    {
+    switch ($last) {
         case 'g':
             $val *= 1024;
+            // no break
         case 'm':
             $val *= 1024;
+            // no break
         case 'k':
             $val *= 1024;
     }
@@ -660,12 +629,9 @@ function get_attr_groups($cat_id)
     $sql = "SELECT attr_group FROM " . $GLOBALS['ecs']->table('goods_type') . " WHERE cat_id='$cat_id'";
     $grp = str_replace("\r", '', $GLOBALS['db']->getOne($sql));
 
-    if ($grp)
-    {
+    if ($grp) {
         return explode("\n", $grp);
-    }
-    else
-    {
+    } else {
         return array();
     }
 }
@@ -687,13 +653,12 @@ function list_link_postfix()
 function set_filter($filter, $sql, $param_str = '')
 {
     $filterfile = basename(PHP_SELF, '.php');
-    if ($param_str)
-    {
+    if ($param_str) {
         $filterfile .= $param_str;
     }
     setcookie('ECSCP[lastfilterfile]', sprintf('%X', crc32($filterfile)), time() + 600);
-    setcookie('ECSCP[lastfilter]',     urlencode(serialize($filter)), time() + 600);
-    setcookie('ECSCP[lastfiltersql]',  base64_encode($sql), time() + 600);
+    setcookie('ECSCP[lastfilter]', urlencode(serialize($filter)), time() + 600);
+    setcookie('ECSCP[lastfiltersql]', base64_encode($sql), time() + 600);
 }
 
 /**
@@ -704,20 +669,16 @@ function set_filter($filter, $sql, $param_str = '')
 function get_filter($param_str = '')
 {
     $filterfile = basename(PHP_SELF, '.php');
-    if ($param_str)
-    {
+    if ($param_str) {
         $filterfile .= $param_str;
     }
     if (isset($_GET['uselastfilter']) && isset($_COOKIE['ECSCP']['lastfilterfile'])
-        && $_COOKIE['ECSCP']['lastfilterfile'] == sprintf('%X', crc32($filterfile)))
-    {
+        && $_COOKIE['ECSCP']['lastfilterfile'] == sprintf('%X', crc32($filterfile))) {
         return array(
             'filter' => unserialize(urldecode($_COOKIE['ECSCP']['lastfilter'])),
             'sql'    => base64_decode($_COOKIE['ECSCP']['lastfiltersql'])
         );
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
@@ -727,10 +688,9 @@ function get_filter($param_str = '')
  * @param   string  $url  参数字符串，一个urld地址,对url地址进行校正
  * @return  返回校正过的url;
  */
-function sanitize_url($url , $check = 'http://', $check2 = 'https://')
+function sanitize_url($url, $check = 'http://', $check2 = 'https://')
 {
-    if (strpos( $url, $check ) === false && strpos( $url, $check2 ) === false)
-    {
+    if (strpos($url, $check) === false && strpos($url, $check2) === false) {
         $url = $check . $url;
     }
     return $url;
@@ -774,8 +734,7 @@ function admin_info()
             LIMIT 0, 1";
     $admin_info = $GLOBALS['db']->getRow($sql);
 
-    if (empty($admin_info))
-    {
+    if (empty($admin_info)) {
         return $admin_info = array();
     }
 
@@ -791,8 +750,7 @@ function admin_info()
 function suppliers_list_info($conditions = '')
 {
     $where = '';
-    if (!empty($conditions))
-    {
+    if (!empty($conditions)) {
         $where .= 'WHERE ';
         $where .= $conditions;
     }
@@ -817,14 +775,11 @@ function suppliers_list_name()
 
     /* 供货商名字 */
     $suppliers_name = array();
-    if (count($suppliers_list) > 0)
-    {
-        foreach ($suppliers_list as $suppliers)
-        {
+    if (count($suppliers_list) > 0) {
+        foreach ($suppliers_list as $suppliers) {
             $suppliers_name[$suppliers['suppliers_id']] = $suppliers['suppliers_name'];
         }
     }
 
     return $suppliers_name;
 }
-?>

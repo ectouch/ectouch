@@ -22,7 +22,7 @@ if (! defined('IN_ECTOUCH')) {
  * 订单查询类
  *
  * @author wanglu
- *        
+ *
  */
 class bonus extends PluginWechatController
 {
@@ -34,7 +34,7 @@ class bonus extends PluginWechatController
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -61,33 +61,32 @@ class bonus extends PluginWechatController
     public function show($fromusername, $info)
     {
         $articles = array('type'=>'text', 'content'=>'');
-        if(!empty($info)){
+        if (!empty($info)) {
             // 配置信息
             $config = array();
             $config = unserialize($info['config']);
             //开启红包赠送
-            if(isset($config['bonus_status']) && $config['bonus_status'] == 1){
+            if (isset($config['bonus_status']) && $config['bonus_status'] == 1) {
                 //用户第一次关注赠送红包并且设置了赠送的红包
                 $uid = model('Base')->model->table('wechat_user')->field('ect_uid')->where('openid = "'.$fromusername.'"')->getOne();
-                if(!empty($uid) && !empty($config['bonus'])){
+                if (!empty($uid) && !empty($config['bonus'])) {
                     $time = gmtime();
                     $sql = "SELECT count(*) as num FROM {pre}user_bonus u LEFT JOIN {pre}bonus_type b ON u.bonus_type_id = b.type_id WHERE u.user_id = $uid AND b.send_type = 3 AND b.type_id = " . $config['bonus'] . " AND b.send_end_date > " .$time;
                     $bonus_num = model('Base')->model->query($sql);
-                    if($bonus_num[0]['num'] > 0){
+                    if ($bonus_num[0]['num'] > 0) {
                         $articles['content'] = '红包已经赠送过了，不要重复领取哦！';
-                    }
-                    else{
-                      $data['bonus_type_id'] = $config['bonus'];
-                      $data['bonus_sn'] = 0;
-                      $data['user_id'] = $uid;
-                      $data['used_time'] = 0;
-                      $data['order_id'] = 0;
-                      $data['emailed'] = 0;
-                      model('Base')->model->table('user_bonus')->data($data)->insert();
+                    } else {
+                        $data['bonus_type_id'] = $config['bonus'];
+                        $data['bonus_sn'] = 0;
+                        $data['user_id'] = $uid;
+                        $data['used_time'] = 0;
+                        $data['order_id'] = 0;
+                        $data['emailed'] = 0;
+                        model('Base')->model->table('user_bonus')->data($data)->insert();
 
-                      $articles['content'] = '感谢您的关注，赠送您一个红包';
-                      // 积分赠送
-                      $this->give_point($fromusername, $info);
+                        $articles['content'] = '感谢您的关注，赠送您一个红包';
+                        // 积分赠送
+                        $this->give_point($fromusername, $info);
                     }
                 }
             }
@@ -98,8 +97,8 @@ class bonus extends PluginWechatController
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -127,5 +126,6 @@ class bonus extends PluginWechatController
      * 行为操作
      */
     public function action()
-    {}
+    {
+    }
 }

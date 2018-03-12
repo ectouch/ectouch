@@ -32,12 +32,9 @@ class error
      */
     public function add($msg, $errno=1)
     {
-        if (is_array($msg))
-        {
+        if (is_array($msg)) {
             $this->_message = array_merge($this->_message, $msg);
-        }
-        else
-        {
+        } else {
             $this->_message[] = $msg;
         }
 
@@ -88,8 +85,7 @@ class error
      */
     public function show($link = '', $href = '')
     {
-        if ($this->error_no > 0)
-        {
+        if ($this->error_no > 0) {
             $message = array();
 
             $link = (empty($link)) ? L('back_up_page') : $link;
@@ -97,21 +93,17 @@ class error
             $message['url_info'][$link] = $href;
             $message['back_url'] = $href;
 
-            foreach ($this->_message AS $msg)
-            {
+            foreach ($this->_message as $msg) {
                 $message['content'] = '<div>' . htmlspecialchars($msg) . '</div>';
             }
 
             $global = getInstance();
-            if (isset($global->tpl))
-            {
+            if (isset($global->tpl)) {
                 assign_template();
                 $global->tpl->assign('auto_redirect', true);
                 $global->tpl->assign('message', $message);
                 $global->tpl->display($this->_template);
-            }
-            else
-            {
+            } else {
                 die($message['content']);
             }
 

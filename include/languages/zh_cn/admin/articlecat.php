@@ -50,5 +50,3 @@ $_LANG['notice_isopen'] ='该文章分类是否显示在前台的主导航栏中
 $_LANG['js_languages']['no_catname'] = '没有输入分类的名称';
 $_LANG['js_languages']['sys_hold'] = '系统保留分类，不允许添加子分类';
 $_LANG['js_languages']['remove_confirm'] = '您确定要删除选定的分类吗？';
-
-?>

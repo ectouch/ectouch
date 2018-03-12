@@ -22,7 +22,7 @@ if (! defined('IN_ECTOUCH')) {
  * 精品查询类
  *
  * @author wanglu
- *        
+ *
  */
 class jfcx extends PluginWechatController
 {
@@ -34,7 +34,7 @@ class jfcx extends PluginWechatController
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -58,7 +58,7 @@ class jfcx extends PluginWechatController
     {
         $articles = array('type'=>'text', 'content'=>'暂无积分信息');
         $uid = model('Base')->model->table('wechat_user')->field('ect_uid')->where('openid = "'.$fromusername.'"')->getOne();
-        if(!empty($uid)){
+        if (!empty($uid)) {
             $data = model('Base')->model->table('users')->field('rank_points, pay_points, user_money')->where('user_id = '.$uid)->find();
             if (! empty($data)) {
                 $articles['content'] = '余额：'.price_format($data['user_money'], false)."\r\n".'等级积分：'.$data['rank_points']."\r\n".'消费积分：'.$data['pay_points'];
@@ -72,8 +72,8 @@ class jfcx extends PluginWechatController
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -101,5 +101,6 @@ class jfcx extends PluginWechatController
      * 行为操作
      */
     public function action()
-    {}
+    {
+    }
 }

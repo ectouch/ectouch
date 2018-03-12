@@ -18,26 +18,25 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class EcCache
 {
-
-    protected $cache = NULL;
+    protected $cache = null;
 
     /**
      * 构造函数
-     * 
-     * @param unknown $config            
-     * @param string $type            
+     *
+     * @param unknown $config
+     * @param string $type
      */
     public function __construct($config = array(), $type = 'FileCache')
     {
         $cacheDriver = 'Ec' . $type;
-        require_once (dirname(__FILE__) . '/drivers/cache/' . $cacheDriver . '.class.php');
+        require_once(dirname(__FILE__) . '/drivers/cache/' . $cacheDriver . '.class.php');
         $this->cache = new $cacheDriver($config);
     }
 
     /**
      * 读取缓存
-     * 
-     * @param unknown $key            
+     *
+     * @param unknown $key
      */
     public function get($key)
     {
@@ -46,10 +45,10 @@ class EcCache
 
     /**
      * 设置缓存
-     * 
-     * @param unknown $key            
-     * @param unknown $value            
-     * @param number $expire            
+     *
+     * @param unknown $key
+     * @param unknown $value
+     * @param number $expire
      */
     public function set($key, $value, $expire = 1800)
     {
@@ -58,9 +57,9 @@ class EcCache
 
     /**
      * 自增1
-     * 
-     * @param unknown $key            
-     * @param number $value            
+     *
+     * @param unknown $key
+     * @param number $value
      */
     public function inc($key, $value = 1)
     {
@@ -69,9 +68,9 @@ class EcCache
 
     /**
      * 自减1
-     * 
-     * @param unknown $key            
-     * @param number $value            
+     *
+     * @param unknown $key
+     * @param number $value
      */
     public function des($key, $value = 1)
     {
@@ -80,8 +79,8 @@ class EcCache
 
     /**
      * 删除
-     * 
-     * @param unknown $key            
+     *
+     * @param unknown $key
      */
     public function del($key)
     {

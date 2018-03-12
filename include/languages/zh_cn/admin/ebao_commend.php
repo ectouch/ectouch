@@ -59,5 +59,3 @@ $_LANG['not_new'] = '取消新品';
 $_LANG['hot'] = '热销';
 $_LANG['not_hot'] = '取消热销';
 $_LANG['move_to'] = '转移到分类';
-
-?>

@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class FlowModel extends BaseModel {
+class FlowModel extends BaseModel
+{
 
     /**
      * 删除购物车中的商品
@@ -25,7 +26,8 @@ class FlowModel extends BaseModel {
      * @param integer $id
      * @return void
      */
-    function flow_drop_cart_goods($id) {
+    public function flow_drop_cart_goods($id)
+    {
         /* 取得商品id */
         $sql = "SELECT * FROM " . $this->pre . "cart WHERE rec_id = '$id'";
         $row = $this->row($sql);
@@ -70,7 +72,8 @@ class FlowModel extends BaseModel {
      * @access public
      * @return void
      */
-    function flow_clear_cart_alone() {
+    public function flow_clear_cart_alone()
+    {
         /* 查询：购物车中所有不可以单独销售的配件 */
         $sql = "SELECT c.rec_id, gg.parent_id
 		FROM " . $this->pre . "cart AS c
@@ -132,7 +135,8 @@ class FlowModel extends BaseModel {
      *
      * @return array
      */
-    function cart_favourable() {
+    public function cart_favourable()
+    {
         $list = array();
         $sql = "SELECT is_gift, COUNT(*) AS num " . "FROM " . $this->pre . "cart  WHERE session_id = '" . SESS_ID . "'" . " AND rec_type = '" . CART_GENERAL_GOODS . "'" . " AND is_gift > 0" . " GROUP BY is_gift";
         $res = $this->query($sql);
@@ -149,7 +153,8 @@ class FlowModel extends BaseModel {
      *        	用户等级id，0表示非会员
      * @return array
      */
-    function favourable_list_flow($user_rank) {
+    public function favourable_list_flow($user_rank)
+    {
         /* 购物车中已有的优惠活动及数量 */
         $used_list = model('Flow')->cart_favourable();
         /* 当前用户可享受的优惠活动 */
@@ -198,7 +203,8 @@ class FlowModel extends BaseModel {
      *        	优惠活动b
      * @return int 相等返回0，小于返回-1，大于返回1
      */
-    static function cmp_favourable($a, $b) {
+    public static function cmp_favourable($a, $b)
+    {
         if ($a ['available'] == $b ['available']) {
             if ($a ['sort_order'] == $b ['sort_order']) {
                 return 0;
@@ -217,8 +223,8 @@ class FlowModel extends BaseModel {
      *        	优惠活动
      * @return string
      */
-    function act_range_desc($favourable) {
-    
+    public function act_range_desc($favourable)
+    {
         if ($favourable ['act_range'] == FAR_BRAND) {
             $condition = "brand_id " . db_create_in($favourable ['act_range_ext']);
             $field = 'brand_name';
@@ -241,7 +247,6 @@ class FlowModel extends BaseModel {
             $array = $array ? $array : array();
             return join(',', $array);
         } else {
-    
             return '';
         }
     }
@@ -253,7 +258,8 @@ class FlowModel extends BaseModel {
      *        	优惠活动信息
      * @return bool
      */
-    function favourable_available($favourable) {
+    public function favourable_available($favourable)
+    {
         /* 会员等级是否符合 */
         $user_rank = $_SESSION ['user_rank'];
         if (strpos(',' . $favourable ['user_rank'] . ',', ',' . $user_rank . ',') === false) {
@@ -274,7 +280,8 @@ class FlowModel extends BaseModel {
      *        	优惠活动
      * @return float
      */
-    function cart_favourable_amount($favourable) {
+    public function cart_favourable_amount($favourable)
+    {
         /* 查询优惠范围内商品总额的sql */
         $sql = "SELECT SUM(c.goods_price * c.goods_number) as sum " . "FROM " . $this->pre . "cart AS c, " . $this->pre . "goods AS g " . "WHERE c.goods_id = g.goods_id " . "AND c.session_id = '" . SESS_ID . "' " . "AND c.rec_type = '" . CART_GENERAL_GOODS . "' " . "AND c.is_gift = 0 " . "AND c.goods_id > 0 ";
 
@@ -311,7 +318,8 @@ class FlowModel extends BaseModel {
      *        	优惠活动
      * @param array $cart_favourable购物车中已有的优惠活动及数量
      */
-    function favourable_used($favourable, $cart_favourable) {
+    public function favourable_used($favourable, $cart_favourable)
+    {
         if ($favourable ['act_type'] == FAT_GOODS) {
             return isset($cart_favourable [$favourable ['act_id']]) && $cart_favourable [$favourable ['act_id']] >= $favourable ['act_type_ext'] && $favourable ['act_type_ext'] > 0;
         } else {
@@ -329,7 +337,8 @@ class FlowModel extends BaseModel {
      * @param float $price
      *        	赠品价格
      */
-    function add_gift_to_cart($act_id, $id, $price) {
+    public function add_gift_to_cart($act_id, $id, $price)
+    {
         $sql = "INSERT INTO " . $this->pre . "cart (" . "user_id, session_id, goods_id, goods_sn, goods_name, market_price, goods_price, " . "goods_number, is_real, extension_code, parent_id, is_gift, rec_type ) " . "SELECT '$_SESSION[user_id]', '" . SESS_ID . "', goods_id, goods_sn, goods_name, market_price, " . "'$price', 1, is_real, extension_code, 0, '$act_id', '" . CART_GENERAL_GOODS . "' " . "FROM " . $this->pre . "goods WHERE goods_id = '$id'";
         $this->query($sql);
     }
@@ -340,7 +349,8 @@ class FlowModel extends BaseModel {
      * @param   string  $act_name   优惠活动name
      * @param   float   $amount     优惠金额
      */
-    function add_favourable_to_cart($act_id, $act_name, $amount) {
+    public function add_favourable_to_cart($act_id, $act_name, $amount)
+    {
         $sql = "INSERT INTO " . $this->pre . "cart(" .
                 "user_id, session_id, goods_id, goods_sn, goods_name, market_price, goods_price, " .
                 "goods_number, is_real, extension_code, parent_id, is_gift, rec_type ) " .
@@ -355,7 +365,8 @@ class FlowModel extends BaseModel {
      * @access private
      * @return integral
      */
-    function flow_available_points() {
+    public function flow_available_points()
+    {
         $sql = "SELECT SUM(g.integral * c.goods_number) as sum " . "FROM " . $this->pre . "cart AS c, " . $this->pre . "goods AS g " . "WHERE c.session_id = '" . SESS_ID . "' AND c.goods_id = g.goods_id AND c.is_gift = 0 AND g.integral > 0 " . "AND c.rec_type = '" . CART_GENERAL_GOODS . "'";
 
         $res = $this->row($sql);
@@ -365,7 +376,8 @@ class FlowModel extends BaseModel {
     }
 
     // 增加销量统计
-    function add_touch_goods($flow_type, $extension_code) {
+    public function add_touch_goods($flow_type, $extension_code)
+    {
         /* 统计时间段 */
         $period = C('top10_time');
         //近一个月（30天）
@@ -384,22 +396,22 @@ class FlowModel extends BaseModel {
         $sql = 'select goods_id from ' . $this->pre . 'cart where  session_id = "' . SESS_ID . '" AND rec_type = "' . $flow_type . '"';
         $arrGoodsid = $this->query($sql);
         foreach ($arrGoodsid as $goodsid) {
-                /* 查询该商品销量 */
-                $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' .
+            /* 查询该商品销量 */
+            $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' .
                         'as count FROM ' . $this->pre . 'order_info AS o, ' .
                         $this->pre . 'order_goods AS g ' .
                         "WHERE o.order_id = g.order_id " .
                         "AND o.extension_code = '$extension_code'  AND g.goods_id = '" . $goodsid['goods_id'] . "' AND o.pay_status = '2' " . $ext;
-                $res = $this->row($sql);
-                $sales_count = $res['count'];
-                if ($flow_type == CART_GENERAL_GOODS) {
-                    $nCount = $this->query('select COUNT(*) from ' . $this->pre . 'touch_goods where  goods_id = "' . $goodsid['goods_id'] . '"');
-                    if ($nCount[0]['COUNT(*)'] == 0) {
-                        $this->query("INSERT INTO " . $this->pre . "touch_goods (`goods_id` ,`sales_volume` ) VALUES ( '" . $goodsid['goods_id'] . "' , '0')");
-                    }
-                    $sql = 'update ' . $this->pre . 'touch_goods AS a set a.sales_volume = ' . $sales_count . " WHERE goods_id=" . $goodsid['goods_id'];
-                    $this->query($sql);
+            $res = $this->row($sql);
+            $sales_count = $res['count'];
+            if ($flow_type == CART_GENERAL_GOODS) {
+                $nCount = $this->query('select COUNT(*) from ' . $this->pre . 'touch_goods where  goods_id = "' . $goodsid['goods_id'] . '"');
+                if ($nCount[0]['COUNT(*)'] == 0) {
+                    $this->query("INSERT INTO " . $this->pre . "touch_goods (`goods_id` ,`sales_volume` ) VALUES ( '" . $goodsid['goods_id'] . "' , '0')");
                 }
+                $sql = 'update ' . $this->pre . 'touch_goods AS a set a.sales_volume = ' . $sales_count . " WHERE goods_id=" . $goodsid['goods_id'];
+                $this->query($sql);
+            }
             if ($flow_type == CART_GROUP_BUY_GOODS) {
                 /* 查询该商品销量 */
                 $sql = 'SELECT IFNULL(SUM(g.goods_number), 0) ' .
@@ -430,8 +442,9 @@ class FlowModel extends BaseModel {
      *
      * @return  void
      */
-    function flow_cart_stock($arr) {
-        foreach ($arr AS $key => $val) {
+    public function flow_cart_stock($arr)
+    {
+        foreach ($arr as $key => $val) {
             $val = intval(make_semiangle($val));
             if ($val <= 0 || !is_numeric($key)) {
                 continue;
@@ -473,5 +486,4 @@ class FlowModel extends BaseModel {
             }
         }
     }
-
 }

@@ -11,17 +11,16 @@ admin_priv('booking');
 /*------------------------------------------------------ */
 //-- 列出所有订购信息
 /*------------------------------------------------------ */
-if ($_REQUEST['act']=='list_all')
-{
-    $smarty->assign('ur_here',      $_LANG['list_all']);
-    $smarty->assign('full_page',    1);
+if ($_REQUEST['act']=='list_all') {
+    $smarty->assign('ur_here', $_LANG['list_all']);
+    $smarty->assign('full_page', 1);
 
     $list = get_bookinglist();
 
     $smarty->assign('booking_list', $list['item']);
-    $smarty->assign('filter',       $list['filter']);
+    $smarty->assign('filter', $list['filter']);
     $smarty->assign('record_count', $list['record_count']);
-    $smarty->assign('page_count',   $list['page_count']);
+    $smarty->assign('page_count', $list['page_count']);
 
     $sort_flag  = sort_flag($list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
@@ -33,28 +32,29 @@ if ($_REQUEST['act']=='list_all')
 /*------------------------------------------------------ */
 //-- 翻页、排序
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'query')
-{
+if ($_REQUEST['act'] == 'query') {
     $list = get_bookinglist();
 
     $smarty->assign('booking_list', $list['item']);
-    $smarty->assign('filter',       $list['filter']);
+    $smarty->assign('filter', $list['filter']);
     $smarty->assign('record_count', $list['record_count']);
-    $smarty->assign('page_count',   $list['page_count']);
+    $smarty->assign('page_count', $list['page_count']);
 
     $sort_flag  = sort_flag($list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
 
-    make_json_result($smarty->fetch('booking_list.htm'), '',
-        array('filter' => $list['filter'], 'page_count' => $list['page_count']));
+    make_json_result(
+        $smarty->fetch('booking_list.htm'),
+        '',
+        array('filter' => $list['filter'], 'page_count' => $list['page_count'])
+    );
 }
 
 /*------------------------------------------------------ */
 //-- 删除缺货登记
 /*------------------------------------------------------ */
 
-if ($_REQUEST['act'] == 'remove')
-{
+if ($_REQUEST['act'] == 'remove') {
     check_authz_json('booking');
 
     $id = intval($_GET['id']);
@@ -70,22 +70,20 @@ if ($_REQUEST['act'] == 'remove')
 /*------------------------------------------------------ */
 //-- 显示详情
 /*------------------------------------------------------ */
-if ($_REQUEST['act']=='detail')
-{
+if ($_REQUEST['act']=='detail') {
     $id = intval($_REQUEST['id']);
 
-    $smarty->assign('send_fail',    !empty($_REQUEST['send_ok']));
-    $smarty->assign('booking',      get_booking_info($id));
-    $smarty->assign('ur_here',      $_LANG['detail']);
-    $smarty->assign('action_link',  array('text' => $_LANG['06_undispose_booking'], 'href'=>'goods_booking.php?act=list_all'));
+    $smarty->assign('send_fail', !empty($_REQUEST['send_ok']));
+    $smarty->assign('booking', get_booking_info($id));
+    $smarty->assign('ur_here', $_LANG['detail']);
+    $smarty->assign('action_link', array('text' => $_LANG['06_undispose_booking'], 'href'=>'goods_booking.php?act=list_all'));
     $smarty->display('booking_info.htm');
 }
 
 /*------------------------------------------------------ */
 //-- 处理提交数据
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] =='update')
-{
+if ($_REQUEST['act'] =='update') {
     /* 权限判断 */
     admin_priv('booking');
 
@@ -98,8 +96,7 @@ if ($_REQUEST['act'] =='update')
     $db->query($sql);
 
     /* 邮件通知处理流程 */
-    if (!empty($_POST['send_email_notice']) or isset($_POST['remail']))
-    {
+    if (!empty($_POST['send_email_notice']) or isset($_POST['remail'])) {
         //获取邮件中的必要内容
         $sql = 'SELECT bg.email, bg.link_man, bg.goods_id, g.goods_name ' .
                'FROM ' .$ecs->table('booking_goods'). ' AS bg, ' .$ecs->table('goods'). ' AS g ' .
@@ -110,22 +107,19 @@ if ($_REQUEST['act'] =='update')
         $template    = get_mail_template('goods_booking');
         $goods_link = $ecs->url() . 'goods.php?id=' . $booking_info['goods_id'];
 
-        $smarty->assign('user_name',   $booking_info['link_man']);
+        $smarty->assign('user_name', $booking_info['link_man']);
         $smarty->assign('goods_link', $goods_link);
         $smarty->assign('goods_name', $booking_info['goods_name']);
         $smarty->assign('dispose_note', $dispose_note);
-        $smarty->assign('shop_name',   "<a href='".$ecs->url()."'>" . $_CFG['shop_name'] . '</a>');
-        $smarty->assign('send_date',   date('Y-m-d'));
+        $smarty->assign('shop_name', "<a href='".$ecs->url()."'>" . $_CFG['shop_name'] . '</a>');
+        $smarty->assign('send_date', date('Y-m-d'));
 
         $content = $smarty->fetch('str:' . $template['template_content']);
 
         /* 发送邮件 */
-        if (send_mail($booking_info['link_man'], $booking_info['email'], $template['template_subject'], $content, $template['is_html']))
-        {
+        if (send_mail($booking_info['link_man'], $booking_info['email'], $template['template_subject'], $content, $template['is_html'])) {
             $send_ok = 0;
-        }
-        else
-        {
+        } else {
             $send_ok = 1;
         }
     }
@@ -145,8 +139,7 @@ function get_bookinglist()
 {
     /* 查询条件 */
     $filter['keywords']   = empty($_REQUEST['keywords']) ? '' : trim($_REQUEST['keywords']);
-    if (isset($_REQUEST['is_ajax']) && $_REQUEST['is_ajax'] == 1)
-    {
+    if (isset($_REQUEST['is_ajax']) && $_REQUEST['is_ajax'] == 1) {
         $filter['keywords'] = json_str_iconv($filter['keywords']);
     }
     $filter['dispose']    = empty($_REQUEST['dispose']) ? 0 : intval($_REQUEST['dispose']);
@@ -172,8 +165,7 @@ function get_bookinglist()
             "LIMIT ". $filter['start'] .", $filter[page_size]";
     $row = $GLOBALS['db']->getAll($sql);
 
-    foreach ($row AS $key => $val)
-    {
+    foreach ($row as $key => $val) {
         $row[$key]['booking_time'] = local_date($GLOBALS['_CFG']['time_format'], $val['booking_time']);
     }
     $filter['keywords'] = stripslashes($filter['keywords']);
@@ -205,13 +197,10 @@ function get_booking_info($id)
     $res = $db->GetRow($sql);
 
     /* 格式化时间 */
-    $res['booking_time'] = local_date($_CFG['time_format'],$res['booking_time']);
-    if (!empty($res['dispose_time']))
-    {
-        $res['dispose_time'] = local_date($_CFG['time_format'],$res['dispose_time']);
+    $res['booking_time'] = local_date($_CFG['time_format'], $res['booking_time']);
+    if (!empty($res['dispose_time'])) {
+        $res['dispose_time'] = local_date($_CFG['time_format'], $res['dispose_time']);
     }
 
     return $res;
 }
-
-?>

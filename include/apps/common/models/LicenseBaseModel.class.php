@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class LicenseBaseModel extends Model {
+class LicenseBaseModel extends Model
+{
 
     /**
      * 获得网店 license 信息
@@ -26,7 +27,8 @@ class LicenseBaseModel extends Model {
      *
      * @return  array
      */
-    function get_shop_license() {
+    public function get_shop_license()
+    {
         // 取出网店 license
         $sql = "SELECT code, value
             FROM " . $this->pre .
@@ -48,7 +50,8 @@ class LicenseBaseModel extends Model {
      * @return  array     $return_array['flag'] = reg_succ、reg_fail、reg_ping_fail；
      *                    $return_array['request']；
      */
-    function license_reg($certi_added = '') {
+    public function license_reg($certi_added = '')
+    {
         // 登录信息配置
         $certi['certi_app'] = ''; // 证书方法
         $certi['app_id'] = 'ectouch_free'; // 说明客户端来源
@@ -103,5 +106,4 @@ class LicenseBaseModel extends Model {
 
         return $return_array;
     }
-
 }

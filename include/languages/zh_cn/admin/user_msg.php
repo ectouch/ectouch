@@ -56,5 +56,3 @@ $_LANG['no_select_comment'] = '您没有选择需要删除的评论!';
 $_LANG['cfm_allow'] = '你确定要允许显示所选评论吗？';
 $_LANG['cfm_remove'] = '你确定要删除所选评论吗？';
 $_LANG['cfm_deny'] = '你确定要禁止显示所选评论吗？';
-
-?>

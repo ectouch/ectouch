@@ -15,8 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class BrandController extends CommonController {
-
+class BrandController extends CommonController
+{
     private $brand = 0;
     private $size = 10;
     private $page = 1;
@@ -24,7 +24,8 @@ class BrandController extends CommonController {
     private $order = 'ASC';
 
     // 构造函数
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $this->action = ACTION_NAME;
@@ -33,17 +34,18 @@ class BrandController extends CommonController {
         $this->assign('action', $this->action);
     }
 
-    public function index() {
+    public function index()
+    {
         $list = model('Brand')->get_brands_hj();
-        if($list){
-            if($list['top']) {
+        if ($list) {
+            if ($list['top']) {
                 foreach ($list['top'] as $key => $val) {
                     $list['top'][$key]['goods'] = model('Brand')->brand_get_goods_img($val['brand_id'], '', 'goods_id', 'desc', '3', '1');
                 }
             }
-            if($list['list1']){
-                foreach($list['list1'] as $key=>$val){
-                    $list['list1'][$key]['goods'] =  model('Brand')->brand_get_goods_img($val['brand_id'],'','goods_id','desc','1','1');
+            if ($list['list1']) {
+                foreach ($list['list1'] as $key=>$val) {
+                    $list['list1'][$key]['goods'] =  model('Brand')->brand_get_goods_img($val['brand_id'], '', 'goods_id', 'desc', '1', '1');
                 }
             }
         }
@@ -56,7 +58,8 @@ class BrandController extends CommonController {
 
     // -- 品牌活动 - 异步加载
     /* ------------------------------------------------------ */
-    public function asynclist() {
+    public function asynclist()
+    {
         // 开始工作
         $this->parameter();
         $asyn_last = intval(I('post.last')) + 1;
@@ -76,7 +79,8 @@ class BrandController extends CommonController {
     /**
      * 品牌商品列表
      */
-    public function goods_list() {
+    public function goods_list()
+    {
         $this->parameter();
         $brand_id = I('request.id');
         $brand_info = model('BrandBase')->get_brand_info($brand_id);
@@ -96,20 +100,20 @@ class BrandController extends CommonController {
         $count = model('Brand')->goods_count_by_brand($brand_id, $this->cat);
         $this->pageLimit(url('goods_list', array('id' => $brand_id, 'sort' => $this->sort, 'order' => $this->order)), $this->size);
         $this->assign('pager', $this->pageShow($count));
-		$this->assign('show_marketprice', C('show_marketprice'));
+        $this->assign('show_marketprice', C('show_marketprice'));
 
-        $this->assign('brand_info',$brand_info);
+        $this->assign('brand_info', $brand_info);
         // 商品数量
-        $this->assign('brand_goods_count',model('Brand')->goods_count_by_brand($brand_id));
-         //dump(model('Brand')->goods_count_by_brand($brand_id));exit;
+        $this->assign('brand_goods_count', model('Brand')->goods_count_by_brand($brand_id));
+        //dump(model('Brand')->goods_count_by_brand($brand_id));exit;
         //新品
         $sql = "SELECT COUNT(*) as count FROM  {pre}goods AS g WHERE brand_id = '$brand_id' AND g.is_new = 1 and g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 ";
         $res = $this->model->getrow($sql);
-        $this->assign('brand_goods_new',$res['count']);
+        $this->assign('brand_goods_new', $res['count']);
         //热销
         $sql = "SELECT COUNT(*) as count FROM  {pre}goods AS g WHERE brand_id = '$brand_id' AND g.is_hot = 1 and g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 ";
         $res = $this->model->getrow($sql);
-        $this->assign('brand_goods_hot',$res['count']);
+        $this->assign('brand_goods_hot', $res['count']);
 
         $this->assign('page_title', $brand_info['brand_name']);
 
@@ -132,9 +136,10 @@ class BrandController extends CommonController {
     /**
      * 异步加载品牌列表
      */
-    public function list_asynclist() {
+    public function list_asynclist()
+    {
         $this->parameter();
-		$this->assign('show_marketprice', C('show_marketprice'));
+        $this->assign('show_marketprice', C('show_marketprice'));
         $brand_id = I('request.brand');
         $brand_info = model('BrandBase')->get_brand_info($brand_id);
         if (empty($brand_info)) {
@@ -158,7 +163,8 @@ class BrandController extends CommonController {
     /**
      * 处理参数便于搜索商品信息
      */
-    private function parameter() {
+    private function parameter()
+    {
         // 初始化分页信息
         $page_size = C('page_size');
         $brand = I('request.brand');
@@ -191,16 +197,15 @@ class BrandController extends CommonController {
         setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
     }
 
-    public function nav() {
+    public function nav()
+    {
         $list = model('Brand')->get_brands('brand', 1000, 1);
         $this->assign('list', $list);
-        for($i='A',$a=0;$a<26;$a++,$i++){
+        for ($i='A',$a=0;$a<26;$a++,$i++) {
             $nav[]=$i;
         }
-        $this->assign('nav',$nav);
-        $this->assign('page_title',L('all_brand'));
+        $this->assign('nav', $nav);
+        $this->assign('page_title', L('all_brand'));
         $this->display('brand_list.dwt');
-
     }
-
 }

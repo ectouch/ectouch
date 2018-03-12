@@ -30,7 +30,7 @@ class alipay
      * @param array $payment
      *            支付方式信息
      */
-    function get_code($order, $payment)
+    public function get_code($order, $payment)
     {
         if (! defined('EC_CHARSET')) {
             $charset = 'utf-8';
@@ -111,52 +111,52 @@ class alipay
 
     /**
      * 手机支付宝同步响应操作
-     * 
+     *
      * @return boolean
      */
     public function callback($data)
     {
-		if (! empty($_GET)) {
-			$out_trade_no = explode('B', $_GET['subject']);
-			$log_id = $out_trade_no[1];
-			$payment = model('Payment')->get_payment($data['code']);
+        if (! empty($_GET)) {
+            $out_trade_no = explode('B', $_GET['subject']);
+            $log_id = $out_trade_no[1];
+            $payment = model('Payment')->get_payment($data['code']);
 
-			/* 检查数字签名是否正确 */
-			ksort($_GET);
-			reset($_GET);
-			
-			$sign = '';
-			foreach ($_GET as $key => $val) {
-				if ($key != 'sign' && $key != 'sign_type' && $key != 'code') {
-					$sign .= "$key=$val&";
-				}
-			}
-			$sign = substr($sign, 0, - 1) . $payment['alipay_key'];
-			if (md5($sign) != $_GET['sign']) {
-				return false;
-			}
-			
-			if ($_GET['result'] == 'success') {
-				/* 改变订单状态 */
-				model('Payment')->order_paid($log_id, 2);
-				return true;
-			} else {
-				return false;
-			}
-		}else{
-			return false;
-		}
-	}
+            /* 检查数字签名是否正确 */
+            ksort($_GET);
+            reset($_GET);
+            
+            $sign = '';
+            foreach ($_GET as $key => $val) {
+                if ($key != 'sign' && $key != 'sign_type' && $key != 'code') {
+                    $sign .= "$key=$val&";
+                }
+            }
+            $sign = substr($sign, 0, - 1) . $payment['alipay_key'];
+            if (md5($sign) != $_GET['sign']) {
+                return false;
+            }
+            
+            if ($_GET['result'] == 'success') {
+                /* 改变订单状态 */
+                model('Payment')->order_paid($log_id, 2);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
     /**
      * 手机支付宝异步通知
-     * 
+     *
      * @return string
      */
     public function notify($data)
     {
         if (! empty($_POST)) {
-			$payment = model('Payment')->get_payment($data['code']);
+            $payment = model('Payment')->get_payment($data['code']);
             // 支付宝系统通知待签名数据构造规则比较特殊，为固定顺序。
             $parameter['service'] = $_POST['service'];
             $parameter['v'] = $_POST['v'];

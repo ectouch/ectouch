@@ -48,7 +48,7 @@ class passport
     /**
      * 构造函数
      *
-     * @param unknown $cfg 
+     * @param unknown $cfg
      */
     public function __construct($cfg)
     {
@@ -122,56 +122,56 @@ class passport
         /* 检查email是否重复 */
         $sql = "SELECT " . $this->field_id . " FROM {pre}" . $this->user_table . " WHERE " . $this->field_email . " = '$email'";
         if ($this->db->getOne($sql) > 0) {
-                $this->error = ERR_EMAIL_EXISTS;
+            $this->error = ERR_EMAIL_EXISTS;
         
-                return false;
-            }
+            return false;
+        }
         
-            $post_username = $username;
+        $post_username = $username;
         
-            if ($md5password) {
-                $post_password = $this->compile_password(array(
+        if ($md5password) {
+            $post_password = $this->compile_password(array(
                     'md5password' => $md5password
                 ));
-            } else {
-                $post_password = $this->compile_password(array(
+        } else {
+            $post_password = $this->compile_password(array(
                     'password' => $password
                 ));
-            }
+        }
         
-            $fields = array(
+        $fields = array(
                 $this->field_name,
                 $this->field_email,
                 $this->field_pass
             );
-            $values = array(
+        $values = array(
                 $post_username,
                 $email,
                 $post_password
             );
         
-            if ($gender > - 1) {
-                $fields[] = $this->field_gender;
-                $values[] = $gender;
-            }
-            if ($bday) {
-                $fields[] = $this->field_bday;
-                $values[] = $bday;
-            }
-            if ($reg_date) {
-                $fields[] = $this->field_reg_date;
-                $values[] = $reg_date;
-            }
+        if ($gender > - 1) {
+            $fields[] = $this->field_gender;
+            $values[] = $gender;
+        }
+        if ($bday) {
+            $fields[] = $this->field_bday;
+            $values[] = $bday;
+        }
+        if ($reg_date) {
+            $fields[] = $this->field_reg_date;
+            $values[] = $reg_date;
+        }
         
-            $sql = "INSERT INTO {pre}" . $this->user_table . " (" . implode(',', $fields) . ")" . " VALUES ('" . implode("', '", $values) . "')";
+        $sql = "INSERT INTO {pre}" . $this->user_table . " (" . implode(',', $fields) . ")" . " VALUES ('" . implode("', '", $values) . "')";
         
-            $this->db->query($sql);
+        $this->db->query($sql);
         
-            if ($this->need_sync) {
-                $this->sync($username, $password);
-            }
+        if ($this->need_sync) {
+            $this->sync($username, $password);
+        }
         
-            return true;
+        return true;
     }
 
     /**
@@ -181,7 +181,6 @@ class passport
      */
     public function edit_user($cfg)
     {
-
         if (empty($cfg['username'])) {
             return false;
         } else {
@@ -205,19 +204,18 @@ class passport
             $rs = $this->db->queryOne($sql);
             /*$rs = $this->db->table($this->user_table)->field($this->field_id)->where($this->field_email . " ='$cfg[email]' " . " AND " .$this->field_name . " != '$cfg[post_username]'")->getOne();*/
             if (!empty($rs) && $rs > 0) {
-                    $this->error = ERR_EMAIL_EXISTS;
+                $this->error = ERR_EMAIL_EXISTS;
         
-                    return false;
-                }
-                // 检查是否为新E-mail
-                if ($this->db->table($this->user_table)->field('count(*)')->where(array($this->field_email=>$cfg['email']))->getField() == 0) {
-                        // 新的E-mail
-                        $this->db->table('users')->data(array('is_validated'=>0))->where(array
-                        ('user_name'=>$cfg['post_username']))->update();
-                        //$sql = "UPDATE {pre}users SET is_validated = 0 WHERE user_name = '$cfg[post_username]'";
+                return false;
+            }
+            // 检查是否为新E-mail
+            if ($this->db->table($this->user_table)->field('count(*)')->where(array($this->field_email=>$cfg['email']))->getField() == 0) {
+                // 新的E-mail
+                $this->db->table('users')->data(array('is_validated'=>0))->where(array('user_name'=>$cfg['post_username']))->update();
+                //$sql = "UPDATE {pre}users SET is_validated = 0 WHERE user_name = '$cfg[post_username]'";
                         //$this->db->query($sql);
-                    }
-                    $values[] = $this->field_email . "='" . $cfg['email'] . "'";
+            }
+            $values[] = $this->field_email . "='" . $cfg['email'] . "'";
         }
         
         if (isset($cfg['gender']) && $this->field_gender != 'NULL') {
@@ -252,7 +250,6 @@ class passport
      */
     public function remove_user($id)
     {
-
         $post_id = $id;
         
         if ($this->need_sync || (isset($this->is_ecshop) && $this->is_ecshop)) {
@@ -300,11 +297,11 @@ class passport
                 $this->db->query($sql);
                 $sql = "DELETE FROM {pre}wechat_user  WHERE " . db_create_in($col, 'ect_uid'); // 删除微信用户
                 $this->db->query($sql);
-				
+                
                 $col_connect_id = $this->db->table('connect_user')->field('id')->where(db_create_in($col, 'user_id'))->getCol();
-                if($col_connect_id) {
-                   $sql = "DELETE FROM {pre}connect_user  WHERE " . db_create_in($col, 'user_id'); // 删除connect_user表关联数据
-                   $this->db->query($sql);
+                if ($col_connect_id) {
+                    $sql = "DELETE FROM {pre}connect_user  WHERE " . db_create_in($col, 'user_id'); // 删除connect_user表关联数据
+                    $this->db->query($sql);
                 }
             }
         }
@@ -433,7 +430,6 @@ class passport
                 return $row['user_id'];
             }
         }
- 
     }
 
     /**
@@ -496,7 +492,7 @@ class passport
      * @return mixed
      */
     public function set_session($username = '')
-    { 
+    {
         if (empty($username)) {
             $touch = get_Instance();
             $touch->load->sess->destroy_session();
@@ -518,10 +514,10 @@ class passport
      * @access public
      * @param array $cfg
      * 包含参数为 $password, $md5password, $salt, $type
-     *            
+     *
      * @return void
      */
-    function compile_password($cfg)
+    public function compile_password($cfg)
     {
         if (isset($cfg['password'])) {
             $cfg['md5password'] = md5($cfg['password']);
@@ -538,6 +534,7 @@ class passport
                     return $cfg['md5password'];
                 }
             
+                // no break
             case PWD_PRE_SALT:
                 if (empty($cfg['salt'])) {
                     $cfg['salt'] = '';
@@ -566,7 +563,6 @@ class passport
      */
     public function sync($username, $password = '', $md5password = '')
     {
-
         if ((! empty($password)) && empty($md5password)) {
             $md5password = md5($password);
         }

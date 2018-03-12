@@ -12,62 +12,45 @@ require_once(BASE_PATH . 'helpers/order_helper.php');
 /*------------------------------------------------------ */
 //-- 框架
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == '')
-{
+if ($_REQUEST['act'] == '') {
     include_once('includes/inc_menu.php');
     include_once('includes/inc_priv.php');
 
-    foreach ($modules AS $key => $value)
-    {
+    foreach ($modules as $key => $value) {
         ksort($modules[$key]);
     }
 
     ksort($modules);
-    foreach ($modules AS $key => $val)
-    {
+    foreach ($modules as $key => $val) {
         $menus[$key]['label'] = $_LANG[$key];
-        if (is_array($val))
-        {
-            foreach ($val AS $k => $v)
-            {
-                if ( isset($purview[$k]))
-                {
-                    if (is_array($purview[$k]))
-                    {
+        if (is_array($val)) {
+            foreach ($val as $k => $v) {
+                if (isset($purview[$k])) {
+                    if (is_array($purview[$k])) {
                         $boole = false;
-                        foreach ($purview[$k] as $action)
-                        {
+                        foreach ($purview[$k] as $action) {
                             $boole = $boole || admin_priv($action, '', false);
                         }
-                        if (!$boole)
-                        {
+                        if (!$boole) {
                             continue;
                         }
-
-                    }
-                    else
-                    {
-                        if (! admin_priv($purview[$k], '', false))
-                        {
+                    } else {
+                        if (! admin_priv($purview[$k], '', false)) {
                             continue;
                         }
                     }
                 }
-                if ($k == 'ucenter_setup' && $_CFG['integrate_code'] != 'ucenter')
-                {
+                if ($k == 'ucenter_setup' && $_CFG['integrate_code'] != 'ucenter') {
                     continue;
                 }
                 $menus[$key]['children'][$k]['label']  = $_LANG[$k];
                 $menus[$key]['children'][$k]['action'] = $v;
             }
-        }
-        else
-        {
+        } else {
             $menus[$key]['action'] = $val;
         }
 
-        if(empty($menus[$key]['children']))
-        {
+        if (empty($menus[$key]['children'])) {
             unset($menus[$key]);
         }
     }
@@ -81,25 +64,25 @@ if ($_REQUEST['act'] == '')
         '11_menu_rec' => '*',
         '12_menu_wechat' => '*',
     );
-    if(IS_ECSHOP){
-        foreach($menus as $key => $val){
-            if(!isset($normal[$key])){
+    if (IS_ECSHOP) {
+        foreach ($menus as $key => $val) {
+            if (!isset($normal[$key])) {
                 unset($menus[$key]);
             }
-            if($normal[$key] == '*'){
+            if ($normal[$key] == '*') {
                 continue;
             }
             $children = $val['children'];
             foreach ($children as $k => $vo) {
-                if(!isset($normal[$key][$k])){
+                if (!isset($normal[$key][$k])) {
                     unset($menus[$key]['children'][$k]);
                 }
             }
         }
     }
 
-    $smarty->assign('menus',     $menus);
-    $smarty->assign('no_help',   $_LANG['no_help']);
+    $smarty->assign('menus', $menus);
+    $smarty->assign('no_help', $_LANG['no_help']);
     $smarty->assign('help_lang', $_CFG['lang']);
     $smarty->assign('charset', CHARSET);
     $smarty->assign('admin_id', $_SESSION['admin_id']);
@@ -111,18 +94,15 @@ if ($_REQUEST['act'] == '')
 /*------------------------------------------------------ */
 //-- 顶部框架的内容
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'top')
-{
+elseif ($_REQUEST['act'] == 'top') {
     // 获得管理员设置的菜单
     $lst = array();
     $nav = $db->GetOne('SELECT nav_list FROM ' . $ecs->table('admin_user') . " WHERE user_id = '" . $_SESSION['admin_id'] . "'");
 
-    if (!empty($nav))
-    {
+    if (!empty($nav)) {
         $arr = explode(',', $nav);
 
-        foreach ($arr AS $val)
-        {
+        foreach ($arr as $val) {
             $tmp = explode('|', $val);
             $lst[$tmp[1]] = $tmp[0];
         }
@@ -131,7 +111,7 @@ elseif ($_REQUEST['act'] == 'top')
     // 获得管理员设置的菜单
 
     // 获得管理员ID
-    $smarty->assign('send_mail_on',$_CFG['send_mail_on']);
+    $smarty->assign('send_mail_on', $_CFG['send_mail_on']);
     $smarty->assign('nav_list', $lst);
     $smarty->assign('admin_id', $_SESSION['admin_id']);
     $smarty->assign('certi', $_CFG['certi']);
@@ -143,80 +123,61 @@ elseif ($_REQUEST['act'] == 'top')
 //-- 计算器
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'calculator')
-{
+elseif ($_REQUEST['act'] == 'calculator') {
     $smarty->display('2016_calculator.htm');
 }
 
 /*------------------------------------------------------ */
 //-- 左边的框架
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'menu')
-{
+elseif ($_REQUEST['act'] == 'menu') {
     include_once('includes/inc_menu.php');
 
-// 权限对照表
+    // 权限对照表
     include_once('includes/inc_priv.php');
 
-    foreach ($modules AS $key => $value)
-    {
+    foreach ($modules as $key => $value) {
         ksort($modules[$key]);
     }
     ksort($modules);
 
-    foreach ($modules AS $key => $val)
-    {
+    foreach ($modules as $key => $val) {
         $menus[$key]['label'] = $_LANG[$key];
-        if (is_array($val))
-        {
-            foreach ($val AS $k => $v)
-            {
-                if ( isset($purview[$k]))
-                {
-                    if (is_array($purview[$k]))
-                    {
+        if (is_array($val)) {
+            foreach ($val as $k => $v) {
+                if (isset($purview[$k])) {
+                    if (is_array($purview[$k])) {
                         $boole = false;
-                        foreach ($purview[$k] as $action)
-                        {
-                             $boole = $boole || admin_priv($action, '', false);
+                        foreach ($purview[$k] as $action) {
+                            $boole = $boole || admin_priv($action, '', false);
                         }
-                        if (!$boole)
-                        {
+                        if (!$boole) {
                             continue;
                         }
-
-                    }
-                    else
-                    {
-                        if (! admin_priv($purview[$k], '', false))
-                        {
+                    } else {
+                        if (! admin_priv($purview[$k], '', false)) {
                             continue;
                         }
                     }
                 }
-                if ($k == 'ucenter_setup' && $_CFG['integrate_code'] != 'ucenter')
-                {
+                if ($k == 'ucenter_setup' && $_CFG['integrate_code'] != 'ucenter') {
                     continue;
                 }
                 $menus[$key]['children'][$k]['label']  = $_LANG[$k];
                 $menus[$key]['children'][$k]['action'] = $v;
             }
-        }
-        else
-        {
+        } else {
             $menus[$key]['action'] = $val;
         }
 
         // 如果children的子元素长度为0则删除该组
-        if(empty($menus[$key]['children']))
-        {
+        if (empty($menus[$key]['children'])) {
             unset($menus[$key]);
         }
-
     }
 
-    $smarty->assign('menus',     $menus);
-    $smarty->assign('no_help',   $_LANG['no_help']);
+    $smarty->assign('menus', $menus);
+    $smarty->assign('no_help', $_LANG['no_help']);
     $smarty->assign('help_lang', $_CFG['lang']);
     $smarty->assign('charset', CHARSET);
     $smarty->assign('admin_id', $_SESSION['admin_id']);
@@ -228,8 +189,7 @@ elseif ($_REQUEST['act'] == 'menu')
 //-- 清除缓存
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'clear_cache')
-{
+elseif ($_REQUEST['act'] == 'clear_cache') {
     clear_all_files();
 
     sys_msg($_LANG['caches_cleared']);
@@ -239,11 +199,9 @@ elseif ($_REQUEST['act'] == 'clear_cache')
 /*------------------------------------------------------ */
 //-- 主窗口，起始页
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'main')
-{
+elseif ($_REQUEST['act'] == 'main') {
     //开店向导第一步
-    if(isset($_SESSION['shop_guide']) && $_SESSION['shop_guide'] === true)
-    {
+    if (isset($_SESSION['shop_guide']) && $_SESSION['shop_guide'] === true) {
         unset($_SESSION['shop_guide']);//销毁session
 
         ecs_header("Location: ./index.php?act=first\n");
@@ -256,72 +214,58 @@ elseif ($_REQUEST['act'] == 'main')
     /* 检查文件目录属性 */
     $warning = array();
 
-    if ($_CFG['shop_closed'])
-    {
+    if ($_CFG['shop_closed']) {
         $warning[] = $_LANG['shop_closed_tips'];
     }
 
-    if (file_exists('../install'))
-    {
+    if (file_exists('../install')) {
         $warning[] = $_LANG['remove_install'];
     }
 
-    if (file_exists('../upgrade'))
-    {
+    if (file_exists('../upgrade')) {
         $warning[] = $_LANG['remove_upgrade'];
     }
     
-    if (file_exists('../demo'))
-    {
+    if (file_exists('../demo')) {
         $warning[] = $_LANG['remove_demo'];
     }
 
     $open_basedir = ini_get('open_basedir');
-    if (!empty($open_basedir))
-    {
+    if (!empty($open_basedir)) {
         /* 如果 open_basedir 不为空，则检查是否包含了 upload_tmp_dir  */
         $open_basedir = str_replace(array("\\", "\\\\"), array("/", "/"), $open_basedir);
         $upload_tmp_dir = ini_get('upload_tmp_dir');
 
-        if (empty($upload_tmp_dir))
-        {
-            if (stristr(PHP_OS, 'win'))
-            {
+        if (empty($upload_tmp_dir)) {
+            if (stristr(PHP_OS, 'win')) {
                 $upload_tmp_dir = getenv('TEMP') ? getenv('TEMP') : getenv('TMP');
                 $upload_tmp_dir = str_replace(array("\\", "\\\\"), array("/", "/"), $upload_tmp_dir);
-            }
-            else
-            {
+            } else {
                 $upload_tmp_dir = getenv('TMPDIR') === false ? '/tmp' : getenv('TMPDIR');
             }
         }
 
-        if (!stristr($open_basedir, $upload_tmp_dir))
-        {
+        if (!stristr($open_basedir, $upload_tmp_dir)) {
             $warning[] = sprintf($_LANG['temp_dir_cannt_read'], $upload_tmp_dir);
         }
     }
 
     $result = file_mode_info('../data/certificate');
-    if ($result < 2)
-    {
+    if ($result < 2) {
         $warning[] = sprintf($_LANG['not_writable'], 'cert', $_LANG['cert_cannt_write']);
     }
 
     $result = file_mode_info('../' . DATA_DIR);
-    if ($result < 2)
-    {
+    if ($result < 2) {
         $warning[] = sprintf($_LANG['not_writable'], 'data', $_LANG['data_cannt_write']);
     }
 
     $result = file_mode_info('../data/attached');
-    if ($result < 2)
-    {
+    if ($result < 2) {
         $warning[] = sprintf($_LANG['not_writable'], 'images', $_LANG['images_cannt_write']);
     }
 
-    if (!is_writeable('../data/template/order_print.html'))
-    {
+    if (!is_writeable('../data/template/order_print.html')) {
         $warning[] = $_LANG['order_print_canntwrite'];
     }
     clearstatcache();
@@ -405,15 +349,12 @@ elseif ($_REQUEST['act'] == 'main')
     " AND promote_start_date <= '$time' AND promote_end_date >= '$time' AND is_real=0 AND extension_code='virtual_card'");
 
     /* 缺货商品 */
-    if ($_CFG['use_storage'])
-    {
+    if ($_CFG['use_storage']) {
         $sql = 'SELECT COUNT(*) FROM ' .$ecs->table('goods'). ' WHERE is_delete = 0 AND goods_number <= warn_number AND is_real = 1';
         $goods['warn'] = $db->GetOne($sql);
         $sql = 'SELECT COUNT(*) FROM ' .$ecs->table('goods'). ' WHERE is_delete = 0 AND goods_number <= warn_number AND is_real=0 AND extension_code=\'virtual_card\'';
         $virtual_card['warn'] = $db->GetOne($sql);
-    }
-    else
-    {
+    } else {
         $goods['warn'] = 0;
         $virtual_card['warn'] = 0;
     }
@@ -456,36 +397,27 @@ elseif ($_REQUEST['act'] == 'main')
     $sys_info['timezone']      = function_exists("date_default_timezone_get") ? date_default_timezone_get() : $_LANG['no_timezone'];
     $sys_info['socket']        = function_exists('fsockopen') ? $_LANG['yes'] : $_LANG['no'];
 
-    if ($gd == 0)
-    {
+    if ($gd == 0) {
         $sys_info['gd'] = 'N/A';
-    }
-    else
-    {
-        if ($gd == 1)
-        {
+    } else {
+        if ($gd == 1) {
             $sys_info['gd'] = 'GD1';
-        }
-        else
-        {
+        } else {
             $sys_info['gd'] = 'GD2';
         }
 
         $sys_info['gd'] .= ' (';
 
         /* 检查系统支持的图片类型 */
-        if ($gd && (imagetypes() & IMG_JPG) > 0)
-        {
+        if ($gd && (imagetypes() & IMG_JPG) > 0) {
             $sys_info['gd'] .= ' JPEG';
         }
 
-        if ($gd && (imagetypes() & IMG_GIF) > 0)
-        {
+        if ($gd && (imagetypes() & IMG_GIF) > 0) {
             $sys_info['gd'] .= ' GIF';
         }
 
-        if ($gd && (imagetypes() & IMG_PNG) > 0)
-        {
+        if ($gd && (imagetypes() & IMG_PNG) > 0) {
             $sys_info['gd'] .= ' PNG';
         }
 
@@ -509,20 +441,17 @@ elseif ($_REQUEST['act'] == 'main')
 
 
     assign_query_info();
-    $smarty->assign('ecs_version',  VERSION);
-    $smarty->assign('ecs_release',  RELEASE);
-    $smarty->assign('ecs_lang',     $_CFG['lang']);
-    $smarty->assign('ecs_charset',  strtoupper(CHARSET));
+    $smarty->assign('ecs_version', VERSION);
+    $smarty->assign('ecs_release', RELEASE);
+    $smarty->assign('ecs_lang', $_CFG['lang']);
+    $smarty->assign('ecs_charset', strtoupper(CHARSET));
     $smarty->assign('install_date', local_date($_CFG['date_format'], $_CFG['install_date']));
     $smarty->display('2016_start.htm');
-}
-elseif ($_REQUEST['act'] == 'main_api')
-{
+} elseif ($_REQUEST['act'] == 'main_api') {
     require_once(BASE_PATH . 'helpers/base_helper.php');
     $data = read_static_cache('api_str');
 
-    if($data === false || API_TIME < date('Y-m-d H:i:s',time()-43200))
-    {
+    if ($data === false || API_TIME < date('Y-m-d H:i:s', time()-43200)) {
         // include_once(ROOT_PATH . 'includes/cls_transport.php');
         $ecs_version = VERSION;
         $ecs_lang = $_CFG['lang'];
@@ -540,8 +469,7 @@ elseif ($_REQUEST['act'] == 'main_api')
         $ecs_user = $db->getOne('SELECT COUNT(*) FROM ' . $ecs->table('users'));
         $ecs_template = $db->getOne('SELECT value FROM ' . $ecs->table('shop_config') . ' WHERE code = \'template\'');
         $style = $db->getOne('SELECT value FROM ' . $ecs->table('shop_config') . ' WHERE code = \'stylename\'');
-        if($style == '')
-        {
+        if ($style == '') {
             $style = '0';
         }
         $ecs_style = $style;
@@ -556,16 +484,13 @@ elseif ($_REQUEST['act'] == 'main_api')
         $api_str = $api_comment["body"];
         echo $api_str;
         
-        $f=ROOT_PATH . 'data/config.php'; 
-        file_put_contents($f,str_replace("'API_TIME', '".API_TIME."'","'API_TIME', '".date('Y-m-d H:i:s',time())."'",file_get_contents($f)));
+        $f=ROOT_PATH . 'data/config.php';
+        file_put_contents($f, str_replace("'API_TIME', '".API_TIME."'", "'API_TIME', '".date('Y-m-d H:i:s', time())."'", file_get_contents($f)));
         
         write_static_cache('api_str', $api_str);
-    }
-    else 
-    {
+    } else {
         echo $data;
     }
-
 }
 
 
@@ -573,11 +498,10 @@ elseif ($_REQUEST['act'] == 'main_api')
 //-- 开店向导第一步
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'first')
-{
-    $smarty->assign('countries',    get_regions());
-    $smarty->assign('provinces',    get_regions(1, 1));
-    $smarty->assign('cities',    get_regions(2, 2));
+elseif ($_REQUEST['act'] == 'first') {
+    $smarty->assign('countries', get_regions());
+    $smarty->assign('provinces', get_regions(1, 1));
+    $smarty->assign('cities', get_regions(2, 2));
 
     $sql = 'SELECT value from ' . $ecs->table('shop_config') . " WHERE code='shop_name'";
     $shop_name = $db->getOne($sql);
@@ -596,12 +520,9 @@ elseif ($_REQUEST['act'] == 'first')
     $set_modules = true;
     $modules     = array();
 
-    while (false !== ($file = @readdir($dir)))
-    {
-        if (preg_match("/^.*?\.php$/", $file))
-        {
-            if ($file != 'express.php')
-            {
+    while (false !== ($file = @readdir($dir))) {
+        if (preg_match("/^.*?\.php$/", $file)) {
+            if ($file != 'express.php') {
                 include_once($directory. '/' .$file);
             }
         }
@@ -609,18 +530,15 @@ elseif ($_REQUEST['act'] == 'first')
     @closedir($dir);
     unset($set_modules);
 
-    foreach ($modules AS $key => $value)
-    {
+    foreach ($modules as $key => $value) {
         ksort($modules[$key]);
     }
     ksort($modules);
 
-    for ($i = 0; $i < count($modules); $i++)
-    {
+    for ($i = 0; $i < count($modules); $i++) {
         $lang_file = BASE_PATH .'languages/' .$_CFG['lang']. '/shipping/' .$modules[$i]['code']. '.php';
 
-        if (file_exists($lang_file))
-        {
+        if (file_exists($lang_file)) {
             include_once($lang_file);
         }
 
@@ -637,12 +555,10 @@ elseif ($_REQUEST['act'] == 'first')
     //获取支付方式
     $modules = read_modules('../include/modules/payment');
 
-    for ($i = 0; $i < count($modules); $i++)
-    {
+    for ($i = 0; $i < count($modules); $i++) {
         $code = $modules[$i]['code'];
         $modules[$i]['name'] = $_LANG[$modules[$i]['code']];
-        if (!isset($modules[$i]['pay_fee']))
-        {
+        if (!isset($modules[$i]['pay_fee'])) {
             $modules[$i]['pay_fee'] = 0;
         }
         $modules[$i]['desc'] = $_LANG[$modules[$i]['desc']];
@@ -660,8 +576,7 @@ elseif ($_REQUEST['act'] == 'first')
 //-- 开店向导第二步
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'second')
-{
+elseif ($_REQUEST['act'] == 'second') {
     admin_priv('shop_config');
 
     $shop_name = empty($_POST['shop_name']) ? '' : $_POST['shop_name'] ;
@@ -671,69 +586,57 @@ elseif ($_REQUEST['act'] == 'second')
     $shop_city = empty($_POST['shop_city']) ? '' : intval($_POST['shop_city']);
     $shop_address = empty($_POST['shop_address']) ? '' : $_POST['shop_address'] ;
     $shipping = empty($_POST['shipping']) ? '' : $_POST['shipping'];
-    $payment = empty($_POST['payment']) ? '' : preg_replace('/[\'|\/|\\\]/','',$_POST['payment']);
+    $payment = empty($_POST['payment']) ? '' : preg_replace('/[\'|\/|\\\]/', '', $_POST['payment']);
 
-    if(!empty($shop_name))
-    {
+    if (!empty($shop_name)) {
         $sql = 'UPDATE ' . $ecs->table('shop_config') . " SET value = '$shop_name' WHERE code = 'shop_name'";
         $db->query($sql);
     }
 
-    if(!empty($shop_title))
-    {
+    if (!empty($shop_title)) {
         $sql = 'UPDATE ' . $ecs->table('shop_config') . " SET value = '$shop_title' WHERE code = 'shop_title'";
         $db->query($sql);
     }
 
-    if(!empty($shop_address))
-    {
+    if (!empty($shop_address)) {
         $sql = 'UPDATE ' . $ecs->table('shop_config') . " SET value = '$shop_address' WHERE code = 'shop_address'";
         $db->query($sql);
     }
 
-    if(!empty($shop_country))
-    {
+    if (!empty($shop_country)) {
         $sql = 'UPDATE ' . $ecs->table('shop_config') . "SET value = '$shop_country' WHERE code='shop_country'";
         $db->query($sql);
     }
 
-    if(!empty($shop_province))
-    {
+    if (!empty($shop_province)) {
         $sql = 'UPDATE ' . $ecs->table('shop_config') . "SET value = '$shop_province' WHERE code='shop_province'";
         $db->query($sql);
     }
 
-    if(!empty($shop_city))
-    {
+    if (!empty($shop_city)) {
         $sql = 'UPDATE ' . $ecs->table('shop_config') . "SET value = '$shop_city' WHERE code='shop_city'";
         $db->query($sql);
     }
 
     //设置配送方式
-    if(!empty($shipping))
-    {
+    if (!empty($shipping)) {
         $shop_add = read_modules('../include/modules/shipping');
         
-        foreach ($shop_add as $val)
-        {
+        foreach ($shop_add as $val) {
             $mod_shop[] = $val['code'];
         }
-        $mod_shop = implode(',',$mod_shop);
+        $mod_shop = implode(',', $mod_shop);
 
         $set_modules = true;
-        if(strpos($mod_shop,$shipping) === false)
-        {
-            exit;   
-        }
-        else 
-        {
+        if (strpos($mod_shop, $shipping) === false) {
+            exit;
+        } else {
             include_once(BASE_PATH . 'modules/shipping/' . $shipping . '.php');
         }
         $sql = "SELECT shipping_id FROM " .$ecs->table('shipping'). " WHERE shipping_code = '$shipping'";
         $shipping_id = $db->GetOne($sql);
 
-        if($shipping_id <= 0)
-        {
+        if ($shipping_id <= 0) {
             $insure = empty($modules[0]['insure']) ? 0 : $modules[0]['insure'];
             $sql = "INSERT INTO " . $ecs->table('shipping') . " (" .
             "shipping_code, shipping_name, shipping_desc, insure, support_cod, enabled" .
@@ -746,17 +649,14 @@ elseif ($_REQUEST['act'] == 'second')
 
         //设置配送区域
         $area_name = empty($_POST['area_name']) ? '' : $_POST['area_name'];
-        if(!empty($area_name))
-        {
+        if (!empty($area_name)) {
             $sql = "SELECT shipping_area_id FROM " .$ecs->table("shipping_area").
             " WHERE shipping_id='$shipping_id' AND shipping_area_name='$area_name'";
             $area_id = $db->getOne($sql);
 
-            if($area_id <= 0)
-            {
+            if ($area_id <= 0) {
                 $config = array();
-                foreach ($modules[0]['configure'] AS $key => $val)
-                {
+                foreach ($modules[0]['configure'] as $key => $val) {
                     $config[$key]['name']   = $val['name'];
                     $config[$key]['value']  = $val['value'];
                 }
@@ -766,8 +666,7 @@ elseif ($_REQUEST['act'] == 'second')
                 $config[$count]['value']    = 0;
 
                 /* 如果支持货到付款，则允许设置货到付款支付费用 */
-                if ($modules[0]['cod'])
-                {
+                if ($modules[0]['cod']) {
                     $count++;
                     $config[$count]['name']     = 'pay_fee';
                     $config[$count]['value']    = make_semiangle(0);
@@ -793,17 +692,14 @@ elseif ($_REQUEST['act'] == 'second')
 
     unset($modules);
 
-    if(!empty($payment))
-    {
+    if (!empty($payment)) {
         /* 取相应插件信息 */
         $set_modules = true;
         include_once(BASE_PATH.'modules/payment/' . $payment . '.php');
 
         $pay_config = array();
-        if (isset($_REQUEST['cfg_value']) && is_array($_REQUEST['cfg_value']))
-        {
-            for ($i = 0; $i < count($_POST['cfg_value']); $i++)
-            {
+        if (isset($_REQUEST['cfg_value']) && is_array($_REQUEST['cfg_value'])) {
+            for ($i = 0; $i < count($_POST['cfg_value']); $i++) {
                 $pay_config[] = array('name'  => trim($_POST['cfg_name'][$i]),
                                   'type'  => trim($_POST['cfg_type'][$i]),
                                   'value' => trim($_POST['cfg_value'][$i])
@@ -814,16 +710,13 @@ elseif ($_REQUEST['act'] == 'second')
         $pay_config = serialize($pay_config);
         /* 安装，检查该支付方式是否曾经安装过 */
         $sql = "SELECT COUNT(*) FROM " . $ecs->table('payment') . " WHERE pay_code = '$payment'";
-        if ($db->GetOne($sql) > 0)
-        {
+        if ($db->GetOne($sql) > 0) {
             $sql = "UPDATE " . $ecs->table('payment') .
                    " SET pay_config = '$pay_config'," .
                    " enabled = '1' " .
                    "WHERE pay_code = '$payment' LIMIT 1";
             $db->query($sql);
-        }
-        else
-        {
+        } else {
 //            $modules = read_modules('../includes/modules/payment');
 
             $payment_info = array();
@@ -849,8 +742,7 @@ elseif ($_REQUEST['act'] == 'second')
 //-- 开店向导第三步
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'third')
-{
+elseif ($_REQUEST['act'] == 'third') {
     admin_priv('goods_manage');
 
     $good_name = empty($_POST['good_name']) ? '' : $_POST['good_name'];
@@ -865,20 +757,16 @@ elseif ($_REQUEST['act'] == 'third')
     $good_brief = empty($_POST['good_brief']) ? '' : $_POST['good_brief'];
     $market_price = $good_price * 1.2;
 
-    if(!empty($good_category))
-    {
-        if (cat_exists($good_category, 0))
-        {
+    if (!empty($good_category)) {
+        if (cat_exists($good_category, 0)) {
             /* 同级别下不能有重复的分类名称 */
             $link[] = array('text' => $_LANG['go_back'], 'href' => 'javascript:history.back(-1)');
             sys_msg($_LANG['catname_exist'], 0, $link);
         }
     }
 
-    if(!empty($good_brand))
-    {
-        if (brand_exists($good_brand))
-        {
+    if (!empty($good_brand)) {
+        if (brand_exists($good_brand)) {
             /* 同级别下不能有重复的品牌名称 */
             $link[] = array('text' => $_LANG['go_back'], 'href' => 'javascript:history.back(-1)');
             sys_msg($_LANG['brand_name_exist'], 0, $link);
@@ -886,8 +774,7 @@ elseif ($_REQUEST['act'] == 'third')
     }
 
     $brand_id = 0;
-    if(!empty($good_brand))
-    {
+    if (!empty($good_brand)) {
         $sql = 'INSERT INTO ' . $ecs->table('brand') . " (brand_name, is_show)" .
         " values('" . $good_brand . "', '1')";
         $db->query($sql);
@@ -895,8 +782,7 @@ elseif ($_REQUEST['act'] == 'third')
         $brand_id = $db->insert_Id();
     }
 
-    if(!empty($good_category))
-    {
+    if (!empty($good_category)) {
         $sql = 'INSERT INTO ' . $ecs->table('category') . " (cat_name, parent_id, is_show)" .
         " values('" . $good_category . "', '0', '1')";
         $db->query($sql);
@@ -911,57 +797,41 @@ elseif ($_REQUEST['act'] == 'third')
         //include_once(ROOT_PATH . 'includes/cls_image.php');
         $image = new image($_CFG['bgcolor']);
 
-        if(!empty($good_name))
-        {
+        if (!empty($good_name)) {
             /* 检查图片：如果有错误，检查尺寸是否超过最大值；否则，检查文件类型 */
-            if (isset($_FILES['goods_img']['error'])) // php 4.2 版本才支持 error
-            {
+            if (isset($_FILES['goods_img']['error'])) { // php 4.2 版本才支持 error
                 // 最大上传文件大小
                 $php_maxsize = ini_get('upload_max_filesize');
                 $htm_maxsize = '2M';
 
                 // 商品图片
-                if ($_FILES['goods_img']['error'] == 0)
-                {
-                    if (!$image->check_img_type($_FILES['goods_img']['type']))
-                    {
+                if ($_FILES['goods_img']['error'] == 0) {
+                    if (!$image->check_img_type($_FILES['goods_img']['type'])) {
                         sys_msg($_LANG['invalid_goods_img'], 1, array(), false);
                     }
-                }
-                elseif ($_FILES['goods_img']['error'] == 1)
-                {
+                } elseif ($_FILES['goods_img']['error'] == 1) {
                     sys_msg(sprintf($_LANG['goods_img_too_big'], $php_maxsize), 1, array(), false);
-                }
-                elseif ($_FILES['goods_img']['error'] == 2)
-                {
+                } elseif ($_FILES['goods_img']['error'] == 2) {
                     sys_msg(sprintf($_LANG['goods_img_too_big'], $htm_maxsize), 1, array(), false);
                 }
             }
             /* 4。1版本 */
-            else
-            {
+            else {
                 // 商品图片
-                if ($_FILES['goods_img']['tmp_name'] != 'none')
-                {
-                    if (!$image->check_img_type($_FILES['goods_img']['type']))
-                    {
+                if ($_FILES['goods_img']['tmp_name'] != 'none') {
+                    if (!$image->check_img_type($_FILES['goods_img']['type'])) {
                         sys_msg($_LANG['invalid_goods_img'], 1, array(), false);
                     }
                 }
-
-
             }
             $goods_img        = '';  // 初始化商品图片
             $goods_thumb      = '';  // 初始化商品缩略图
             $original_img     = '';  // 初始化原始图片
             $old_original_img = '';  // 初始化原始图片旧图
             // 如果上传了商品图片，相应处理
-            if ($_FILES['goods_img']['tmp_name'] != '' && $_FILES['goods_img']['tmp_name'] != 'none')
-            {
-
+            if ($_FILES['goods_img']['tmp_name'] != '' && $_FILES['goods_img']['tmp_name'] != 'none') {
                 $original_img   = $image->upload_image($_FILES['goods_img']); // 原始图片
-                if ($original_img === false)
-                {
+                if ($original_img === false) {
                     sys_msg($image->error_msg(), 1, array(), false);
                 }
                 $goods_img      = $original_img;   // 商品图片
@@ -970,8 +840,7 @@ elseif ($_REQUEST['act'] == 'third')
                 $img        = $original_img;   // 相册图片
                 $pos        = strpos(basename($img), '.');
                 $newname    = dirname($img) . '/' . $image->random_filename() . substr(basename($img), $pos);
-                if (!copy('../' . $img, '../' . $newname))
-                {
+                if (!copy('../' . $img, '../' . $newname)) {
                     sys_msg('fail to copy file: ' . realpath('../' . $img), 1, array(), false);
                 }
                 $img        = $newname;
@@ -980,75 +849,58 @@ elseif ($_REQUEST['act'] == 'third')
                 $gallery_thumb  = $img;
 
                 // 如果系统支持GD，缩放商品图片，且给商品图片和相册图片加水印
-                if ($image->gd_version() > 0 && $image->check_img_function($_FILES['goods_img']['type']))
-                {
+                if ($image->gd_version() > 0 && $image->check_img_function($_FILES['goods_img']['type'])) {
                     // 如果设置大小不为0，缩放图片
-                    if ($_CFG['image_width'] != 0 || $_CFG['image_height'] != 0)
-                    {
-                        $goods_img = $image->make_thumb('../'. $goods_img , $GLOBALS['_CFG']['image_width'],  $GLOBALS['_CFG']['image_height']);
-                        if ($goods_img === false)
-                        {
+                    if ($_CFG['image_width'] != 0 || $_CFG['image_height'] != 0) {
+                        $goods_img = $image->make_thumb('../'. $goods_img, $GLOBALS['_CFG']['image_width'], $GLOBALS['_CFG']['image_height']);
+                        if ($goods_img === false) {
                             sys_msg($image->error_msg(), 1, array(), false);
                         }
                     }
 
                     $newname    = dirname($img) . '/' . $image->random_filename() . substr(basename($img), $pos);
-                    if (!copy('../' . $img, '../' . $newname))
-                    {
+                    if (!copy('../' . $img, '../' . $newname)) {
                         sys_msg('fail to copy file: ' . realpath('../' . $img), 1, array(), false);
                     }
                     $gallery_img        = $newname;
 
                     // 加水印
-                    if (intval($_CFG['watermark_place']) > 0 && !empty($GLOBALS['_CFG']['watermark']))
-                    {
-                        if ($image->add_watermark('../'.$goods_img,'',$GLOBALS['_CFG']['watermark'], $GLOBALS['_CFG']['watermark_place'], $GLOBALS['_CFG']['watermark_alpha']) === false)
-                        {
+                    if (intval($_CFG['watermark_place']) > 0 && !empty($GLOBALS['_CFG']['watermark'])) {
+                        if ($image->add_watermark('../'.$goods_img, '', $GLOBALS['_CFG']['watermark'], $GLOBALS['_CFG']['watermark_place'], $GLOBALS['_CFG']['watermark_alpha']) === false) {
                             sys_msg($image->error_msg(), 1, array(), false);
                         }
 
-                        if ($image->add_watermark('../'. $gallery_img,'',$GLOBALS['_CFG']['watermark'], $GLOBALS['_CFG']['watermark_place'], $GLOBALS['_CFG']['watermark_alpha']) === false)
-                        {
+                        if ($image->add_watermark('../'. $gallery_img, '', $GLOBALS['_CFG']['watermark'], $GLOBALS['_CFG']['watermark_place'], $GLOBALS['_CFG']['watermark_alpha']) === false) {
                             sys_msg($image->error_msg(), 1, array(), false);
                         }
                     }
 
                     // 相册缩略图
-                    if ($_CFG['thumb_width'] != 0 || $_CFG['thumb_height'] != 0)
-                    {
-                        $gallery_thumb = $image->make_thumb('../' . $img, $GLOBALS['_CFG']['thumb_width'],  $GLOBALS['_CFG']['thumb_height']);
-                        if ($gallery_thumb === false)
-                        {
+                    if ($_CFG['thumb_width'] != 0 || $_CFG['thumb_height'] != 0) {
+                        $gallery_thumb = $image->make_thumb('../' . $img, $GLOBALS['_CFG']['thumb_width'], $GLOBALS['_CFG']['thumb_height']);
+                        if ($gallery_thumb === false) {
                             sys_msg($image->error_msg(), 1, array(), false);
                         }
                     }
-                }
-                else
-                {
+                } else {
                     /* 复制一份原图 */
                     $pos        = strpos(basename($img), '.');
                     $gallery_img = dirname($img) . '/' . $image->random_filename() . substr(basename($img), $pos);
-                    if (!copy('../' . $img, '../' . $gallery_img))
-                    {
+                    if (!copy('../' . $img, '../' . $gallery_img)) {
                         sys_msg('fail to copy file: ' . realpath('../' . $img), 1, array(), false);
                     }
                     $gallery_thumb = '';
                 }
             }
             // 未上传，如果自动选择生成，且上传了商品图片，生成所略图
-            if (!empty($original_img))
-            {
+            if (!empty($original_img)) {
                 // 如果设置缩略图大小不为0，生成缩略图
-                if ($_CFG['thumb_width'] != 0 || $_CFG['thumb_height'] != 0)
-                {
-                    $goods_thumb = $image->make_thumb('../' . $original_img, $GLOBALS['_CFG']['thumb_width'],  $GLOBALS['_CFG']['thumb_height']);
-                    if ($goods_thumb === false)
-                    {
+                if ($_CFG['thumb_width'] != 0 || $_CFG['thumb_height'] != 0) {
+                    $goods_thumb = $image->make_thumb('../' . $original_img, $GLOBALS['_CFG']['thumb_width'], $GLOBALS['_CFG']['thumb_height']);
+                    if ($goods_thumb === false) {
                         sys_msg($image->error_msg(), 1, array(), false);
                     }
-                }
-                else
-                {
+                } else {
                     $goods_thumb = $original_img;
                 }
             }
@@ -1059,16 +911,14 @@ elseif ($_REQUEST['act'] == 'third')
                    "VALUES('$good_name', '$goods_sn', '$good_number', '$cat_id', '$brand_id', '$good_brief', '$good_price'," .
                    " '$market_price', '$goods_img', '$goods_thumb', '$original_img','" . gmtime() . "', '". gmtime() . "', '$is_best', '$is_new', '$is_hot')";
 
-                   $db->query($sql);
-                   $good_id = $db->insert_id();
-                   /* 如果有图片，把商品图片加入图片相册 */
-                   if (isset($img))
-                   {
-                       $sql = "INSERT INTO " . $ecs->table('goods_gallery') . " (goods_id, img_url, img_desc, thumb_url, img_original) " .
+            $db->query($sql);
+            $good_id = $db->insert_id();
+            /* 如果有图片，把商品图片加入图片相册 */
+            if (isset($img)) {
+                $sql = "INSERT INTO " . $ecs->table('goods_gallery') . " (goods_id, img_url, img_desc, thumb_url, img_original) " .
                        "VALUES ('$good_id', '$gallery_img', '', '$gallery_thumb', '$img')";
-                       $db->query($sql);
-                   }
-
+                $db->query($sql);
+            }
         }
     }
 
@@ -1081,8 +931,7 @@ elseif ($_REQUEST['act'] == 'third')
 //-- 关于 ECSHOP
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'about_us')
-{
+elseif ($_REQUEST['act'] == 'about_us') {
     assign_query_info();
     $smarty->display('2016_about_us.htm');
 }
@@ -1091,18 +940,16 @@ elseif ($_REQUEST['act'] == 'about_us')
 //-- 拖动的帧
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'drag')
-{
-    $smarty->display('2016_drag.htm');;
+elseif ($_REQUEST['act'] == 'drag') {
+    $smarty->display('2016_drag.htm');
+    ;
 }
 
 /*------------------------------------------------------ */
 //-- 检查订单
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'check_order')
-{
-    if (empty($_SESSION['last_check']))
-    {
+elseif ($_REQUEST['act'] == 'check_order') {
+    if (empty($_SESSION['last_check'])) {
         $_SESSION['last_check'] = gmtime();
 
         make_json_result('', '', array('new_orders' => 0, 'new_paid' => 0));
@@ -1120,12 +967,9 @@ elseif ($_REQUEST['act'] == 'check_order')
 
     $_SESSION['last_check'] = gmtime();
 
-    if (!(is_numeric($arr['new_orders']) && is_numeric($arr['new_paid'])))
-    {
+    if (!(is_numeric($arr['new_orders']) && is_numeric($arr['new_paid']))) {
         make_json_error($db->error());
-    }
-    else
-    {
+    } else {
         make_json_result('', '', $arr);
     }
 }
@@ -1133,24 +977,18 @@ elseif ($_REQUEST['act'] == 'check_order')
 /*------------------------------------------------------ */
 //-- Totolist操作
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'save_todolist')
-{
+elseif ($_REQUEST['act'] == 'save_todolist') {
     $content = json_str_iconv($_POST["content"]);
     $sql = "UPDATE" .$GLOBALS['ecs']->table('admin_user'). " SET todolist='" . $content . "' WHERE user_id = " . $_SESSION['admin_id'];
     $GLOBALS['db']->query($sql);
-}
-
-elseif ($_REQUEST['act'] == 'get_todolist')
-{
+} elseif ($_REQUEST['act'] == 'get_todolist') {
     $sql     = "SELECT todolist FROM " .$GLOBALS['ecs']->table('admin_user'). " WHERE user_id = " . $_SESSION['admin_id'];
     $content = $GLOBALS['db']->getOne($sql);
     echo $content;
 }
 // 邮件群发处理
-elseif ($_REQUEST['act'] == 'send_mail')
-{
-    if ($_CFG['send_mail_on'] == 'off')
-    {
+elseif ($_REQUEST['act'] == 'send_mail') {
+    if ($_CFG['send_mail_on'] == 'off') {
         make_json_result('', $_LANG['send_mail_off'], 0);
         exit();
     }
@@ -1158,14 +996,12 @@ elseif ($_REQUEST['act'] == 'send_mail')
     $row = $db->getRow($sql);
 
     //发送列表为空
-    if (empty($row['id']))
-    {
+    if (empty($row['id'])) {
         make_json_result('', $_LANG['mailsend_null'], 0);
     }
 
     //发送列表不为空，邮件地址为空
-    if (!empty($row['id']) && empty($row['email']))
-    {
+    if (!empty($row['id']) && empty($row['email'])) {
         $sql = "DELETE FROM " . $ecs->table('email_sendlist') . " WHERE id = '$row[id]'";
         $db->query($sql);
         $count = $db->getOne("SELECT COUNT(*) FROM " . $ecs->table('email_sendlist'));
@@ -1178,15 +1014,12 @@ elseif ($_REQUEST['act'] == 'send_mail')
 
     //如果是模板，则将已存入email_sendlist的内容作为邮件内容
     //否则即是杂质，将mail_templates调出的内容作为邮件内容
-    if ($rt['type'] == 'template')
-    {
+    if ($rt['type'] == 'template') {
         $rt['template_content'] = $row['email_content'];
     }
 
-    if ($rt['template_id'] && $rt['template_content'])
-    {
-        if (send_mail('', $row['email'], $rt['template_subject'], $rt['template_content'], $rt['is_html']))
-        {
+    if ($rt['template_id'] && $rt['template_content']) {
+        if (send_mail('', $row['email'], $rt['template_subject'], $rt['template_content'], $rt['is_html'])) {
             //发送成功
 
             //从列表中删除
@@ -1196,55 +1029,43 @@ elseif ($_REQUEST['act'] == 'send_mail')
             //剩余列表数
             $count = $db->getOne("SELECT COUNT(*) FROM " . $ecs->table('email_sendlist'));
 
-            if($count > 0)
-            {
-                $msg = sprintf($_LANG['mailsend_ok'],$row['email'],$count);
-            }
-            else
-            {
-                $msg = sprintf($_LANG['mailsend_finished'],$row['email']);
+            if ($count > 0) {
+                $msg = sprintf($_LANG['mailsend_ok'], $row['email'], $count);
+            } else {
+                $msg = sprintf($_LANG['mailsend_finished'], $row['email']);
             }
             make_json_result('', $msg, array('count' => $count));
-        }
-        else
-        {
+        } else {
             //发送出错
 
-            if ($row['error'] < 3)
-            {
+            if ($row['error'] < 3) {
                 $time = time();
                 $sql = "UPDATE " . $ecs->table('email_sendlist') . " SET error = error + 1, pri = 0, last_send = '$time' WHERE id = '$row[id]'";
-            }
-            else
-            {
+            } else {
                 //将出错超次的纪录删除
                 $sql = "DELETE FROM " . $ecs->table('email_sendlist') . " WHERE id = '$row[id]'";
             }
             $db->query($sql);
 
             $count = $db->getOne("SELECT COUNT(*) FROM " . $ecs->table('email_sendlist'));
-            make_json_result('', sprintf($_LANG['mailsend_fail'],$row['email']), array('count' => $count));
+            make_json_result('', sprintf($_LANG['mailsend_fail'], $row['email']), array('count' => $count));
         }
-    }
-    else
-    {
+    } else {
         //无效的邮件队列
         $sql = "DELETE FROM " . $ecs->table('email_sendlist') . " WHERE id = '$row[id]'";
         $db->query($sql);
         $count = $db->getOne("SELECT COUNT(*) FROM " . $ecs->table('email_sendlist'));
-        make_json_result('', sprintf($_LANG['mailsend_fail'],$row['email']), array('count' => $count));
+        make_json_result('', sprintf($_LANG['mailsend_fail'], $row['email']), array('count' => $count));
     }
 }
 
 /*------------------------------------------------------ */
 //-- license操作
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'license')
-{
+elseif ($_REQUEST['act'] == 'license') {
     $is_ajax = $_GET['is_ajax'];
 
-    if (isset($is_ajax) && $is_ajax)
-    {
+    if (isset($is_ajax) && $is_ajax) {
         // license 检查
         // include_once(ROOT_PATH . 'includes/cls_transport.php');
         // include_once(ROOT_PATH . 'includes/cls_json.php');
@@ -1252,15 +1073,11 @@ elseif ($_REQUEST['act'] == 'license')
         include_once(BASE_PATH . 'helpers/license_helper.php');
 
         $license = license_check();
-        switch ($license['flag'])
-        {
+        switch ($license['flag']) {
             case 'login_succ':
-                if (isset($license['request']['info']['service']['ecshop_b2c']['cert_auth']['auth_str']))
-                {
+                if (isset($license['request']['info']['service']['ecshop_b2c']['cert_auth']['auth_str'])) {
                     make_json_result(process_login_license($license['request']['info']['service']['ecshop_b2c']['cert_auth']));
-                }
-                else
-                {
+                } else {
                     make_json_error(0);
                 }
             break;
@@ -1272,15 +1089,11 @@ elseif ($_REQUEST['act'] == 'license')
 
             case 'reg_succ':
                 $_license = license_check();
-                switch ($_license['flag'])
-                {
+                switch ($_license['flag']) {
                     case 'login_succ':
-                        if (isset($_license['request']['info']['service']['ecshop_b2c']['cert_auth']['auth_str']) && $_license['request']['info']['service']['ecshop_b2c']['cert_auth']['auth_str'] != '')
-                        {
+                        if (isset($_license['request']['info']['service']['ecshop_b2c']['cert_auth']['auth_str']) && $_license['request']['info']['service']['ecshop_b2c']['cert_auth']['auth_str'] != '') {
                             make_json_result(process_login_license($license['request']['info']['service']['ecshop_b2c']['cert_auth']));
-                        }
-                        else
-                        {
+                        } else {
                             make_json_error(0);
                         }
                     break;
@@ -1297,9 +1110,7 @@ elseif ($_REQUEST['act'] == 'license')
                 make_json_error(0);
             break;
         }
-    }
-    else
-    {
+    } else {
         make_json_error(0);
     }
 }
@@ -1317,17 +1128,13 @@ function license_check()
     $license = get_shop_license();
 
     // 检测网店 license
-    if (!empty($license['certificate_id']) && !empty($license['token']) && !empty($license['certi']))
-    {
+    if (!empty($license['certificate_id']) && !empty($license['token']) && !empty($license['certi'])) {
         // license（登录）
         $return_array = license_login();
-    }
-    else
-    {
+    } else {
         // license（注册）
         $return_array = license_reg();
     }
 
     return $return_array;
 }
-?>

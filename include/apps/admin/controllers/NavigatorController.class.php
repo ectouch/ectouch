@@ -16,12 +16,14 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class NavigatorController extends AdminController {
+class NavigatorController extends AdminController
+{
 
     /**
      * 菜单列表
      */
-    public function index() {
+    public function index()
+    {
         $list = $this->get_list();
         /* 模板赋值 */
         $this->assign('list', $list);
@@ -33,7 +35,8 @@ class NavigatorController extends AdminController {
     /**
      * 新增菜单
      */
-    public function add() {
+    public function add()
+    {
         if (IS_POST) {
             $data = I('data');
             //数据验证
@@ -43,13 +46,13 @@ class NavigatorController extends AdminController {
             ));
             //提示信息
             if ($msg !== true) {
-                $this->message($msg, NULL, 'error');
+                $this->message($msg, null, 'error');
             }
             /* 更新图标 */
             if ($_FILES['pic']['name']) {
                 $result = $this->ectouchUpload('pic', 'nav');
                 if ($result['error'] > 0) {
-                    $this->message($result['message'], NULL, 'error');
+                    $this->message($result['message'], null, 'error');
                 }
                 $data['pic'] = substr($result['message']['pic']['savepath'], 2) . $result['message']['pic']['savename'];
             }
@@ -65,7 +68,8 @@ class NavigatorController extends AdminController {
     /**
      * 编辑菜单
      */
-    public function edit() {
+    public function edit()
+    {
         $id = I('id');
         if (IS_POST) {
             $data = I('data');
@@ -76,20 +80,20 @@ class NavigatorController extends AdminController {
             ));
             //提示信息
             if ($msg !== true) {
-                $this->message($msg, NULL, 'error');
+                $this->message($msg, null, 'error');
             }
             /* 更新图标 */
             if ($_FILES['pic']['name']) {
                 $result = $this->ectouchUpload('pic', 'nav');
                 if ($result['error'] > 0) {
-                    $this->message($result['message'], NULL, 'error');
+                    $this->message($result['message'], null, 'error');
                 }
                 $data['pic'] = substr($result['message']['pic']['savepath'], 2) . $result['message']['pic']['savename'];
             }
             $this->model->table('touch_nav')->data($data)->where('id=' . $id)->update();
             $this->message(L('edit_ok'), url('index'));
         }
-        //查询附表信息           
+        //查询附表信息
         $result = $this->model->table('touch_nav')->where('id=' . $id)->find();
         /* 模板赋值 */
         $this->assign('info', $result);
@@ -101,7 +105,8 @@ class NavigatorController extends AdminController {
     /**
      * 删除菜单
      */
-    public function del() {
+    public function del()
+    {
         $condition['id'] = I('id');
         $this->model->table('touch_nav')->where($condition)->delete();
         clear_all_files();
@@ -112,10 +117,10 @@ class NavigatorController extends AdminController {
      * 返回菜单列表
      * @return array
      */
-    private function get_list() {
+    private function get_list()
+    {
         /* 查询 */
         $result = $this->model->table('touch_nav')->field('id, name, ifshow, vieworder, opennew, url, pic, type')->order('vieworder asc,id asc')->select();
         return $result;
     }
-
 }

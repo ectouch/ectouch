@@ -15,8 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ActivityController extends CommonController {
-
+class ActivityController extends CommonController
+{
     private $children = '';
     private $brand = '';
     private $goods = '';
@@ -28,33 +28,36 @@ class ActivityController extends CommonController {
     /**
      * 构造函数
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
     /**
      * 优惠活动 列表
      */
-    public function index() {
+    public function index()
+    {
         $this->parameter();
         $this->assign('page', $this->page);
         $this->assign('size', $this->size);
         $this->assign('sort', $this->sort);
         $this->assign('order', $this->order);
-		$count = model('Activity')->get_activity_count();
+        $count = model('Activity')->get_activity_count();
         $this->pageLimit(url('index'), $this->size);
         $this->assign('pager', $this->pageShow($count));
         
         $list = model('Activity')->get_activity_info($this->size, $this->page);
         $this->assign('list', $list);
-		
+        
         $this->display('activity.dwt');
     }
 
     /**
      * 优惠活动 - 异步加载
      */
-    public function asynclist() {
+    public function asynclist()
+    {
         // 开始工作
         $this->parameter();
         $asyn_last = intval(I('post.last')) + 1;
@@ -74,7 +77,8 @@ class ActivityController extends CommonController {
     /**
      * 优惠活动 - 活动商品列表
      */
-    public function goods_list() {
+    public function goods_list()
+    {
         $this->parameter();
         $id = intval(I('request.id'));
         $this->assign('id', $id);
@@ -97,7 +101,7 @@ class ActivityController extends CommonController {
                 $this->goods = " g.goods_id " . db_create_in($res['act_range_ext']);
             }
         }
-        $count = model('Activity')->category_get_count($this->children, $this->brand, $this->goods,$this->price_min, $this->price_max,$this->ext);
+        $count = model('Activity')->category_get_count($this->children, $this->brand, $this->goods, $this->price_min, $this->price_max, $this->ext);
         $this->pageLimit(url('goods_list', array('id' => $id, 'brand' => $this->brand, 'sort' => $this->sort, 'order' => $this->order)), $this->size);
         $this->assign('pager', $this->pageShow($count));
         $goods_list = model('Activity')->category_get_goods($this->children, $this->brand, $this->goods, $this->size, $this->page, $this->sort, $this->order);
@@ -108,7 +112,8 @@ class ActivityController extends CommonController {
     /**
      * 优惠活动 - 活动商品列表 -异步加载
      */
-    public function asynclist_list() {
+    public function asynclist_list()
+    {
         $this->parameter();
         $id = intval(I('request.id'));
         if (!$id) {
@@ -144,7 +149,8 @@ class ActivityController extends CommonController {
     /**
      * 处理参数便于搜索商品信息
      */
-    private function parameter() {
+    private function parameter()
+    {
         // 如果分类ID为0，则返回总分类页
         $page_size = C('page_size');
         $this->size = intval($page_size) > 0 ? intval($page_size) : 10;

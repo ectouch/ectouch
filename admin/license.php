@@ -7,8 +7,7 @@ require(dirname(__FILE__) . '/includes/init.php');
 /*------------------------------------------------------ */
 //-- 证书编辑页
 /*------------------------------------------------------ */
-if ($_REQUEST['act']== 'list_edit')
-{
+if ($_REQUEST['act']== 'list_edit') {
     /* 检查权限 */
     admin_priv('shop_authorized');
 
@@ -18,8 +17,7 @@ if ($_REQUEST['act']== 'list_edit')
 
     $smarty->assign('ur_here', $_LANG['license_here']);
     $smarty->assign('is_download', '0');
-    if ($license['certificate_id'] != '' && $license['token'] != '')
-    {
+    if ($license['certificate_id'] != '' && $license['token'] != '') {
         $smarty->assign('is_download', '1');
     }
 
@@ -33,8 +31,7 @@ if ($_REQUEST['act']== 'list_edit')
 //-- 证书下载
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act']== 'download')
-{
+elseif ($_REQUEST['act']== 'download') {
     /* 检查权限 */
     admin_priv('shop_authorized');
 
@@ -42,8 +39,7 @@ elseif ($_REQUEST['act']== 'download')
 
     $license = get_shop_license();
 
-    if ($license['certificate_id'] == '' || $license['token'] == '')
-    {
+    if ($license['certificate_id'] == '' || $license['token'] == '') {
         $links[] = array('text' => $_LANG['back'], 'href' => 'license.php?act=list_edit');
         sys_msg($_LANG['no_license_down'], 0, $links);
     }
@@ -59,23 +55,18 @@ elseif ($_REQUEST['act']== 'download')
 //-- 证书上传
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act']== 'upload')
-{
+elseif ($_REQUEST['act']== 'upload') {
     /* 检查权限 */
     admin_priv('shop_authorized');
 
     /* 接收上传文件 */
     /* 取出证书内容 */
     $license_arr = array();
-    if (isset($_FILES['license']['error']) && $_FILES['license']['error'] == 0 && preg_match('/CER$/i' ,$_FILES['license']['name']))
-    {
-        if (file_exists($_FILES['license']['tmp_name']) && is_readable($_FILES['license']['tmp_name']))
-        {
-            if ($license_f = fopen($_FILES['license']['tmp_name'], 'r'))
-            {
+    if (isset($_FILES['license']['error']) && $_FILES['license']['error'] == 0 && preg_match('/CER$/i', $_FILES['license']['name'])) {
+        if (file_exists($_FILES['license']['tmp_name']) && is_readable($_FILES['license']['tmp_name'])) {
+            if ($license_f = fopen($_FILES['license']['tmp_name'], 'r')) {
                 $license_content = '';
-                while (!feof($license_f))
-                {
+                while (!feof($license_f)) {
                     $license_content .= fgets($license_f, 4096);
                 }
                 $license_content = trim($license_content);
@@ -86,13 +77,10 @@ elseif ($_REQUEST['act']== 'upload')
     }
 
     /* 恢复证书 */
-    if (count($license_arr) != 2 || $license_arr[0] == '' || $license_arr[1] == '')
-    {
+    if (count($license_arr) != 2 || $license_arr[0] == '' || $license_arr[1] == '') {
         $links[] = array('text' => $_LANG['back'], 'href' => 'license.php?act=list_edit');
         sys_msg($_LANG['fail_license'], 1, $links);
-    }
-    else
-    {
+    } else {
         // include_once(ROOT_PATH . 'includes/cls_transport.php');
         // include_once(ROOT_PATH . 'includes/cls_json.php');
         include_once(BASE_PATH . 'helpers/main_helper.php');
@@ -100,8 +88,7 @@ elseif ($_REQUEST['act']== 'upload')
 
         // 证书登录
         $login_result = license_login();
-        if ($login_result['flag'] != 'login_succ')
-        {
+        if ($login_result['flag'] != 'login_succ') {
             $links[] = array('text' => $_LANG['back'], 'href' => 'license.php?act=list_edit');
             sys_msg($_LANG['fail_license_login'], 1, $links);
         }
@@ -118,15 +105,13 @@ elseif ($_REQUEST['act']== 'upload')
         $links[] = array('text' => $_LANG['back'], 'href' => 'license.php?act=list_edit');
         sys_msg($_LANG['recover_license'], 0, $links);
     }
-
 }
 
 /*------------------------------------------------------ */
 //-- 证书删除
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act']== 'del')
-{
+elseif ($_REQUEST['act']== 'del') {
     /* 检查权限 */
     admin_priv('shop_authorized');
 
@@ -138,4 +123,3 @@ elseif ($_REQUEST['act']== 'del')
     $links[] = array('text' => $_LANG['back'], 'href' => 'license.php?act=list_edit');
     sys_msg($_LANG['delete_license'], 0, $links);
 }
-?>

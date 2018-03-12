@@ -16,20 +16,22 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class PaymentModel extends BaseModel {
+class PaymentModel extends BaseModel
+{
 
     /**
      *  取得某支付方式信息
      *  @param  string  $code   支付方式代码
      */
-    function get_payment($code) {
+    public function get_payment($code)
+    {
         $sql = 'SELECT * FROM ' . $this->pre . "payment WHERE pay_code = '$code' AND enabled = '1'";
         $payment = $this->row($sql);
 
         if ($payment) {
             $config_list = unserialize($payment['pay_config']);
 
-            foreach ($config_list AS $config) {
+            foreach ($config_list as $config) {
                 $payment[$config['name']] = $config['value'];
             }
         }
@@ -41,7 +43,8 @@ class PaymentModel extends BaseModel {
      *  @param  string  $order_sn   订单sn
      *  @param  blob    $voucher    是否为会员充值
      */
-    function get_order_id_by_sn($order_sn, $voucher = 'false') {
+    public function get_order_id_by_sn($order_sn, $voucher = 'false')
+    {
         if ($voucher == 'true') {
             if (is_numeric($order_sn)) {
                 $sql = "SELECT log_id FROM " . $this->pre . "pay_log WHERE order_id=" . $order_sn . ' AND order_type=1';
@@ -70,7 +73,8 @@ class PaymentModel extends BaseModel {
      *  通过订单ID取得订单商品名称
      *  @param  string  $order_id   订单ID
      */
-    function get_goods_name_by_id($order_id) {
+    public function get_goods_name_by_id($order_id)
+    {
         $sql = 'SELECT goods_name FROM ' . $this->pre . "order_goods WHERE order_id = '$order_id'";
         $res = $this->query($sql);
         if ($res !== false) {
@@ -89,7 +93,8 @@ class PaymentModel extends BaseModel {
      * @param   float    $money       支付接口返回的金额
      * @return  true
      */
-    function check_money($log_id, $money) {
+    public function check_money($log_id, $money)
+    {
         if (is_numeric($log_id)) {
             $sql = 'SELECT order_amount FROM ' . $this->pre .
                     "pay_log WHERE log_id = '$log_id'";
@@ -114,7 +119,8 @@ class PaymentModel extends BaseModel {
      * @param   string  $note       备注
      * @return  void
      */
-    function order_paid($log_id, $pay_status = PS_PAYED, $note = '') {
+    public function order_paid($log_id, $pay_status = PS_PAYED, $note = '')
+    {
         /* 取得支付编号 */
         $log_id = intval($log_id);
         if ($log_id > 0) {
@@ -158,7 +164,7 @@ class PaymentModel extends BaseModel {
                         $sms->send(C('sms_shop_mobile'), sprintf(L('order_payed_sms'), $order_sn, $order['consignee'], $order['mobile']), '', 13, 1);
                     }
                     /* 如果安装微信通,订单支付成功消息提醒 */
-                    if(class_exists('WechatController')) {
+                    if (class_exists('WechatController')) {
                         $pushData = array(
                             'first' => array('value' => '恭喜，您的订单已经支付成功'),
                             'keyword1' => array('value' => $order_sn,'color' => '#FF0000'),  // 订单号
@@ -169,7 +175,7 @@ class PaymentModel extends BaseModel {
                             'remark' => array('value' => '我们会尽快给您安排发货')
                         );
                         // $url = __URL__ . 'index.php?c=user&a=order_detail&order_id='.$order_id;
-                        $order_url = __HOST__ . U('user/order_detail',array('order_id'=> $order_id));
+                        $order_url = __HOST__ . U('user/order_detail', array('order_id'=> $order_id));
                         $url = str_replace('api/notify/wxpay.php', '', $order_url);
                         pushTemplate('OPENTM204987032', $pushData, $url, $order['user_id']);
                     }
@@ -264,12 +270,13 @@ class PaymentModel extends BaseModel {
     /**
      * 根据out_trade_no订单号获取log_id;
      */
-    function get_log_id($out_trade_no = null) {
-		$out_trade_no = (string)$out_trade_no;
+    public function get_log_id($out_trade_no = null)
+    {
+        $out_trade_no = (string)$out_trade_no;
         $sql = 'SELECT l.log_id ' .
             'FROM ' . $this->pre .
             "pay_log AS l INNER JOIN " .$this->pre .
-			"order_info AS i ON i.order_id = l.order_id AND i.order_sn = '$out_trade_no'";
+            "order_info AS i ON i.order_id = l.order_id AND i.order_sn = '$out_trade_no'";
         $order = $this->row($sql);
         return $order['log_id'];
     }

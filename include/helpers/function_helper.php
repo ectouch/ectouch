@@ -4,9 +4,10 @@
 /**
  * ECTouch 基础函数库
  */
-function getDbInstance(){
+function getDbInstance()
+{
     static $obj = array();
-    if(empty($obj)){
+    if (empty($obj)) {
         $db_config = require_cache(DATA_PATH . 'config.php', true);
         $obj = new stdClass();
         $obj->ecs = new ecshop($db_config['DB_NAME'], $db_config['DB_PREFIX']);
@@ -18,9 +19,10 @@ function getDbInstance(){
     return $obj;
 }
 
-function getInstance(){
+function getInstance()
+{
     static $obj = array();
-    if(empty($obj)){
+    if (empty($obj)) {
         $obj = getDbInstance();
         //$touch->cfg = null;
         /*$obj->sess = new session($obj->db, $obj->ecs->table('sessions'), $obj->ecs->table('sessions_data'));*/
@@ -52,7 +54,8 @@ function getInstance(){
  * @param boolean $strict 是否严谨 默认为true
  * @return void|string
  */
-function dump($var, $echo=true, $label=null, $strict=true) {
+function dump($var, $echo=true, $label=null, $strict=true)
+{
     $label = ($label === null) ? '' : rtrim($label) . ' ';
     if (!$strict) {
         if (ini_get('html_errors')) {
@@ -73,8 +76,9 @@ function dump($var, $echo=true, $label=null, $strict=true) {
     if ($echo) {
         echo($output);
         return null;
-    }else
+    } else {
         return $output;
+    }
 }
 
 /**
@@ -83,10 +87,11 @@ function dump($var, $echo=true, $label=null, $strict=true) {
  * @param  array  $params URL参数
  * @return string
  */
-function url($route=null, $params=array()) {
+function url($route=null, $params=array())
+{
     $controller = CONTROLLER_NAME;
     $action = ACTION_NAME;
-    if($route){
+    if ($route) {
         $route = explode('/', strtolower($route), 2);
         $routeNum = count($route);
         switch ($routeNum) {
@@ -113,11 +118,13 @@ function url($route=null, $params=array()) {
  * @param string $msg 重定向前的提示信息
  * @return void
  */
-function redirect($url, $time=0, $msg='') {
+function redirect($url, $time=0, $msg='')
+{
     //多行URL地址支持
     $url        = str_replace(array("\n", "\r"), '', $url);
-    if (empty($msg))
+    if (empty($msg)) {
         $msg    = "系统将在{$time}秒之后自动跳转到{$url}！";
+    }
     if (!headers_sent()) {
         // redirect
         if (0 === $time) {
@@ -129,8 +136,9 @@ function redirect($url, $time=0, $msg='') {
         exit();
     } else {
         $str    = "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
-        if ($time != 0)
+        if ($time != 0) {
             $str .= $msg;
+        }
         exit($str);
     }
 }
@@ -140,11 +148,12 @@ function redirect($url, $time=0, $msg='') {
  * @param string $path
  * @return mixed
  */
-function get_image_url($path = ''){
-    if(!$path){
+function get_image_url($path = '')
+{
+    if (!$path) {
         return false;
     }
-    if(preg_match("/http:\/\/|https:\/\//", $path)){
+    if (preg_match("/http:\/\/|https:\/\//", $path)) {
         return $path;
     }
     $path = base_url($path);
@@ -164,20 +173,21 @@ function get_image_url($path = ''){
  * @param mixed $filter 参数过滤方法
  * @return mixed
  */
-function I($name,$default='') {
+function I($name, $default='')
+{
     $obj = get_instance();
-    if(strpos($name,'.')) { // 指定参数来源
-        list($method,$name) =   explode('.',$name,2);
-    }else{ // 默认为自动判断
+    if (strpos($name, '.')) { // 指定参数来源
+        list($method, $name) =   explode('.', $name, 2);
+    } else { // 默认为自动判断
         $method =   'param';
     }
 
-    switch(strtolower($method)) {
-        case 'get'     :   $input = $obj->input->get();break;
-        case 'post'    :   $input = $obj->input->post();break;
-        case 'put'     :   parse_str(file_get_contents('php://input'), $input);break;
-        case 'param'   :
-            switch($_SERVER['REQUEST_METHOD']) {
+    switch (strtolower($method)) {
+        case 'get':   $input = $obj->input->get();break;
+        case 'post':   $input = $obj->input->post();break;
+        case 'put':   parse_str(file_get_contents('php://input'), $input);break;
+        case 'param':
+            switch ($_SERVER['REQUEST_METHOD']) {
                 case 'POST':
                     $input  =  $obj->input->post();
                     break;
@@ -189,14 +199,14 @@ function I($name,$default='') {
             }
             break;
         default:
-            return NULL;
+            return null;
     }
-    if(empty($name)) { // 获取全部变量
+    if (empty($name)) { // 获取全部变量
         $data       =   $input;
-    }elseif(isset($input[$name])) { // 取值操作
+    } elseif (isset($input[$name])) { // 取值操作
         $data       =	$input[$name];
-    }else{ // 变量默认值
-        $data       =	 isset($default)?$default:NULL;
+    } else { // 变量默认值
+        $data       =	 isset($default)?$default:null;
     }
     return $data;
 }
@@ -214,20 +224,21 @@ function I($name,$default='') {
  * @param mixed $filter 参数过滤方法
  * @return mixed
  */
-function I_A($name,$default='',$filter = 'htmlspecialchars') {
+function I_A($name, $default='', $filter = 'htmlspecialchars')
+{
     $obj = get_instance();
-    if(strpos($name,'.')) { // 指定参数来源
-        list($method,$name) =   explode('.',$name,2);
-    }else{ // 默认为自动判断
+    if (strpos($name, '.')) { // 指定参数来源
+        list($method, $name) =   explode('.', $name, 2);
+    } else { // 默认为自动判断
         $method =   'param';
     }
 
-    switch(strtolower($method)) {
-        case 'get'     :   $input =& $obj->input->get();break;
-        case 'post'    :   $input = json_decode(file_get_contents('php://input'), true);break;
-        case 'put'     :   parse_str(file_get_contents('php://input'), $input);break;
-        case 'param'   :
-            switch($_SERVER['REQUEST_METHOD']) {
+    switch (strtolower($method)) {
+        case 'get':   $input =& $obj->input->get();break;
+        case 'post':   $input = json_decode(file_get_contents('php://input'), true);break;
+        case 'put':   parse_str(file_get_contents('php://input'), $input);break;
+        case 'param':
+            switch ($_SERVER['REQUEST_METHOD']) {
                 case 'POST':
                     $input = json_decode(file_get_contents('php://input'), true);
                     break;
@@ -239,10 +250,10 @@ function I_A($name,$default='',$filter = 'htmlspecialchars') {
             }
             break;
         default:
-            return NULL;
+            return null;
     }
 
-    if(empty($name)) { // 获取全部变量
+    if (empty($name)) { // 获取全部变量
         $data       =   $input;
         array_walk_recursive($data, 'filter_exp');
         $filters = isset($filter) ? $filter : 'htmlspecialchars';
@@ -254,10 +265,10 @@ function I_A($name,$default='',$filter = 'htmlspecialchars') {
                 $data = array_map_recursive($filter, $data); // 参数过滤
             }
         }
-    }elseif(isset($input[$name])) { // 取值操作
+    } elseif (isset($input[$name])) { // 取值操作
         $data       =	$input[$name];
-    }else{ // 变量默认值
-        $data       =	 isset($default)?$default:NULL;
+    } else { // 变量默认值
+        $data       =	 isset($default)?$default:null;
     }
 
     return $data;
@@ -270,7 +281,8 @@ function I_A($name,$default='',$filter = 'htmlspecialchars') {
  * @param integer $type 转换类型
  * @return string
  */
-function parse_name($name, $type=0) {
+function parse_name($name, $type=0)
+{
     if ($type) {
         return ucfirst(preg_replace("/_([a-zA-Z])/e", "strtoupper('\\1')", $name));
     } else {
@@ -283,13 +295,14 @@ function parse_name($name, $type=0) {
  * @param string $filename 文件地址
  * @return boolean
  */
-function require_cache($filename, $return = false) {
+function require_cache($filename, $return = false)
+{
     static $_importFiles = array();
     if (!isset($_importFiles[$filename])) {
         if (file_exists($filename)) {
-            if($return){
+            if ($return) {
                 $_importFiles[$filename] = require $filename;
-            }else{
+            } else {
                 require $filename;
                 $_importFiles[$filename] = true;
             }
@@ -306,11 +319,16 @@ function require_cache($filename, $return = false) {
  * @param boolean $return 加载成功后是否返回
  * @return boolean
  */
-function require_array($array,$return=false){
-    foreach ($array as $file){
-        if (require_cache($file) && $return) return true;
+function require_array($array, $return=false)
+{
+    foreach ($array as $file) {
+        if (require_cache($file) && $return) {
+            return true;
+        }
     }
-    if($return) return false;
+    if ($return) {
+        return false;
+    }
 }
 
 /**
@@ -318,7 +336,8 @@ function require_array($array,$return=false){
  * @param string $name Model名称 支持指定基础模型 例如 MongoModel:User
  * @return Model
  */
-function M($name='') {
+function M($name='')
+{
     $touch = get_Instance();
     $name = strtolower($name);
     $touch->load->model(ucfirst($name) . '_model', $name);
@@ -331,11 +350,13 @@ function M($name='') {
  * @param string $value 语言值
  * @return mixed
  */
-function L($name = null, $value = null) {
+function L($name = null, $value = null)
+{
     static $_lang = array();
     // 空参数返回所有定义
-    if (empty($name))
+    if (empty($name)) {
         return $_lang;
+    }
     // 判断语言获取(或设置)
     // 若不存在,直接返回全大写$name
 
@@ -385,11 +406,12 @@ function L($name = null, $value = null) {
  * @param mixed $value 配置值
  * @return mixed
  */
-function C($name=null, $value=null) {
+function C($name=null, $value=null)
+{
     static $_config = array();
     // 无参数时获取所有
     if (empty($name)) {
-        if(!empty($value) && $array = S('c_'.$value)) {
+        if (!empty($value) && $array = S('c_'.$value)) {
             $_config = array_merge($_config, array_change_key_case($array));
         }
         return $_config;
@@ -398,24 +420,26 @@ function C($name=null, $value=null) {
     if (is_string($name)) {
         if (!strpos($name, '.')) {
             $name = strtolower($name);
-            if (is_null($value))
+            if (is_null($value)) {
                 return isset($_config[$name]) ? $_config[$name] : null;
+            }
             $_config[$name] = $value;
             return;
         }
         // 二维数组设置和获取支持
         $name = explode('.', $name);
         $name[0]   =  strtolower($name[0]);
-        if (is_null($value))
+        if (is_null($value)) {
             return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : null;
+        }
         $_config[$name[0]][$name[1]] = $value;
         return;
     }
     // 批量设置
-    if (is_array($name)){
+    if (is_array($name)) {
         $_config = array_merge($_config, array_change_key_case($name));
-        if(!empty($value)) {// 保存配置值
-            S('c_'.$value,$_config);
+        if (!empty($value)) {// 保存配置值
+            S('c_'.$value, $_config);
         }
         return;
     }
@@ -427,7 +451,8 @@ function C($name=null, $value=null) {
  * @param string $content 代码内容
  * @return string
  */
-function strip_whitespace($content) {
+function strip_whitespace($content)
+{
     $stripStr   = '';
     //分析php源码
     $tokens     = token_get_all($content);
@@ -454,11 +479,11 @@ function strip_whitespace($content) {
                     break;
                 case T_END_HEREDOC:
                     $stripStr .= "THINK;\n";
-                    for($k = $i+1; $k < $j; $k++) {
-                        if(is_string($tokens[$k]) && $tokens[$k] == ';') {
+                    for ($k = $i+1; $k < $j; $k++) {
+                        if (is_string($tokens[$k]) && $tokens[$k] == ';') {
                             $i = $k;
                             break;
-                        } else if($tokens[$k][0] == T_CLOSE_TAG) {
+                        } elseif ($tokens[$k][0] == T_CLOSE_TAG) {
                             break;
                         }
                     }
@@ -474,22 +499,27 @@ function strip_whitespace($content) {
 
 //[RUNTIME]
 // 编译文件
-function compile($filename) {
+function compile($filename)
+{
     $content        = file_get_contents($filename);
     // 替换预编译指令
     $content        = preg_replace('/\/\/\[RUNTIME\](.*?)\/\/\[\/RUNTIME\]/s', '', $content);
     $content        = substr(trim($content), 5);
-    if ('?>' == substr($content, -2))
+    if ('?>' == substr($content, -2)) {
         $content    = substr($content, 0, -2);
+    }
     return $content;
 }
 
 // 根据数组生成常量定义
-function array_define($array,$check=true) {
+function array_define($array, $check=true)
+{
     $content = "\n";
     foreach ($array as $key => $val) {
         $key = strtoupper($key);
-        if($check)   $content .= 'defined(\'' . $key . '\') or ';
+        if ($check) {
+            $content .= 'defined(\'' . $key . '\') or ';
+        }
         if (is_int($val) || is_float($val)) {
             $content .= "define('" . $key . "'," . $val . ');';
         } elseif (is_bool($val)) {
@@ -511,64 +541,66 @@ function array_define($array,$check=true) {
  * @param string $type  类型. normal | mohu | full | ymd | other
  * @return string
  */
-function friendlyDate($sTime,$type = 'normal') {
-    if (!$sTime)
+function friendlyDate($sTime, $type = 'normal')
+{
+    if (!$sTime) {
         return '';
+    }
     //sTime=源时间，cTime=当前时间，dTime=时间差
     $cTime      =   time();
     $dTime      =   $cTime - $sTime;
-    $dDay       =   intval(date("z",$cTime)) - intval(date("z",$sTime));
+    $dDay       =   intval(date("z", $cTime)) - intval(date("z", $sTime));
     //$dDay     =   intval($dTime/3600/24);
-    $dYear      =   intval(date("Y",$cTime)) - intval(date("Y",$sTime));
+    $dYear      =   intval(date("Y", $cTime)) - intval(date("Y", $sTime));
     //normal：n秒前，n分钟前，n小时前，日期
-    if($type=='normal'){
-        if( $dTime < 60 ){
-            if($dTime < 10){
+    if ($type=='normal') {
+        if ($dTime < 60) {
+            if ($dTime < 10) {
                 return '刚刚';
-            }else{
+            } else {
                 return intval(floor($dTime / 10) * 10)."秒前";
             }
-        }elseif( $dTime < 3600 ){
+        } elseif ($dTime < 3600) {
             return intval($dTime/60)."分钟前";
-            //今天的数据.年份相同.日期相同.
-        }elseif( $dYear==0 && $dDay == 0  ){
+        //今天的数据.年份相同.日期相同.
+        } elseif ($dYear==0 && $dDay == 0) {
             //return intval($dTime/3600)."小时前";
-            return '今天'.date('H:i',$sTime);
-        }elseif($dYear==0){
-            return date("m月d日 H:i",$sTime);
-        }else{
-            return date("Y-m-d H:i",$sTime);
+            return '今天'.date('H:i', $sTime);
+        } elseif ($dYear==0) {
+            return date("m月d日 H:i", $sTime);
+        } else {
+            return date("Y-m-d H:i", $sTime);
         }
-    }elseif($type=='mohu'){
-        if( $dTime < 60 ){
+    } elseif ($type=='mohu') {
+        if ($dTime < 60) {
             return $dTime."秒前";
-        }elseif( $dTime < 3600 ){
+        } elseif ($dTime < 3600) {
             return intval($dTime/60)."分钟前";
-        }elseif( $dTime >= 3600 && $dDay == 0  ){
+        } elseif ($dTime >= 3600 && $dDay == 0) {
             return intval($dTime/3600)."小时前";
-        }elseif( $dDay > 0 && $dDay<=7 ){
+        } elseif ($dDay > 0 && $dDay<=7) {
             return intval($dDay)."天前";
-        }elseif( $dDay > 7 &&  $dDay <= 30 ){
+        } elseif ($dDay > 7 &&  $dDay <= 30) {
             return intval($dDay/7) . '周前';
-        }elseif( $dDay > 30 ){
+        } elseif ($dDay > 30) {
             return intval($dDay/30) . '个月前';
         }
         //full: Y-m-d , H:i:s
-    }elseif($type=='full'){
-        return date("Y-m-d , H:i:s",$sTime);
-    }elseif($type=='ymd'){
-        return date("Y-m-d",$sTime);
-    }else{
-        if( $dTime < 60 ){
+    } elseif ($type=='full') {
+        return date("Y-m-d , H:i:s", $sTime);
+    } elseif ($type=='ymd') {
+        return date("Y-m-d", $sTime);
+    } else {
+        if ($dTime < 60) {
             return $dTime."秒前";
-        }elseif( $dTime < 3600 ){
+        } elseif ($dTime < 3600) {
             return intval($dTime/60)."分钟前";
-        }elseif( $dTime >= 3600 && $dDay == 0  ){
+        } elseif ($dTime >= 3600 && $dDay == 0) {
             return intval($dTime/3600)."小时前";
-        }elseif($dYear==0){
-            return date("Y-m-d H:i:s",$sTime);
-        }else{
-            return date("Y-m-d H:i:s",$sTime);
+        } elseif ($dYear==0) {
+            return date("Y-m-d H:i:s", $sTime);
+        } else {
+            return date("Y-m-d H:i:s", $sTime);
         }
     }
 }

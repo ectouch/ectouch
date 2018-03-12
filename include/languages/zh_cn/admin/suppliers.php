@@ -33,4 +33,3 @@ $_LANG['no_record_selected'] = '没有选择任何记录';
 
 /* JS提示 */
 $_LANG['js_languages']['no_suppliers_name'] = '没有填供货商名称';
-?>

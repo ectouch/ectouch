@@ -35,5 +35,3 @@ $_LANG['undispose_repay'] = '未处理的退款申请';
 $_LANG['list_all'] = '全部退款申请';
 
 $_LANG['js_languages']['no_action_note'] = '必须输入处理备注';
-
-?>

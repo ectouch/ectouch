@@ -15,7 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class SnatchModel extends BaseModel {
+class SnatchModel extends BaseModel
+{
 
     /**
      * 获取最近要到期的活动id，没有则返回 0
@@ -25,7 +26,8 @@ class SnatchModel extends BaseModel {
      *
      * @return void
      */
-    function get_last_snatch() {
+    public function get_last_snatch()
+    {
         $now = gmtime();
         $sql = 'SELECT act_id FROM ' . $this->pre .
                 "goods_activity WHERE  start_time < '$now' AND end_time > '$now' AND act_type = " . GAT_SNATCH .
@@ -41,7 +43,8 @@ class SnatchModel extends BaseModel {
      *
      * @return 活动名称
      */
-    function get_snatch($id) {
+    public function get_snatch($id)
+    {
         $sql = "SELECT g.goods_id, g.goods_sn, g.is_real, g.goods_name, g.extension_code, g.market_price, g.shop_price AS org_price, product_id, " .
                 "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price, " .
                 "g.promote_price, g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb,g.goods_img, " .
@@ -94,7 +97,8 @@ class SnatchModel extends BaseModel {
      *
      * @return void
      */
-    function get_myprice($id) {
+    public function get_myprice($id)
+    {
         $my_only_price = array();
         $my_price = array();
         $pay_points = 0;
@@ -143,7 +147,8 @@ class SnatchModel extends BaseModel {
      *
      * @return void
      */
-    function get_snatch_list($num = 10, $start = 0) {
+    public function get_snatch_list($num = 10, $start = 0)
+    {
         $now = gmtime();
         $sql = 'SELECT a.act_id AS snatch_id, a.act_name AS snatch_name, a.end_time ,g.goods_name ,g.goods_id, g.goods_thumb ,g.market_price, g.shop_price,' .
                 " g.promote_price, g.promote_start_date, g.promote_end_date, g.goods_brief FROM " . $this->pre .
@@ -178,7 +183,8 @@ class SnatchModel extends BaseModel {
      *
      * @return void
      */
-    function get_price_list($id, $num = 5) {
+    public function get_price_list($id, $num = 5)
+    {
         $sql = 'SELECT t1.log_id, t1.bid_price, t2.user_name FROM ' . $this->pre . 'snatch_log AS t1, ' . $this->pre . "users AS t2 WHERE snatch_id = '$id' AND t1.user_id = t2.user_id ORDER BY t1.log_id DESC LIMIT $num";
         $res = $this->query($sql);
         $price_list = array();
@@ -187,5 +193,4 @@ class SnatchModel extends BaseModel {
         }
         return $price_list;
     }
-
 }

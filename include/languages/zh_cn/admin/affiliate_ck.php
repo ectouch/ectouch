@@ -45,4 +45,3 @@ $_LANG['separate_by'][-2] = '推荐订单分成';
 
 $_LANG['show_affiliate_orders'] = '此列表显示此用户推荐的订单信息。';
 $_LANG['back_note'] = '返回会员编辑页面';
-?>

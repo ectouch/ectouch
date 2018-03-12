@@ -4,8 +4,7 @@
  * 管理中心菜单数组
  */
 
-if (!defined('IN_ECTOUCH'))
-{
+if (!defined('IN_ECTOUCH')) {
     die('Hacking attempt');
 }
 
@@ -170,4 +169,3 @@ $modules['12_menu_wechat']['08_wechat_qrcode'] = '../index.php?m=admin&c=wechat&
 $modules['12_menu_wechat']['09_wechat_extends'] = '../index.php?m=admin&c=Extend&a=index';
 // $modules['12_menu_wechat']['10_wechat_remind'] = '../index.php?m=admin&c=wechat&a=remind';
 $modules['12_menu_wechat']['11_wechat_customer'] = '../index.php?m=admin&c=wechat&a=customer_service';
-

@@ -12,14 +12,13 @@ $exc = new exchange($ecs->table('shipping_area'), $db, 'shipping_area_id', 'ship
 /*------------------------------------------------------ */
 //-- 配送区域列表
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     $shipping_id = intval($_REQUEST['shipping']);
 
     $list = get_shipping_area_list($shipping_id);
-    $smarty->assign('areas',    $list);
+    $smarty->assign('areas', $list);
 
-    $smarty->assign('ur_here',  '<a href="shipping.php?act=list">'.
+    $smarty->assign('ur_here', '<a href="shipping.php?act=list">'.
         $_LANG['03_shipping_list'].'</a> - ' . $_LANG['shipping_area_list'] . '</a>');
     $smarty->assign('action_link', array('href'=>'shipping_area.php?act=add&shipping='.$shipping_id,
         'text' => $_LANG['new_area']));
@@ -33,8 +32,7 @@ if ($_REQUEST['act'] == 'list')
 //-- 新建配送区域
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'add' && !empty($_REQUEST['shipping']))
-{
+elseif ($_REQUEST['act'] == 'add' && !empty($_REQUEST['shipping'])) {
     admin_priv('shiparea_manage');
 
     $shipping = $db->getRow("SELECT shipping_name, shipping_code FROM " .$ecs->table('shipping'). " WHERE shipping_id='$_REQUEST[shipping]'");
@@ -43,8 +41,7 @@ elseif ($_REQUEST['act'] == 'add' && !empty($_REQUEST['shipping']))
     include_once(BASE_PATH.'modules/shipping/'.$shipping['shipping_code'].'.php');
 
     $fields = array();
-    foreach ($modules[0]['configure'] AS $key => $val)
-    {
+    foreach ($modules[0]['configure'] as $key => $val) {
         $fields[$key]['name']   = $val['name'];
         $fields[$key]['value']  = $val['value'];
         $fields[$key]['label']  = $_LANG[$val['name']];
@@ -55,8 +52,7 @@ elseif ($_REQUEST['act'] == 'add' && !empty($_REQUEST['shipping']))
     $fields[$count]['label']    = $_LANG["free_money"];
 
     /* 如果支持货到付款，则允许设置货到付款支付费用 */
-    if ($modules[0]['cod'])
-    {
+    if ($modules[0]['cod']) {
         $count++;
         $fields[$count]['name']     = "pay_fee";
         $fields[$count]['value']    = "0";
@@ -66,46 +62,36 @@ elseif ($_REQUEST['act'] == 'add' && !empty($_REQUEST['shipping']))
     $shipping_area['shipping_id']   = 0;
     $shipping_area['free_money']    = 0;
 
-    $smarty->assign('ur_here',          $shipping['shipping_name'] .' - '. $_LANG['new_area']);
-    $smarty->assign('shipping_area',    array('shipping_id' => $_REQUEST['shipping'], 'shipping_code' => $shipping['shipping_code']));
-    $smarty->assign('fields',           $fields);
-    $smarty->assign('form_action',      'insert');
-    $smarty->assign('countries',        get_regions());
-    $smarty->assign('default_country',  $_CFG['shop_country']);
+    $smarty->assign('ur_here', $shipping['shipping_name'] .' - '. $_LANG['new_area']);
+    $smarty->assign('shipping_area', array('shipping_id' => $_REQUEST['shipping'], 'shipping_code' => $shipping['shipping_code']));
+    $smarty->assign('fields', $fields);
+    $smarty->assign('form_action', 'insert');
+    $smarty->assign('countries', get_regions());
+    $smarty->assign('default_country', $_CFG['shop_country']);
     assign_query_info();
     $smarty->display('shipping_area_info.htm');
-}
-
-elseif ($_REQUEST['act'] == 'insert')
-{
+} elseif ($_REQUEST['act'] == 'insert') {
     admin_priv('shiparea_manage');
 
     /* 检查同类型的配送方式下有没有重名的配送区域 */
     $sql = "SELECT COUNT(*) FROM " .$ecs->table("shipping_area").
             " WHERE shipping_id='$_POST[shipping]' AND shipping_area_name='$_POST[shipping_area_name]'";
-    if ($db->getOne($sql) > 0)
-    {
+    if ($db->getOne($sql) > 0) {
         sys_msg($_LANG['repeat_area_name'], 1);
-    }
-    else
-    {
+    } else {
         $shipping_code = $db->getOne("SELECT shipping_code FROM " .$ecs->table('shipping').
                                     " WHERE shipping_id='$_POST[shipping]'");
         $plugin        = BASE_PATH.'modules/shipping/'. $shipping_code. ".php";
 
-        if (!file_exists($plugin))
-        {
+        if (!file_exists($plugin)) {
             sys_msg($_LANG['not_find_plugin'], 1);
-        }
-        else
-        {
+        } else {
             $set_modules = 1;
             include_once($plugin);
         }
 
         $config = array();
-        foreach ($modules[0]['configure'] AS $key => $val)
-        {
+        foreach ($modules[0]['configure'] as $key => $val) {
             $config[$key]['name']   = $val['name'];
             $config[$key]['value']  = $_POST[$val['name']];
         }
@@ -117,8 +103,7 @@ elseif ($_REQUEST['act'] == 'insert')
         $config[$count]['name']     = 'fee_compute_mode';
         $config[$count]['value']    = empty($_POST['fee_compute_mode']) ? '' : $_POST['fee_compute_mode'];
         /* 如果支持货到付款，则允许设置货到付款支付费用 */
-        if ($modules[0]['cod'])
-        {
+        if ($modules[0]['cod']) {
             $count++;
             $config[$count]['name']     = 'pay_fee';
             $config[$count]['value']    =  make_semiangle(empty($_POST['pay_fee']) ? '' : $_POST['pay_fee']);
@@ -134,10 +119,8 @@ elseif ($_REQUEST['act'] == 'insert')
         $new_id = $db->insert_Id();
 
         /* 添加选定的城市和地区 */
-        if (isset($_POST['regions']) && is_array($_POST['regions']))
-        {
-            foreach ($_POST['regions'] AS $key => $val)
-            {
+        if (isset($_POST['regions']) && is_array($_POST['regions'])) {
+            foreach ($_POST['regions'] as $key => $val) {
                 $sql = "INSERT INTO ".$ecs->table('area_region')." (shipping_area_id, region_id) VALUES ('$new_id', '$val')";
                 $db->query($sql);
             }
@@ -156,8 +139,7 @@ elseif ($_REQUEST['act'] == 'insert')
 //-- 编辑配送区域
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'edit')
-{
+elseif ($_REQUEST['act'] == 'edit') {
     admin_priv('shiparea_manage');
 
     $sql = "SELECT a.shipping_name, a.shipping_code, a.support_cod, b.* ".
@@ -170,18 +152,15 @@ elseif ($_REQUEST['act'] == 'edit')
 
     $fields = unserialize($row['configure']);
     /* 如果配送方式支持货到付款并且没有设置货到付款支付费用，则加入货到付款费用 */
-    if ($row['support_cod'] && $fields[count($fields)-1]['name'] != 'pay_fee')
-    {
+    if ($row['support_cod'] && $fields[count($fields)-1]['name'] != 'pay_fee') {
         $fields[] = array('name'=>'pay_fee', 'value'=>0);
     }
 
-    foreach ($fields AS $key => $val)
-    {
-       /* 替换更改的语言项 */
-       if ($val['name'] == 'basic_fee')
-       {
+    foreach ($fields as $key => $val) {
+        /* 替换更改的语言项 */
+        if ($val['name'] == 'basic_fee') {
             $val['name'] = 'base_fee';
-       }
+        }
 //       if ($val['name'] == 'step_fee1')
 //       {
 //            $val['name'] = 'step_fee';
@@ -191,26 +170,21 @@ elseif ($_REQUEST['act'] == 'edit')
 //            $val['name'] = 'step_fee1';
 //       }
 
-       if ($val['name'] == 'item_fee')
-       {
-           $item_fee = 1;
-       }
-       if ($val['name'] == 'fee_compute_mode')
-       {
-           $smarty->assign('fee_compute_mode',$val['value']);
-           unset($fields[$key]);
-       }
-       else
-       {
-           $fields[$key]['name'] = $val['name'];
-           $fields[$key]['label']  = $_LANG[$val['name']];
-       }
+        if ($val['name'] == 'item_fee') {
+            $item_fee = 1;
+        }
+        if ($val['name'] == 'fee_compute_mode') {
+            $smarty->assign('fee_compute_mode', $val['value']);
+            unset($fields[$key]);
+        } else {
+            $fields[$key]['name'] = $val['name'];
+            $fields[$key]['label']  = $_LANG[$val['name']];
+        }
     }
 
-    if(empty($item_fee))
-    {
+    if (empty($item_fee)) {
         $field = array('name'=>'item_fee', 'value'=>'0', 'label'=>empty($_LANG['item_fee']) ? '' : $_LANG['item_fee']);
-        array_unshift($fields,$field);
+        array_unshift($fields, $field);
     }
 
     /* 获得该区域下的所有地区 */
@@ -220,25 +194,21 @@ elseif ($_REQUEST['act'] == 'edit')
             "FROM ".$ecs->table('area_region')." AS a, ".$ecs->table('region'). " AS r ".
             "WHERE r.region_id=a.region_id AND a.shipping_area_id='$_REQUEST[id]'";
     $res = $db->query($sql);
-    while ($arr = $db->fetchRow($res))
-    {
+    while ($arr = $db->fetchRow($res)) {
         $regions[$arr['region_id']] = $arr['region_name'];
     }
 
     assign_query_info();
-    $smarty->assign('ur_here',          $row['shipping_name'] .' - '. $_LANG['edit_area']);
-    $smarty->assign('id',               $_REQUEST['id']);
-    $smarty->assign('fields',           $fields);
-    $smarty->assign('shipping_area',    $row);
-    $smarty->assign('regions',          $regions);
-    $smarty->assign('form_action',      'update');
-    $smarty->assign('countries',        get_regions());
-    $smarty->assign('default_country',  1);
+    $smarty->assign('ur_here', $row['shipping_name'] .' - '. $_LANG['edit_area']);
+    $smarty->assign('id', $_REQUEST['id']);
+    $smarty->assign('fields', $fields);
+    $smarty->assign('shipping_area', $row);
+    $smarty->assign('regions', $regions);
+    $smarty->assign('form_action', 'update');
+    $smarty->assign('countries', get_regions());
+    $smarty->assign('default_country', 1);
     $smarty->display('shipping_area_info.htm');
-}
-
-elseif ($_REQUEST['act'] == 'update')
-{
+} elseif ($_REQUEST['act'] == 'update') {
     admin_priv('shiparea_manage');
 
     /* 检查同类型的配送方式下有没有重名的配送区域 */
@@ -246,28 +216,21 @@ elseif ($_REQUEST['act'] == 'update')
             " WHERE shipping_id='$_POST[shipping]' AND ".
                     "shipping_area_name='$_POST[shipping_area_name]' AND ".
                     "shipping_area_id<>'$_POST[id]'";
-    if ($db->getOne($sql) > 0)
-    {
+    if ($db->getOne($sql) > 0) {
         sys_msg($_LANG['repeat_area_name'], 1);
-    }
-    else
-    {
+    } else {
         $shipping_code = $db->getOne("SELECT shipping_code FROM " .$ecs->table('shipping'). " WHERE shipping_id='$_POST[shipping]'");
         $plugin        = BASE_PATH.'modules/shipping/'. $shipping_code. ".php";
 
-        if (!file_exists($plugin))
-        {
+        if (!file_exists($plugin)) {
             sys_msg($_LANG['not_find_plugin'], 1);
-        }
-        else
-        {
+        } else {
             $set_modules = 1;
             include_once($plugin);
         }
 
         $config = array();
-        foreach ($modules[0]['configure'] AS $key => $val)
-        {
+        foreach ($modules[0]['configure'] as $key => $val) {
             $config[$key]['name']   = $val['name'];
             $config[$key]['value']  = $_POST[$val['name']];
         }
@@ -278,8 +241,7 @@ elseif ($_REQUEST['act'] == 'update')
         $count++;
         $config[$count]['name']     = 'fee_compute_mode';
         $config[$count]['value']    = empty($_POST['fee_compute_mode']) ? '' : $_POST['fee_compute_mode'];
-        if ($modules[0]['cod'])
-        {
+        if ($modules[0]['cod']) {
             $count++;
             $config[$count]['name']     = 'pay_fee';
             $config[$count]['value']    =  make_semiangle(empty($_POST['pay_fee']) ? '' : $_POST['pay_fee']);
@@ -296,10 +258,8 @@ elseif ($_REQUEST['act'] == 'update')
 
         /* 过滤掉重复的region */
         $selected_regions = array();
-        if (isset($_POST['regions']))
-        {
-            foreach ($_POST['regions'] AS $region_id)
-            {
+        if (isset($_POST['regions'])) {
+            foreach ($_POST['regions'] as $region_id) {
                 $selected_regions[$region_id] = $region_id;
             }
         }
@@ -307,20 +267,16 @@ elseif ($_REQUEST['act'] == 'update')
         // 查询所有区域 region_id => parent_id
         $sql = "SELECT region_id, parent_id FROM " . $ecs->table('region');
         $res = $db->query($sql);
-        while ($row = $db->fetchRow($res))
-        {
+        while ($row = $db->fetchRow($res)) {
             $region_list[$row['region_id']] = $row['parent_id'];
         }
 
         // 过滤掉上级存在的区域
-        foreach ($selected_regions AS $region_id)
-        {
+        foreach ($selected_regions as $region_id) {
             $id = $region_id;
-            while ($region_list[$id] != 0)
-            {
+            while ($region_list[$id] != 0) {
                 $id = $region_list[$id];
-                if (isset($selected_regions[$id]))
-                {
+                if (isset($selected_regions[$id])) {
                     unset($selected_regions[$region_id]);
                     break;
                 }
@@ -331,8 +287,7 @@ elseif ($_REQUEST['act'] == 'update')
         $db->query("DELETE FROM ".$ecs->table("area_region")." WHERE shipping_area_id='$_POST[id]'");
 
         /* 添加选定的城市和地区 */
-        foreach ($selected_regions AS $key => $val)
-        {
+        foreach ($selected_regions as $key => $val) {
             $sql = "INSERT INTO ".$ecs->table('area_region')." (shipping_area_id, region_id) VALUES ('$_POST[id]', '$val')";
             $db->query($sql);
         }
@@ -346,15 +301,12 @@ elseif ($_REQUEST['act'] == 'update')
 /*------------------------------------------------------ */
 //-- 批量删除配送区域
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'multi_remove')
-{
+elseif ($_REQUEST['act'] == 'multi_remove') {
     admin_priv('shiparea_manage');
 
-    if (isset($_POST['areas']) && count($_POST['areas']) > 0)
-    {
+    if (isset($_POST['areas']) && count($_POST['areas']) > 0) {
         $i = 0;
-        foreach ($_POST['areas'] AS $v)
-        {
+        foreach ($_POST['areas'] as $v) {
             $db->query("DELETE FROM " .$ecs->table('shipping_area'). " WHERE shipping_area_id='$v'");
             $i++;
         }
@@ -371,8 +323,7 @@ elseif ($_REQUEST['act'] == 'multi_remove')
 //-- 编辑配送区域名称
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'edit_area')
-{
+elseif ($_REQUEST['act'] == 'edit_area') {
     /* 检查权限 */
     check_authz_json('shiparea_manage');
 
@@ -384,8 +335,7 @@ elseif ($_REQUEST['act'] == 'edit_area')
     $shipping_id = $exc->get_name($id, 'shipping_id');
 
     /* 检查是否有重复的配送区域名称 */
-    if (!$exc->is_only('shipping_area_name', $val, $id, "shipping_id = '$shipping_id'"))
-    {
+    if (!$exc->is_only('shipping_area_name', $val, $id, "shipping_id = '$shipping_id'")) {
         make_json_error($_LANG['repeat_area_name']);
     }
 
@@ -403,8 +353,7 @@ elseif ($_REQUEST['act'] == 'edit_area')
 //-- 删除配送区域
 /*------------------------------------------------------ */
 
-elseif ($_REQUEST['act'] == 'remove_area')
-{
+elseif ($_REQUEST['act'] == 'remove_area') {
     check_authz_json('shiparea_manage');
 
     $id = intval($_GET['id']);
@@ -428,14 +377,12 @@ elseif ($_REQUEST['act'] == 'remove_area')
 function get_shipping_area_list($shipping_id)
 {
     $sql = "SELECT * FROM " . $GLOBALS['ecs']->table('shipping_area');
-    if ($shipping_id > 0)
-    {
+    if ($shipping_id > 0) {
         $sql .= " WHERE shipping_id = '$shipping_id'";
     }
     $res = $GLOBALS['db']->query($sql);
     $list = array();
-    while ($row = $GLOBALS['db']->fetchRow($res))
-    {
+    while ($row = $GLOBALS['db']->fetchRow($res)) {
         $sql = "SELECT r.region_name " .
                 "FROM " . $GLOBALS['ecs']->table('area_region'). " AS a, " .
                     $GLOBALS['ecs']->table('region') . " AS r ".
@@ -451,5 +398,3 @@ function get_shipping_area_list($shipping_id)
 
     return $list;
 }
-
-?>

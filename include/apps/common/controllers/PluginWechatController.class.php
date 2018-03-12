@@ -21,7 +21,8 @@ abstract class PluginWechatController
     protected $layout = 'wechat_layout';
     protected $_data = array();
 
-    protected function get_wechat_sdk(){
+    protected function get_wechat_sdk()
+    {
         $wxinfo   = model('Base')->model->table('wechat')->field('token, appid, appsecret')->find();
         $appid    = $wxinfo['appid'];
         $secret   = $wxinfo['appsecret'];
@@ -239,7 +240,7 @@ wx.error(function(res){
      * @param unknown $proArr
      * @return Ambigous <string, unknown>
      */
-    function get_rand($proArr)
+    public function get_rand($proArr)
     {
         $result = '';
         // 概率数组的总概率精度
@@ -258,11 +259,13 @@ wx.error(function(res){
         return $result;
     }
     
-    public function __get($name) {
-        return isset($this->_data [$name]) ? $this->_data [$name] : NULL;
+    public function __get($name)
+    {
+        return isset($this->_data [$name]) ? $this->_data [$name] : null;
     }
     
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         $this->_data [$name] = $value;
     }
 }

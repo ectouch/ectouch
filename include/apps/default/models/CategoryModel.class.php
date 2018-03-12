@@ -17,7 +17,6 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class CategoryModel extends BaseModel
 {
-
     protected $table = 'category';
 
     /**
@@ -27,7 +26,7 @@ class CategoryModel extends BaseModel
      *
      * @return void
      */
-    function get_cat_info($cat_id)
+    public function get_cat_info($cat_id)
     {
         return $this->row('SELECT cat_name, keywords, cat_desc, style, grade, filter_attr, parent_id, measure_unit FROM ' . $this->pre . "category WHERE cat_id = '$cat_id'");
     }
@@ -39,7 +38,7 @@ class CategoryModel extends BaseModel
      *
      * @return void
      */
-    function get_cat_list($cat_id = 0)
+    public function get_cat_list($cat_id = 0)
     {
         return $this->query('SELECT * FROM ' . $this->pre . "category WHERE is_show = '1' and parent_id = '$cat_id'");
     }
@@ -50,9 +49,8 @@ class CategoryModel extends BaseModel
      * @param string $children
      * @param unknown $brand
      */
-    function category_get_count($children, $brand, $type, $min, $max, $ext, $keyword)
+    public function category_get_count($children, $brand, $type, $min, $max, $ext, $keyword)
     {
-
         $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 ";
         if ($keyword != '') {
             $where .= " AND (( 1 " . $keyword . " ) ) ";
@@ -106,7 +104,7 @@ class CategoryModel extends BaseModel
      * @param   string $ext 商品扩展查询
      * @return  array
      */
-    function get_category_recommend_goods($type = '', $cats = '', $brand = 0, $min = 0, $max = 0, $ext = '')
+    public function get_category_recommend_goods($type = '', $cats = '', $brand = 0, $min = 0, $max = 0, $ext = '')
     {
         $brand_where = ($brand > 0) ? " AND g.brand_id = '$brand'" : '';
 
@@ -182,7 +180,7 @@ class CategoryModel extends BaseModel
      * @param   integer $cat 分类编号
      * @return  array
      */
-    function get_parent_cats($cat)
+    public function get_parent_cats($cat)
     {
         if ($cat == 0) {
             return array();
@@ -197,7 +195,7 @@ class CategoryModel extends BaseModel
         $cats = array();
 
         while (1) {
-            foreach ($arr AS $row) {
+            foreach ($arr as $row) {
                 if ($cat == $row['cat_id']) {
                     $cat = $row['parent_id'];
 
@@ -224,11 +222,11 @@ class CategoryModel extends BaseModel
      *
      * @return int
      */
-    function get_parent_grade($cat_id)
+    public function get_parent_grade($cat_id)
     {
-        static $res = NULL;
+        static $res = null;
 
-        if ($res === NULL) {
+        if ($res === null) {
             $data = read_static_cache('cat_parent_grade');
             if ($data === false) {
                 $sql = "SELECT parent_id, cat_id, grade " .
@@ -263,7 +261,7 @@ class CategoryModel extends BaseModel
      * by Leah
      */
 
-    function get_parent_id_tree($parent_id)
+    public function get_parent_id_tree($parent_id)
     {
         $three_c_arr = array();
         $sql = 'SELECT count(*) as count FROM ' . $this->pre . "category WHERE parent_id = '$parent_id' AND is_show = 1 ";
@@ -274,7 +272,7 @@ class CategoryModel extends BaseModel
                 'FROM ' . $this->pre .
                 "category WHERE parent_id = '$parent_id' AND is_show = 1 ORDER BY sort_order ASC, cat_id ASC";
             $res = $this->query($child_sql);
-            foreach ($res AS $row) {
+            foreach ($res as $row) {
                 if ($row['is_show']) {
                     $three_c_arr[$row['cat_id']]['id'] = $row['cat_id'];
                     $three_c_arr[$row['cat_id']]['name'] = $row['cat_name'];
@@ -295,7 +293,7 @@ class CategoryModel extends BaseModel
      * @param   string $order_rule 指定商品排序规则
      * @return  array
      */
-    function assign_cat_goods($cat_id, $num = 0, $from = 'web', $order_rule = '')
+    public function assign_cat_goods($cat_id, $num = 0, $from = 'web', $order_rule = '')
     {
         $children = get_children($cat_id);
 
@@ -316,7 +314,7 @@ class CategoryModel extends BaseModel
         $res = $this->query($sql);
 
         $goods = array();
-        foreach ($res AS $idx => $row) {
+        foreach ($res as $idx => $row) {
             if ($row['promote_price'] > 0) {
                 $promote_price = bargain_price($row['promote_price'], $row['promote_start_date'], $row['promote_end_date']);
                 $goods[$idx]['promote_price'] = $promote_price > 0 ? price_format($promote_price) : '';
@@ -342,11 +340,9 @@ class CategoryModel extends BaseModel
      * @param  integer $cat_id
      * @return void
      */
-    function get_cat_image($cat_id)
+    public function get_cat_image($cat_id)
     {
         $cats = $this->row('SELECT cat_image FROM ' . $this->pre . "touch_category WHERE cat_id = '$cat_id'");
         return $cats['cat_image'];
     }
-
-
 }

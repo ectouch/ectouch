@@ -63,7 +63,7 @@ elseif ($_REQUEST['act'] == 'insert_service_type') {
     $_POST['service_name'] = $GLOBALS['_LANG']['st'][$_POST['service_type_name']]; //服务类型
     
     if (!$is_only) {
-         sys_msg(sprintf($_LANG['servicetypename_exist'], stripslashes($_POST['service_name'])), 1);
+        sys_msg(sprintf($_LANG['servicetypename_exist'], stripslashes($_POST['service_name'])), 1);
     }
     $is_show = isset($_REQUEST['is_show']) ? intval($_REQUEST['is_show']) : 0;
 
@@ -114,12 +114,11 @@ elseif ($_REQUEST['act'] == 'edit_service_type') {
 //-- 更新服务类型
 /* ------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'update_service_type') {
-
     admin_priv('service_type');
 
     $_POST['service_name'] = $GLOBALS['_LANG']['st'][$_POST['service_type_name']]; //服务类型
     
-    if ($_POST['service_name'] != $_POST['old_service_name']) {   
+    if ($_POST['service_name'] != $_POST['old_service_name']) {
         /* 检查服务类型名称是否相同 */
         $is_only = $exc->is_only('service_name', $_POST['service_name'], $_POST['id']);
         if (!$is_only) {
@@ -154,7 +153,6 @@ elseif ($_REQUEST['act'] == 'update_service_type') {
 //-- 删除服务类型
 /* ------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'remove_service_type') {
-
     check_authz_json('service_type');
 
     $id = intval($_GET['id']);
@@ -170,7 +168,6 @@ elseif ($_REQUEST['act'] == 'remove_service_type') {
 //-- 排序、分页、查询
 /*------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'query') {
-
     $result = service_type_list();
     /* 模板赋值 */
     $smarty->assign('list', $result['list']);
@@ -178,8 +175,11 @@ elseif ($_REQUEST['act'] == 'query') {
     $smarty->assign('record_count', $result['record_count']);
     $smarty->assign('page_count', $result['page_count']);
 
-    make_json_result($smarty->fetch('service_type_list.htm'), '',
-        array('filter' => $result['filter'], 'page_count' => $result['page_count']));
+    make_json_result(
+        $smarty->fetch('service_type_list.htm'),
+        '',
+        array('filter' => $result['filter'], 'page_count' => $result['page_count'])
+    );
 }
 
 /*------------------------------------------------------ */
@@ -195,4 +195,3 @@ elseif ($_REQUEST['act'] == 'toggle_show') {
 
     make_json_result($val);
 }
-?>

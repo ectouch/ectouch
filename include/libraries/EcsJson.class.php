@@ -6,13 +6,14 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP JSON
  */
-class EcsJson {
+class EcsJson
+{
+    public $at = 0;
+    public $ch = '';
+    public $text = '';
 
-    var $at = 0;
-    var $ch = '';
-    var $text = '';
-
-    function encode($arg, $force = true) {
+    public function encode($arg, $force = true)
+    {
         static $_force;
         if (is_null($_force)) {
             $_force = $force;
@@ -32,7 +33,7 @@ class EcsJson {
 
         switch (gettype($arg)) {
             case 'array':
-                foreach ($arg AS $i => $v) {
+                foreach ($arg as $i => $v) {
                     if (!is_numeric($i)) {
                         $numeric = false;
                         break;
@@ -40,7 +41,7 @@ class EcsJson {
                 }
 
                 if ($numeric) {
-                    foreach ($arg AS $i => $v) {
+                    foreach ($arg as $i => $v) {
                         if (strlen($s) > 0) {
                             $s .= ',';
                         }
@@ -49,7 +50,7 @@ class EcsJson {
 
                     $returnValue = '[' . $s . ']';
                 } else {
-                    foreach ($arg AS $i => $v) {
+                    foreach ($arg as $i => $v) {
                         if (strlen($s) > 0) {
                             $s .= ',';
                         }
@@ -61,7 +62,7 @@ class EcsJson {
                 break;
 
             case 'object':
-                foreach (get_object_vars($arg) AS $i => $v) {
+                foreach (get_object_vars($arg) as $i => $v) {
                     $v = $this->encode($v);
 
                     if (strlen($s) > 0) {
@@ -104,7 +105,8 @@ class EcsJson {
         return $returnValue;
     }
 
-    function decode($text, $type = 0) { // 榛樿?type=0杩斿洖obj,type=1杩斿洖array
+    public function decode($text, $type = 0)
+    { // 榛樿?type=0杩斿洖obj,type=1杩斿洖array
         if (empty($text)) {
             return '';
         } elseif (!is_string($text)) {
@@ -145,7 +147,8 @@ class EcsJson {
      *
      * @return   void
      */
-    function error($m) {
+    public function error($m)
+    {
         echo($m . ' at offset ' . $this->at . ': ' . $this->text);
     }
 
@@ -156,7 +159,8 @@ class EcsJson {
      *
      * @return  string
      */
-    function next() {
+    public function next()
+    {
         $this->ch = !isset($this->text{$this->at}) ? '' : $this->text{$this->at};
         $this->at++;
 
@@ -170,7 +174,8 @@ class EcsJson {
      *
      * @return  void
      */
-    function str() {
+    public function str()
+    {
         $i = '';
         $s = '';
         $t = '';
@@ -240,7 +245,8 @@ class EcsJson {
      *
      * @return  void
      */
-    function arr() {
+    public function arr()
+    {
         $a = array();
 
         if ($this->ch == '[') {
@@ -277,7 +283,8 @@ class EcsJson {
      *
      * @return  void
      */
-    function obj() {
+    public function obj()
+    {
         $k = '';
         $o = new StdClass();
 
@@ -322,7 +329,8 @@ class EcsJson {
      *
      * @return  void
      */
-    function assoc() {
+    public function assoc()
+    {
         $k = '';
         $a = array();
 
@@ -367,7 +375,8 @@ class EcsJson {
      *
      * @return  void
      */
-    function num() {
+    public function num()
+    {
         $n = '';
         $v = '';
 
@@ -420,7 +429,8 @@ class EcsJson {
      *
      * @return  mixed
      */
-    function word() {
+    public function word()
+    {
         switch ($this->ch) {
             case 't':
 
@@ -458,7 +468,8 @@ class EcsJson {
      *
      * @return  mixed
      */
-    function val() {
+    public function val()
+    {
         switch ($this->ch) {
             case '{':
                 return $this->obj();
@@ -487,7 +498,8 @@ class EcsJson {
      *
      * @return array
      */
-    function object_to_array($obj) {
+    public function object_to_array($obj)
+    {
         $_arr = is_object($obj) ? get_object_vars($obj) : $obj;
         foreach ($_arr as $key => $val) {
             $val = (is_array($val) || is_object($val)) ? $this->object_to_array($val) : $val;
@@ -495,7 +507,4 @@ class EcsJson {
         }
         return $arr;
     }
-
 }
-
-?>

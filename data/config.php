@@ -43,7 +43,7 @@ define('DEFAULT_TIMEZONE', 'PRC');
 $db_config = ROOT_PATH . 'data/database.php';
 if (file_exists($db_config)) {
     return require($db_config);
-}else{
+} else {
     header('location: ./install');
     exit();
 }

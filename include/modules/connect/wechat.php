@@ -19,11 +19,11 @@ defined('IN_ECTOUCH') or die('Deny Access');
 $payment_lang = ROOT_PATH . 'plugins/connect/languages/' . C('lang') . '/' . basename(__FILE__);
 
 if (file_exists($payment_lang)) {
-    include_once ($payment_lang);
+    include_once($payment_lang);
     L($_LANG);
 }
 /* 模块的基本信息 */
-if (isset($set_modules) && $set_modules == TRUE) {
+if (isset($set_modules) && $set_modules == true) {
     $i = isset($modules) ? count($modules) : 0;
     /* 类名 */
     $modules[$i]['name'] = 'wechat';

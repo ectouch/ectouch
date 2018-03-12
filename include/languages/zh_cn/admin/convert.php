@@ -44,4 +44,3 @@ $_LANG['js_languages']['host_not_null'] = '主机名称或地址不能为空';
 $_LANG['js_languages']['db_not_null'] = '数据库名称不能为空';
 $_LANG['js_languages']['user_not_null'] = '登录帐号不能为空';
 $_LANG['js_languages']['path_not_null'] = '原商城根目录不能为空';
-?>

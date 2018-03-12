@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class CommonModel extends BaseModel {
+class CommonModel extends BaseModel
+{
 
     /**
      * 获得指定页面的动态内容
@@ -25,11 +26,12 @@ class CommonModel extends BaseModel {
      * @param   string  $tmp    模板名称
      * @return  void
      */
-    function assign_dynamic($tmp) {
+    public function assign_dynamic($tmp)
+    {
         $sql = 'SELECT id, number, type FROM ' . $this->pre .
                 "template WHERE filename = '$tmp' AND type > 0 AND remarks ='' AND theme='" . C('template') . "'";
         $res = $this->query($sql);
-        foreach ($res AS $row) {
+        foreach ($res as $row) {
             switch ($row['type']) {
                 case 1:
                     /* 分类下的商品 */
@@ -59,7 +61,8 @@ class CommonModel extends BaseModel {
      * @access  public
      * @return  void
      */
-    function visit_stats() {
+    public function visit_stats()
+    {
         if (C('visit_stats') == 'off') {
             return;
         }
@@ -117,7 +120,8 @@ class CommonModel extends BaseModel {
      *
      * @return array()
      */
-    function get_dyna_libs($theme, $tmp) {
+    public function get_dyna_libs($theme, $tmp)
+    {
         $tmp_array = explode('.', $tmp);
         $ext = end($tmp_array);
         $tmp = basename($tmp, ".$ext");
@@ -128,7 +132,7 @@ class CommonModel extends BaseModel {
         $res = $this->query($sql);
 
         $dyna_libs = array();
-        foreach ($res AS $row) {
+        foreach ($res as $row) {
             $dyna_libs[$row['region']][$row['library']][] = array(
                 'id' => $row['id'],
                 'number' => $row['number'],
@@ -146,7 +150,8 @@ class CommonModel extends BaseModel {
      * @param   int         $def_num    默认数量：如果没有设置模板，显示的数量
      * @return  int         数量
      */
-    function get_library_number($library, $template = null) {
+    public function get_library_number($library, $template = null)
+    {
         global $page_libs;
 
         if (empty($template)) {
@@ -193,7 +198,8 @@ class CommonModel extends BaseModel {
      * @param   string      $type    位置，如top、bottom、middle
      * @return  array         列表
      */
-    function get_navigator($ctype = '', $catlist = array()) {
+    public function get_navigator($ctype = '', $catlist = array())
+    {
         $sql = 'SELECT * FROM ' . $this->pre .
                 'touch_nav WHERE ifshow = \'1\' ORDER BY type, vieworder';
         $res = $this->query($sql);
@@ -260,7 +266,8 @@ class CommonModel extends BaseModel {
      * @param type $data
      * @return type
      */
-    function filter_field($table, $data) {
+    public function filter_field($table, $data)
+    {
         $this->table = $table;
         $field = $this->getFields();
         $res = array();
@@ -271,5 +278,4 @@ class CommonModel extends BaseModel {
         }
         return $res;
     }
-
 }

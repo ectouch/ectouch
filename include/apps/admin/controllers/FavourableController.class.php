@@ -16,12 +16,14 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class FavourableController extends AdminController {
+class FavourableController extends AdminController
+{
 
     /**
      * 活动列表
      */
-    public function index() {
+    public function index()
+    {
         
         /* 分页 */
         $filter['page'] = '{page}';
@@ -38,14 +40,15 @@ class FavourableController extends AdminController {
     /**
      * 编辑活动
      */
-    public function edit() {
+    public function edit()
+    {
         $id = I('id');
         if (IS_POST) {
             $data = I('data');
             if ($_FILES['act_banner']['name']) {
                 $result = $this->ectouchUpload('act_banner', 'favourable');
                 if ($result['error'] > 0) {
-                    $this->message($result['message'], NULL, 'error');
+                    $this->message($result['message'], null, 'error');
                 }
                 /* 生成banner链接 */
                 $data2['act_banner'] = substr($result['message']['act_banner']['savepath'], 2) . $result['message']['act_banner']['savename'];
@@ -76,7 +79,8 @@ class FavourableController extends AdminController {
      * @return   array
      */
 
-    private function favourable_list($offset = '0, 12') {
+    private function favourable_list($offset = '0, 12')
+    {
         /* 查询 */
         $sql = "SELECT * " .
                 "FROM " . $this->model->pre .
@@ -91,5 +95,4 @@ class FavourableController extends AdminController {
         }
         return $list;
     }
-
 }

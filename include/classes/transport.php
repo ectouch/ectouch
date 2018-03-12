@@ -73,18 +73,15 @@ class transport
         $fsock_exists = function_exists('fsockopen');
         $curl_exists = function_exists('curl_init');
 
-        if (!$fsock_exists && !$curl_exists)
-        {
+        if (!$fsock_exists && !$curl_exists) {
             die('No method available!');
         }
 
-        if (!$url)
-        {
+        if (!$url) {
             die('Invalid url!');
         }
 
-        if ($this->time_limit > -1)//如果为0，不限制执行时间
-        {
+        if ($this->time_limit > -1) {//如果为0，不限制执行时间
             set_time_limit($this->time_limit);
         }
 
@@ -93,29 +90,24 @@ class transport
         $temp_str = '';
 
         /* 格式化将要发要送的参数 */
-        if ($params && is_array($params))
-        {
-            foreach ($params AS $key => $value)
-            {
+        if ($params && is_array($params)) {
+            foreach ($params as $key => $value) {
                 $temp_str .= '&' . $key . '=' . $value;
             }
             $params = preg_replace('/^&/', '', $temp_str);
         }
 
         /* 如果fsockopen存在，且用户不指定使用curl，则调用use_socket函数 */
-        if ($fsock_exists && !$this->use_curl)
-        {
+        if ($fsock_exists && !$this->use_curl) {
             $response = $this->use_socket($url, $params, $method, $my_header);
         }
         /* 只要上述条件中的任一个不成立，流程就转向这里，这时如果curl模块可用，就调用use_curl函数 */
-        elseif ($curl_exists)
-        {
+        elseif ($curl_exists) {
             $response = $this->use_curl($url, $params, $method, $my_header);
         }
 
         /* 空响应或者传输过程中发生错误，程序将返回false */
-        if (!$response)
-        {
+        if (!$response) {
             return false;
         }
 
@@ -147,12 +139,9 @@ class transport
         $errstr = '';
         $crlf = $this->generate_crlf();
 
-        if ($method === 'GET')
-        {
+        if ($method === 'GET') {
             $query = $params ? "?$params" : '';
-        }
-        else
-        {
+        } else {
             $request_body  = $params;
             $content_type = 'Content-Type: application/x-www-form-urlencoded' . $crlf;
             $content_length = 'Content-Length: ' . strlen($request_body) . $crlf . $crlf;
@@ -161,17 +150,14 @@ class transport
         $url_parts = $this->parse_raw_url($url);
         $path = $url_parts['path'] . $query;
 
-        if (!empty($url_parts['user']))
-        {
+        if (!empty($url_parts['user'])) {
             $auth = 'Authorization: Basic '
                     . base64_encode($url_parts['user'] . ':' . $url_parts['pass']) . $crlf;
         }
 
         /* 格式化自定义头部信息 */
-        if ($my_header && is_array($my_header))
-        {
-            foreach ($my_header AS $key => $value)
-            {
+        if ($my_header && is_array($my_header)) {
+            foreach ($my_header as $key => $value) {
                 $temp_str .= $key . ': ' . $value . $crlf;
             }
             $my_header = $temp_str;
@@ -186,32 +172,25 @@ class transport
                 . $content_length
                 . $request_body;
 
-        if ($this->connect_timeout > -1)
-        {
+        if ($this->connect_timeout > -1) {
             $fp = @fsockopen($url_parts['host'], $url_parts['port'], $error, $errstr, $this->connect_timeout);
-        }
-        else
-        {
+        } else {
             $fp = @fsockopen($url_parts['host'], $url_parts['port'], $error, $errstr);
         }
 
-        if (!$fp)
-        {
+        if (!$fp) {
             return false;//打开失败
         }
 
-        if (!@fwrite($fp, $request))
-        {
+        if (!@fwrite($fp, $request)) {
             return false;//写入失败
         }
 
-        while (!feof($fp))
-        {
+        while (!feof($fp)) {
             $http_response .= fgets($fp);
         }
 
-        if (!$http_response)
-        {
+        if (!$http_response) {
             return false;//空响应
         }
 
@@ -250,8 +229,7 @@ class transport
         $url_parts = $this->parse_raw_url($url);
 
         /* 设置验证策略 */
-        if (!empty($url_parts['user']))
-        {
+        if (!empty($url_parts['user'])) {
             $auth = $url_parts['user'] . ':' . $url_parts['pass'];
             curl_setopt($curl_session, CURLOPT_USERPWD, $auth);
             curl_setopt($curl_session, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -263,21 +241,16 @@ class transport
         $header[] = 'Host: ' . $url_parts['host'];
 
         /* 格式化自定义头部信息 */
-        if ($my_header && is_array($my_header))
-        {
-            foreach ($my_header AS $key => $value)
-            {
+        if ($my_header && is_array($my_header)) {
+            foreach ($my_header as $key => $value) {
                 $header[] = $key . ': ' . $value;
             }
         }
 
-        if ($method === 'GET')
-        {
+        if ($method === 'GET') {
             curl_setopt($curl_session, CURLOPT_HTTPGET, true);
             $url .= $params ? '?' . $params : '';
-        }
-        else
-        {
+        } else {
             curl_setopt($curl_session, CURLOPT_POST, true);
             $header[] = 'Content-Type: application/x-www-form-urlencoded';
             $header[] = 'Content-Length: ' . strlen($params);
@@ -290,21 +263,18 @@ class transport
         /* 设置头部信息 */
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, $header);
 
-        if ($this->connect_timeout > -1)
-        {
+        if ($this->connect_timeout > -1) {
             curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, $this->connect_timeout);
         }
 
-        if ($this->stream_timeout > -1)
-        {
+        if ($this->stream_timeout > -1) {
             curl_setopt($curl_session, CURLOPT_TIMEOUT, $this->stream_timeout);
         }
 
         /* 发送请求 */
         $http_response = curl_exec($curl_session);
 
-        if (curl_errno($curl_session) != 0)
-        {
+        if (curl_errno($curl_session) != 0) {
             return false;
         }
 
@@ -334,24 +304,21 @@ class transport
         $raw_url  = (string) $raw_url;
 
         // make sure parse_url() recognizes the URL correctly.
-        if (strpos($raw_url, '://') === false)
-        {
-          $raw_url = 'http://' . $raw_url;
+        if (strpos($raw_url, '://') === false) {
+            $raw_url = 'http://' . $raw_url;
         }
 
         // split request into array
         $retval = parse_url($raw_url);
 
         // make sure a path key exists
-        if (!isset($retval['path']))
-        {
-          $retval['path'] = '/';
+        if (!isset($retval['path'])) {
+            $retval['path'] = '/';
         }
 
         // set port to 80 if none exists
-        if (!isset($retval['port']))
-        {
-          $retval['port'] = '80';
+        if (!isset($retval['port'])) {
+            $retval['port'] = '80';
         }
 
         return $retval;
@@ -367,16 +334,11 @@ class transport
     {
         $crlf = '';
 
-        if (strtoupper(substr(PHP_OS, 0, 3) === 'WIN'))
-        {
+        if (strtoupper(substr(PHP_OS, 0, 3) === 'WIN')) {
             $crlf = "\r\n";
-        }
-        elseif (strtoupper(substr(PHP_OS, 0, 3) === 'MAC'))
-        {
+        } elseif (strtoupper(substr(PHP_OS, 0, 3) === 'MAC')) {
             $crlf = "\r";
-        }
-        else
-        {
+        } else {
             $crlf = "\n";
         }
 

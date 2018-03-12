@@ -4,8 +4,7 @@
  * 数据库导出类
  */
 
-if (!defined('IN_ECTOUCH'))
-{
+if (!defined('IN_ECTOUCH')) {
     die('Hacking attempt');
 }
 
@@ -32,8 +31,7 @@ function dump_escape_string($str)
  */
 function dump_null_string($str)
 {
-    if (!isset($str) || is_null($str))
-    {
+    if (!isset($str) || is_null($str)) {
         $str = 'NULL';
     }
 
@@ -43,14 +41,14 @@ function dump_null_string($str)
 
 class cls_sql_dump
 {
-    var $max_size  = 2097152; // 2M
-    var $is_short  = false;
-    var $offset    = 300;
-    var $dump_sql  = '';
-    var $sql_num   = 0;
-    var $error_msg = '';
+    public $max_size  = 2097152; // 2M
+    public $is_short  = false;
+    public $offset    = 300;
+    public $dump_sql  = '';
+    public $sql_num   = 0;
+    public $error_msg = '';
 
-    var $db;
+    public $db;
 
     /**
      *  类的构造函数
@@ -60,14 +58,12 @@ class cls_sql_dump
      *
      * @return void
      */
-    function __construct(&$db, $max_size =0)
+    public function __construct(&$db, $max_size =0)
     {
         $this->db = &$db;
-        if ($max_size > 0 )
-        {
+        if ($max_size > 0) {
             $this->max_size = $max_size;
         }
-
     }
 
     /**
@@ -79,14 +75,11 @@ class cls_sql_dump
      *
      * @return  string      $sql
      */
-    function get_table_df($table, $add_drop = false)
+    public function get_table_df($table, $add_drop = false)
     {
-        if ($add_drop)
-        {
+        if ($add_drop) {
             $table_df = "DROP TABLE IF EXISTS `$table`;\r\n";
-        }
-        else
-        {
+        } else {
             $table_df = '';
         }
 
@@ -94,12 +87,9 @@ class cls_sql_dump
         $tmp_sql = $tmp_arr['Create Table'];
         $tmp_sql = substr($tmp_sql, 0, strrpos($tmp_sql, ")") + 1); //去除行尾定义。
 
-        if ($this->db->version() >= '4.1')
-        {
+        if ($this->db->version() >= '4.1') {
             $table_df .= $tmp_sql . " ENGINE=MyISAM DEFAULT CHARSET=" . str_replace('-', '', CHARSET) . ";\r\n";
-        }
-        else
-        {
+        } else {
             $table_df .= $tmp_sql . " TYPE=MyISAM;\r\n";
         }
 
@@ -115,15 +105,14 @@ class cls_sql_dump
      *
      * @return  int         $post_pos   记录位置
      */
-    function get_table_data($table, $pos)
+    public function get_table_data($table, $pos)
     {
         $post_pos = $pos;
 
         /* 获取数据表记录总数 */
         $total = $this->db->getOne("SELECT COUNT(*) FROM $table");
 
-        if ($total == 0 || $pos >= $total)
-        {
+        if ($total == 0 || $pos >= $total) {
             /* 无须处理 */
             return -1;
         }
@@ -132,8 +121,7 @@ class cls_sql_dump
         $cycle_time = ceil(($total-$pos) / $this->offset); //每次取offset条数。需要取的次数
 
         /* 循环查数据表 */
-        for($i = 0; $i<$cycle_time; $i++)
-        {
+        for ($i = 0; $i<$cycle_time; $i++) {
             /* 获取数据库数据 */
             $data = $this->db->getAll("SELECT * FROM $table LIMIT " . ($this->offset * $i + $pos) . ', ' . $this->offset);
             $data_count = count($data);
@@ -142,69 +130,50 @@ class cls_sql_dump
             $start_sql = "INSERT INTO `$table` ( `" . implode("`, `", $fields) . "` ) VALUES ";
 
             /* 循环将数据写入 */
-            for($j=0; $j< $data_count; $j++)
-            {
+            for ($j=0; $j< $data_count; $j++) {
                 $record = array_map("dump_escape_string", $data[$j]);   //过滤非法字符
                 $record = array_map("dump_null_string", $record);     //处理null值
 
                 /* 检查是否能写入，能则写入 */
-                if ($this->is_short)
-                {
-                    if ($post_pos == $total-1)
-                    {
-                        $tmp_dump_sql = " ( '" . implode("', '" , $record) . "' );\r\n";
-                    }
-                    else
-                    {
-                        if ($j == $data_count - 1)
-                        {
-                            $tmp_dump_sql = " ( '" . implode("', '" , $record) . "' );\r\n";
-                        }
-                        else
-                        {
-                            $tmp_dump_sql = " ( '" . implode("', '" , $record) . "' ),\r\n";
+                if ($this->is_short) {
+                    if ($post_pos == $total-1) {
+                        $tmp_dump_sql = " ( '" . implode("', '", $record) . "' );\r\n";
+                    } else {
+                        if ($j == $data_count - 1) {
+                            $tmp_dump_sql = " ( '" . implode("', '", $record) . "' );\r\n";
+                        } else {
+                            $tmp_dump_sql = " ( '" . implode("', '", $record) . "' ),\r\n";
                         }
                     }
 
-                    if ($post_pos == $pos)
-                    {
+                    if ($post_pos == $pos) {
                         /* 第一次插入数据 */
                         $tmp_dump_sql = $start_sql . "\r\n" . $tmp_dump_sql;
-                    }
-                    else
-                    {
-                        if ($j == 0)
-                        {
+                    } else {
+                        if ($j == 0) {
                             $tmp_dump_sql = $start_sql . "\r\n" . $tmp_dump_sql;
                         }
                     }
-                }
-                else
-                {
-                    $tmp_dump_sql = $start_sql . " ('" . implode("', '" , $record) . "');\r\n";
+                } else {
+                    $tmp_dump_sql = $start_sql . " ('" . implode("', '", $record) . "');\r\n";
                 }
 
                 $tmp_str_pos = strpos($tmp_dump_sql, 'NULL');         //把记录中null值的引号去掉
                 $tmp_dump_sql = empty($tmp_str_pos) ? $tmp_dump_sql : substr($tmp_dump_sql, 0, $tmp_str_pos - 1) . 'NULL' . substr($tmp_dump_sql, $tmp_str_pos + 5);
 
-                if (strlen($this->dump_sql) + strlen($tmp_dump_sql) > $this->max_size - 32)
-                {
-                    if ($this->sql_num == 0)
-                    {
+                if (strlen($this->dump_sql) + strlen($tmp_dump_sql) > $this->max_size - 32) {
+                    if ($this->sql_num == 0) {
                         $this->dump_sql .= $tmp_dump_sql; //当是第一条记录时强制写入
                         $this->sql_num++;
                         $post_pos++;
-                        if ($post_pos == $total)
-                        {
+                        if ($post_pos == $total) {
                             /* 所有数据已经写完 */
                             return -1;
                         }
                     }
 
                     return $post_pos;
-                }
-                else
-                {
+                } else {
                     $this->dump_sql .= $tmp_dump_sql;
                     $this->sql_num++; //记录sql条数
                     $post_pos++;
@@ -225,33 +194,26 @@ class cls_sql_dump
      *
      * @return  array       $tables     未备份完的表列表
      */
-    function dump_table($path, $vol)
+    public function dump_table($path, $vol)
     {
         $tables = $this->get_tables_list($path);
 
-        if ($tables === false)
-        {
+        if ($tables === false) {
             return false;
         }
 
-        if (empty($tables))
-        {
+        if (empty($tables)) {
             return $tables;
         }
 
         $this->dump_sql = $this->make_head($vol);
 
-        foreach($tables as $table => $pos)
-        {
-
-            if ($pos == -1)
-            {
+        foreach ($tables as $table => $pos) {
+            if ($pos == -1) {
                 /* 获取表定义，如果没有超过限制则保存 */
                 $table_df = $this->get_table_df($table, true);
-                if (strlen($this->dump_sql) + strlen($table_df) > $this->max_size - 32)
-                {
-                    if ($this->sql_num == 0)
-                    {
+                if (strlen($this->dump_sql) + strlen($table_df) > $this->max_size - 32) {
+                    if ($this->sql_num == 0) {
                         /* 第一条记录，强制写入 */
                         $this->dump_sql .= $table_df;
                         $this->sql_num +=2;
@@ -260,9 +222,7 @@ class cls_sql_dump
                     /* 已经达到上限 */
 
                     break;
-                }
-                else
-                {
+                } else {
                     $this->dump_sql .= $table_df;
                     $this->sql_num +=2;
                     $pos = 0;
@@ -272,13 +232,10 @@ class cls_sql_dump
             /* 尽可能多获取数据表数据 */
             $post_pos = $this->get_table_data($table, $pos);
 
-            if ($post_pos == -1)
-            {
+            if ($post_pos == -1) {
                 /* 该表已经完成，清除该表 */
                 unset($tables[$table]);
-            }
-            else
-            {
+            } else {
                 /* 该表未完成。说明将要到达上限,记录备份数据位置 */
                 $tables[$table] = $post_pos;
                 break;
@@ -299,7 +256,7 @@ class cls_sql_dump
      *
      * @return  string  $str    备份文件头部
      */
-    function make_head($vol)
+    public function make_head($vol)
     {
         /* 系统信息 */
         $sys_info['os']         = PHP_OS;
@@ -328,40 +285,29 @@ class cls_sql_dump
      *
      * @return  array       $arr        信息数组
      */
-    static function get_head($path)
+    public static function get_head($path)
     {
         /* 获取sql文件头部信息 */
         $sql_info = array('date'=>'', 'mysql_ver'=> '', 'php_ver'=>0, 'ecs_ver'=>'', 'vol'=>0);
-        $fp = fopen($path,'rb');
+        $fp = fopen($path, 'rb');
         $str = fread($fp, 250);
         fclose($fp);
         $arr = explode("\n", $str);
 
-        foreach ($arr AS $val)
-        {
+        foreach ($arr as $val) {
             $pos = strpos($val, ':');
-            if ($pos > 0)
-            {
+            if ($pos > 0) {
                 $type = trim(substr($val, 0, $pos), "-\n\r\t ");
                 $value = trim(substr($val, $pos+1), "/\n\r\t ");
-                if ($type == 'DATE')
-                {
+                if ($type == 'DATE') {
                     $sql_info['date'] = $value;
-                }
-                elseif ($type == 'MYSQL SERVER VERSION')
-                {
+                } elseif ($type == 'MYSQL SERVER VERSION') {
                     $sql_info['mysql_ver'] = $value;
-                }
-                elseif ($type == 'PHP VERSION')
-                {
+                } elseif ($type == 'PHP VERSION') {
                     $sql_info['php_ver'] = $value;
-                }
-                elseif ($type == 'ECShop VERSION')
-                {
+                } elseif ($type == 'ECShop VERSION') {
                     $sql_info['ecs_ver'] = $value;
-                }
-                elseif ($type == 'Vol')
-                {
+                } elseif ($type == 'Vol') {
                     $sql_info['vol'] = $value;
                 }
             }
@@ -378,10 +324,9 @@ class cls_sql_dump
      *
      * @return  array       $arr    数据表列表
      */
-    function get_tables_list($path)
+    public function get_tables_list($path)
     {
-        if (!file_exists($path))
-        {
+        if (!file_exists($path)) {
             $this->error_msg = $path . ' is not exists';
 
             return false;
@@ -390,15 +335,12 @@ class cls_sql_dump
         $arr = array();
         $str = @file_get_contents($path);
 
-        if (!empty($str))
-        {
+        if (!empty($str)) {
             $tmp_arr = explode("\n", $str);
-            foreach ($tmp_arr as $val)
-            {
-                $val = trim ($val, "\r;");
-                if (!empty($val))
-                {
-                    list($table, $count) = explode(':',$val);
+            foreach ($tmp_arr as $val) {
+                $val = trim($val, "\r;");
+                if (!empty($val)) {
+                    list($table, $count) = explode(':', $val);
                     $arr[$table] = $count;
                 }
             }
@@ -416,29 +358,22 @@ class cls_sql_dump
      *
      * @return  boolen
      */
-    function put_tables_list($path, $arr)
+    public function put_tables_list($path, $arr)
     {
-        if (is_array($arr))
-        {
+        if (is_array($arr)) {
             $str = '';
-            foreach($arr as $key => $val)
-            {
+            foreach ($arr as $key => $val) {
                 $str .= $key . ':' . $val . ";\r\n";
             }
 
-            if (@file_put_contents($path, $str))
-            {
+            if (@file_put_contents($path, $str)) {
                 return true;
-            }
-            else
-            {
+            } else {
                 $this->error_msg = 'Can not write ' . $path;
 
                 return false;
             }
-        }
-        else
-        {
+        } else {
             $this->error_msg = 'It need a array';
 
             return false;
@@ -453,12 +388,11 @@ class cls_sql_dump
      *
      * @return      string      $str    随机名称
      */
-    static function get_random_name()
+    public static function get_random_name()
     {
         $str = date('Ymd');
 
-        for ($i = 0; $i < 6; $i++)
-        {
+        for ($i = 0; $i < 6; $i++) {
             $str .= chr(mt_rand(97, 122));
         }
 
@@ -473,10 +407,8 @@ class cls_sql_dump
      *
      * @return void
      */
-    function errorMsg()
+    public function errorMsg()
     {
         return $this->error_msg;
     }
 }
-
-?>

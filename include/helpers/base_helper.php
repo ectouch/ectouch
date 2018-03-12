@@ -47,9 +47,9 @@ function sub_str($str, $length = 0, $append = true)
  */
 function real_ip()
 {
-    static $realip = NULL;
+    static $realip = null;
 
-    if ($realip !== NULL) {
+    if ($realip !== null) {
         return $realip;
     }
 
@@ -58,7 +58,7 @@ function real_ip()
             $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
 
             /* 取X-Forwarded-For中第一个非unknown的有效IP字符串 */
-            foreach ($arr AS $ip) {
+            foreach ($arr as $ip) {
                 $ip = trim($ip);
 
                 if ($ip != 'unknown') {
@@ -237,7 +237,7 @@ function send_mail($name, $email, $subject, $content, $type = 0, $notification =
                 } else {
                     if (strpos($err_msg, 'Failed to connect to server') !== false) {
                         $global->err->add(sprintf(L('smtp_connect_failure'), $params['host'] . ':' . $params['port']));
-                    } else if (strpos($err_msg, 'AUTH command failed') !== false) {
+                    } elseif (strpos($err_msg, 'AUTH command failed') !== false) {
                         $global->err->add(L('smtp_login_failure'));
                     } elseif (strpos($err_msg, 'bad sequence of commands') !== false) {
                         $global->err->add(L('smtp_refuse'));
@@ -441,8 +441,8 @@ function log_write($arg, $file = '', $line = '')
 
     if (is_array($arg)) {
         $str .= '$arg = array(';
-        foreach ($arg AS $val) {
-            foreach ($val AS $key => $list) {
+        foreach ($arg as $val) {
+            foreach ($val as $key => $list) {
                 $str .= "'$key' => '$list'\r\n";
             }
         }
@@ -477,7 +477,7 @@ function make_dir($folder)
         $base = ($atmp[0][0] == '/') ? '/' : '';
 
         /* 遍历包含路径信息的数组 */
-        foreach ($atmp[1] AS $val) {
+        foreach ($atmp[1] as $val) {
             if ('' != $val) {
                 $base .= $val;
 
@@ -520,9 +520,9 @@ function make_dir($folder)
  */
 function gzip_enabled()
 {
-    static $enabled_gzip = NULL;
+    static $enabled_gzip = null;
 
-    if ($enabled_gzip === NULL) {
+    if ($enabled_gzip === null) {
         $enabled_gzip = (C('enable_gzip') && function_exists('ob_gzhandler'));
     }
 
@@ -558,7 +558,7 @@ function addslashes_deep($value)
 function addslashes_deep_obj($obj)
 {
     if (is_object($obj) == true) {
-        foreach ($obj AS $key => $val) {
+        foreach ($obj as $key => $val) {
             $obj->$key = addslashes_deep($val);
         }
     } else {
@@ -754,9 +754,9 @@ function mysql_like_quote($str)
  **/
 function real_server_ip()
 {
-    static $serverip = NULL;
+    static $serverip = null;
 
-    if ($serverip !== NULL) {
+    if ($serverip !== null) {
         return $serverip;
     }
 
@@ -802,14 +802,14 @@ function ecs_header($string, $replace = true, $http_response_code = 0)
 
 function ecs_iconv($source_lang, $target_lang, $source_string = '')
 {
-    static $chs = NULL;
+    static $chs = null;
 
     /* 如果字符串为空或者字符串不需要转换，直接返回 */
     if ($source_lang == $target_lang || $source_string == '' || preg_match("/[\x80-\xFF]+/", $source_string) == 0) {
         return $source_string;
     }
 
-    if ($chs === NULL) {
+    if ($chs === null) {
         // require_once(ROOT_PATH . 'includes/cls_iconv.php');
         $chs = new iconv(ROOT_PATH);
     }
@@ -819,7 +819,7 @@ function ecs_iconv($source_lang, $target_lang, $source_string = '')
 
 function ecs_geoip($ip)
 {
-    static $fp = NULL, $offset = array(), $index = NULL;
+    static $fp = null, $offset = array(), $index = null;
 
     $ip = gethostbyname($ip);
     $ipdot = explode('.', $ip);
@@ -831,7 +831,7 @@ function ecs_geoip($ip)
         return 'LAN';
     }
 
-    if ($fp === NULL) {
+    if ($fp === null) {
         $fp = fopen(ROOT_PATH . 'data/ipdata/ipdata.dat', 'rb');
         if ($fp === false) {
             return 'Invalid IP data file';
@@ -857,7 +857,7 @@ function ecs_geoip($ip)
     $area = fread($fp, $index_length['len']);
 
     fclose($fp);
-    $fp = NULL;
+    $fp = null;
 
     return $area;
 }
@@ -907,7 +907,7 @@ function move_upload_file($file_name, $target_name = '')
         if (move_uploaded_file($file_name, $target_name)) {
             @chmod($target_name, 0755);
             return true;
-        } else if (copy($file_name, $target_name)) {
+        } elseif (copy($file_name, $target_name)) {
             @chmod($target_name, 0755);
             return true;
         }

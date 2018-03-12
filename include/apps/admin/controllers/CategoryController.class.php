@@ -16,12 +16,14 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class CategoryController extends AdminController {
+class CategoryController extends AdminController
+{
 
     /**
      * 获取分类列表
      */
-    public function index() {
+    public function index()
+    {
         $list = cat_list(0, 0, false);
         /* 模板赋值 */
         $this->assign('ur_here', L('03_category_list'));
@@ -32,7 +34,8 @@ class CategoryController extends AdminController {
     /**
      * 编辑分类信息
      */
-    public function edit() {
+    public function edit()
+    {
         if (IS_POST) {
             $cat_id = I('cat_id');
             $cat_info = I('data');
@@ -42,12 +45,12 @@ class CategoryController extends AdminController {
             ));
             /* 提示信息 */
             if ($msg !== true) {
-                $this->message($msg, NULL, 'error');
+                $this->message($msg, null, 'error');
             }
             /* 判断上级目录是否合法 */
             $children = array_keys(cat_list($cat_id, 0, false)); // 获得当前分类的所有下级分类
             if (in_array($cat_info['parent_id'], $children)) {
-                $this->message(L('is_leaf_error'), NULL, 'error');
+                $this->message(L('is_leaf_error'), null, 'error');
             }
             /* 更新栏目 */
             $this->cat_update($cat_id, $cat_info);
@@ -56,7 +59,7 @@ class CategoryController extends AdminController {
                 /* cat_image图标 */
                 $result = $this->ectouchUpload('cat_image', 'cat_image');
                 if ($result['error'] > 0) {
-                    $this->message($result['message'], NULL, 'error');
+                    $this->message($result['message'], null, 'error');
                 }
                 $data['cat_image'] = substr($result['message']['cat_image']['savepath'], 2) . $result['message']['cat_image']['savename'];
                 $this->model->table('touch_category')->data($data)->where('cat_id=' . $cat_id)->update();
@@ -86,7 +89,8 @@ class CategoryController extends AdminController {
      * @param   integer     $cat_id     指定的分类ID
      * @return  mix
      */
-    private function get_cat_info($cat_id) {
+    private function get_cat_info($cat_id)
+    {
         return $this->model->table('category as a, ' . $this->model->pre . 'touch_category as b')->where('a.cat_id=b.cat_id and a.cat_id=' . $cat_id)->find();
     }
 
@@ -96,7 +100,8 @@ class CategoryController extends AdminController {
      * @param   array   $args
      * @return  mix
      */
-    private function cat_update($cat_id, $args) {
+    private function cat_update($cat_id, $args)
+    {
         if (empty($args) || empty($cat_id)) {
             return false;
         }
@@ -109,7 +114,8 @@ class CategoryController extends AdminController {
      * @param
      * @return void
      */
-    private function get_attr_list() {
+    private function get_attr_list()
+    {
         $result = $this->model->table('attribute as a, ' . $this->model->pre . 'goods_type as c')
                         ->field('a.attr_id, a.cat_id, a.attr_name')
                         ->where('a.cat_id = c.cat_id AND c.enabled = 1')
@@ -121,5 +127,4 @@ class CategoryController extends AdminController {
         }
         return $list;
     }
-
 }

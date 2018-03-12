@@ -22,7 +22,7 @@ if (! defined('IN_ECTOUCH')) {
  * 新品查询类
  *
  * @author wanglu
- *        
+ *
  */
 class news extends PluginWechatController
 {
@@ -34,7 +34,7 @@ class news extends PluginWechatController
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -87,8 +87,8 @@ class news extends PluginWechatController
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -116,5 +116,6 @@ class news extends PluginWechatController
      * 行为操作
      */
     public function action()
-    {}
+    {
+    }
 }

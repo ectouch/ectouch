@@ -74,7 +74,7 @@ class integrate
      *            数据库密码
      * @return void
      */
-    function __construct($cfg)
+    public function __construct($cfg)
     {
         $this->charset = isset($cfg['db_charset']) ? $cfg['db_charset'] : 'UTF8';
         $this->prefix = isset($cfg['prefix']) ? $cfg['prefix'] : '';
@@ -98,9 +98,9 @@ class integrate
             }
         } else {
             if (empty($cfg['is_latin1'])) {
-                $this->db = new cls_mysql($cfg['db_host'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_name'], $this->charset, NULL, $quiet);
+                $this->db = new cls_mysql($cfg['db_host'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_name'], $this->charset, null, $quiet);
             } else {
-                $this->db = new cls_mysql($cfg['db_host'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_name'], 'latin1', NULL, $quiet);
+                $this->db = new cls_mysql($cfg['db_host'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_name'], 'latin1', null, $quiet);
             }
         }
     }
@@ -109,12 +109,12 @@ class integrate
      * 用户登录函数
      *
      * @access public
-     * @param string $username            
-     * @param string $password            
+     * @param string $username
+     * @param string $password
      *
      * @return void
      */
-    function login($username, $password, $remember = null)
+    public function login($username, $password, $remember = null)
     {
         if ($this->check_user($username, $password) > 0) {
             if ($this->need_sync) {
@@ -132,14 +132,14 @@ class integrate
     /**
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function logout()
+    public function logout()
     {
         $this->set_cookie(); // 清除cookie
         $this->set_session(); // 清除session
@@ -149,14 +149,14 @@ class integrate
      * 添加一个新用户
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return int
      */
-    function add_user($username, $password, $email, $gender = -1, $bday = 0, $reg_date = 0, $md5password = '')
+    public function add_user($username, $password, $email, $gender = -1, $bday = 0, $reg_date = 0, $md5password = '')
     {
         /* 将用户添加到整合方 */
         if ($this->check_user($username) > 0) {
@@ -226,14 +226,14 @@ class integrate
      * 编辑用户信息($password, $email, $gender, $bday)
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function edit_user($cfg)
+    public function edit_user($cfg)
     {
         if (empty($cfg['username'])) {
             return false;
@@ -302,14 +302,14 @@ class integrate
      * 删除用户
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function remove_user($id)
+    public function remove_user($id)
     {
         $post_id = $id;
         
@@ -361,9 +361,9 @@ class integrate
                 $this->db->query($sql);
                 
                 $col_connect_id = $this->db->table('connect_user')->field('id')->where(db_create_in($col, 'user_id'))->getCol();
-                if($col_connect_id) {
-                   $sql = "DELETE FROM {pre}connect_user  WHERE " . db_create_in($col, 'user_id'); // 删除connect_user表关联数据
-                   $this->db->query($sql);
+                if ($col_connect_id) {
+                    $sql = "DELETE FROM {pre}connect_user  WHERE " . db_create_in($col, 'user_id'); // 删除connect_user表关联数据
+                    $this->db->query($sql);
                 }
             }
         }
@@ -385,11 +385,11 @@ class integrate
 
     /**
      * 用户绑定时同步用户数据
-     * 
-     * @param unknown $old_uid            
-     * @param unknown $new_uid            
+     *
+     * @param unknown $old_uid
+     * @param unknown $new_uid
      */
-    function sync_user($old_uid, $new_uid)
+    public function sync_user($old_uid, $new_uid)
     {
         if (! empty($old_uid) && ! empty($new_uid)) {
             $sql = "UPDATE " . $this->db->pre . 'users ' . " SET parent_id = " . $new_uid . " WHERE parent_id = " . $old_uid; // 将用户的下级的parent_id 改为新绑定的用户
@@ -417,14 +417,14 @@ class integrate
      * 获取指定用户的信息
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function get_profile_by_name($username)
+    public function get_profile_by_name($username)
     {
         $post_username = $username;
         
@@ -438,14 +438,14 @@ class integrate
      * 获取指定用户的信息
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function get_profile_by_id($id)
+    public function get_profile_by_id($id)
     {
         $sql = "SELECT " . $this->field_id . " AS user_id," . $this->field_name . " AS user_name," . $this->field_email . " AS email," . $this->field_mobile . " AS mobile," . $this->field_gender . " AS sex," . $this->field_bday . " AS birthday," . $this->field_reg_date . " AS reg_time, " . $this->field_passwd_question . " AS passwd_question," . $this->field_pass . " AS password " . " FROM " . $this->table($this->user_table) . " WHERE " . $this->field_id . "='$id'";
         $row = $this->db->getRow($sql);
@@ -457,14 +457,14 @@ class integrate
      * 根据登录状态设置cookie
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function get_cookie()
+    public function get_cookie()
     {
         $id = $this->check_cookie();
         if ($id) {
@@ -485,10 +485,10 @@ class integrate
      * @access public
      * @param string $username
      *            用户名
-     *            
+     *
      * @return int
      */
-    function check_user($username, $password = null)
+    public function check_user($username, $password = null)
     {
         $post_username = $username;
         
@@ -514,10 +514,10 @@ class integrate
      * @access public
      * @param string $email
      *            用户邮箱
-     *            
+     *
      * @return boolean
      */
-    function check_email($email)
+    public function check_email($email)
     {
         if (! empty($email)) {
             /* 检查email是否重复 */
@@ -536,14 +536,14 @@ class integrate
      * 检查cookie是正确，返回用户名
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function check_cookie()
+    public function check_cookie()
     {
         return '';
     }
@@ -552,11 +552,11 @@ class integrate
      * 设置cookie
      *
      * @access public
-     * @param            
+     * @param
      *
      * @return void
      */
-    function set_cookie($username = '', $remember = null)
+    public function set_cookie($username = '', $remember = null)
     {
         if (empty($username)) {
             /* 摧毁cookie */
@@ -581,11 +581,11 @@ class integrate
      * 设置指定用户SESSION
      *
      * @access public
-     * @param            
+     * @param
      *
      * @return void
      */
-    function set_session($username = '')
+    public function set_session($username = '')
     {
         if (empty($username)) {
             ECTouch::sess()->destroy_session();
@@ -607,10 +607,10 @@ class integrate
      * @access private
      * @param string $str
      *            表名
-     *            
+     *
      * @return void
      */
-    function table($str)
+    public function table($str)
     {
         return '`' . $this->db_name . '`.`' . $this->prefix . $str . '`';
     }
@@ -621,10 +621,10 @@ class integrate
      * @access public
      * @param array $cfg
      *            包含参数为 $password, $md5password, $salt, $type
-     *            
+     *
      * @return void
      */
-    function compile_password($cfg)
+    public function compile_password($cfg)
     {
         if (isset($cfg['password'])) {
             $cfg['md5password'] = md5($cfg['password']);
@@ -641,6 +641,7 @@ class integrate
                     return $cfg['md5password'];
                 }
             
+                // no break
             case PWD_PRE_SALT:
                 if (empty($cfg['salt'])) {
                     $cfg['salt'] = '';
@@ -664,14 +665,14 @@ class integrate
      * 会员同步
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function sync($username, $password = '', $md5password = '')
+    public function sync($username, $password = '', $md5password = '')
     {
         if ((! empty($password)) && empty($md5password)) {
             $md5password = md5($password);
@@ -728,14 +729,14 @@ class integrate
      * 获取论坛有效积分及单位
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function get_points_name()
+    public function get_points_name()
     {
         return array();
     }
@@ -744,14 +745,14 @@ class integrate
      * 获取用户积分
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function get_points($username)
+    public function get_points($username)
     {
         $credits = $this->get_points_name();
         $fileds = array_keys($credits);
@@ -768,14 +769,14 @@ class integrate
      * 设置用户积分
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function set_points($username, $credits)
+    public function set_points($username, $credits)
     {
         $user_set = array_keys($credits);
         $points_set = array_keys($this->get_points_name());
@@ -794,7 +795,7 @@ class integrate
         return true;
     }
 
-    function get_user_info($username)
+    public function get_user_info($username)
     {
         return $this->get_profile_by_name($username);
     }
@@ -803,14 +804,14 @@ class integrate
      * 检查有无重名用户，有则返回重名用户
      *
      * @access public
-     * @param            
+     * @param
      *
      *
      *
      *
      * @return void
      */
-    function test_conflict($user_list)
+    public function test_conflict($user_list)
     {
         if (empty($user_list)) {
             return array();

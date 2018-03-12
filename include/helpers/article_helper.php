@@ -19,14 +19,13 @@ function get_cat_articles($cat_id, $page = 1, $size = 20, $requirement = '')
     } else {
         $cat_str = get_article_children($cat_id);
     }
-    //增加搜索条件，如果有搜索内容就进行搜索    
+    //增加搜索条件，如果有搜索内容就进行搜索
     if ($requirement != '') {
         $sql = 'SELECT article_id, title, author, add_time, file_url, open_type' .
             ' FROM ' . $global->ecs->table('article') .
             ' WHERE is_open = 1 AND title like \'%' . $requirement . '%\' ' .
             ' ORDER BY article_type DESC, article_id DESC';
     } else {
-
         $sql = 'SELECT article_id, title, author, add_time, file_url, open_type' .
             ' FROM ' . $global->ecs->table('article') .
             ' WHERE is_open = 1 AND ' . $cat_str .

@@ -15,12 +15,14 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class GroupbuyController extends AdminController {
+class GroupbuyController extends AdminController
+{
 
     /**
      * 团购列表
      */
-    public function index() {
+    public function index()
+    {
         $condition['act_type'] = GAT_GROUP_BUY;
 
         $filter['page'] = '{page}';
@@ -39,7 +41,7 @@ class GroupbuyController extends AdminController {
             if (!is_array($price_ladder) || empty($price_ladder)) {
                 $price_ladder = array(array('amount' => 0, 'price' => 0));
             } else {
-                foreach ($price_ladder AS $key => $amount_price) {
+                foreach ($price_ladder as $key => $amount_price) {
                     $price_ladder[$key]['formated_price'] = price_format($amount_price['price']);
                 }
             }
@@ -47,7 +49,7 @@ class GroupbuyController extends AdminController {
             /* 计算当前价 */
             $cur_price = $price_ladder[0]['price'];    // 初始化
             $cur_amount = $stat['valid_goods'];         // 当前数量
-            foreach ($price_ladder AS $amount_price) {
+            foreach ($price_ladder as $amount_price) {
                 if ($cur_amount >= $amount_price['amount']) {
                     $cur_price = $amount_price['price'];
                 } else {
@@ -74,14 +76,15 @@ class GroupbuyController extends AdminController {
     /**
      * 编辑团购banner
      */
-    public function edit() {
+    public function edit()
+    {
         $id = I('id');
         if (IS_POST) {
             $info = I('data');
             if ($_FILES['act_banner']['name']) {
                 $result = $this->ectouchUpload('act_banner', 'group_buy');
                 if ($result['error'] > 0) {
-                    $this->message($result['message'], NULL, 'error');
+                    $this->message($result['message'], null, 'error');
                 }
                 /* 生成banner链接 */
                 $data2['act_banner'] = substr($result['message']['act_banner']['savepath'], 2) . $result['message']['act_banner']['savename'];
@@ -103,5 +106,4 @@ class GroupbuyController extends AdminController {
         $this->assign('ur_here', L('articlecat_edit'));
         $this->display();
     }
-
 }

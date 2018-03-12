@@ -22,7 +22,7 @@ if (! defined('IN_ECTOUCH')) {
  * 砸金蛋
  *
  * @author wanglu
- *        
+ *
  */
 class zjd extends PluginWechatController
 {
@@ -34,7 +34,7 @@ class zjd extends PluginWechatController
     /**
      * 构造方法
      *
-     * @param unknown $cfg            
+     * @param unknown $cfg
      */
     public function __construct($cfg = array())
     {
@@ -101,8 +101,8 @@ class zjd extends PluginWechatController
     /**
      * 积分赠送
      *
-     * @param unknown $fromusername            
-     * @param unknown $info            
+     * @param unknown $fromusername
+     * @param unknown $info
      */
     public function give_point($fromusername, $info)
     {
@@ -135,7 +135,7 @@ class zjd extends PluginWechatController
         $config = $this->get_config($this->plugin_name);
         if (! empty($config)) {
             $num = count($config['prize']);
-            if($num > 0){
+            if ($num > 0) {
                 foreach ($config['prize'] as $key => $val) {
                     // 删除最后一项未中奖
                     if ($key == ($num - 1)) {
@@ -160,7 +160,7 @@ class zjd extends PluginWechatController
 
         $file = ROOT_PATH . 'plugins/wechat/' . $this->plugin_name . '/view/index.html';
         if (file_exists($file)) {
-            require_once ($file);
+            require_once($file);
         }
     }
 
@@ -205,7 +205,7 @@ class zjd extends PluginWechatController
             }
             $file = ROOT_PATH . 'plugins/wechat/' . $this->plugin_name . '/view/user_info.html';
             if (file_exists($file)) {
-                require_once ($file);
+                require_once($file);
             }
             exit();
         }
@@ -275,20 +275,18 @@ class zjd extends PluginWechatController
                         ->where('prize_name = "' . $val['prize_name'] . '" and activity_type = "'.$this->plugin_name.'" and wechat_id = ' . $wxid)
                         ->count();
                     // 最后一个奖项
-					$lastarr = end($prize);
-					if($lastarr['prize_level'] == $val['prize_level']){
-						$arr[$val['prize_level']] = $val['prize_prob'];
-						$prize_name[$val['prize_level']] = $val['prize_name'];
-						
-					}else{
-						if ($count >= $val['prize_count']) {
-                        unset($prize[$key]);
-						} else {
-							$arr[$val['prize_level']] = $val['prize_prob'];
-							$prize_name[$val['prize_level']] = $val['prize_name'];
-						}
-						
-					}
+                    $lastarr = end($prize);
+                    if ($lastarr['prize_level'] == $val['prize_level']) {
+                        $arr[$val['prize_level']] = $val['prize_prob'];
+                        $prize_name[$val['prize_level']] = $val['prize_name'];
+                    } else {
+                        if ($count >= $val['prize_count']) {
+                            unset($prize[$key]);
+                        } else {
+                            $arr[$val['prize_level']] = $val['prize_prob'];
+                            $prize_name[$val['prize_level']] = $val['prize_name'];
+                        }
+                    }
                 }
                 // 最后一个奖项
                 $lastarr = end($prize);
@@ -331,7 +329,7 @@ class zjd extends PluginWechatController
     /**
      * 获取插件配置信息
      *
-     * @param string $code            
+     * @param string $code
      * @return multitype:unknown
      */
     private function get_config($code = '')

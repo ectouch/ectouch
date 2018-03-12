@@ -15,7 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ActivityModel extends BaseModel {
+class ActivityModel extends BaseModel
+{
 
     /**
      * 获取优惠活动的信息和活动banner
@@ -23,7 +24,8 @@ class ActivityModel extends BaseModel {
      * @param unknown $page
      * @return Ambigous <multitype:, type, string, unknown>
      */
-    function get_activity_info($size, $page) {
+    public function get_activity_info($size, $page)
+    {
         $start = ($page - 1) * $size;
         $sql = 'SELECT f.*  FROM ' . $this->pre . "favourable_activity f  ORDER BY f.sort_order ASC, f.end_time DESC LIMIT $start , $size";
         $res = $this->query($sql);
@@ -39,8 +41,8 @@ class ActivityModel extends BaseModel {
         return $arr;
     }
 
-    function category_get_count($children, $brand, $goods, $min, $max, $ext) {
-
+    public function category_get_count($children, $brand, $goods, $min, $max, $ext)
+    {
         $display = $GLOBALS['display'];
         $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND " . "g.is_delete = 0 ";
         if ($children) {
@@ -75,7 +77,8 @@ class ActivityModel extends BaseModel {
      * @param unknown $order
      * @return multitype:
      */
-    function category_get_goods($children, $brand, $goods, $size, $page, $sort, $order) {
+    public function category_get_goods($children, $brand, $goods, $size, $page, $sort, $order)
+    {
         $display = $GLOBALS['display'];
         $children = $children ? 'AND (' . $children . ' OR ' . Model('Goods')->get_extension_goods($children) . ')' : '';
         $where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 " . $children . " AND g.is_delete = 0 ";
@@ -148,7 +151,7 @@ class ActivityModel extends BaseModel {
                 $arr[$row['goods_id']]['mysc'] = $rs;
             }
             $arr[$row['goods_id']]['promotion'] = model('GoodsBase')->get_promotion_show($row['goods_id']);
-			$arr[$row['goods_id']]['comment_count'] = model('Comment')->get_goods_comment($row['goods_id'], 0);  //商品总评论数量 
+            $arr[$row['goods_id']]['comment_count'] = model('Comment')->get_goods_comment($row['goods_id'], 0);  //商品总评论数量
             $arr[$row['goods_id']]['favorable_count'] = model('Comment')->favorable_comment($row['goods_id'], 0);  //获得商品好评百分比
         }
         return $arr;
@@ -159,22 +162,23 @@ class ActivityModel extends BaseModel {
      * @param unknown $goods_id
      * @return number
      */
-    private function get_sales_volume($goods_id) {
+    private function get_sales_volume($goods_id)
+    {
         $last_month = local_strtotime('-1 months'); // 前一个月
         $now_time = gmtime(); // 当前时间
         $sql = "select sum(goods_number) as sum from " . $this->pre . "order_goods AS g ," . $this->pre . "order_info AS o WHERE o.order_id=g.order_id and g.goods_id = " . $goods_id . " and o.pay_status=2 and o.add_time >= " . $last_month . " and o.add_time <= " . $now_time . " group by g.goods_id";
         $res = $this->row($sql);
         return intval($res['sum']);
     }
-	
-	    /**
+    
+    /**
      * 获取优惠活动的信息和活动 数量
      */
-    function get_activity_count() {
+    public function get_activity_count()
+    {
         $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre . 'favourable_activity f LEFT JOIN ' . $this->pre . 'touch_activity a on a.act_id = f.act_id ';
         $res = $this->row($sql);
         $count = $res['count'] ? $res['count'] : 0;
         return $count;
     }
-
 }

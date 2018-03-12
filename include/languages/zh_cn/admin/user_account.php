@@ -50,5 +50,3 @@ $_LANG['js_languages']['deposit_amount_error'] = '请按正确的格式输入充
 $_LANG['js_languages']['deposit_type_empty'] = '请填写类型！';
 $_LANG['js_languages']['deposit_notic_empty'] = '请填写管理员备注！';
 $_LANG['js_languages']['deposit_desc_empty'] = '请填写会员描述！';
-
-?>

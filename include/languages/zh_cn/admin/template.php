@@ -135,5 +135,3 @@ $_LANG['js_languages']['selectPlease'] = '请选择...';
 $_LANG['js_languages']['removeConfirm'] = '您确定要删除选定的内容吗？';
 $_LANG['js_languages']['empty_content'] = '对不起，库项目的内容不能为空。';
 $_LANG['js_languages']['save_confirm'] = '您已经修改了模板内容，您确定不保存么？';
-
-?>

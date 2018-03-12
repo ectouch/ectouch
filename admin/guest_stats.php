@@ -11,20 +11,16 @@ require_once(BASE_PATH . 'helpers/order_helper.php');
 require_once(BASE_PATH . 'languages/' .$_CFG['lang']. '/admin/statistic.php');
 
 /* act操作项的初始化 */
-if (empty($_REQUEST['act']))
-{
+if (empty($_REQUEST['act'])) {
     $_REQUEST['act'] = 'list';
-}
-else
-{
+} else {
     $_REQUEST['act'] = trim($_REQUEST['act']);
 }
 
 /*------------------------------------------------------ */
 //-- 客户统计列表
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     /* 权限判断 */
     admin_priv('report_guest');
 
@@ -62,8 +58,7 @@ if ($_REQUEST['act'] == 'list')
     $guest_order_amount = ($guest_all_order['order_num'] > 0) ? floatval($guest_all_order['turnover'] / $guest_all_order['order_num']) : '0.00';
 
     $_GET['flag'] = isset($_GET['flag']) ? 'download' : '';
-    if($_GET['flag'] == 'download')
-    {
+    if ($_GET['flag'] == 'download') {
         $filename = ecs_iconv(CHARSET, 'GB2312', $_LANG['guest_statistics']);
 
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
@@ -102,34 +97,32 @@ if ($_REQUEST['act'] == 'list')
     }
 
     /* 赋值到模板 */
-    $smarty->assign('user_num',            $user_num);                    // 会员总数
-    $smarty->assign('have_order_usernum',  $have_order_usernum);          // 有过订单的会员数
+    $smarty->assign('user_num', $user_num);                    // 会员总数
+    $smarty->assign('have_order_usernum', $have_order_usernum);          // 有过订单的会员数
     $smarty->assign('user_order_turnover', $user_all_order['order_num']); // 会员总订单数
-    $smarty->assign('user_all_turnover',   price_format($user_all_order['turnover']));  //会员购物总额
-    $smarty->assign('guest_all_turnover',  price_format($guest_all_order['turnover'])); //匿名会员购物总额
-    $smarty->assign('guest_order_num',     $guest_all_order['order_num']);              //匿名会员订单总数
+    $smarty->assign('user_all_turnover', price_format($user_all_order['turnover']));  //会员购物总额
+    $smarty->assign('guest_all_turnover', price_format($guest_all_order['turnover'])); //匿名会员购物总额
+    $smarty->assign('guest_order_num', $guest_all_order['order_num']);              //匿名会员订单总数
 
     /* 每会员订单数 */
-    $smarty->assign('ave_user_ordernum',  $user_num > 0 ? sprintf("%0.2f", $user_all_order['order_num'] / $user_num) : 0);
+    $smarty->assign('ave_user_ordernum', $user_num > 0 ? sprintf("%0.2f", $user_all_order['order_num'] / $user_num) : 0);
 
     /* 每会员购物额 */
-    $smarty->assign('ave_user_turnover',  $user_num > 0 ? price_format($user_all_order['turnover'] / $user_num) : 0);
+    $smarty->assign('ave_user_turnover', $user_num > 0 ? price_format($user_all_order['turnover'] / $user_num) : 0);
 
     /* 注册会员购买率 */
     $smarty->assign('user_ratio', sprintf("%0.2f", ($user_num > 0 ? $have_order_usernum / $user_num : 0) * 100));
 
-     /* 匿名会员平均订单额 */
+    /* 匿名会员平均订单额 */
     $smarty->assign('guest_order_amount', $guest_all_order['order_num'] > 0 ? price_format($guest_all_order['turnover'] / $guest_all_order['order_num']) : 0);
 
-    $smarty->assign('all_order',          $user_all_order);    //所有订单总数以及所有购物总额
-    $smarty->assign('ur_here',            $_LANG['report_guest']);
-    $smarty->assign('lang',               $_LANG);
+    $smarty->assign('all_order', $user_all_order);    //所有订单总数以及所有购物总额
+    $smarty->assign('ur_here', $_LANG['report_guest']);
+    $smarty->assign('lang', $_LANG);
 
-    $smarty->assign('action_link',  array('text' => $_LANG['down_guest_stats'],
+    $smarty->assign('action_link', array('text' => $_LANG['down_guest_stats'],
           'href'=>'guest_stats.php?flag=download'));
 
     assign_query_info();
     $smarty->display('guest_stats.htm');
 }
-
-?>

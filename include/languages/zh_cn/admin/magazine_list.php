@@ -22,5 +22,3 @@ $_LANG['go_list'] = '返回列表';
 $_LANG['edit_ok'] = '操作成功！';
 $_LANG['email_user'] = '邮件订阅用户';
 $_LANG['user_list'] = '全体会员';
-
-?>

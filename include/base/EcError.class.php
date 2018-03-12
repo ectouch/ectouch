@@ -16,8 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class EcError extends Exception {
-
+class EcError extends Exception
+{
     private $errorMessage = '';
     private $errorFile = '';
     private $errorLine = 0;
@@ -32,7 +32,8 @@ class EcError extends Exception {
      * @param string $errorFile
      * @param number $errorLine
      */
-    public function __construct($errorMessage, $errorCode = 0, $errorFile = '', $errorLine = 0) {
+    public function __construct($errorMessage, $errorCode = 0, $errorFile = '', $errorLine = 0)
+    {
         parent::__construct($errorMessage, $errorCode);
         $this->errorMessage = $errorMessage;
         $this->errorCode = $errorCode == 0 ? $this->getCode() : $errorCode;
@@ -47,7 +48,8 @@ class EcError extends Exception {
      * 获取trace信息
      * @return string
      */
-    protected function trace() {
+    protected function trace()
+    {
         $trace = $this->getTrace();
 
         $traceInfo = '';
@@ -64,7 +66,8 @@ class EcError extends Exception {
      * 错误等级
      * @return string
      */
-    protected function getLevel() {
+    protected function getLevel()
+    {
         $Level_array = array(1 => '致命错误(E_ERROR)',
             2 => '警告(E_WARNING)',
             4 => '语法解析错误(E_PARSE)',
@@ -89,7 +92,8 @@ class EcError extends Exception {
      * @param string $errorFile
      * @param number $errorLine
      */
-    static public function show($message = "", $code = 0, $errorFile = '', $errorLine = 0) {
+    public static function show($message = "", $code = 0, $errorFile = '', $errorLine = 0)
+    {
         if (function_exists('ec_error_ext')) {
             ec_error_ext($message, $code, $errorFile, $errorLine);
         } else {
@@ -101,7 +105,8 @@ class EcError extends Exception {
      * 记录错误信息
      * @param unknown $message
      */
-    static public function write($message) {
+    public static function write($message)
+    {
         $log_path = C('LOG_PATH');
         //检查日志记录目录是否存在
         if (!is_dir($log_path)) {
@@ -118,7 +123,8 @@ class EcError extends Exception {
     /**
      * 输出错误信息
      */
-    protected function showError() {
+    protected function showError()
+    {
         //如果开启了日志记录，则写入日志
         if (C('LOG_ON')) {
             self::write($this->message);
@@ -142,7 +148,9 @@ class EcError extends Exception {
             exit;
         }
 
-        if (!defined('__APP__')) define('__APP__', '/');
+        if (!defined('__APP__')) {
+            define('__APP__', '/');
+        }
 
         echo '<!doctype html>
 <html>
@@ -173,9 +181,9 @@ h1{ font-size: 16px; line-height: 24px; }
 <div class="error">
 <p class="face">:(</p>
 <h1>' . $this->message . '</h1>';
-//开启调试模式之后，显示详细信息
-if (($this->errorCode > 0) && ($this->errorCode != 404) && C('DEBUG')) {
-    echo '
+        //开启调试模式之后，显示详细信息
+        if (($this->errorCode > 0) && ($this->errorCode != 404) && C('DEBUG')) {
+            echo '
     <div class="content">
 	<div class="info">
 		<div class="title"><h3>出错信息</h3></div>
@@ -187,8 +195,8 @@ if (($this->errorCode > 0) && ($this->errorCode != 404) && C('DEBUG')) {
 		</div>
 	</div>
     </div>';
-}
-echo '
+        }
+        echo '
 </div>
 <div class="copyright">
 <p><a title="官方网站" href="http://www.ectouch.cn">ECTouch</a><sup>'.VERSION.'</sup></p>
@@ -198,5 +206,4 @@ echo '
 </html>';
         exit;
     }
-
 }

@@ -12,10 +12,9 @@ define('SUPPLIERS_ACTION_LIST', 'delivery_view,back_view');
 /*------------------------------------------------------ */
 //-- 供货商列表
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
-     /* 检查权限 */
-     admin_priv('suppliers_manage');
+if ($_REQUEST['act'] == 'list') {
+    /* 检查权限 */
+    admin_priv('suppliers_manage');
 
     /* 查询 */
     $result = suppliers_list();
@@ -24,12 +23,12 @@ if ($_REQUEST['act'] == 'list')
     $smarty->assign('ur_here', $_LANG['suppliers_list']); // 当前导航
     $smarty->assign('action_link', array('href' => 'suppliers.php?act=add', 'text' => $_LANG['add_suppliers']));
 
-    $smarty->assign('full_page',        1); // 翻页参数
+    $smarty->assign('full_page', 1); // 翻页参数
 
-    $smarty->assign('suppliers_list',    $result['result']);
-    $smarty->assign('filter',       $result['filter']);
+    $smarty->assign('suppliers_list', $result['result']);
+    $smarty->assign('filter', $result['filter']);
     $smarty->assign('record_count', $result['record_count']);
-    $smarty->assign('page_count',   $result['page_count']);
+    $smarty->assign('page_count', $result['page_count']);
     $smarty->assign('sort_suppliers_id', '<img src="images/sort_desc.gif">');
 
     /* 显示模板 */
@@ -40,30 +39,31 @@ if ($_REQUEST['act'] == 'list')
 /*------------------------------------------------------ */
 //-- 排序、分页、查询
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'query')
-{
+elseif ($_REQUEST['act'] == 'query') {
     check_authz_json('suppliers_manage');
 
     $result = suppliers_list();
 
-    $smarty->assign('suppliers_list',    $result['result']);
-    $smarty->assign('filter',       $result['filter']);
+    $smarty->assign('suppliers_list', $result['result']);
+    $smarty->assign('filter', $result['filter']);
     $smarty->assign('record_count', $result['record_count']);
-    $smarty->assign('page_count',   $result['page_count']);
+    $smarty->assign('page_count', $result['page_count']);
 
     /* 排序标记 */
     $sort_flag  = sort_flag($result['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
 
-    make_json_result($smarty->fetch('suppliers_list.htm'), '',
-        array('filter' => $result['filter'], 'page_count' => $result['page_count']));
+    make_json_result(
+        $smarty->fetch('suppliers_list.htm'),
+        '',
+        array('filter' => $result['filter'], 'page_count' => $result['page_count'])
+    );
 }
 
 /*------------------------------------------------------ */
 //-- 列表页编辑名称
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'edit_suppliers_name')
-{
+elseif ($_REQUEST['act'] == 'edit_suppliers_name') {
     check_authz_json('suppliers_manage');
 
     $id     = intval($_POST['id']);
@@ -74,27 +74,21 @@ elseif ($_REQUEST['act'] == 'edit_suppliers_name')
             FROM " . $ecs->table('suppliers') . "
             WHERE suppliers_name = '$name'
             AND suppliers_id <> '$id' ";
-    if ($db->getOne($sql))
-    {
+    if ($db->getOne($sql)) {
         make_json_error(sprintf($_LANG['suppliers_name_exist'], $name));
-    }
-    else
-    {
+    } else {
         /* 保存供货商信息 */
         $sql = "UPDATE " . $ecs->table('suppliers') . "
                 SET suppliers_name = '$name'
                 WHERE suppliers_id = '$id'";
-        if ($result = $db->query($sql))
-        {
+        if ($result = $db->query($sql)) {
             /* 记日志 */
             admin_log($name, 'edit', 'suppliers');
 
             clear_cache_files();
 
             make_json_result(stripslashes($name));
-        }
-        else
-        {
+        } else {
             make_json_result(sprintf($_LANG['agency_edit_fail'], $name));
         }
     }
@@ -103,27 +97,24 @@ elseif ($_REQUEST['act'] == 'edit_suppliers_name')
 /*------------------------------------------------------ */
 //-- 删除供货商
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'remove')
-{
+elseif ($_REQUEST['act'] == 'remove') {
     check_authz_json('suppliers_manage');
 
     $id = intval($_REQUEST['id']);
     $sql = "SELECT *
             FROM " . $ecs->table('suppliers') . "
             WHERE suppliers_id = '$id'";
-    $suppliers = $db->getRow($sql, TRUE);
+    $suppliers = $db->getRow($sql, true);
 
-    if ($suppliers['suppliers_id'])
-    {
+    if ($suppliers['suppliers_id']) {
         /* 判断供货商是否存在订单 */
         $sql = "SELECT COUNT(*)
                 FROM " . $ecs->table('order_info') . "AS O, " . $ecs->table('order_goods') . " AS OG, " . $ecs->table('goods') . " AS G
                 WHERE O.order_id = OG.order_id
                 AND OG.goods_id = G.goods_id
                 AND G.suppliers_id = '$id'";
-        $order_exists = $db->getOne($sql, TRUE);
-        if ($order_exists > 0)
-        {
+        $order_exists = $db->getOne($sql, true);
+        if ($order_exists > 0) {
             $url = 'suppliers.php?act=query&' . str_replace('act=remove', '', $_SERVER['QUERY_STRING']);
             ecs_header("Location: $url\n");
             exit;
@@ -133,9 +124,8 @@ elseif ($_REQUEST['act'] == 'remove')
         $sql = "SELECT COUNT(*)
                 FROM " . $ecs->table('goods') . "AS G
                 WHERE G.suppliers_id = '$id'";
-        $goods_exists = $db->getOne($sql, TRUE);
-        if ($goods_exists > 0)
-        {
+        $goods_exists = $db->getOne($sql, true);
+        if ($goods_exists > 0) {
             $url = 'suppliers.php?act=query&' . str_replace('act=remove', '', $_SERVER['QUERY_STRING']);
             ecs_header("Location: $url\n");
             exit;
@@ -147,8 +137,7 @@ elseif ($_REQUEST['act'] == 'remove')
 
         /* 删除管理员、发货单关联、退货单关联和订单关联的供货商 */
         $table_array = array('admin_user', 'delivery_order', 'back_order');
-        foreach ($table_array as $value)
-        {
+        foreach ($table_array as $value) {
             $sql = "DELETE FROM " . $ecs->table($value) . " WHERE suppliers_id = '$id'";
             $db->query($sql, 'SILENT');
         }
@@ -169,18 +158,16 @@ elseif ($_REQUEST['act'] == 'remove')
 /*------------------------------------------------------ */
 //-- 修改供货商状态
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'is_check')
-{
+elseif ($_REQUEST['act'] == 'is_check') {
     check_authz_json('suppliers_manage');
 
     $id = intval($_REQUEST['id']);
     $sql = "SELECT suppliers_id, is_check
             FROM " . $ecs->table('suppliers') . "
             WHERE suppliers_id = '$id'";
-    $suppliers = $db->getRow($sql, TRUE);
+    $suppliers = $db->getRow($sql, true);
 
-    if ($suppliers['suppliers_id'])
-    {
+    if ($suppliers['suppliers_id']) {
         $_suppliers['is_check'] = empty($suppliers['is_check']) ? 1 : 0;
         $db->autoExecute($ecs->table('suppliers'), $_suppliers, '', "suppliers_id = '$id'");
         clear_cache_files();
@@ -193,38 +180,31 @@ elseif ($_REQUEST['act'] == 'is_check')
 /*------------------------------------------------------ */
 //-- 批量操作
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'batch')
-{
+elseif ($_REQUEST['act'] == 'batch') {
     /* 取得要操作的记录编号 */
-    if (empty($_POST['checkboxes']))
-    {
+    if (empty($_POST['checkboxes'])) {
         sys_msg($_LANG['no_record_selected']);
-    }
-    else
-    {
+    } else {
         /* 检查权限 */
         admin_priv('suppliers_manage');
 
         $ids = $_POST['checkboxes'];
 
-        if (isset($_POST['remove']))
-        {
+        if (isset($_POST['remove'])) {
             $sql = "SELECT *
                     FROM " . $ecs->table('suppliers') . "
                     WHERE suppliers_id " . db_create_in($ids);
             $suppliers = $db->getAll($sql);
 
-            foreach ($suppliers as $key => $value)
-            {
+            foreach ($suppliers as $key => $value) {
                 /* 判断供货商是否存在订单 */
                 $sql = "SELECT COUNT(*)
                         FROM " . $ecs->table('order_info') . "AS O, " . $ecs->table('order_goods') . " AS OG, " . $ecs->table('goods') . " AS G
                         WHERE O.order_id = OG.order_id
                         AND OG.goods_id = G.goods_id
                         AND G.suppliers_id = '" . $value['suppliers_id'] . "'";
-                $order_exists = $db->getOne($sql, TRUE);
-                if ($order_exists > 0)
-                {
+                $order_exists = $db->getOne($sql, true);
+                if ($order_exists > 0) {
                     unset($suppliers[$key]);
                 }
 
@@ -232,14 +212,12 @@ elseif ($_REQUEST['act'] == 'batch')
                 $sql = "SELECT COUNT(*)
                         FROM " . $ecs->table('goods') . "AS G
                         WHERE G.suppliers_id = '" . $value['suppliers_id'] . "'";
-                $goods_exists = $db->getOne($sql, TRUE);
-                if ($goods_exists > 0)
-                {
+                $goods_exists = $db->getOne($sql, true);
+                if ($goods_exists > 0) {
                     unset($suppliers[$key]);
                 }
             }
-            if (empty($suppliers))
-            {
+            if (empty($suppliers)) {
                 sys_msg($_LANG['batch_drop_no']);
             }
 
@@ -250,16 +228,14 @@ elseif ($_REQUEST['act'] == 'batch')
 
             /* 更新管理员、发货单关联、退货单关联和订单关联的供货商 */
             $table_array = array('admin_user', 'delivery_order', 'back_order');
-            foreach ($table_array as $value)
-            {
+            foreach ($table_array as $value) {
                 $sql = "DELETE FROM " . $ecs->table($value) . " WHERE suppliers_id " . db_create_in($ids) . " ";
                 $db->query($sql, 'SILENT');
             }
 
             /* 记日志 */
             $suppliers_names = '';
-            foreach ($suppliers as $value)
-            {
+            foreach ($suppliers as $value) {
                 $suppliers_names .= $value['suppliers_name'] . '|';
             }
             admin_log($suppliers_names, 'remove', 'suppliers');
@@ -275,13 +251,11 @@ elseif ($_REQUEST['act'] == 'batch')
 /*------------------------------------------------------ */
 //-- 添加、编辑供货商
 /*------------------------------------------------------ */
-elseif (in_array($_REQUEST['act'], array('add', 'edit')))
-{
+elseif (in_array($_REQUEST['act'], array('add', 'edit'))) {
     /* 检查权限 */
     admin_priv('suppliers_manage');
 
-    if ($_REQUEST['act'] == 'add')
-    {
+    if ($_REQUEST['act'] == 'add') {
         $suppliers = array();
 
         /* 取得所有管理员，*/
@@ -304,18 +278,14 @@ elseif (in_array($_REQUEST['act'], array('add', 'edit')))
         assign_query_info();
 
         $smarty->display('suppliers_info.htm');
-
-    }
-    elseif ($_REQUEST['act'] == 'edit')
-    {
+    } elseif ($_REQUEST['act'] == 'edit') {
         $suppliers = array();
 
         /* 取得供货商信息 */
         $id = $_REQUEST['id'];
         $sql = "SELECT * FROM " . $ecs->table('suppliers') . " WHERE suppliers_id = '$id'";
         $suppliers = $db->getRow($sql);
-        if (count($suppliers) <= 0)
-        {
+        if (count($suppliers) <= 0) {
             sys_msg('suppliers does not exist');
         }
 
@@ -341,19 +311,16 @@ elseif (in_array($_REQUEST['act'], array('add', 'edit')))
 
         $smarty->display('suppliers_info.htm');
     }
-
 }
 
 /*------------------------------------------------------ */
 //-- 提交添加、编辑供货商
 /*------------------------------------------------------ */
-elseif (in_array($_REQUEST['act'], array('insert', 'update')))
-{
+elseif (in_array($_REQUEST['act'], array('insert', 'update'))) {
     /* 检查权限 */
     admin_priv('suppliers_manage');
 
-    if ($_REQUEST['act'] == 'insert')
-    {
+    if ($_REQUEST['act'] == 'insert') {
         /* 提交值 */
         $suppliers = array('suppliers_name'   => trim($_POST['suppliers_name']),
                            'suppliers_desc'   => trim($_POST['suppliers_desc']),
@@ -364,16 +331,14 @@ elseif (in_array($_REQUEST['act'], array('insert', 'update')))
         $sql = "SELECT suppliers_id
                 FROM " . $ecs->table('suppliers') . "
                 WHERE suppliers_name = '" . $suppliers['suppliers_name'] . "' ";
-        if ($db->getOne($sql))
-        {
+        if ($db->getOne($sql)) {
             sys_msg($_LANG['suppliers_name_exist']);
         }
 
         $db->autoExecute($ecs->table('suppliers'), $suppliers, 'INSERT');
         $suppliers['suppliers_id'] = $db->insert_id();
 
-        if (isset($_POST['admins']))
-        {
+        if (isset($_POST['admins'])) {
             $sql = "UPDATE " . $ecs->table('admin_user') . " SET suppliers_id = '" . $suppliers['suppliers_id'] . "', action_list = '" . SUPPLIERS_ACTION_LIST . "' WHERE user_id " . db_create_in($_POST['admins']);
             $db->query($sql);
         }
@@ -389,11 +354,9 @@ elseif (in_array($_REQUEST['act'], array('insert', 'update')))
                        array('href' => 'suppliers.php?act=list', 'text' => $_LANG['back_suppliers_list'])
                        );
         sys_msg($_LANG['add_suppliers_ok'], 0, $links);
-
     }
 
-    if ($_REQUEST['act'] == 'update')
-    {
+    if ($_REQUEST['act'] == 'update') {
         /* 提交值 */
         $suppliers = array('id'   => trim($_POST['id']));
 
@@ -404,8 +367,7 @@ elseif (in_array($_REQUEST['act'], array('insert', 'update')))
         /* 取得供货商信息 */
         $sql = "SELECT * FROM " . $ecs->table('suppliers') . " WHERE suppliers_id = '" . $suppliers['id'] . "'";
         $suppliers['old'] = $db->getRow($sql);
-        if (empty($suppliers['old']['suppliers_id']))
-        {
+        if (empty($suppliers['old']['suppliers_id'])) {
             sys_msg('suppliers does not exist');
         }
 
@@ -414,8 +376,7 @@ elseif (in_array($_REQUEST['act'], array('insert', 'update')))
                 FROM " . $ecs->table('suppliers') . "
                 WHERE suppliers_name = '" . $suppliers['new']['suppliers_name'] . "'
                 AND suppliers_id <> '" . $suppliers['id'] . "'";
-        if ($db->getOne($sql))
-        {
+        if ($db->getOne($sql)) {
             sys_msg($_LANG['suppliers_name_exist']);
         }
 
@@ -427,8 +388,7 @@ elseif (in_array($_REQUEST['act'], array('insert', 'update')))
         $db->query($sql);
 
         /* 添加供货商的管理员 */
-        if (isset($_POST['admins']))
-        {
+        if (isset($_POST['admins'])) {
             $sql = "UPDATE " . $ecs->table('admin_user') . " SET suppliers_id = '" . $suppliers['old']['suppliers_id'] . "' WHERE user_id " . db_create_in($_POST['admins']);
             $db->query($sql);
         }
@@ -443,7 +403,6 @@ elseif (in_array($_REQUEST['act'], array('insert', 'update')))
         $links[] = array('href' => 'suppliers.php?act=list', 'text' => $_LANG['back_suppliers_list']);
         sys_msg($_LANG['edit_suppliers_ok'], 0, $links);
     }
-
 }
 
 /**
@@ -457,8 +416,7 @@ elseif (in_array($_REQUEST['act'], array('insert', 'update')))
 function suppliers_list()
 {
     $result = get_filter();
-    if ($result === false)
-    {
+    if ($result === false) {
         $aiax = isset($_GET['is_ajax']) ? $_GET['is_ajax'] : 0;
 
         /* 过滤信息 */
@@ -470,16 +428,11 @@ function suppliers_list()
         /* 分页大小 */
         $filter['page'] = empty($_REQUEST['page']) || (intval($_REQUEST['page']) <= 0) ? 1 : intval($_REQUEST['page']);
 
-        if (isset($_REQUEST['page_size']) && intval($_REQUEST['page_size']) > 0)
-        {
+        if (isset($_REQUEST['page_size']) && intval($_REQUEST['page_size']) > 0) {
             $filter['page_size'] = intval($_REQUEST['page_size']);
-        }
-        elseif (isset($_COOKIE['ECSCP']['page_size']) && intval($_COOKIE['ECSCP']['page_size']) > 0)
-        {
+        } elseif (isset($_COOKIE['ECSCP']['page_size']) && intval($_COOKIE['ECSCP']['page_size']) > 0) {
             $filter['page_size'] = intval($_COOKIE['ECSCP']['page_size']);
-        }
-        else
-        {
+        } else {
             $filter['page_size'] = 15;
         }
 
@@ -496,9 +449,7 @@ function suppliers_list()
                 LIMIT " . ($filter['page'] - 1) * $filter['page_size'] . ", " . $filter['page_size'] . " ";
 
         set_filter($filter, $sql);
-    }
-    else
-    {
+    } else {
         $sql    = $result['sql'];
         $filter = $result['filter'];
     }
@@ -509,4 +460,3 @@ function suppliers_list()
 
     return $arr;
 }
-?>

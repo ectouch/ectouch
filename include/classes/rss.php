@@ -39,9 +39,9 @@ class RSSBase
     // @return (void)
     // @access private
     //-------------------------------------------------
-    function RSSBase() {
+    public function RSSBase()
+    {
     } // end constructor
-
 } // end class RSSBase
 
 //---------------------------------------------------------------------------
@@ -75,7 +75,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $encoding;
+    public $encoding;
 
     //-------------------------------------------------
     // URL where the RSS document will be made available
@@ -84,7 +84,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $about;
+    public $about;
 
     //-------------------------------------------------
     // title of the rss stream
@@ -93,7 +93,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $title;
+    public $title;
 
     //-------------------------------------------------
     // description of the rss stream
@@ -102,7 +102,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $description;
+    public $description;
 
     //-------------------------------------------------
     // publisher of the rss stream (person, an organization, or a service)
@@ -111,7 +111,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $publisher;
+    public $publisher;
 
     //-------------------------------------------------
     // creator of the rss stream (person, an organization, or a service)
@@ -120,7 +120,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $creator;
+    public $creator;
 
     //-------------------------------------------------
     // creation date of the file (format: 2003-05-29T00:03:07+0200)
@@ -129,7 +129,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $date;
+    public $date;
 
     //-------------------------------------------------
     // iso format language
@@ -138,7 +138,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $language;
+    public $language;
 
     //-------------------------------------------------
     // copyrights for the rss stream
@@ -147,7 +147,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $rights;
+    public $rights;
 
     //-------------------------------------------------
     // URL to an small image
@@ -156,7 +156,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $image_link;
+    public $image_link;
 
     //-------------------------------------------------
     // spatial location (a place name or geographic coordinates), temporal period (a period label, date, or date range) or jurisdiction (such as a named administrative entity)
@@ -165,7 +165,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $coverage;
+    public $coverage;
 
     //-------------------------------------------------
     // person, an organization, or a service
@@ -174,7 +174,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $contributor;
+    public $contributor;
 
     //-------------------------------------------------
     // 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly'
@@ -183,7 +183,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $period;
+    public $period;
 
     //-------------------------------------------------
     // every X hours/days/weeks/...
@@ -192,7 +192,7 @@ class RSSBuilder extends RSSBase
     // @var int
     // @access private
     //-------------------------------------------------
-    var $frequency;
+    public $frequency;
 
     //-------------------------------------------------
     // date (format: 2003-05-29T00:03:07+0200)
@@ -204,7 +204,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $base;
+    public $base;
 
     //-------------------------------------------------
     // category (rss 2.0)
@@ -214,7 +214,7 @@ class RSSBuilder extends RSSBase
     // @access private
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    var $category;
+    public $category;
 
     //-------------------------------------------------
     // caching time in minutes (rss 2.0)
@@ -224,7 +224,7 @@ class RSSBuilder extends RSSBase
     // @access private
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    var $cache;
+    public $cache;
 
     //-------------------------------------------------
     // array wich all the rss items
@@ -233,7 +233,7 @@ class RSSBuilder extends RSSBase
     // @var array
     // @access private
     //-------------------------------------------------
-    var $items = array();
+    public $items = array();
 
     //-------------------------------------------------
     // compiled outputstring
@@ -242,7 +242,7 @@ class RSSBuilder extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $output;
+    public $output;
 
     //-------------------------------------------------
     // use DC data
@@ -251,7 +251,7 @@ class RSSBuilder extends RSSBase
     // @var boolean
     // @access private
     //-------------------------------------------------
-    var $use_dc_data = false;
+    public $use_dc_data = false;
 
     //-------------------------------------------------
     // use SY data
@@ -260,7 +260,7 @@ class RSSBuilder extends RSSBase
     // @var boolean
     // @access private
     //-------------------------------------------------
-    var $use_sy_data = false;
+    public $use_sy_data = false;
 
     /*-----------------------*/
     /* C O N S T R U C T O R */
@@ -279,13 +279,15 @@ class RSSBuilder extends RSSBase
     // @uses setEncoding(), setAbout(), setTitle(), setDescription(), setImageLink(), setCategory(), setCache()
     // @access private
     //-------------------------------------------------
-    function RSSBuilder($encoding = '',
+    public function RSSBuilder(
+        $encoding = '',
                         $about = '',
                         $title = '',
                         $description = '',
                         $image_link = '',
                         $category = '',
-                        $cache = '') {
+                        $cache = ''
+    ) {
         $this->setEncoding($encoding);
         $this->setAbout($about);
         $this->setTitle($title);
@@ -314,13 +316,15 @@ class RSSBuilder extends RSSBase
     // @uses setPublisher(), setCreator(), setDate(), setLanguage(), setRights(), setCoverage(), setContributor()
     // @access public
     //-------------------------------------------------
-    function addDCdata($publisher = '',
+    public function addDCdata(
+        $publisher = '',
                         $creator = '',
                         $date = '',
                         $language = '',
                         $rights = '',
                         $coverage = '',
-                        $contributor = '') {
+                        $contributor = ''
+    ) {
         $this->setPublisher($publisher);
         $this->setCreator($creator);
         $this->setDate($date);
@@ -342,7 +346,8 @@ class RSSBuilder extends RSSBase
     // @uses setPeriod(), setFrequency(), setBase()
     // @access public
     //-------------------------------------------------
-    function addSYdata($period = '', $frequency = '', $base = '') {
+    public function addSYdata($period = '', $frequency = '', $base = '')
+    {
         $this->setPeriod($period);
         $this->setFrequency($frequency);
         $this->setBase($base);
@@ -358,8 +363,9 @@ class RSSBuilder extends RSSBase
     // @access public
     // @static
     //-------------------------------------------------
-    function isValidLanguageCode($code = '') {
-        return (boolean) ((preg_match('(^([a-zA-Z]{2})$)',$code) > 0) ? true : false);
+    public function isValidLanguageCode($code = '')
+    {
+        return (boolean) ((preg_match('(^([a-zA-Z]{2})$)', $code) > 0) ? true : false);
     } // end function
 
     //-------------------------------------------------
@@ -371,7 +377,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $encoding
     //-------------------------------------------------
-    function setEncoding($encoding = '') {
+    public function setEncoding($encoding = '')
+    {
         if (!isset($this->encoding)) {
             $this->encoding = (string) ((strlen(trim($encoding)) > 0) ? trim($encoding) : 'UTF-8');
         } // end if
@@ -386,7 +393,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $about
     //-------------------------------------------------
-    function setAbout($about = '') {
+    public function setAbout($about = '')
+    {
         if (!isset($this->about) && strlen(trim($about)) > 0) {
             $this->about = (string) trim($about);
         } // end if
@@ -401,7 +409,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $title
     //-------------------------------------------------
-    function setTitle($title = '') {
+    public function setTitle($title = '')
+    {
         if (!isset($this->title) && strlen(trim($title)) > 0) {
             $this->title = (string) trim($title);
         } // end if
@@ -416,7 +425,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $description
     //-------------------------------------------------
-    function setDescription($description = '') {
+    public function setDescription($description = '')
+    {
         if (!isset($this->description) && strlen(trim($description)) > 0) {
             $this->description = (string) trim($description);
         } // end if
@@ -431,7 +441,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $publisher
     //-------------------------------------------------
-    function setPublisher($publisher = '') {
+    public function setPublisher($publisher = '')
+    {
         if (!isset($this->publisher) && strlen(trim($publisher)) > 0) {
             $this->publisher = (string) trim($publisher);
         } // end if
@@ -446,7 +457,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $creator
     //-------------------------------------------------
-    function setCreator($creator = '') {
+    public function setCreator($creator = '')
+    {
         if (!isset($this->creator) && strlen(trim($creator)) > 0) {
             $this->creator = (string) trim($creator);
         } // end if
@@ -461,7 +473,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $date
     //-------------------------------------------------
-    function setDate($date = '') {
+    public function setDate($date = '')
+    {
         if (!isset($this->date) && strlen(trim($date)) > 0) {
             $this->date = (string) trim($date);
         } // end if
@@ -477,7 +490,8 @@ class RSSBuilder extends RSSBase
     // @see $language
     // @uses isValidLanguageCode()
     //-------------------------------------------------
-    function setLanguage($language = '') {
+    public function setLanguage($language = '')
+    {
         if (!isset($this->language) && $this->isValidLanguageCode($language) === true) {
             $this->language = (string) trim($language);
         } // end if
@@ -492,7 +506,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $rights
     //-------------------------------------------------
-    function setRights($rights = '') {
+    public function setRights($rights = '')
+    {
         if (!isset($this->rights) && strlen(trim($rights)) > 0) {
             $this->rights = (string) trim($rights);
         } // end if
@@ -507,7 +522,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $coverage
     //-------------------------------------------------
-    function setCoverage($coverage = '') {
+    public function setCoverage($coverage = '')
+    {
         if (!isset($this->coverage) && strlen(trim($coverage)) > 0) {
             $this->coverage = (string) trim($coverage);
         } // end if
@@ -522,7 +538,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $contributor
     //-------------------------------------------------
-    function setContributor($contributor = '') {
+    public function setContributor($contributor = '')
+    {
         if (!isset($this->contributor) && strlen(trim($contributor)) > 0) {
             $this->contributor = (string) trim($contributor);
         } // end if
@@ -537,7 +554,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $image_link
     //-------------------------------------------------
-    function setImageLink($image_link = '') {
+    public function setImageLink($image_link = '')
+    {
         if (!isset($this->image_link) && strlen(trim($image_link)) > 0) {
             $this->image_link = (string) trim($image_link);
         } // end if
@@ -552,7 +570,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $period
     //-------------------------------------------------
-    function setPeriod($period = '') {
+    public function setPeriod($period = '')
+    {
         if (!isset($this->period) && strlen(trim($period)) > 0) {
             switch ($period) {
                 case 'hourly':
@@ -578,7 +597,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $frequency
     //-------------------------------------------------
-    function setFrequency($frequency = '') {
+    public function setFrequency($frequency = '')
+    {
         if (!isset($this->frequency) && strlen(trim($frequency)) > 0) {
             $this->frequency = (int) $frequency;
         } // end if
@@ -593,7 +613,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $base
     //-------------------------------------------------
-    function setBase($base = '') {
+    public function setBase($base = '')
+    {
         if (!isset($this->base) && strlen(trim($base)) > 0) {
             $this->base = (string) trim($base);
         } // end if
@@ -609,7 +630,8 @@ class RSSBuilder extends RSSBase
     // @see $category
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function setCategory($category = '') {
+    public function setCategory($category = '')
+    {
         if (strlen(trim($category)) > 0) {
             $this->category = (string) trim($category);
         } // end if
@@ -625,7 +647,8 @@ class RSSBuilder extends RSSBase
     // @see $cache
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function setCache($cache = '') {
+    public function setCache($cache = '')
+    {
         if (strlen(trim($cache)) > 0) {
             $this->cache = (int) $cache;
         } // end if
@@ -639,7 +662,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $image_link
     //-------------------------------------------------
-    function getEncoding() {
+    public function getEncoding()
+    {
         return (string) $this->encoding;
     } // end function
 
@@ -651,7 +675,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $about
     //-------------------------------------------------
-    function getAbout() {
+    public function getAbout()
+    {
         return (string) $this->about;
     } // end function
 
@@ -663,7 +688,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $title
     //-------------------------------------------------
-    function getTitle() {
+    public function getTitle()
+    {
         return (string) $this->title;
     } // end function
 
@@ -675,7 +701,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $description
     //-------------------------------------------------
-    function getDescription() {
+    public function getDescription()
+    {
         return (string) $this->description;
     } // end function
 
@@ -687,7 +714,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $publisher
     //-------------------------------------------------
-    function getPublisher() {
+    public function getPublisher()
+    {
         return (string) $this->publisher;
     } // end function
 
@@ -699,7 +727,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $creator
     //-------------------------------------------------
-    function getCreator() {
+    public function getCreator()
+    {
         return (string) $this->creator;
     } // end function
 
@@ -711,7 +740,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $date
     //-------------------------------------------------
-    function getDate() {
+    public function getDate()
+    {
         return (string) $this->date;
     } // end function
 
@@ -723,7 +753,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $language
     //-------------------------------------------------
-    function getLanguage() {
+    public function getLanguage()
+    {
         return (string) $this->language;
     } // end function
 
@@ -735,7 +766,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $rights
     //-------------------------------------------------
-    function getRights() {
+    public function getRights()
+    {
         return (string) $this->rights;
     } // end function
 
@@ -747,7 +779,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $coverage
     //-------------------------------------------------
-    function getCoverage() {
+    public function getCoverage()
+    {
         return (string) $this->coverage;
     } // end function
 
@@ -759,7 +792,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $contributor
     //-------------------------------------------------
-    function getContributor() {
+    public function getContributor()
+    {
         return (string) $this->contributor;
     } // end function
 
@@ -771,7 +805,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $image_link
     //-------------------------------------------------
-    function getImageLink() {
+    public function getImageLink()
+    {
         return (string) $this->image_link;
     } // end function
 
@@ -783,7 +818,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $period
     //-------------------------------------------------
-    function getPeriod() {
+    public function getPeriod()
+    {
         return (string) $this->period;
     } // end function
 
@@ -795,7 +831,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $frequency
     //-------------------------------------------------
-    function getFrequency() {
+    public function getFrequency()
+    {
         return (int) $this->frequency;
     } // end function
 
@@ -807,7 +844,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $base
     //-------------------------------------------------
-    function getBase() {
+    public function getBase()
+    {
         return (string) $this->base;
     } // end function
 
@@ -820,7 +858,8 @@ class RSSBuilder extends RSSBase
     // @see $category
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function getCategory() {
+    public function getCategory()
+    {
         return (string) $this->category;
     } // end function
 
@@ -833,7 +872,8 @@ class RSSBuilder extends RSSBase
     // @see $cache
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function getCache() {
+    public function getCache()
+    {
         return (int) $this->cache;
     } // end function
 
@@ -852,23 +892,26 @@ class RSSBuilder extends RSSBase
     // @see $items
     // @uses RSSItem
     //-------------------------------------------------
-    function addItem($about = '',
+    public function addItem(
+        $about = '',
                     $title = '',
                     $link = '',
                     $description = '',
                     $subject = '',
                     $date = '',
                     $author = '',
-                    $comments = '')
-    {
-        $item = new RSSItem($about,
+                    $comments = ''
+    ) {
+        $item = new RSSItem(
+            $about,
                             $title,
                             $link,
                             $description,
                             $subject,
                             $date,
                             $author = '',
-                            $comments = '');
+                            $comments = ''
+        );
         $this->items[] = $item;
     } // end function
 
@@ -881,7 +924,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $items
     //-------------------------------------------------
-    function deleteItem($id = -1) {
+    public function deleteItem($id = -1)
+    {
         if (array_key_exists($id, $this->items)) {
             unset($this->items[$id]);
             return (boolean) true;
@@ -898,7 +942,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see $items
     //-------------------------------------------------
-    function getItemList() {
+    public function getItemList()
+    {
         return (array) array_keys($this->items);
     } // end function
 
@@ -909,7 +954,8 @@ class RSSBuilder extends RSSBase
     // @return (array) $items
     // @access public
     //-------------------------------------------------
-    function getItems() {
+    public function getItems()
+    {
         return (array) $this->items;
     } // end function
 
@@ -922,7 +968,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @see RSSItem
     //-------------------------------------------------
-    function getItem($id = -1) {
+    public function getItem($id = -1)
+    {
         if (array_key_exists($id, $this->items)) {
             return (object) $this->items[$id];
         } else {
@@ -938,7 +985,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $output
     //-------------------------------------------------
-    function createOutputV090() {
+    public function createOutputV090()
+    {
         // not implemented
         $this->createOutputV100();
     } // end function
@@ -952,7 +1000,8 @@ class RSSBuilder extends RSSBase
     // @see $output
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function createOutputV091() {
+    public function createOutputV091()
+    {
         $this->output  = (string) '<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">' . "\n";
         $this->output .= (string) '<rss version="0.91">' . "\n";
         $this->output .= (string) '<channel>' . "\n";
@@ -1006,7 +1055,7 @@ class RSSBuilder extends RSSBase
         } // end if
 
         if (count($this->getItemList()) > 0) {
-            foreach ($this->getItemList() AS $id) {
+            foreach ($this->getItemList() as $id) {
                 $item =& $this->items[$id];
 
                 if (strlen($item->getTitle()) > 0 && strlen($item->getLink()) > 0) {
@@ -1033,7 +1082,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @see $output
     //-------------------------------------------------
-    function createOutputV100() {
+    public function createOutputV100()
+    {
         $this->output  = (string) '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" ';
 
         if ($this->use_dc_data === true) {
@@ -1176,7 +1226,8 @@ class RSSBuilder extends RSSBase
     // @see $output
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function createOutputV200() {
+    public function createOutputV200()
+    {
         // not implemented
         $this->createOutputV100();
         //---------------------
@@ -1292,7 +1343,8 @@ class RSSBuilder extends RSSBase
     // @access private
     // @uses createOutputV100()
     //-------------------------------------------------
-    function createOutput($version = '') {
+    public function createOutput($version = '')
+    {
         if (strlen(trim($version)) === 0) {
             $version = (string) '1.0';
         } // end if
@@ -1324,7 +1376,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @uses createOutput()
     //-------------------------------------------------
-    function outputRSS($version = '') {
+    public function outputRSS($version = '')
+    {
         if (!isset($this->output)) {
             $this->createOutput($version);
         } // end if
@@ -1344,7 +1397,8 @@ class RSSBuilder extends RSSBase
     // @access public
     // @uses createOutput()
     //-------------------------------------------------
-    function getRSSOutput($version = '') {
+    public function getRSSOutput($version = '')
+    {
         if (!isset($this->output)) {
             $this->createOutput($version);
         } // end if
@@ -1384,7 +1438,7 @@ class RSSItem extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $about;
+    public $about;
 
     //-------------------------------------------------
     // headline
@@ -1393,7 +1447,7 @@ class RSSItem extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $title;
+    public $title;
 
     //-------------------------------------------------
     // URL to the full item
@@ -1402,7 +1456,7 @@ class RSSItem extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $link;
+    public $link;
 
     //-------------------------------------------------
     // optional description
@@ -1411,7 +1465,7 @@ class RSSItem extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $description;
+    public $description;
 
     //-------------------------------------------------
     // optional subject (category)
@@ -1420,7 +1474,7 @@ class RSSItem extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $subject;
+    public $subject;
 
     //-------------------------------------------------
     // optional date
@@ -1429,7 +1483,7 @@ class RSSItem extends RSSBase
     // @var string
     // @access private
     //-------------------------------------------------
-    var $date;
+    public $date;
 
     //-------------------------------------------------
     // author of item
@@ -1439,7 +1493,7 @@ class RSSItem extends RSSBase
     // @access private
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    var $author;
+    public $author;
 
     //-------------------------------------------------
     // url to comments page (rss 2.0)
@@ -1449,7 +1503,7 @@ class RSSItem extends RSSBase
     // @access private
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    var $comments;
+    public $comments;
 
     /*-----------------------*/
     /* C O N S T R U C T O R */
@@ -1469,14 +1523,16 @@ class RSSItem extends RSSBase
     // @uses setAbout(), setTitle(), setLink(), setDescription(), setSubject(), setDate(), setAuthor(), setComments()
     // @access private
     //-------------------------------------------------
-    function RSSItem($about = '',
+    public function RSSItem(
+        $about = '',
                     $title = '',
                     $link = '',
                     $description = '',
                     $subject = '',
                     $date = '',
                     $author = '',
-                    $comments = '') {
+                    $comments = ''
+    ) {
         $this->setAbout($about);
         $this->setTitle($title);
         $this->setLink($link);
@@ -1496,7 +1552,8 @@ class RSSItem extends RSSBase
     // @access private
     // @see $about
     //-------------------------------------------------
-    function setAbout($about = '') {
+    public function setAbout($about = '')
+    {
         if (!isset($this->about) && strlen(trim($about)) > 0) {
             $this->about = (string) trim($about);
         } // end if
@@ -1511,7 +1568,8 @@ class RSSItem extends RSSBase
     // @access private
     // @see $title
     //-------------------------------------------------
-    function setTitle($title = '') {
+    public function setTitle($title = '')
+    {
         if (!isset($this->title) && strlen(trim($title)) > 0) {
             $this->title = (string) trim($title);
         } // end if
@@ -1526,7 +1584,8 @@ class RSSItem extends RSSBase
     // @access private
     // @see $link
     //-------------------------------------------------
-    function setLink($link = '') {
+    public function setLink($link = '')
+    {
         if (!isset($this->link) && strlen(trim($link)) > 0) {
             $this->link = (string) trim($link);
         } // end if
@@ -1541,7 +1600,8 @@ class RSSItem extends RSSBase
     // @access private
     // @see $description
     //-------------------------------------------------
-    function setDescription($description = '') {
+    public function setDescription($description = '')
+    {
         if (!isset($this->description) && strlen(trim($description)) > 0) {
             $this->description = (string) trim($description);
         } // end if
@@ -1556,7 +1616,8 @@ class RSSItem extends RSSBase
     // @access private
     // @see $subject
     //-------------------------------------------------
-    function setSubject($subject = '') {
+    public function setSubject($subject = '')
+    {
         if (!isset($this->subject) && strlen(trim($subject)) > 0) {
             $this->subject = (string) trim($subject);
         } // end if
@@ -1571,7 +1632,8 @@ class RSSItem extends RSSBase
     // @access private
     // @see $date
     //-------------------------------------------------
-    function setDate($date = '') {
+    public function setDate($date = '')
+    {
         if (!isset($this->date) && strlen(trim($date)) > 0) {
             $this->date = (string) trim($date);
         } // end if
@@ -1587,7 +1649,8 @@ class RSSItem extends RSSBase
     // @see $author
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function setAuthor($author = '') {
+    public function setAuthor($author = '')
+    {
         if (!isset($this->author) && strlen(trim($author)) > 0) {
             $this->author = (string) trim($author);
         } // end if
@@ -1603,7 +1666,8 @@ class RSSItem extends RSSBase
     // @see $comments
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function setComments($comments = '') {
+    public function setComments($comments = '')
+    {
         if (!isset($this->comments) && strlen(trim($comments)) > 0) {
             $this->comments = (string) trim($comments);
         } // end if
@@ -1617,7 +1681,8 @@ class RSSItem extends RSSBase
     // @access public
     // @see $about
     //-------------------------------------------------
-    function getAbout() {
+    public function getAbout()
+    {
         return (string) $this->about;
     } // end function
 
@@ -1629,7 +1694,8 @@ class RSSItem extends RSSBase
     // @access public
     // @see $title
     //-------------------------------------------------
-    function getTitle() {
+    public function getTitle()
+    {
         return (string) $this->title;
     } // end function
 
@@ -1641,7 +1707,8 @@ class RSSItem extends RSSBase
     // @access public
     // @see $link
     //-------------------------------------------------
-    function getLink() {
+    public function getLink()
+    {
         return (string) $this->link;
     } // end function
 
@@ -1653,7 +1720,8 @@ class RSSItem extends RSSBase
     // @access public
     // @see $description
     //-------------------------------------------------
-    function getDescription() {
+    public function getDescription()
+    {
         return (string) $this->description;
     } // end function
 
@@ -1665,7 +1733,8 @@ class RSSItem extends RSSBase
     // @access public
     // @see $subject
     //-------------------------------------------------
-    function getSubject() {
+    public function getSubject()
+    {
         return (string) $this->subject;
     } // end function
 
@@ -1677,7 +1746,8 @@ class RSSItem extends RSSBase
     // @access public
     // @see $date
     //-------------------------------------------------
-    function getDate() {
+    public function getDate()
+    {
         return (string) $this->date;
     } // end function
 
@@ -1690,7 +1760,8 @@ class RSSItem extends RSSBase
     // @see $author
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function getAuthor() {
+    public function getAuthor()
+    {
         return (string) $this->author;
     } // end function
 
@@ -1703,9 +1774,8 @@ class RSSItem extends RSSBase
     // @see $comments
     // @since 1.001 - 2003/05/30
     //-------------------------------------------------
-    function getComments() {
+    public function getComments()
+    {
         return (string) $this->comments;
     } // end function
 } // end class RSSItem
-
-?>

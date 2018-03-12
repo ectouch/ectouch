@@ -16,8 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
  
-class ShippingBaseModel extends BaseModel {
-
+class ShippingBaseModel extends BaseModel
+{
     protected $table = 'shipping';
 
     /**
@@ -26,7 +26,8 @@ class ShippingBaseModel extends BaseModel {
      * @param   int     $area_id        配送区域ID
      * @return array;
      */
-    public function get_shipping_config($area_id) {
+    public function get_shipping_config($area_id)
+    {
         $this->table = 'shipping_area';
         /* 获得配置信息 */
         $cfg = array();
@@ -38,5 +39,4 @@ class ShippingBaseModel extends BaseModel {
         }
         return $cfg;
     }
-
 }

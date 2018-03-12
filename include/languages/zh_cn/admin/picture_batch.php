@@ -32,5 +32,3 @@ $_LANG['js_languages']['no_action'] = '你没选择任何操作';
 
 $_LANG['silent'] = '出错时忽略错误,继续执行程序';
 $_LANG['no_silent'] = '出错时立即提示，并中止程序';
-
-?>

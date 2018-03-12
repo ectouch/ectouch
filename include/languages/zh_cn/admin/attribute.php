@@ -60,5 +60,3 @@ $_LANG['drop_ok'] = '成功删除了 %d 条商品属性';
 $_LANG['js_languages']['name_not_null'] = '请您输入属性名称。';
 $_LANG['js_languages']['values_not_null'] = '请您输入该属性的可选值。';
 $_LANG['js_languages']['cat_id_not_null'] = '请您选择该属性所属的商品类型。';
-
-?>

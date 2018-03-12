@@ -6,30 +6,31 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP 模版类
  */
-class EcsTemplate {
+class EcsTemplate
+{
+    public $template_dir = '';
+    public $cache_dir = '';
+    public $compile_dir = '';
+    public $cache_lifetime = 3600; // 缓存更新时间, 默认 3600 秒
+    public $direct_output = false;
+    public $caching = false;
+    public $template = array();
+    public $force_compile = false;
+    public $_var = array();
+    public $_echash = '554fcae493e564ee0dc75bdf2ebf94ca';
+    public $_foreach = array();
+    public $_current_file = '';
+    public $_expires = 0;
+    public $_errorlevel = 0;
+    public $_nowtime = null;
+    public $_checkfile = true;
+    public $_foreachmark = '';
+    public $_seterror = 0;
+    public $_temp_key = array();  // 临时存放 foreach 里 key 的数组
+    public $_temp_val = array();  // 临时存放 foreach 里 item 的数组
 
-    var $template_dir = '';
-    var $cache_dir = '';
-    var $compile_dir = '';
-    var $cache_lifetime = 3600; // 缓存更新时间, 默认 3600 秒
-    var $direct_output = false;
-    var $caching = false;
-    var $template = array();
-    var $force_compile = false;
-    var $_var = array();
-    var $_echash = '554fcae493e564ee0dc75bdf2ebf94ca';
-    var $_foreach = array();
-    var $_current_file = '';
-    var $_expires = 0;
-    var $_errorlevel = 0;
-    var $_nowtime = null;
-    var $_checkfile = true;
-    var $_foreachmark = '';
-    var $_seterror = 0;
-    var $_temp_key = array();  // 临时存放 foreach 里 key 的数组
-    var $_temp_val = array();  // 临时存放 foreach 里 item 的数组
-
-    function __construct() {
+    public function __construct()
+    {
         $this->_errorlevel = error_reporting();
         $this->_nowtime = time();
         if (defined('EC_CHARSET')) {
@@ -49,9 +50,10 @@ class EcsTemplate {
      *
      * @return  void
      */
-    function assign($tpl_var, $value = '') {
+    public function assign($tpl_var, $value = '')
+    {
         if (is_array($tpl_var)) {
-            foreach ($tpl_var AS $key => $val) {
+            foreach ($tpl_var as $key => $val) {
                 if ($key != '') {
                     $this->_var[$key] = $val;
                 }
@@ -72,7 +74,8 @@ class EcsTemplate {
      *
      * @return  void
      */
-    function display($filename, $cache_id = '') {
+    public function display($filename, $cache_id = '')
+    {
         $this->_seterror++;
         error_reporting(E_ALL ^ E_NOTICE);
 
@@ -81,7 +84,7 @@ class EcsTemplate {
 
         if (strpos($out, $this->_echash) !== false) {
             $k = explode($this->_echash, $out);
-            foreach ($k AS $key => $val) {
+            foreach ($k as $key => $val) {
                 if (($key % 2) == 1) {
                     $k[$key] = $this->insert_mod($val);
                 }
@@ -103,7 +106,8 @@ class EcsTemplate {
      *
      * @return  sring
      */
-    function fetch($filename, $cache_id = '') {
+    public function fetch($filename, $cache_id = '')
+    {
         if (!$this->_seterror) {
             error_reporting(E_ALL ^ E_NOTICE);
         }
@@ -181,7 +185,8 @@ class EcsTemplate {
      *
      * @return  sring        编译后文件地址
      */
-    function make_compiled($filename) {
+    public function make_compiled($filename)
+    {
         //增加文件夹存在判断 by ecmoban carson
         $compile_path = $this->compile_dir;
         if (!is_dir($compile_path)) {
@@ -231,7 +236,8 @@ class EcsTemplate {
      *
      * @return  sring
      */
-    function fetch_str($source) {
+    public function fetch_str($source)
+    {
         if (!defined('ECS_ADMIN')) {
             $source = $this->smarty_prefilter_preCompile($source);
         }
@@ -249,7 +255,9 @@ class EcsTemplate {
             return preg_replace("/{([^\}\{\n]*)}/e", "\$this->select('\\1');", $source);
         } else {
             $template = $this;
-            return preg_replace_callback("/{([^\}\{\n]*)}/", function($r) use(&$template){return $template->select($r[1]);}, $source);
+            return preg_replace_callback("/{([^\}\{\n]*)}/", function ($r) use (&$template) {
+                return $template->select($r[1]);
+            }, $source);
         }
     }
 
@@ -262,7 +270,8 @@ class EcsTemplate {
      *
      * @return  bool
      */
-    function is_cached($filename, $cache_id = '') {
+    public function is_cached($filename, $cache_id = '')
+    {
         $cachename = basename($filename, strrchr($filename, '.')) . '_' . $cache_id;
         if ($this->caching == true && $this->direct_output == false) {
             $hash_dir = $this->cache_dir . '/' . substr(md5($cachename), 0, 1);
@@ -280,7 +289,7 @@ class EcsTemplate {
 
                 $this->template_out = substr($data, $pos);
 
-                foreach ($para['template'] AS $val) {
+                foreach ($para['template'] as $val) {
                     $stat = @stat($val);
                     if ($para['maketime'] < $stat['mtime']) {
                         $this->caching = false;
@@ -308,7 +317,8 @@ class EcsTemplate {
      *
      * @return  sring
      */
-    function select($tag) {
+    public function select($tag)
+    {
         $tag = stripslashes(trim($tag));
 
         if (empty($tag)) {
@@ -415,13 +425,15 @@ class EcsTemplate {
                     return '<?php echo $this->smarty_create_pages(' . $this->make_array($t) . '); ?>';
                     break;
 
-                case 'insert' :
+                case 'insert':
                     $t = $this->get_para(substr($tag, 7), false);
 
                     if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
-                        $out = "<?php \n" . '$k = ' . preg_replace("/(\'\\$[^,]+)/e" , "stripslashes(trim('\\1','\''));", var_export($t, true)) . ";\n";
+                        $out = "<?php \n" . '$k = ' . preg_replace("/(\'\\$[^,]+)/e", "stripslashes(trim('\\1','\''));", var_export($t, true)) . ";\n";
                     } else {
-                        $out = "<?php \n" . '$k = ' . preg_replace_callback("/(\'\\$[^,]+)/", function($r){return stripcslashes(trim($r[1], '\''));}, var_export($t, true)) . ";\n";
+                        $out = "<?php \n" . '$k = ' . preg_replace_callback("/(\'\\$[^,]+)/", function ($r) {
+                            return stripcslashes(trim($r[1], '\''));
+                        }, var_export($t, true)) . ";\n";
                     }
                     $out .= 'echo $this->_echash . $k[\'name\'] . \'|\' . serialize($k) . $this->_echash;' . "\n?>";
 
@@ -432,7 +444,7 @@ class EcsTemplate {
                     return '';
                     break;
 
-                case 'cycle' :
+                case 'cycle':
                     $t = $this->get_para(substr($tag, 6), 0);
 
                     return '<?php echo $this->cycle(' . $this->make_array($t) . '); ?>';
@@ -477,12 +489,15 @@ class EcsTemplate {
      *
      * @return  bool
      */
-    function get_val($val) {
+    public function get_val($val)
+    {
         if (strrpos($val, '[') !== false) {
             if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
                 $val = preg_replace("/\[([^\[\]]*)\]/eis", "'.'.str_replace('$','\$','\\1')", $val);
             } else {
-                $val = preg_replace_callback("/\[([^\[\]]*)\]/is", function($r){return '.' . $r[1];}, $val);
+                $val = preg_replace_callback("/\[([^\[\]]*)\]/is", function ($r) {
+                    return '.' . $r[1];
+                }, $val);
             }
         }
 
@@ -498,7 +513,7 @@ class EcsTemplate {
         if (strpos($val, '.$') !== false) {
             $all = explode('.$', $val);
 
-            foreach ($all AS $key => $val) {
+            foreach ($all as $key => $val) {
                 $all[$key] = $key == 0 ? $this->make_var($val) : '[' . $this->make_var($val) . ']';
             }
             $p = implode('', $all);
@@ -507,7 +522,7 @@ class EcsTemplate {
         }
 
         if (!empty($moddb)) {
-            foreach ($moddb AS $key => $mod) {
+            foreach ($moddb as $key => $mod) {
                 $s = explode(':', $mod);
                 switch ($s[0]) {
                     case 'escape':
@@ -566,7 +581,8 @@ class EcsTemplate {
      *
      * @return  bool
      */
-    function make_var($val) {
+    public function make_var($val)
+    {
         if (strrpos($val, '.') === false) {
             if (isset($this->_var[$val]) && isset($this->_patchstack[$val])) {
                 $val = $this->_patchstack[$val];
@@ -583,12 +599,12 @@ class EcsTemplate {
             } else {
                 $p = '$this->_var[\'' . $_var_name . '\']';
             }
-            foreach ($t AS $val) {
-				if($_var_name == 'cfg'){
-					$p.= '[\'' . strtoupper($val) . '\']';
-				}else{
-					$p.= '[\'' . $val . '\']';
-				}
+            foreach ($t as $val) {
+                if ($_var_name == 'cfg') {
+                    $p.= '[\'' . strtoupper($val) . '\']';
+                } else {
+                    $p.= '[\'' . $val . '\']';
+                }
             }
         }
 
@@ -604,9 +620,10 @@ class EcsTemplate {
      *
      * @return  array
      */
-    function get_para($val, $type = 1) { // 处理insert外部函数/需要include运行的函数的调用数据
+    public function get_para($val, $type = 1)
+    { // 处理insert外部函数/需要include运行的函数的调用数据
         $pa = $this->str_trim($val);
-        foreach ($pa AS $value) {
+        foreach ($pa as $value) {
             if (strrpos($value, '=')) {
                 list($a, $b) = explode('=', str_replace(array(' ', '"', "'", '&quot;'), '', $value));
                 if ($b{0} == '$') {
@@ -632,7 +649,8 @@ class EcsTemplate {
      *
      * @return  mix
      */
-    function &get_template_vars($name = null) {
+    public function &get_template_vars($name = null)
+    {
         if (empty($name)) {
             return $this->_var;
         } elseif (!empty($this->_var[$name])) {
@@ -653,7 +671,8 @@ class EcsTemplate {
      *
      * @return  string
      */
-    function _compile_if_tag($tag_args, $elseif = false) {
+    public function _compile_if_tag($tag_args, $elseif = false)
+    {
         preg_match_all('/\-?\d+[\.\d]+|\'[^\'|\s]*\'|"[^"|\s]*"|[\$\w\.]+|!==|===|==|!=|<>|<<|>>|<=|>=|&&|\|\||\(|\)|,|\!|\^|=|&|<|>|~|\||\%|\+|\-|\/|\*|\@|\S/', $tag_args, $match);
 
         $tokens = $match[0];
@@ -732,7 +751,8 @@ class EcsTemplate {
      *
      * @return  string
      */
-    function _compile_foreach_start($tag_args) {
+    public function _compile_foreach_start($tag_args)
+    {
         $attrs = $this->get_para($tag_args, 0);
         $arg_list = array();
         $from = $attrs['from'];
@@ -782,7 +802,8 @@ class EcsTemplate {
      *
      * @return  void
      */
-    function push_vars($key, $val) {
+    public function push_vars($key, $val)
+    {
         if (!empty($key)) {
             array_push($this->_temp_key, "\$this->_vars['$key']='" . $this->_vars[$key] . "';");
         }
@@ -796,7 +817,8 @@ class EcsTemplate {
      *
      * @return  void
      */
-    function pop_vars() {
+    public function pop_vars()
+    {
         $key = array_pop($this->_temp_key);
         $val = array_pop($this->_temp_val);
 
@@ -813,7 +835,8 @@ class EcsTemplate {
      *
      * @return  string
      */
-    function _compile_smarty_ref(&$indexes) {
+    public function _compile_smarty_ref(&$indexes)
+    {
         /* Extract the reference name. */
         $_ref = $indexes[0];
 
@@ -890,13 +913,14 @@ class EcsTemplate {
         return $compiled_ref;
     }
 
-    function smarty_insert_scripts($args) {
+    public function smarty_insert_scripts($args)
+    {
         static $scripts = array();
 
         $arr = explode(',', str_replace(' ', '', $args['files']));
 
         $str = '';
-        foreach ($arr AS $val) {
+        foreach ($arr as $val) {
             if (in_array($val, $scripts) == false) {
                 $scripts[] = $val;
                 if ($val{0} == '.') {
@@ -910,7 +934,8 @@ class EcsTemplate {
         return $str;
     }
 
-    function smarty_prefilter_preCompile($source) {
+    public function smarty_prefilter_preCompile($source)
+    {
         $file_type = strtolower(strrchr($this->_current_file, '.'));
         $tmp_dir = 'themes/' . C('template') . '/'; // 模板所在路径
 
@@ -925,14 +950,16 @@ class EcsTemplate {
                 $source      = preg_replace($pattern, $replacement, $source);
             } else {
                 $pattern     = '/<!--\s#BeginLibraryItem\s\"\/(.*?)\"\s-->.*?<!--\s#EndLibraryItem\s-->/s';
-                $source      = preg_replace_callback($pattern, function($r){return '{include file=' . strtolower($r[1]). '}';}, $source);
+                $source      = preg_replace_callback($pattern, function ($r) {
+                    return '{include file=' . strtolower($r[1]). '}';
+                }, $source);
             }
 
             /* 检查有无动态库文件，如果有为其赋值 */
             $template = C('template');
             $dyna_libs = model('Common')->get_dyna_libs($template, $this->_current_file);
             if ($dyna_libs) {
-                foreach ($dyna_libs AS $region => $libs) {
+                foreach ($dyna_libs as $region => $libs) {
                     $pattern = '/<!--\\s*TemplateBeginEditable\\sname="' . $region . '"\\s*-->(.*?)<!--\\s*TemplateEndEditable\\s*-->/s';
 
                     if (preg_match($pattern, $source, $reg_match)) {
@@ -940,7 +967,7 @@ class EcsTemplate {
                         /* 生成匹配字串 */
                         $keys = array_keys($libs);
                         $lib_pattern = '';
-                        foreach ($keys AS $lib) {
+                        foreach ($keys as $lib) {
                             $lib_pattern .= '|' . str_replace('/', '\/', substr($lib, 1));
                         }
                         $lib_pattern = '/{include\sfile=(' . substr($lib_pattern, 1) . ')}/';
@@ -975,7 +1002,7 @@ class EcsTemplate {
         }
 
         /* 替换文件编码头部 */
-        if (strpos($source, "\xEF\xBB\xBF") !== FALSE) {
+        if (strpos($source, "\xEF\xBB\xBF") !== false) {
             $source = str_replace("\xEF\xBB\xBF", '', $source);
         }
 
@@ -998,7 +1025,8 @@ class EcsTemplate {
         return preg_replace($pattern, $replace, $source);
     }
 
-    function insert_mod($name) { // 处理动态内容
+    public function insert_mod($name)
+    { // 处理动态内容
         list($fun, $para) = explode('|', $name);
         $para = unserialize($para);
         $fun = 'insert_' . $fun;
@@ -1006,7 +1034,8 @@ class EcsTemplate {
         return $fun($para);
     }
 
-    function str_trim($str) {
+    public function str_trim($str)
+    {
         /* 处理'a=b c=d k = f '类字符串，返回数组 */
         while (strpos($str, '= ') != 0) {
             $str = str_replace('= ', '=', $str);
@@ -1018,7 +1047,8 @@ class EcsTemplate {
         return explode(' ', trim($str));
     }
 
-    function _eval($content) {
+    public function _eval($content)
+    {
         ob_start();
         eval('?' . '>' . trim($content));
         $content = ob_get_contents();
@@ -1027,7 +1057,8 @@ class EcsTemplate {
         return $content;
     }
 
-    function _require($filename) {
+    public function _require($filename)
+    {
         ob_start();
         include $filename;
         $content = ob_get_contents();
@@ -1036,14 +1067,15 @@ class EcsTemplate {
         return $content;
     }
 
-    function html_options($arr) {
+    public function html_options($arr)
+    {
         $selected = $arr['selected'];
 
         if ($arr['options']) {
             $options = (array) $arr['options'];
         } elseif ($arr['output']) {
             if ($arr['values']) {
-                foreach ($arr['output'] AS $key => $val) {
+                foreach ($arr['output'] as $key => $val) {
                     $options["{$arr[values][$key]}"] = $val;
                 }
             } else {
@@ -1051,7 +1083,7 @@ class EcsTemplate {
             }
         }
         if ($options) {
-            foreach ($options AS $key => $val) {
+            foreach ($options as $key => $val) {
                 $out .= $key == $selected ? "<option value=\"$key\" selected>$val</option>" : "<option value=\"$key\">$val</option>";
             }
         }
@@ -1059,7 +1091,8 @@ class EcsTemplate {
         return $out;
     }
 
-    function html_select_date($arr) {
+    public function html_select_date($arr)
+    {
         $pre = $arr['prefix'];
         if (isset($arr['time'])) {
             if (intval($arr['time']) > 10000) {
@@ -1111,20 +1144,22 @@ class EcsTemplate {
         return $out . '</select>';
     }
 
-    function html_radios($arr) {
+    public function html_radios($arr)
+    {
         $name = $arr['name'];
         $checked = $arr['checked'];
         $options = $arr['options'];
 
         $out = '';
-        foreach ($options AS $key => $val) {
+        foreach ($options as $key => $val) {
             $out .= $key == $checked ? "<input type=\"radio\" name=\"$name\" value=\"$key\" checked>&nbsp;{$val}&nbsp;" : "<input type=\"radio\" name=\"$name\" value=\"$key\">&nbsp;{$val}&nbsp;";
         }
 
         return $out;
     }
 
-    function html_select_time($arr) {
+    public function html_select_time($arr)
+    {
         $pre = $arr['prefix'];
         if (isset($arr['time'])) {
             $arr['time'] = gmdate('H-i-s', $arr['time'] + 8 * 3600);
@@ -1162,7 +1197,8 @@ class EcsTemplate {
         return $out;
     }
 
-    function cycle($arr) {
+    public function cycle($arr)
+    {
         static $k, $old;
 
         $value = explode(',', $arr['values']);
@@ -1179,9 +1215,10 @@ class EcsTemplate {
         echo $old[$k];
     }
 
-    function make_array($arr) {
+    public function make_array($arr)
+    {
         $out = '';
-        foreach ($arr AS $key => $val) {
+        foreach ($arr as $key => $val) {
             if ($val{0} == '$') {
                 $out .= $out ? ",'$key'=>$val" : "array('$key'=>$val";
             } else {
@@ -1192,7 +1229,8 @@ class EcsTemplate {
         return $out . ')';
     }
 
-    function smarty_create_pages($params) {
+    public function smarty_create_pages($params)
+    {
         extract($params);
 
         if (empty($page)) {
@@ -1221,7 +1259,4 @@ class EcsTemplate {
 
         return $str;
     }
-
 }
-
-?>

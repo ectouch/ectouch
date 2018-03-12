@@ -15,16 +15,18 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class BrandModel extends BaseModel {
+class BrandModel extends BaseModel
+{
 
     /**
      * 获得品牌下的商品
      *
      * @access private
-     * @param integer $brand_id 
+     * @param integer $brand_id
      * @return array
      */
-    function brand_get_goods($brand_id, $cate, $sort, $order, $size, $page) {
+    public function brand_get_goods($brand_id, $cate, $sort, $order, $size, $page)
+    {
         $cate_where = ($cate > 0) ? 'AND ' . get_children($cate) : '';
 
         $start = ($page - 1) * $size;
@@ -82,13 +84,14 @@ class BrandModel extends BaseModel {
      *
      * @global type $page_libs
      * @staticvar null $static_page_libs
-     * @param type $cat 
-     * @param type $app 
-     * @param type $size 
-     * @param type $page 
+     * @param type $cat
+     * @param type $app
+     * @param type $size
+     * @param type $page
      * @return type
      */
-    function get_brands($app = 'brand', $size, $page) {
+    public function get_brands($app = 'brand', $size, $page)
+    {
         $start = ($page - 1) * $size;
         $sql = "SELECT brand_id, brand_name, brand_logo, brand_desc,brand_banner FROM " . $this->pre . "brand WHERE is_show = 1 GROUP BY brand_id  ASC LIMIT $start , $size";
         $res = $this->query($sql);
@@ -115,18 +118,18 @@ class BrandModel extends BaseModel {
      * @param $str  字符串
      * @return string  首字母
      */
-    function getLetter($str){
+    public function getLetter($str)
+    {
         $i=0;
-        while($i<strlen($str) ) {
-            $tmp=bin2hex(substr($str,$i,1));
-            if($tmp>='B0'){ //汉字
+        while ($i<strlen($str)) {
+            $tmp=bin2hex(substr($str, $i, 1));
+            if ($tmp>='B0') { //汉字
                 $object = new Pinyin();
                 $pinyin = $object->output($str);
-                return strtoupper(substr($pinyin,0,1));
+                return strtoupper(substr($pinyin, 0, 1));
                 $i+=2;
-            }
-            else{
-                return strtoupper(substr($str,$i,1));
+            } else {
+                return strtoupper(substr($str, $i, 1));
                 $i++;
             }
         }
@@ -143,12 +146,13 @@ class BrandModel extends BaseModel {
      * @param type $page
      * @return type
      */
-    function get_brands_hj() {
+    public function get_brands_hj()
+    {
         $sql = "SELECT brand_id, brand_name, brand_logo, brand_desc,brand_banner FROM " . $this->pre . "brand WHERE is_show = 1 GROUP BY brand_id , sort_order order by sort_order ASC";
         $res = $this->query($sql);
         $arr = array();
         foreach ($res as $key=>$row) {
-            if($key == 0 ){
+            if ($key == 0) {
                 $arr['top'][$row['brand_id']]['brand_id']   =   $row['brand_id'];
                 $arr['top'][$row['brand_id']]['brand_name'] =   $row['brand_name'];
                 $arr['top'][$row['brand_id']]['url']    =   url('brand/goods_list', array('id' => $row['brand_id']));
@@ -156,7 +160,7 @@ class BrandModel extends BaseModel {
                 $arr['top'][$row['brand_id']]['brand_banner']   =  get_data_path($row['brand_banner'], 'brandbanner');
                 $arr['top'][$row['brand_id']]['goods_num']  =   model('Brand')->goods_count_by_brand($row['brand_id']);
                 $arr['top'][$row['brand_id']]['brand_desc'] =   htmlspecialchars($row['brand_desc'], ENT_QUOTES);
-            }elseif($key == 1 ){
+            } elseif ($key == 1) {
                 $arr['center'][$row['brand_id']]['brand_id']   =   $row['brand_id'];
                 $arr['center'][$row['brand_id']]['brand_name'] =   $row['brand_name'];
                 $arr['center'][$row['brand_id']]['url']    =   url('brand/goods_list', array('id' => $row['brand_id']));
@@ -164,7 +168,7 @@ class BrandModel extends BaseModel {
                 $arr['center'][$row['brand_id']]['brand_banner']   =  get_data_path($row['brand_banner'], 'brandbanner');
                 $arr['center'][$row['brand_id']]['goods_num']  =   model('Brand')->goods_count_by_brand($row['brand_id']);
                 $arr['center'][$row['brand_id']]['brand_desc'] =   htmlspecialchars($row['brand_desc'], ENT_QUOTES);
-            }elseif($key > 1 && $key < 6){
+            } elseif ($key > 1 && $key < 6) {
                 $arr['list1'][$row['brand_id']]['brand_id']   =   $row['brand_id'];
                 $arr['list1'][$row['brand_id']]['brand_name'] =   $row['brand_name'];
                 $arr['list1'][$row['brand_id']]['url']    =   url('brand/goods_list', array('id' => $row['brand_id']));
@@ -172,7 +176,7 @@ class BrandModel extends BaseModel {
                 $arr['list1'][$row['brand_id']]['brand_banner']   = get_data_path($row['brand_banner'], 'brandbanner');
                 $arr['list1'][$row['brand_id']]['goods_num']  =   model('Brand')->goods_count_by_brand($row['brand_id']);
                 $arr['list1'][$row['brand_id']]['brand_desc'] =   htmlspecialchars($row['brand_desc'], ENT_QUOTES);
-            }else{
+            } else {
                 $arr['list2'][$row['brand_id']]['brand_id']   =   $row['brand_id'];
                 $arr['list2'][$row['brand_id']]['brand_name'] =   $row['brand_name'];
                 $arr['list2'][$row['brand_id']]['url']    =   url('brand/goods_list', array('id' => $row['brand_id']));
@@ -181,7 +185,6 @@ class BrandModel extends BaseModel {
                 $arr['list2'][$row['brand_id']]['goods_num']  =   model('Brand')->goods_count_by_brand($row['brand_id']);
                 $arr['list2'][$row['brand_id']]['brand_desc'] =   htmlspecialchars($row['brand_desc'], ENT_QUOTES);
             }
-
         }
         return $arr;
     }
@@ -194,7 +197,8 @@ class BrandModel extends BaseModel {
      * @param   integer     $cate
      * @return  integer
      */
-    function goods_count_by_brand($brand_id, $cate = 0) {
+    public function goods_count_by_brand($brand_id, $cate = 0)
+    {
         $sql = 'SELECT COUNT(*) as count FROM ' . $this->pre . 'goods AS g ' .
                 "WHERE brand_id = '$brand_id' AND g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 ";
 
@@ -209,7 +213,8 @@ class BrandModel extends BaseModel {
      * 获得品牌数量
      *
      */
-    function get_brands_count() {
+    public function get_brands_count()
+    {
         $sql = "SELECT count(*) as num FROM " . $this->pre . "brand WHERE is_show = 1 ";
         $res = $this->row($sql);
         $sales_count = $res['num'] ? $res['num'] : 0;
@@ -223,7 +228,8 @@ class BrandModel extends BaseModel {
      * @param integer $brand_id
      * @return array
      */
-    function brand_get_goods_img($brand_id, $cate, $sort, $order, $size, $page) {
+    public function brand_get_goods_img($brand_id, $cate, $sort, $order, $size, $page)
+    {
         $start = ($page - 1) * $size;
         /* 获得品牌商品列表 */
         $sort = $sort == 'sales_volume' ? 'xl.sales_volume' : $sort;
@@ -238,5 +244,4 @@ class BrandModel extends BaseModel {
 
         return $arr;
     }
-
 }

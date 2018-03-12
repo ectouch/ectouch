@@ -82,4 +82,3 @@ $_LANG['label_captcha'] = '验证码：';
 $_LANG['click_for_another'] = '看不清？点击更换另一个验证码。';
 $_LANG['signin_now'] = '进入管理中心';
 $_LANG['remember'] = '请保存我这次的登录信息。';
-?>

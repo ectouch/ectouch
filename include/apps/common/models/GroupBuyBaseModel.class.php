@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class GroupBuyBaseModel extends BaseModel {
+class GroupBuyBaseModel extends BaseModel
+{
 
     /**
      * 取得团购活动信息
@@ -25,7 +26,8 @@ class GroupBuyBaseModel extends BaseModel {
      * @return  array
      *                  status          状态：
      */
-    function group_buy_info($group_buy_id, $current_num = 0) {
+    public function group_buy_info($group_buy_id, $current_num = 0)
+    {
         /* 取得团购活动信息 */
         $group_buy_id = intval($group_buy_id);
         $sql = "SELECT *, a.act_id AS group_buy_id, a.act_desc AS group_buy_desc, a.start_time AS start_date, a.end_time AS end_date ,
@@ -107,7 +109,8 @@ class GroupBuyBaseModel extends BaseModel {
      * @param   array
      * @return  integer
      */
-    function group_buy_status($group_buy) {
+    public function group_buy_status($group_buy)
+    {
         $now = gmtime();
         if ($group_buy['is_finished'] == 0) {
             /* 未处理 */
@@ -144,7 +147,8 @@ class GroupBuyBaseModel extends BaseModel {
      *                  valid_goods     有效商品数
      */
 
-    function group_buy_stat($group_buy_id, $deposit) {
+    public function group_buy_stat($group_buy_id, $deposit)
+    {
         $group_buy_id = intval($group_buy_id);
 
         /* 取得团购活动商品ID */
@@ -187,5 +191,4 @@ class GroupBuyBaseModel extends BaseModel {
 
         return $stat;
     }
-
 }

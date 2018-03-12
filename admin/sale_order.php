@@ -11,19 +11,16 @@ require_once(BASE_PATH . 'helpers/order_helper.php');
 require_once(BASE_PATH . 'languages/' .$_CFG['lang']. '/admin/statistic.php');
 $smarty->assign('lang', $_LANG);
 
-if (isset($_REQUEST['act']) && ($_REQUEST['act'] == 'query' ||  $_REQUEST['act'] == 'download'))
-{
+if (isset($_REQUEST['act']) && ($_REQUEST['act'] == 'query' ||  $_REQUEST['act'] == 'download')) {
     /* 检查权限 */
     check_authz_json('sell_stats');
-    if (strstr($_REQUEST['start_date'], '-') === false)
-    {
+    if (strstr($_REQUEST['start_date'], '-') === false) {
         $_REQUEST['start_date'] = local_date('Y-m-d', $_REQUEST['start_date']);
         $_REQUEST['end_date'] = local_date('Y-m-d', $_REQUEST['end_date']);
     }
 
     /* 下载报表 */
-    if ($_REQUEST['act'] == 'download')
-    {
+    if ($_REQUEST['act'] == 'download') {
         $goods_order_data = get_sales_order(false);
         $goods_order_data = $goods_order_data['sales_order_data'];
 
@@ -35,61 +32,53 @@ if (isset($_REQUEST['act']) && ($_REQUEST['act'] == 'query' ||  $_REQUEST['act']
         $data  = "$_LANG[sell_stats]\t\n";
         $data .= "$_LANG[order_by]\t$_LANG[goods_name]\t$_LANG[goods_sn]\t$_LANG[sell_amount]\t$_LANG[sell_sum]\t$_LANG[percent_count]\n";
 
-        foreach ($goods_order_data AS $k => $row)
-        {
+        foreach ($goods_order_data as $k => $row) {
             $order_by = $k + 1;
             $data .= "$order_by\t$row[goods_name]\t$row[goods_sn]\t$row[goods_num]\t$row[turnover]\t$row[wvera_price]\n";
         }
 
-        if (CHARSET == 'utf-8')
-        {
+        if (CHARSET == 'utf-8') {
             echo ecs_iconv(CHARSET, 'GB2312', $data);
-        }
-        else
-        {
+        } else {
             echo $data;
         }
         exit;
     }
     $goods_order_data = get_sales_order();
     $smarty->assign('goods_order_data', $goods_order_data['sales_order_data']);
-    $smarty->assign('filter',       $goods_order_data['filter']);
+    $smarty->assign('filter', $goods_order_data['filter']);
     $smarty->assign('record_count', $goods_order_data['record_count']);
-    $smarty->assign('page_count',   $goods_order_data['page_count']);
+    $smarty->assign('page_count', $goods_order_data['page_count']);
 
     $sort_flag  = sort_flag($goods_order_data['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
 
     make_json_result($smarty->fetch('sale_order.htm'), '', array('filter' => $goods_order_data['filter'], 'page_count' => $goods_order_data['page_count']));
-}
-else
-{
+} else {
     /* 权限检查 */
     admin_priv('sell_stats');
 
     /* 时间参数 */
-    if (!isset($_REQUEST['start_date']))
-    {
+    if (!isset($_REQUEST['start_date'])) {
         $_REQUEST['start_date'] = local_strtotime('-1 months');
     }
-    if (!isset($_REQUEST['end_date']))
-    {
+    if (!isset($_REQUEST['end_date'])) {
         $_REQUEST['end_date'] = local_strtotime('+1 day');
     }
     $goods_order_data = get_sales_order();
 
     /* 赋值到模板 */
-    $smarty->assign('ur_here',          $_LANG['sell_stats']);
+    $smarty->assign('ur_here', $_LANG['sell_stats']);
     $smarty->assign('goods_order_data', $goods_order_data['sales_order_data']);
-    $smarty->assign('filter',           $goods_order_data['filter']);
-    $smarty->assign('record_count',     $goods_order_data['record_count']);
-    $smarty->assign('page_count',       $goods_order_data['page_count']);
-    $smarty->assign('filter',           $goods_order_data['filter']);
-    $smarty->assign('full_page',        1);
-    $smarty->assign('sort_goods_num',   '<img src="images/sort_desc.gif">');
-    $smarty->assign('start_date',       local_date('Y-m-d', $_REQUEST['start_date']));
-    $smarty->assign('end_date',         local_date('Y-m-d', $_REQUEST['end_date']));
-    $smarty->assign('action_link',      array('text' => $_LANG['download_sale_sort'], 'href' => '#download' ));
+    $smarty->assign('filter', $goods_order_data['filter']);
+    $smarty->assign('record_count', $goods_order_data['record_count']);
+    $smarty->assign('page_count', $goods_order_data['page_count']);
+    $smarty->assign('filter', $goods_order_data['filter']);
+    $smarty->assign('full_page', 1);
+    $smarty->assign('sort_goods_num', '<img src="images/sort_desc.gif">');
+    $smarty->assign('start_date', local_date('Y-m-d', $_REQUEST['start_date']));
+    $smarty->assign('end_date', local_date('Y-m-d', $_REQUEST['end_date']));
+    $smarty->assign('action_link', array('text' => $_LANG['download_sale_sort'], 'href' => '#download' ));
 
     /* 显示页面 */
     assign_query_info();
@@ -113,12 +102,10 @@ function get_sales_order($is_pagination = true)
 
     $where = " WHERE og.order_id = oi.order_id ". order_query_sql('finished', 'oi.');
 
-    if ($filter['start_date'])
-    {
+    if ($filter['start_date']) {
         $where .= " AND oi.add_time >= '" . $filter['start_date'] . "'";
     }
-    if ($filter['end_date'])
-    {
+    if ($filter['end_date']) {
         $where .= " AND oi.add_time <= '" . $filter['end_date'] . "'";
     }
 
@@ -137,15 +124,13 @@ function get_sales_order($is_pagination = true)
            $GLOBALS['ecs']->table('order_info')." AS oi  " .$where .
            " GROUP BY og.goods_id ".
            ' ORDER BY ' . $filter['sort_by'] . ' ' . $filter['sort_order'] ;
-    if ($is_pagination)
-    {
+    if ($is_pagination) {
         $sql .= " LIMIT " . $filter['start'] . ', ' . $filter['page_size'];
     }
 
     $sales_order_data = $GLOBALS['db']->getAll($sql);
 
-    foreach ($sales_order_data as $key => $item)
-    {
+    foreach ($sales_order_data as $key => $item) {
         $sales_order_data[$key]['wvera_price'] = price_format($item['goods_num'] ? $item['turnover'] / $item['goods_num'] : 0);
         $sales_order_data[$key]['short_name']  = sub_str($item['goods_name'], 30, true);
         $sales_order_data[$key]['turnover']    = price_format($item['turnover']);
@@ -156,5 +141,3 @@ function get_sales_order($is_pagination = true)
 
     return $arr;
 }
-
-?>

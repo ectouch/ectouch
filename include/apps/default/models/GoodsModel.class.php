@@ -15,8 +15,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class GoodsModel extends BaseModel {
-
+class GoodsModel extends BaseModel
+{
     protected $table = 'goods';
 
     /**
@@ -26,7 +26,8 @@ class GoodsModel extends BaseModel {
      * @param   integer     $goods_id
      * @return  void
      */
-    function get_goods_info($goods_id) {
+    public function get_goods_info($goods_id)
+    {
         $time = gmtime();
         $sql = 'SELECT g.*, c.measure_unit, b.brand_id, b.brand_name AS goods_brand, m.type_money AS bonus_money, ' .
                 'IFNULL(AVG(r.comment_rank), 0) AS comment_rank, ' .
@@ -126,7 +127,8 @@ class GoodsModel extends BaseModel {
      * @param   integer $goods_id
      * @return  array
      */
-    function get_goods_properties($goods_id) {
+    public function get_goods_properties($goods_id)
+    {
         /* 对属性进行重新排序和分组 */
         $sql = "SELECT attr_group " .
                 "FROM " . $this->pre . "goods_type AS gt, " . $this->pre . "goods AS g " .
@@ -150,7 +152,7 @@ class GoodsModel extends BaseModel {
         $arr['spe'] = array();     // 规格
         $arr['lnk'] = array();     // 关联的属性
 
-        foreach ($res AS $row) {
+        foreach ($res as $row) {
             $row['attr_value'] = str_replace("\n", '<br />', $row['attr_value']);
 
             if ($row['attr_type'] == 0) {
@@ -185,11 +187,12 @@ class GoodsModel extends BaseModel {
      * @param   array   $attr   // 包含了属性名称,ID的数组
      * @return  array
      */
-    function get_same_attribute_goods($attr) {
+    public function get_same_attribute_goods($attr)
+    {
         $lnk = array();
 
         if (!empty($attr)) {
-            foreach ($attr['lnk'] AS $key => $val) {
+            foreach ($attr['lnk'] as $key => $val) {
                 $lnk[$key]['title'] = sprintf(L('same_attrbiute_goods'), $val['name'], $val['value']);
 
                 /* 查找符合条件的商品 */
@@ -204,7 +207,7 @@ class GoodsModel extends BaseModel {
                         'LIMIT ' . C('attr_related_number');
                 $res = $this->query($sql);
 
-                foreach ($res AS $row) {
+                foreach ($res as $row) {
                     $lnk[$key]['goods'][$row['goods_id']]['goods_id'] = $row['goods_id'];
                     $lnk[$key]['goods'][$row['goods_id']]['goods_name'] = $row['goods_name'];
                     $lnk[$key]['goods'][$row['goods_id']]['short_name'] = C('goods_name_length') > 0 ?
@@ -231,7 +234,8 @@ class GoodsModel extends BaseModel {
      * @param   string      $order_rule 指定商品排序规则
      * @return  array
      */
-    function assign_cat_goods($cat_id, $num = 0, $from = 'web', $order_rule = '') {
+    public function assign_cat_goods($cat_id, $num = 0, $from = 'web', $order_rule = '')
+    {
         $children = get_children($cat_id);
 
         $sql = 'SELECT g.goods_id, g.goods_name, g.market_price, g.shop_price AS org_price, ' .
@@ -251,7 +255,7 @@ class GoodsModel extends BaseModel {
         $res = $this->query($sql);
 
         $goods = array();
-        foreach ($res AS $idx => $row) {
+        foreach ($res as $idx => $row) {
             if ($row['promote_price'] > 0) {
                 $promote_price = bargain_price($row['promote_price'], $row['promote_start_date'], $row['promote_end_date']);
                 $goods[$idx]['promote_price'] = $promote_price > 0 ? price_format($promote_price) : '';
@@ -297,7 +301,8 @@ class GoodsModel extends BaseModel {
      * @param   string      $order_rule     指定商品排序规则
      * @return  void
      */
-    function assign_brand_goods($brand_id, $num = 0, $cat_id = 0, $order_rule = '') {
+    public function assign_brand_goods($brand_id, $num = 0, $cat_id = 0, $order_rule = '')
+    {
         $sql = 'SELECT g.goods_id, g.goods_name, g.market_price, g.shop_price AS org_price, ' .
                 "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price, " .
                 'g.promote_price, g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img ' .
@@ -359,7 +364,8 @@ class GoodsModel extends BaseModel {
      * @param   string $cat_id     分类查询字符串
      * @return  string
      */
-    function get_extension_goods($cats) {
+    public function get_extension_goods($cats)
+    {
         $extension_goods_array = '';
         $sql = 'SELECT goods_id FROM ' . $this->pre . "goods_cat AS g WHERE $cats";
         $res = $this->query($sql);
@@ -379,7 +385,8 @@ class GoodsModel extends BaseModel {
      * @param   mix     $spec   规格ID的数组或者逗号分隔的字符串
      * @return  void
      */
-    function spec_price($spec) {
+    public function spec_price($spec)
+    {
         if (!empty($spec)) {
             if (is_array($spec)) {
                 foreach ($spec as $key => $val) {
@@ -405,7 +412,8 @@ class GoodsModel extends BaseModel {
      * @param   int     $goods_id   商品id
      * @return  array
      */
-    function goods_info($goods_id) {
+    public function goods_info($goods_id)
+    {
         $sql = "SELECT g.*, b.brand_name " .
                 "FROM " . $this->pre . "goods AS g " .
                 "LEFT JOIN " . $this->pre . "brand AS b ON g.brand_id = b.brand_id " .
@@ -431,7 +439,8 @@ class GoodsModel extends BaseModel {
      * @param   array     $goods_list
      * @return  array
      */
-    function get_goods_fittings($goods_list = array()) {
+    public function get_goods_fittings($goods_list = array())
+    {
         $temp_index = 0;
         $arr = array();
 
@@ -450,7 +459,7 @@ class GoodsModel extends BaseModel {
             $arr[$temp_index]['parent_name'] = $value['parent_name']; //配件的基本件的名称
             $arr[$temp_index]['parent_short_name'] = C('goods_name_length') > 0 ?
             sub_str($value['parent_name'], C('goods_name_length')) : $value['parent_name']; //配件的基本件显示的名称
-			$arr[$temp_index]['parent_id'] = $value['parent_id']; //配件的parent_id
+            $arr[$temp_index]['parent_id'] = $value['parent_id']; //配件的parent_id
             $arr[$temp_index]['goods_id'] = $value['goods_id']; //配件的商品ID
             $arr[$temp_index]['goods_name'] = $value['goods_name']; //配件的名称
             $arr[$temp_index]['short_name'] = C('goods_name_length') > 0 ?
@@ -480,7 +489,8 @@ class GoodsModel extends BaseModel {
      * @param   integer     $goods_id
      * @return  array
      */
-    function get_linked_goods($goods_id) {
+    public function get_linked_goods($goods_id)
+    {
         foreach ($goods_id as $gid) {
             $goodsId[] = $gid['goods_id'];
         }
@@ -535,10 +545,11 @@ class GoodsModel extends BaseModel {
      * 获得指定商品的关联商品
      *
      * @access public
-     * @param integer $goods_id        	
+     * @param integer $goods_id
      * @return array
      */
-    function get_related_goods($goods_id) {
+    public function get_related_goods($goods_id)
+    {
         $sql = 'SELECT g.goods_id, g.goods_name, g.goods_thumb, g.goods_img, g.shop_price AS org_price, ' . "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price, " . 'g.market_price, g.promote_price, g.promote_start_date, g.promote_end_date ' . 'FROM ' . $this->pre . 'link_goods AS lg ' . 'LEFT JOIN ' . $this->pre . 'goods AS g ON g.goods_id = lg.link_goods_id ' . "LEFT JOIN " . $this->pre . "member_price AS mp " . "ON mp.goods_id = g.goods_id AND mp.user_rank = '$_SESSION[user_rank]' " . "WHERE lg.goods_id = '$goods_id' AND g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 " . "LIMIT " . C('related_goods_number');
         $res = $this->query($sql);
         $arr = array();
@@ -568,10 +579,11 @@ class GoodsModel extends BaseModel {
      * 获得指定商品的关联文章
      *
      * @access public
-     * @param integer $goods_id        	
+     * @param integer $goods_id
      * @return void
      */
-    function get_linked_articles($goods_id) {
+    public function get_linked_articles($goods_id)
+    {
         $sql = 'SELECT a.article_id, a.title, a.file_url, a.open_type, a.add_time ' . 'FROM ' . $this->pre . 'goods_article AS g, ' . $this->pre . 'article AS a ' . "WHERE g.article_id = a.article_id AND g.goods_id = '$goods_id' AND a.is_open = 1 " . 'ORDER BY a.add_time DESC';
         $res = $this->query($sql);
         $arr = array();
@@ -588,10 +600,11 @@ class GoodsModel extends BaseModel {
      * 获得指定商品的各会员等级对应的价格
      *
      * @access public
-     * @param integer $goods_id        	
+     * @param integer $goods_id
      * @return array
      */
-    function get_user_rank_prices($goods_id, $shop_price) {
+    public function get_user_rank_prices($goods_id, $shop_price)
+    {
         $sql = "SELECT rank_id, IFNULL(mp.user_price, r.discount * $shop_price / 100) AS price, r.rank_name, r.discount " . 'FROM ' . $this->pre . 'user_rank AS r ' . 'LEFT JOIN ' . $this->pre . "member_price AS mp " . "ON mp.goods_id = '$goods_id' AND mp.user_rank = r.rank_id " . "WHERE r.show_price = 1 OR r.rank_id = '$_SESSION[user_rank]'";
         $res = $this->query($sql);
         $arr = array();
@@ -608,10 +621,11 @@ class GoodsModel extends BaseModel {
      * 获得购买过该商品的人还买过的商品
      *
      * @access public
-     * @param integer $goods_id        	
+     * @param integer $goods_id
      * @return array
      */
-    function get_also_bought($goods_id) {
+    public function get_also_bought($goods_id)
+    {
         $sql = 'SELECT COUNT(b.goods_id ) AS num, g.goods_id, g.goods_name, g.goods_thumb, g.goods_img, g.shop_price, g.promote_price, g.promote_start_date, g.promote_end_date ' . 'FROM ' . $this->pre . 'order_goods AS a ' . 'LEFT JOIN ' . $this->pre . 'order_goods AS b ON b.order_id = a.order_id ' . 'LEFT JOIN ' . $this->pre . 'goods AS g ON g.goods_id = b.goods_id ' . "WHERE a.goods_id = '$goods_id' AND b.goods_id <> '$goods_id' AND g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 " . 'GROUP BY b.goods_id ' . 'ORDER BY num DESC ' . 'LIMIT ' . C('bought_goods');
         $res = $this->query($sql);
 
@@ -641,12 +655,13 @@ class GoodsModel extends BaseModel {
     /**
      * 获得商品选定的属性的附加总价格
      *
-     * @param integer $goods_id        	
-     * @param array $attr        	
+     * @param integer $goods_id
+     * @param array $attr
      *
      * @return void
      */
-    function get_attr_amount($goods_id, $attr) {
+    public function get_attr_amount($goods_id, $attr)
+    {
         $sql = "SELECT SUM(attr_price) as amount FROM " . $this->pre . "goods_attr WHERE goods_id='$goods_id' AND " . db_create_in($attr, 'goods_attr_id');
 
         $res = $this->row($sql);
@@ -658,10 +673,11 @@ class GoodsModel extends BaseModel {
      *
      * @param string $goods_id
      *        	商品编号
-     *        	
+     *
      * @return 礼包列表
      */
-    function get_package_goods_list($goods_id) {
+    public function get_package_goods_list($goods_id)
+    {
         $now = gmtime();
         $sql = "SELECT pg.goods_id, ga.act_id, ga.act_name, ga.act_desc, ga.goods_name, ga.start_time,
 					   ga.end_time, ga.is_finished, ga.ext_info
@@ -741,5 +757,4 @@ class GoodsModel extends BaseModel {
 
         return $res;
     }
-
 }

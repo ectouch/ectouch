@@ -67,4 +67,3 @@ $_LANG['drop_ad_succeed'] = '删除广告成功';
 $_LANG['js_languages']['no_positionname'] = '没有输入广告位置的名称';
 //$_LANG['js_languages']['sys_hold'] = '系统保留分类，不允许添加子分类';
 $_LANG['js_languages']['remove_confirm'] = '您确定要删除选定的广告吗？';
-?>

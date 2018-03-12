@@ -15,14 +15,16 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class GoodsBaseModel extends BaseModel {
+class GoodsBaseModel extends BaseModel
+{
 
     /**
      *  所有的促销活动信息
      * @access  public
      * @return  array
      */
-    function get_promotion_info($goods_id = '') {
+    public function get_promotion_info($goods_id = '')
+    {
         $snatch = array();
         $group = array();
         $auction = array();
@@ -35,7 +37,7 @@ class GoodsBaseModel extends BaseModel {
             $sql .= " AND goods_id = '$goods_id'";
         }
         $res = $this->query($sql);
-        if (is_array($res))
+        if (is_array($res)) {
             foreach ($res as $data) {
                 switch ($data['act_type']) {
                     case GAT_SNATCH: //夺宝奇兵
@@ -71,6 +73,7 @@ class GoodsBaseModel extends BaseModel {
                         break;
                 }
             }
+        }
 
         $user_rank = ',' . $_SESSION['user_rank'] . ',';
         $favourable = array();
@@ -156,7 +159,8 @@ class GoodsBaseModel extends BaseModel {
      * @access  public
      * @return  array
      */
-    function get_promotion_show($goods_id = '') {
+    public function get_promotion_show($goods_id = '')
+    {
         $group = array();
         $package = array();
         $favourable = array();
@@ -166,10 +170,10 @@ class GoodsBaseModel extends BaseModel {
             $sql .= " AND goods_id = '$goods_id'";
         }
         $res = $this->query($sql);
-        if (is_array($res))
+        if (is_array($res)) {
             foreach ($res as $data) {
                 switch ($data['act_type']) {
-                    case GAT_GROUP_BUY: //团购 
+                    case GAT_GROUP_BUY: //团购
                         $group[$data['act_id']]['type'] = 'group_buy';
                         break;
                     case GAT_PACKAGE: //礼包
@@ -177,6 +181,7 @@ class GoodsBaseModel extends BaseModel {
                         break;
                 }
             }
+        }
 
         $user_rank = ',' . $_SESSION['user_rank'] . ',';
         $favourable = array();
@@ -236,7 +241,8 @@ class GoodsBaseModel extends BaseModel {
      * @param type $arr
      * @return int
      */
-    function get_goods_collect($goods_id = 0) {
+    public function get_goods_collect($goods_id = 0)
+    {
         $sql = "SELECT count(*) as count FROM " . $this->pre .
                 "collect_goods WHERE goods_id = '" . $goods_id . "'";
         $count = $this->row($sql);
@@ -250,7 +256,8 @@ class GoodsBaseModel extends BaseModel {
      * @param   integer     $goods_id
      * @return  array
      */
-    function get_goods_gallery($goods_id) {
+    public function get_goods_gallery($goods_id)
+    {
         $sql = 'SELECT img_id, img_url, thumb_url, img_desc' .
                 ' FROM ' . $this->pre .
                 "goods_gallery WHERE goods_id = '$goods_id' LIMIT " . C('goods_gallery_number');
@@ -272,7 +279,8 @@ class GoodsBaseModel extends BaseModel {
      *
      * @return  优惠价格列表
      */
-    function get_volume_price_list($goods_id, $price_type = '1') {
+    public function get_volume_price_list($goods_id, $price_type = '1')
+    {
         $volume_price = array();
         $temp_index = '0';
 
@@ -302,7 +310,8 @@ class GoodsBaseModel extends BaseModel {
      *
      * @return  商品最终购买价格
      */
-    function get_final_price($goods_id, $goods_num = '1', $is_spec_price = false, $spec = array()) {
+    public function get_final_price($goods_id, $goods_num = '1', $is_spec_price = false, $spec = array())
+    {
         $final_price = '0'; //商品最终购买价格
         $volume_price = '0'; //商品优惠价格
         $promote_price = '0'; //商品促销价格
@@ -359,19 +368,14 @@ class GoodsBaseModel extends BaseModel {
         //如果需要加入规格价格
         if ($is_spec_price) {
             if (!empty($spec)) {
-                $spec_price = model('Goods')->spec_price($spec);  
+                $spec_price = model('Goods')->spec_price($spec);
                 $sql = "select user_price from " . $this->pre . "member_price where user_rank =".$_SESSION['user_rank'] ." and goods_id = ".$goods_id;
                 $res = $this->query($sql);
                 
-                if($res[0]['user_price'])
-                {
-                  $final_price += $spec_price;
-                }
-                
-                else
-                {
-                
-                 $final_price += ($spec_price+$final_price/$_SESSION['discount'])*$_SESSION['discount']-$final_price; 
+                if ($res[0]['user_price']) {
+                    $final_price += $spec_price;
+                } else {
+                    $final_price += ($spec_price+$final_price/$_SESSION['discount'])*$_SESSION['discount']-$final_price;
                 }
             }
         }
@@ -389,7 +393,8 @@ class GoodsBaseModel extends BaseModel {
      *
      * @return      string
      */
-    function is_spec($goods_attr_id_array, $sort = 'asc') {
+    public function is_spec($goods_attr_id_array, $sort = 'asc')
+    {
         if (empty($goods_attr_id_array)) {
             return $goods_attr_id_array;
         }
@@ -423,7 +428,8 @@ class GoodsBaseModel extends BaseModel {
      *
      * @return  array
      */
-    function get_specifications_list($goods_id, $conditions = '') {
+    public function get_specifications_list($goods_id, $conditions = '')
+    {
         /* 取商品属性 */
         $sql = "SELECT ga.goods_attr_id, ga.attr_id, ga.attr_value, a.attr_name
             FROM " . $this->pre . "goods_attr AS ga, " . $this->pre . "attribute AS a
@@ -443,7 +449,8 @@ class GoodsBaseModel extends BaseModel {
      * @param   int     $act_id     活动id
      * @return  array
      */
-    function auction_info($act_id, $config = false) {
+    public function auction_info($act_id, $config = false)
+    {
         $sql = "SELECT * FROM " . $this->pre . "goods_activity WHERE act_id = '$act_id'";
         $auction = $this->row($sql);
         if ($auction['act_type'] != GAT_AUCTION) {
@@ -451,7 +458,6 @@ class GoodsBaseModel extends BaseModel {
         }
         $auction['status_no'] = auction_status($auction);
         if ($config == true) {
-
             $auction['start_time'] = local_date('Y-m-d H:i', $auction['start_time']);
             $auction['end_time'] = local_date('Y-m-d H:i', $auction['end_time']);
         } else {
@@ -508,7 +514,8 @@ class GoodsBaseModel extends BaseModel {
      * @param   int     $act_id     活动id
      * @return  array
      */
-    function auction_log($act_id) {
+    public function auction_log($act_id)
+    {
         $log = array();
         $sql = "SELECT a.*, u.user_name " .
                 "FROM " . $this->pre . "auction_log AS a," .
@@ -519,7 +526,6 @@ class GoodsBaseModel extends BaseModel {
         $res = $this->query($sql);
         $idx = 0;
         foreach ($res as $key => $value) {
-
             $res[$idx][bid_time] = local_date(C('time_format'), $value['bid_time']);
             $res[$idx][formated_bid_price] = price_format($value['bid_price'], false);
             $idx++;
@@ -532,7 +538,8 @@ class GoodsBaseModel extends BaseModel {
      * @param   int     $act_id     活动id
      * @return  array
      */
-    function favourable_info($act_id) {
+    public function favourable_info($act_id)
+    {
         $sql = "SELECT * FROM " . $this->pre .
                 "favourable_activity WHERE act_id = '$act_id'";
         $row = $this->row($sql);
@@ -555,7 +562,8 @@ class GoodsBaseModel extends BaseModel {
      * @param   int     $act_id     活动id
      * @return  array
      */
-    function wholesale_info($act_id) {
+    public function wholesale_info($act_id)
+    {
         $sql = "SELECT * FROM " . $this->pre .
                 "wholesale WHERE act_id = '$act_id'";
         $row = $this->row($sql);
@@ -570,7 +578,8 @@ class GoodsBaseModel extends BaseModel {
      * @param   int     $goods_id   商品id
      * @return  array
      */
-    function get_goods_attr($goods_id) {
+    public function get_goods_attr($goods_id)
+    {
         $attr_list = array();
         $sql = "SELECT a.attr_id, a.attr_name " .
                 "FROM " . $this->pre . "goods AS g, " . $this->pre . "attribute AS a " .
@@ -596,7 +605,6 @@ class GoodsBaseModel extends BaseModel {
                 "AND attr_id " . db_create_in($return_array);
         $res = $this->query($sql);
         foreach ($res as $key => $value) {
-
             $attr_list[$value['attr_id']]['goods_attr_list'][$value['goods_attr_id']] = $value['attr_value'];
         }
         return $attr_list;
@@ -607,13 +615,8 @@ class GoodsBaseModel extends BaseModel {
      * @param unknown $goods_id
      * @return Ambigous <string, boolean>
      */
-    function get_sales_count($goods_id) {
+    public function get_sales_count($goods_id)
+    {
         return get_goods_count($goods_id);
-        
     }
-   
-    
-    
-    
-
 }

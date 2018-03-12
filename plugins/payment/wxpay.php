@@ -44,7 +44,7 @@ class wxpay
         $order_amount = $order['order_amount'] * 100;
 
         // 判断是否是微信浏览器 调用H5支付 MWEB, 需要商户另外申请
-        if(!is_wechat_browser()){
+        if (!is_wechat_browser()) {
             $scene_info = json_encode(array('h5_info' => array('type' => 'Wap','wap_url' => __URL__,'wap_name' => C('shop_name'))));
 
             $this->setParameter("body", $order['order_sn']); // 商品描述
@@ -64,24 +64,24 @@ class wxpay
 
             $respond = $weObj->PayUnifiedOrder($this->parameters);
 
-            if(isset($respond['mweb_url'])){
+            if (isset($respond['mweb_url'])) {
                 if ($respond['result_code'] == 'SUCCESS') {
                     $redirect_url = __URL__ . "/respond.php?code=wxpay&style=wxh5&log_id=".$order['log_id'];
                 }
 
                 $button = '<div class="n-flow-alipay" style=" text-align:center"><button class="btn btn-info ect-btn-info ect-colorf ect-bg" style="background-color:#44b549;" type="button" onclick="window.open(\'' . $respond['mweb_url']. '&redirect_url='. urlencode($redirect_url) . '\')">微信支付</button></div>';
-            }else{
+            } else {
                 $button = '';
                 return false;
             }
-        }else{
+        } else {
             // 网页授权获取用户openid
             $openid = empty($_SESSION['openid']) ? $_SESSION['wechat_user']['openid'] : $_SESSION['openid'];
             $user = model('Users')->get_openid($_SESSION['user_id']);
             if (!isset($openid) || empty($openid)) {
-                if(!empty($user)){
+                if (!empty($user)) {
                     $openid = $user;
-                }else{
+                } else {
                     return false;
                 }
             }
@@ -91,10 +91,10 @@ class wxpay
             $this->setParameter("total_fee", $order_amount); // 总金额
             $this->setParameter("notify_url", notify_url(basename(__FILE__, '.php'), true)); // 异步通知地址
             $this->setParameter("trade_type", "JSAPI"); // 交易类型
-            if($order['apply'] == 1){
+            if ($order['apply'] == 1) {
                 $this->setParameter("attach", "drp");
             }
-            if($order['zc_apply'] == 'crowd'){
+            if ($order['zc_apply'] == 'crowd') {
                 $this->setParameter("attach", "crowd");
             }
             $prepay_id = $this->getPrepayId();
@@ -105,7 +105,6 @@ class wxpay
             </script>';
 
             $button = '<div style="text-align:center"><button class="btn btn-info ect-btn-info ect-colorf ect-bg" style="background-color:#44b549;" type="button" onclick="callpay()">立即付款</button></div>' . $js;
-
         }
 
         return $button;
@@ -489,7 +488,7 @@ class wxpay
                 throw new Exception("缺少统一支付接口必填参数notify_url！" . "<br>");
             } elseif ($this->parameters["trade_type"] == null) {
                 throw new Exception("缺少统一支付接口必填参数trade_type！" . "<br>");
-            } elseif ($this->parameters["trade_type"] == "JSAPI" && $this->parameters["openid"] == NULL) {
+            } elseif ($this->parameters["trade_type"] == "JSAPI" && $this->parameters["openid"] == null) {
                 throw new Exception("统一支付接口中，缺少必填参数openid！trade_type为JSAPI时，openid为必填参数！" . "<br>");
             }
             $this->parameters["appid"] = $this->payment['wxpay_appid']; // 公众账号ID

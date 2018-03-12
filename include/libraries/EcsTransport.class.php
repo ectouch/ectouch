@@ -7,7 +7,8 @@ defined('IN_ECTOUCH') or die('Deny Access');
  * ECSHOP 服务器之间数据传输器。采集到的信息包括HTTP头和HTTP体，
  * 并以一维数组的形式返回，如：array('header' => 'bar', 'body' => 'foo')。
  */
-class EcsTransport {
+class EcsTransport
+{
 
     /**
      * 脚本执行时间。－1表示采用PHP的默认值。
@@ -15,7 +16,7 @@ class EcsTransport {
      * @access  private
      * @var     integer     $time_limit
      */
-    var $time_limit = -1;
+    public $time_limit = -1;
 
     /**
      * 在多少秒之内，如果连接不可用，脚本就停止连接。－1表示采用PHP的默认值。
@@ -23,7 +24,7 @@ class EcsTransport {
      * @access  private
      * @var     integer     $connect_timeout
      */
-    var $connect_timeout = -1;
+    public $connect_timeout = -1;
 
     /**
      * 连接后，限定多少秒超时。－1表示采用PHP的默认值。此项仅当采用CURL库时启用。
@@ -31,7 +32,7 @@ class EcsTransport {
      * @access  private
      * @var     integer    $stream_timeout
      */
-    var $stream_timeout = -1;
+    public $stream_timeout = -1;
 
     /**
      * 是否使用CURL库来连接。false表示采用fsockopen进行连接。
@@ -39,7 +40,7 @@ class EcsTransport {
      * @access  private
      * @var     boolean     $use_curl
      */
-    var $use_curl = false;
+    public $use_curl = false;
 
     /**
      * 构造函数
@@ -51,7 +52,8 @@ class EcsTransport {
      * @param   boolean     $use_curl
      * @return  void
      */
-    function __construct($time_limit = -1, $connect_timeout = -1, $stream_timeout = -1, $use_curl = false) {
+    public function __construct($time_limit = -1, $connect_timeout = -1, $stream_timeout = -1, $use_curl = false)
+    {
         $this->time_limit = $time_limit;
         $this->connect_timeout = $connect_timeout;
         $this->stream_timeout = $stream_timeout;
@@ -69,7 +71,8 @@ class EcsTransport {
      * @return  array                       成功返回一维关联数组，形如array('header'=>'bar', 'body'=>'foo')，
      *                                      重大错误程序直接停止运行，否则返回false。
      */
-    function request($url, $params = '', $method = 'POST', $my_header = '') {
+    public function request($url, $params = '', $method = 'POST', $my_header = '')
+    {
         $fsock_exists = function_exists('fsockopen');
         $curl_exists = function_exists('curl_init');
 
@@ -91,7 +94,7 @@ class EcsTransport {
 
         /* 格式化将要发要送的参数 */
         if ($params && is_array($params)) {
-            foreach ($params AS $key => $value) {
+            foreach ($params as $key => $value) {
                 $temp_str .= '&' . $key . '=' . $value;
             }
             $params = preg_replace('/^&/', '', $temp_str);
@@ -124,7 +127,8 @@ class EcsTransport {
      * @return  array                       成功返回一维关联数组，形如array('header'=>'bar', 'body'=>'foo')，
      *                                      否则返回false。
      */
-    function use_socket($url, $params, $method, $my_header) {
+    public function use_socket($url, $params, $method, $my_header)
+    {
         $query = '';
         $auth = '';
         $content_type = '';
@@ -155,7 +159,7 @@ class EcsTransport {
 
         /* 格式化自定义头部信息 */
         if ($my_header && is_array($my_header)) {
-            foreach ($my_header AS $key => $value) {
+            foreach ($my_header as $key => $value) {
                 $temp_str .= $key . ': ' . $value . $crlf;
             }
             $my_header = $temp_str;
@@ -213,7 +217,8 @@ class EcsTransport {
      * @return  array                       成功返回一维关联数组，形如array('header'=>'bar', 'body'=>'foo')，
      *                                      失败返回false。
      */
-    function use_curl($url, $params, $method, $my_header) {
+    public function use_curl($url, $params, $method, $my_header)
+    {
         /* 开始一个新会话 */
         $curl_session = curl_init();
 
@@ -239,7 +244,7 @@ class EcsTransport {
 
         /* 格式化自定义头部信息 */
         if ($my_header && is_array($my_header)) {
-            foreach ($my_header AS $key => $value) {
+            foreach ($my_header as $key => $value) {
                 $header[] = $key . ': ' . $value;
             }
         }
@@ -295,7 +300,8 @@ class EcsTransport {
      * @author     http://www.cpaint.net/
      * @return     array
      */
-    function parse_raw_url($raw_url) {
+    public function parse_raw_url($raw_url)
+    {
         $retval = array();
         $raw_url = (string) $raw_url;
 
@@ -326,7 +332,8 @@ class EcsTransport {
      * @access     private
      * @return     string       用双引号引用的换行符
      */
-    function generate_crlf() {
+    public function generate_crlf()
+    {
         $crlf = '';
 
         if (strtoupper(substr(PHP_OS, 0, 3) === 'WIN')) {
@@ -339,7 +346,4 @@ class EcsTransport {
 
         return $crlf;
     }
-
 }
-
-?>

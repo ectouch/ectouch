@@ -40,5 +40,3 @@ $_LANG['dispose_succeed'] = '处理成功';
 
 $_LANG['mail_send_fail'] = '邮件发送失败，请检查邮件服务器设置后重新发送邮件。';
 $_LANG['remail'] = '重发邮件';
-
-?>

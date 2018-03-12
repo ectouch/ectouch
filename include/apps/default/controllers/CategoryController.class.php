@@ -17,7 +17,6 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class CategoryController extends CommonController
 {
-
     private $cat_id = 0; // 分类id
     private $children = '';
     private $brand = 0; // 品牌
@@ -78,10 +77,10 @@ class CategoryController extends CommonController
         $this->assign('goods_list', $goodslist);
         $this->pageLimit(url('index', array('id' => $this->cat_id, 'brand' => $this->brand, 'type' => $this->type, 'price_max' => $this->price_max, 'price_min' => $this->price_min, 'filter_attr' => $this->filter_attr_str, 'sort' => $this->sort, 'order' => $this->order, 'keywords' => I('request.keywords'))), $this->size);
         $this->assign('pager', $this->pageShow($count));
-		//当页面无数据时显示
-		if(empty($goodslist) && $this->page == 1 && empty($count)){
-			$this->assign("is_show",1);
-		}
+        //当页面无数据时显示
+        if (empty($goodslist) && $this->page == 1 && empty($count)) {
+            $this->assign("is_show", 1);
+        }
         /* 页面标题 */
         $page_info = get_page_title($this->cat_id);
         $this->assign('ur_here', $page_info['ur_here']);
@@ -180,9 +179,9 @@ class CategoryController extends CommonController
             } else {
                 setcookie('ECS[keywords]', $keyword, gmtime() + 3600 * 24 * 30);
             }
-        }elseif($keyword == '' && ($this->cat_id == 0) && I('request.filter_attr') == ""){
-			$this->assign('not_keyword', 1);
-		}
+        } elseif ($keyword == '' && ($this->cat_id == 0) && I('request.filter_attr') == "") {
+            $this->assign('not_keyword', 1);
+        }
     }
 
     /**
@@ -360,7 +359,7 @@ class CategoryController extends CommonController
         //最大最小值范围
         $this->assign('price_range', $row);
         // 切换价格区间 可点击的阶梯 比如 每点击-10或+10
-        if($row['min'] > 1000){
+        if ($row['min'] > 1000) {
             $range_step = 100;
         } else {
             $range_step = 10;
@@ -673,5 +672,4 @@ class CategoryController extends CommonController
     //     $res = $this->model->query($sql);
     //     return intval($res[0]['num']);
     // }
-
 }

@@ -9,20 +9,16 @@ define('IN_ECTOUCH', true);
 require(dirname(__FILE__) . '/includes/init.php');
 
 /* act操作项的初始化 */
-if (empty($_REQUEST['act']))
-{
+if (empty($_REQUEST['act'])) {
     $_REQUEST['act'] = 'list';
-}
-else
-{
+} else {
     $_REQUEST['act'] = trim($_REQUEST['act']);
 }
 
 /*------------------------------------------------------ */
 //-- 会员余额记录列表
 /*------------------------------------------------------ */
-if ($_REQUEST['act'] == 'list')
-{
+if ($_REQUEST['act'] == 'list') {
     /* 权限判断 */
     admin_priv('surplus_manage');
 
@@ -35,31 +31,28 @@ if ($_REQUEST['act'] == 'list')
            " WHERE enabled = 1 AND pay_code != 'cod' ORDER BY pay_id";
     $res = $db->query($sql);
 
-    while ($row = $db->fetchRow($res))
-    {
+    while ($row = $db->fetchRow($res)) {
         $payment[$row['pay_name']] = $row['pay_name'];
     }
 
     /* 模板赋值 */
-    if (isset($_REQUEST['process_type']))
-    {
+    if (isset($_REQUEST['process_type'])) {
         $smarty->assign('process_type_' . intval($_REQUEST['process_type']), 'selected="selected"');
     }
-    if (isset($_REQUEST['is_paid']))
-    {
+    if (isset($_REQUEST['is_paid'])) {
         $smarty->assign('is_paid_' . intval($_REQUEST['is_paid']), 'selected="selected"');
     }
-    $smarty->assign('ur_here',       $_LANG['09_user_account']);
-    $smarty->assign('id',            $user_id);
-    $smarty->assign('payment_list',  $payment);
-    $smarty->assign('action_link',   array('text' => $_LANG['surplus_add'], 'href'=>'user_account.php?act=add'));
+    $smarty->assign('ur_here', $_LANG['09_user_account']);
+    $smarty->assign('id', $user_id);
+    $smarty->assign('payment_list', $payment);
+    $smarty->assign('action_link', array('text' => $_LANG['surplus_add'], 'href'=>'user_account.php?act=add'));
 
     $list = account_list();
-    $smarty->assign('list',         $list['list']);
-    $smarty->assign('filter',       $list['filter']);
+    $smarty->assign('list', $list['list']);
+    $smarty->assign('filter', $list['filter']);
     $smarty->assign('record_count', $list['record_count']);
-    $smarty->assign('page_count',   $list['page_count']);
-    $smarty->assign('full_page',    1);
+    $smarty->assign('page_count', $list['page_count']);
+    $smarty->assign('full_page', 1);
 
     assign_query_info();
     $smarty->display('user_account_list.htm');
@@ -68,8 +61,7 @@ if ($_REQUEST['act'] == 'list')
 /*------------------------------------------------------ */
 //-- 添加/编辑会员余额页面
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit')
-{
+elseif ($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit') {
     admin_priv('surplus_manage'); //权限判断
 
     $ur_here  = ($_REQUEST['act'] == 'add') ? $_LANG['surplus_add'] : $_LANG['surplus_edit'];
@@ -83,13 +75,11 @@ elseif ($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit')
            " WHERE enabled = 1 AND pay_code != 'cod' ORDER BY pay_id";
     $res = $db->query($sql);
 
-    while ($row = $db->fetchRow($res))
-    {
+    while ($row = $db->fetchRow($res)) {
         $payment[$row['pay_name']] = $row['pay_name'];
     }
 
-    if ($_REQUEST['act'] == 'edit')
-    {
+    if ($_REQUEST['act'] == 'edit') {
         /* 取得余额信息 */
         $user_account = $db->getRow("SELECT * FROM " .$ecs->table('user_account') . " WHERE id = '$id'");
 
@@ -99,26 +89,21 @@ elseif ($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit')
         /* 取得会员名称 */
         $sql = "SELECT user_name FROM " .$ecs->table('users'). " WHERE user_id = '$user_account[user_id]'";
         $user_name = $db->getOne($sql);
-    }
-    else
-    {
+    } else {
         $surplus_type = '';
         $user_name    = '';
     }
 
     /* 模板赋值 */
-    $smarty->assign('ur_here',          $ur_here);
-    $smarty->assign('form_act',         $form_act);
-    $smarty->assign('payment_list',     $payment);
-    $smarty->assign('action',           $_REQUEST['act']);
-    $smarty->assign('user_surplus',     $user_account);
-    $smarty->assign('user_name',        $user_name);
-    if ($_REQUEST['act'] == 'add')
-    {
+    $smarty->assign('ur_here', $ur_here);
+    $smarty->assign('form_act', $form_act);
+    $smarty->assign('payment_list', $payment);
+    $smarty->assign('action', $_REQUEST['act']);
+    $smarty->assign('user_surplus', $user_account);
+    $smarty->assign('user_name', $user_name);
+    if ($_REQUEST['act'] == 'add') {
         $href = 'user_account.php?act=list';
-    }
-    else
-    {
+    } else {
         $href = 'user_account.php?act=list&' . list_link_postfix();
     }
     $smarty->assign('action_link', array('href' => $href, 'text' => $_LANG['09_user_account']));
@@ -130,8 +115,7 @@ elseif ($_REQUEST['act'] == 'add' || $_REQUEST['act'] == 'edit')
 /*------------------------------------------------------ */
 //-- 添加/编辑会员余额的处理部分
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
-{
+elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update') {
     /* 权限判断 */
     admin_priv('surplus_manage');
 
@@ -148,39 +132,32 @@ elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
     $user_id = $db->getOne("SELECT user_id FROM " .$ecs->table('users'). " WHERE user_name = '$user_name'");
 
     /* 此会员是否存在 */
-    if ($user_id == 0)
-    {
+    if ($user_id == 0) {
         $link[] = array('text' => $_LANG['go_back'], 'href'=>'javascript:history.back(-1)');
         sys_msg($_LANG['username_not_exist'], 0, $link);
     }
 
     /* 退款，检查余额是否足够 */
-    if ($process_type == 1)
-    {
+    if ($process_type == 1) {
         $user_account = get_user_surplus($user_id);
 
         /* 如果扣除的余额多于此会员拥有的余额，提示 */
-        if ($amount > $user_account)
-        {
+        if ($amount > $user_account) {
             $link[] = array('text' => $_LANG['go_back'], 'href'=>'javascript:history.back(-1)');
             sys_msg($_LANG['surplus_amount_error'], 0, $link);
         }
     }
 
-    if ($_REQUEST['act'] == 'insert')
-    {
+    if ($_REQUEST['act'] == 'insert') {
         /* 入库的操作 */
-        if ($process_type == 1)
-        {
+        if ($process_type == 1) {
             $amount = (-1) * $amount;
         }
         $sql = "INSERT INTO " .$ecs->table('user_account').
                " VALUES ('', '$user_id', '$_SESSION[admin_name]', '$amount', '".gmtime()."', '".gmtime()."', '$admin_note', '$user_note', '$process_type', '$payment', '$is_paid')";
         $db->query($sql);
         $id = $db->insert_id();
-    }
-    else
-    {
+    } else {
         /* 更新数据表 */
         $sql = "UPDATE " .$ecs->table('user_account'). " SET ".
                "admin_note   = '$admin_note', ".
@@ -191,16 +168,14 @@ elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
     }
 
     // 更新会员余额数量
-    if ($is_paid == 1)
-    {
+    if ($is_paid == 1) {
         $change_desc = $amount > 0 ? $_LANG['surplus_type_0'] : $_LANG['surplus_type_1'];
         $change_type = $amount > 0 ? ACT_SAVING : ACT_DRAWING;
         log_account_change($user_id, $amount, 0, 0, 0, $change_desc, $change_type);
     }
 
     //如果是预付款并且未确认，向pay_log插入一条记录
-    if ($process_type == 0 && $is_paid == 0)
-    {
+    if ($process_type == 0 && $is_paid == 0) {
         include_once(BASE_PATH . 'helpers/order_helper.php');
 
         /* 取支付方式信息 */
@@ -218,22 +193,16 @@ elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
     }
 
     /* 记录管理员操作 */
-    if ($_REQUEST['act'] == 'update')
-    {
+    if ($_REQUEST['act'] == 'update') {
         admin_log($user_name, 'edit', 'user_surplus');
-    }
-    else
-    {
+    } else {
         admin_log($user_name, 'add', 'user_surplus');
     }
 
     /* 提示信息 */
-    if ($_REQUEST['act'] == 'insert')
-    {
+    if ($_REQUEST['act'] == 'insert') {
         $href = 'user_account.php?act=list';
-    }
-    else
-    {
+    } else {
         $href = 'user_account.php?act=list&' . list_link_postfix();
     }
     $link[0]['text'] = $_LANG['back_list'];
@@ -248,8 +217,7 @@ elseif ($_REQUEST['act'] == 'insert' || $_REQUEST['act'] == 'update')
 /*------------------------------------------------------ */
 //-- 审核会员余额页面
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'check')
-{
+elseif ($_REQUEST['act'] == 'check') {
     /* 检查权限 */
     admin_priv('surplus_manage');
 
@@ -257,8 +225,7 @@ elseif ($_REQUEST['act'] == 'check')
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
     /* 如果参数不合法，返回 */
-    if ($id == 0)
-    {
+    if ($id == 0) {
         ecs_header("Location: user_account.php?act=list\n");
         exit;
     }
@@ -269,20 +236,13 @@ elseif ($_REQUEST['act'] == 'check')
     $account['add_time'] = local_date($_CFG['time_format'], $account['add_time']);
 
     //余额类型:预付款，退款申请，购买商品，取消订单
-    if ($account['process_type'] == 0)
-    {
+    if ($account['process_type'] == 0) {
         $process_type = $_LANG['surplus_type_0'];
-    }
-    elseif ($account['process_type'] == 1)
-    {
+    } elseif ($account['process_type'] == 1) {
         $process_type = $_LANG['surplus_type_1'];
-    }
-    elseif ($account['process_type'] == 2)
-    {
+    } elseif ($account['process_type'] == 2) {
         $process_type = $_LANG['surplus_type_2'];
-    }
-    else
-    {
+    } else {
         $process_type = $_LANG['surplus_type_3'];
     }
 
@@ -290,13 +250,13 @@ elseif ($_REQUEST['act'] == 'check')
     $user_name = $db->getOne($sql);
 
     /* 模板赋值 */
-    $smarty->assign('ur_here',      $_LANG['check']);
+    $smarty->assign('ur_here', $_LANG['check']);
     $account['user_note'] = htmlspecialchars($account['user_note']);
-    $smarty->assign('surplus',      $account);
+    $smarty->assign('surplus', $account);
     $smarty->assign('process_type', $process_type);
-    $smarty->assign('user_name',    $user_name);
-    $smarty->assign('id',           $id);
-    $smarty->assign('action_link',  array('text' => $_LANG['09_user_account'],
+    $smarty->assign('user_name', $user_name);
+    $smarty->assign('id', $id);
+    $smarty->assign('action_link', array('text' => $_LANG['09_user_account'],
     'href'=>'user_account.php?act=list&' . list_link_postfix()));
 
     /* 页面显示 */
@@ -307,8 +267,7 @@ elseif ($_REQUEST['act'] == 'check')
 /*------------------------------------------------------ */
 //-- 更新会员余额的状态
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'action')
-{
+elseif ($_REQUEST['act'] == 'action') {
     /* 检查权限 */
     admin_priv('surplus_manage');
 
@@ -318,8 +277,7 @@ elseif ($_REQUEST['act'] == 'action')
     $admin_note = isset($_POST['admin_note']) ? trim($_POST['admin_note'])       : '';
 
     /* 如果参数不合法，返回 */
-    if ($id == 0 || empty($admin_note))
-    {
+    if ($id == 0 || empty($admin_note)) {
         ecs_header("Location: user_account.php?act=list\n");
         exit;
     }
@@ -330,17 +288,14 @@ elseif ($_REQUEST['act'] == 'action')
     $amount  = $account['amount'];
 
     //如果状态为未确认
-    if ($account['is_paid'] == 0)
-    {
+    if ($account['is_paid'] == 0) {
         //如果是退款申请, 并且已完成,更新此条记录,扣除相应的余额
-        if ($is_paid == '1' && $account['process_type'] == '1')
-        {
+        if ($is_paid == '1' && $account['process_type'] == '1') {
             $user_account = get_user_surplus($account['user_id']);
             $fmt_amount   = str_replace('-', '', $amount);
 
             //如果扣除的余额多于此会员拥有的余额，提示
-            if ($fmt_amount > $user_account)
-            {
+            if ($fmt_amount > $user_account) {
                 $link[] = array('text' => $_LANG['go_back'], 'href'=>'javascript:history.back(-1)');
                 sys_msg($_LANG['surplus_amount_error'], 0, $link);
             }
@@ -349,18 +304,13 @@ elseif ($_REQUEST['act'] == 'action')
 
             //更新会员余额数量
             log_account_change($account['user_id'], $amount, 0, 0, 0, $_LANG['surplus_type_1'], ACT_DRAWING);
-        }
-        elseif ($is_paid == '1' && $account['process_type'] == '0')
-        {
+        } elseif ($is_paid == '1' && $account['process_type'] == '0') {
             //如果是预付款，并且已完成, 更新此条记录，增加相应的余额
             update_user_account($id, $amount, $admin_note, $is_paid);
 
             //更新会员余额数量
             log_account_change($account['user_id'], $amount, 0, 0, 0, $_LANG['surplus_type_0'], ACT_SAVING);
-
-        }
-        elseif ($is_paid == '0')
-        {
+        } elseif ($is_paid == '0') {
             /* 否则更新信息 */
             $sql = "UPDATE " .$ecs->table('user_account'). " SET ".
                    "admin_user    = '$_SESSION[admin_name]', ".
@@ -383,13 +333,12 @@ elseif ($_REQUEST['act'] == 'action')
 /*------------------------------------------------------ */
 //-- ajax帐户信息列表
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'query')
-{
+elseif ($_REQUEST['act'] == 'query') {
     $list = account_list();
-    $smarty->assign('list',         $list['list']);
-    $smarty->assign('filter',       $list['filter']);
+    $smarty->assign('list', $list['list']);
+    $smarty->assign('filter', $list['filter']);
     $smarty->assign('record_count', $list['record_count']);
-    $smarty->assign('page_count',   $list['page_count']);
+    $smarty->assign('page_count', $list['page_count']);
 
     $sort_flag  = sort_flag($list['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
@@ -399,8 +348,7 @@ elseif ($_REQUEST['act'] == 'query')
 /*------------------------------------------------------ */
 //-- ajax删除一条信息
 /*------------------------------------------------------ */
-elseif ($_REQUEST['act'] == 'remove')
-{
+elseif ($_REQUEST['act'] == 'remove') {
     /* 检查权限 */
     check_authz_json('surplus_manage');
     $id = @intval($_REQUEST['id']);
@@ -409,15 +357,12 @@ elseif ($_REQUEST['act'] == 'remove')
            " WHERE u.user_id = ua.user_id AND ua.id = '$id' ";
     $user_name = $db->getOne($sql);
     $sql = "DELETE FROM " . $ecs->table('user_account') . " WHERE id = '$id'";
-    if ($db->query($sql, 'SILENT'))
-    {
-       admin_log(addslashes($user_name), 'remove', 'user_surplus');
-       $url = 'user_account.php?act=query&' . str_replace('act=remove', '', $_SERVER['QUERY_STRING']);
-       ecs_header("Location: $url\n");
-       exit;
-    }
-    else
-    {
+    if ($db->query($sql, 'SILENT')) {
+        admin_log(addslashes($user_name), 'remove', 'user_surplus');
+        $url = 'user_account.php?act=query&' . str_replace('act=remove', '', $_SERVER['QUERY_STRING']);
+        ecs_header("Location: $url\n");
+        exit;
+    } else {
         make_json_error($db->error());
     }
 }
@@ -472,13 +417,11 @@ function update_user_account($id, $amount, $admin_note, $is_paid)
 function account_list()
 {
     $result = get_filter();
-    if ($result === false)
-    {
+    if ($result === false) {
         /* 过滤列表 */
         $filter['user_id'] = !empty($_REQUEST['user_id']) ? intval($_REQUEST['user_id']) : 0;
         $filter['keywords'] = empty($_REQUEST['keywords']) ? '' : trim($_REQUEST['keywords']);
-        if (isset($_REQUEST['is_ajax']) && $_REQUEST['is_ajax'] == 1)
-        {
+        if (isset($_REQUEST['is_ajax']) && $_REQUEST['is_ajax'] == 1) {
             $filter['keywords'] = json_str_iconv($filter['keywords']);
         }
 
@@ -491,47 +434,39 @@ function account_list()
         $filter['end_date'] = empty($_REQUEST['end_date']) ? '' : (local_strtotime($_REQUEST['end_date']) + 86400);
 
         $where = " WHERE 1 ";
-        if ($filter['user_id'] > 0)
-        {
+        if ($filter['user_id'] > 0) {
             $where .= " AND ua.user_id = '$filter[user_id]' ";
         }
-        if ($filter['process_type'] != -1)
-        {
+        if ($filter['process_type'] != -1) {
             $where .= " AND ua.process_type = '$filter[process_type]' ";
-        }
-        else
-        {
+        } else {
             $where .= " AND ua.process_type " . db_create_in(array(SURPLUS_SAVE, SURPLUS_RETURN));
         }
-        if ($filter['payment'])
-        {
+        if ($filter['payment']) {
             $where .= " AND ua.payment = '$filter[payment]' ";
         }
-        if ($filter['is_paid'] != -1)
-        {
+        if ($filter['is_paid'] != -1) {
             $where .= " AND ua.is_paid = '$filter[is_paid]' ";
         }
 
-        if ($filter['keywords'])
-        {
+        if ($filter['keywords']) {
             $where .= " AND u.user_name LIKE '%" . mysql_like_quote($filter['keywords']) . "%'";
             $sql = "SELECT COUNT(*) FROM " .$GLOBALS['ecs']->table('user_account'). " AS ua, ".
                    $GLOBALS['ecs']->table('users') . " AS u " . $where;
         }
         /*　时间过滤　*/
-        if (!empty($filter['start_date']) && !empty($filter['end_date']))
-        {
+        if (!empty($filter['start_date']) && !empty($filter['end_date'])) {
             $where .= "AND paid_time >= " . $filter['start_date']. " AND paid_time < '" . $filter['end_date'] . "'";
         }
         
-         $sql = "SELECT COUNT(*) FROM " .$GLOBALS['ecs']->table('user_account'). " AS ua   LEFT JOIN ".
-                   $GLOBALS['ecs']->table('users') . " AS u on ua.user_id = u.user_id " . $where;    
+        $sql = "SELECT COUNT(*) FROM " .$GLOBALS['ecs']->table('user_account'). " AS ua   LEFT JOIN ".
+                   $GLOBALS['ecs']->table('users') . " AS u on ua.user_id = u.user_id " . $where;
          
       
-         $filter['record_count'] =  intval($GLOBALS['db']->getOne($sql))  ;    
+        $filter['record_count'] =  intval($GLOBALS['db']->getOne($sql))  ;
        
         /* 分页大小 */
-        $filter = page_and_size($filter);     
+        $filter = page_and_size($filter);
 
         /* 查询数据 */
         $sql  = 'SELECT ua.*, u.user_name FROM ' .
@@ -540,24 +475,19 @@ function account_list()
             $where . "ORDER by " . $filter['sort_by'] . " " .$filter['sort_order']. " LIMIT ".$filter['start'].", ".$filter['page_size'];
    
         $filter['keywords'] = stripslashes($filter['keywords']);
-        set_filter($filter, $sql);    
-    }
-    else
-    {
+        set_filter($filter, $sql);
+    } else {
         $sql    = $result['sql'];
         $filter = $result['filter'];
     }
       
-    $list = $GLOBALS['db']->getAll($sql);  
-    foreach ($list AS $key => $value)
-    {
+    $list = $GLOBALS['db']->getAll($sql);
+    foreach ($list as $key => $value) {
         $list[$key]['surplus_amount']       = price_format(abs($value['amount']), false);
         $list[$key]['add_date']             = local_date($GLOBALS['_CFG']['time_format'], $value['add_time']);
         $list[$key]['process_type_name']    = $GLOBALS['_LANG']['surplus_type_' . $value['process_type']];
-     }     
+    }
     $arr = array('list' => $list, 'filter' => $filter, 'page_count' => $filter['page_count'], 'record_count' => $filter['record_count']);
    
     return $arr;
 }
-
-?>

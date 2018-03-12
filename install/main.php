@@ -1,23 +1,23 @@
 <?php
 //网站域名
 $site_url = trim($_POST['siteurl']);
-if($independent){
-	$username = trim($_POST['manager']);
-	$password = trim($_POST['manager_pwd']);
-	//网站名称
-	$site_name = addslashes(trim($_POST['sitename']));
+if ($independent) {
+    $username = trim($_POST['manager']);
+    $password = trim($_POST['manager_pwd']);
+    //网站名称
+    $site_name = addslashes(trim($_POST['sitename']));
 
-	//描述
-	$seo_description = trim($_POST['sitedescription']);
-	//关键词
-	$seo_keywords = trim($_POST['sitekeywords']);
-	//更新配置信息
-	mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '$site_name' WHERE code='shop_name'");
-	mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '$site_name' WHERE code='shop_title' ");
-	mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '$seo_description' WHERE code='shop_desc'");
-	mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '$seo_keywords' WHERE code='shop_keywords'");
-	mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = 'default' WHERE code='template'");
-	mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '".time()."' WHERE code='install_date'");
+    //描述
+    $seo_description = trim($_POST['sitedescription']);
+    //关键词
+    $seo_keywords = trim($_POST['sitekeywords']);
+    //更新配置信息
+    mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '$site_name' WHERE code='shop_name'");
+    mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '$site_name' WHERE code='shop_title' ");
+    mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '$seo_description' WHERE code='shop_desc'");
+    mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '$seo_keywords' WHERE code='shop_keywords'");
+    mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = 'default' WHERE code='template'");
+    mysqli_query($conn, "UPDATE `{$dbPrefix}shop_config` SET  `value` = '".time()."' WHERE code='install_date'");
 }
 
 //插入微信菜单
@@ -48,18 +48,18 @@ $strConfig = str_replace('#DB_PORT#', $dbPort, $strConfig);
 $strConfig = str_replace('#DB_PREFIX#', $dbPrefix, $strConfig);
 @file_put_contents(ROOT_PATH . $config['dbConfig'], $strConfig);
 
-if($independent){
-	//插入管理员
-	$verify = rand(1000, 9999); //生成随机认证码
-	$time = time();
-	$ip = get_client_ip();
-	$password = md5(md5($password).$verify);
-	$email = trim($_POST['manager_email']);
-	$query = "INSERT INTO `{$dbPrefix}admin_user` (user_name, password, ec_salt, email, add_time, last_ip, action_list) VALUES ('{$username}', '{$password}', '{$verify}', '{$email}', '{$time}', '{$ip}', 'all')";
-	if(mysqli_query($conn, $query)){
-		return array('status'=>2,'info'=>'成功添加管理员<br />成功写入配置文件<br>安装完成...');
-	}
-}else{
-	return array('status'=>2,'info'=>'成功写入配置文件<br>安装完成...');
+if ($independent) {
+    //插入管理员
+    $verify = rand(1000, 9999); //生成随机认证码
+    $time = time();
+    $ip = get_client_ip();
+    $password = md5(md5($password).$verify);
+    $email = trim($_POST['manager_email']);
+    $query = "INSERT INTO `{$dbPrefix}admin_user` (user_name, password, ec_salt, email, add_time, last_ip, action_list) VALUES ('{$username}', '{$password}', '{$verify}', '{$email}', '{$time}', '{$ip}', 'all')";
+    if (mysqli_query($conn, $query)) {
+        return array('status'=>2,'info'=>'成功添加管理员<br />成功写入配置文件<br>安装完成...');
+    }
+} else {
+    return array('status'=>2,'info'=>'成功写入配置文件<br>安装完成...');
 }
 return array('status'=>0,'info'=>'安装失败...');

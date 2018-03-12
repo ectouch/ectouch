@@ -76,5 +76,3 @@ $_LANG['js_languages']['is_leafcat'] = '您选定的分类是一个末级分类�
 $_LANG['js_languages']['not_leafcat'] = '您选定的分类不是一个末级分类。\r\n商品的分类转移只能在末级分类之间才可以操作。';
 $_LANG['js_languages']['filter_attr_not_repeated'] = '筛选属性不可重复';
 $_LANG['js_languages']['filter_attr_not_selected'] = '请选择筛选属性';
-
-?>

@@ -16,15 +16,18 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class PublicController extends CommonController {
+class PublicController extends CommonController
+{
 
     // 验证码
-    public function captcha() {
+    public function captcha()
+    {
         Image::buildImageVerify();
     }
 
     // 地区筛选
-    public function region() {
+    public function region()
+    {
         $type = I('request.type', 0, 'intval');
         $parent = I('request.parent', 0, 'intval');
 
@@ -35,5 +38,4 @@ class PublicController extends CommonController {
 
         echo json_encode($arr);
     }
-
 }

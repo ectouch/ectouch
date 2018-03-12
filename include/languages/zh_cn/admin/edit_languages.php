@@ -27,5 +27,3 @@ $_LANG['language_files']['user'] = '会员中心语言包';
 /* 操作描述 */
 $_LANG['handle_tips'] = '请输入您需要修改的语言关键字!';
 $_LANG['file_attribute'] = '当前语言包文件没有可读写的权限！这样您将不能进行语言项的编辑操作。';
-
-?>

@@ -18,12 +18,11 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class CommonController extends BaseController
 {
+    protected static $user = null;
 
-    protected static $user = NULL;
+    protected static $sess = null;
 
-    protected static $sess = NULL;
-
-    protected static $view = NULL;
+    protected static $view = null;
 
     protected $subscribe = 0;
     protected $custom = 0;
@@ -54,17 +53,17 @@ class CommonController extends BaseController
         assign_template();
     }
 
-    static function user()
+    public static function user()
     {
         return self::$user;
     }
 
-    static function sess()
+    public static function sess()
     {
         return self::$sess;
     }
 
-    static function view()
+    public static function view()
     {
         return self::$view;
     }
@@ -172,9 +171,9 @@ class CommonController extends BaseController
         }
 
         if (!empty($_COOKIE['ECS']['keywords'])) {
-            $histroy = explode(',',$_COOKIE['ECS']['keywords']);
+            $histroy = explode(',', $_COOKIE['ECS']['keywords']);
             foreach ($histroy as $key=>$val) {
-                if($key < 10){
+                if ($key < 10) {
                     $histroy_list[$key] = $val;
                 }
             }
@@ -192,7 +191,7 @@ class CommonController extends BaseController
         }
 
         // 设置parent_id
-        session('parent_id',$_SESSION['user_id'] ? 0 : $_GET['u'] ? $_GET['u'] : 0);
+        session('parent_id', $_SESSION['user_id'] ? 0 : $_GET['u'] ? $_GET['u'] : 0);
     }
 
     /**
@@ -206,7 +205,7 @@ class CommonController extends BaseController
 
         
 
-        if(class_exists('WechatController') && is_wechat_browser()){
+        if (class_exists('WechatController') && is_wechat_browser()) {
             //是否显示关注按钮
             // $condition['openid'] = !empty($_SESSION['openid']) ? $_SESSION['openid'] : 0;
             $condition['ect_uid'] = !empty($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
@@ -237,8 +236,8 @@ class CommonController extends BaseController
             $sql= "select cu.access_token,u.user_name from " . $this->model->pre . "connect_user as cu LEFT JOIN "  . $this->model->pre . "users as u on cu.user_id = u.user_id where open_id = '$openid' ";
             $user = $this->model->getRow($sql);
             if ($token == $user['access_token']) {
-            	ECTouch::user()->set_cookie($user['user_name']);
-            	ECTouch::user()->set_session($user['user_name']);
+                ECTouch::user()->set_cookie($user['user_name']);
+                ECTouch::user()->set_session($user['user_name']);
                 model('Users')->update_user_info();
             }
         }

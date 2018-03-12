@@ -9,8 +9,7 @@
 function update_user_info()
 {
     $global = getInstance();
-    if (!$_SESSION['user_id'])
-    {
+    if (!$_SESSION['user_id']) {
         return false;
     }
 
@@ -24,8 +23,7 @@ function update_user_info()
             ' LEFT JOIN ' .$global->ecs->table('bonus_type'). ' AS b'.
             " ON b.type_id = ub.bonus_type_id AND b.use_start_date <= '$time' AND b.use_end_date >= '$time' ".
             " WHERE u.user_id = '$_SESSION[user_id]'";
-    if ($row = $global->db->getRow($sql))
-    {
+    if ($row = $global->db->getRow($sql)) {
         /* 更新SESSION */
         $_SESSION['last_time']   = $row['last_login'];
         $_SESSION['last_ip']     = $row['last_ip'];
@@ -33,11 +31,9 @@ function update_user_info()
         $_SESSION['email']       = $row['email'];
 
         /*判断是否是特殊等级，可能后台把特殊会员组更改普通会员组*/
-        if($row['user_rank'] >0)
-        {
+        if ($row['user_rank'] >0) {
             $sql="SELECT special_rank from ".$global->ecs->table('user_rank')."where rank_id='$row[user_rank]'";
-            if($global->db->getOne($sql)==='0' || $global->db->getOne($sql)===null)
-            {   
+            if ($global->db->getOne($sql)==='0' || $global->db->getOne($sql)===null) {
                 $sql="update ".$global->ecs->table('users')."set user_rank='0' where user_id='$_SESSION[user_id]'";
                 $global->db->query($sql);
                 $row['user_rank']=0;
@@ -45,32 +41,23 @@ function update_user_info()
         }
 
         /* 取得用户等级和折扣 */
-        if ($row['user_rank'] == 0)
-        {
+        if ($row['user_rank'] == 0) {
             // 非特殊等级，根据等级积分计算用户等级（注意：不包括特殊等级）
             $sql = 'SELECT rank_id, discount FROM ' . $global->ecs->table('user_rank') . " WHERE special_rank = '0' AND min_points <= " . intval($row['rank_points']) . ' AND max_points > ' . intval($row['rank_points']);
-            if ($row = $global->db->getRow($sql))
-            {
+            if ($row = $global->db->getRow($sql)) {
                 $_SESSION['user_rank'] = $row['rank_id'];
                 $_SESSION['discount']  = $row['discount'] / 100.00;
-            }
-            else
-            {
+            } else {
                 $_SESSION['user_rank'] = 0;
                 $_SESSION['discount']  = 1;
             }
-        }
-        else
-        {
+        } else {
             // 特殊等级
             $sql = 'SELECT rank_id, discount FROM ' . $global->ecs->table('user_rank') . " WHERE rank_id = '$row[user_rank]'";
-            if ($row = $global->db->getRow($sql))
-            {
+            if ($row = $global->db->getRow($sql)) {
                 $_SESSION['user_rank'] = $row['rank_id'];
                 $_SESSION['discount']  = $row['discount'] / 100.00;
-            }
-            else
-            {
+            } else {
                 $_SESSION['user_rank'] = 0;
                 $_SESSION['discount']  = 1;
             }
@@ -97,8 +84,7 @@ function update_user_info()
 function get_user_info($id=0)
 {
     $global = getInstance();
-    if ($id == 0)
-    {
+    if ($id == 0) {
         $id = $_SESSION['user_id'];
     }
     $time = date('Y-m-d');
@@ -127,12 +113,9 @@ function assign_ur_here($cat = 0, $str = '')
 {
     /* 判断是否重写，取得文件名 */
     $cur_url = basename(PHP_SELF);
-    if (intval(C('rewrite')))
-    {
-        $filename = strpos($cur_url,'-') ? substr($cur_url, 0, strpos($cur_url,'-')) : substr($cur_url, 0, -4);
-    }
-    else
-    {
+    if (intval(C('rewrite'))) {
+        $filename = strpos($cur_url, '-') ? substr($cur_url, 0, strpos($cur_url, '-')) : substr($cur_url, 0, -4);
+    } else {
         $filename = substr($cur_url, 0, -4);
     }
 
@@ -141,48 +124,36 @@ function assign_ur_here($cat = 0, $str = '')
     $ur_here    = '<a href=".">' . L('home') . '</a>';
 
     /* 根据文件名分别处理中间的部分 */
-    if ($filename != 'index')
-    {
+    if ($filename != 'index') {
         /* 处理有分类的 */
-        if (in_array($filename, array('category', 'goods', 'article_cat', 'article', 'brand')))
-        {
+        if (in_array($filename, array('category', 'goods', 'article_cat', 'article', 'brand'))) {
             /* 商品分类或商品 */
-            if ('category' == $filename || 'goods' == $filename || 'brand' == $filename)
-            {
-                if ($cat > 0)
-                {
+            if ('category' == $filename || 'goods' == $filename || 'brand' == $filename) {
+                if ($cat > 0) {
                     $cat_arr = get_parent_cats($cat);
 
                     $key     = 'cid';
                     $type    = 'category';
-                }
-                else
-                {
+                } else {
                     $cat_arr = array();
                 }
             }
             /* 文章分类或文章 */
-            elseif ('article_cat' == $filename || 'article' == $filename)
-            {
-                if ($cat > 0)
-                {
+            elseif ('article_cat' == $filename || 'article' == $filename) {
+                if ($cat > 0) {
                     $cat_arr = get_article_parent_cats($cat);
 
                     $key  = 'acid';
                     $type = 'article_cat';
-                }
-                else
-                {
+                } else {
                     $cat_arr = array();
                 }
             }
 
             /* 循环分类 */
-            if (!empty($cat_arr))
-            {
+            if (!empty($cat_arr)) {
                 krsort($cat_arr);
-                foreach ($cat_arr AS $val)
-                {
+                foreach ($cat_arr as $val) {
                     $page_title = htmlspecialchars($val['cat_name']) . '_' . $page_title;
                     $args       = array($key => $val['cat_id']);
                     $ur_here   .= ' <code>&gt;</code> <a href="' . build_uri($type, $args, $val['cat_name']) . '">' .
@@ -191,42 +162,36 @@ function assign_ur_here($cat = 0, $str = '')
             }
         }
         /* 处理无分类的 */
-        else
-        {
+        else {
             /* 团购 */
-            if ('group_buy' == $filename)
-            {
+            if ('group_buy' == $filename) {
                 $page_title = L('group_buy_goods') . '_' . $page_title;
                 $args       = array('gbid' => '0');
                 $ur_here   .= ' <code>&gt;</code> <a href="group_buy.php">' .
                                 L('group_buy_goods') . '</a>';
             }
             /* 拍卖 */
-            elseif ('auction' == $filename)
-            {
+            elseif ('auction' == $filename) {
                 $page_title = L('auction') . '_' . $page_title;
                 $args       = array('auid' => '0');
                 $ur_here   .= ' <code>&gt;</code> <a href="auction.php">' .
                                 L('auction') . '</a>';
             }
             /* 夺宝 */
-            elseif ('snatch' == $filename)
-            {
+            elseif ('snatch' == $filename) {
                 $page_title = L('snatch') . '_' . $page_title;
                 $args       = array('id' => '0');
                 $ur_here   .= ' <code> &gt; </code><a href="snatch.php">' .                                 L('snatch_list') . '</a>';
             }
             /* 批发 */
-            elseif ('wholesale' == $filename)
-            {
+            elseif ('wholesale' == $filename) {
                 $page_title = L('wholesale') . '_' . $page_title;
                 $args       = array('wsid' => '0');
                 $ur_here   .= ' <code>&gt;</code> <a href="wholesale.php">' .
                                 L('wholesale') . '</a>';
             }
             /* 积分兑换 */
-            elseif ('exchange' == $filename)
-            {
+            elseif ('exchange' == $filename) {
                 $page_title = L('exchange') . '_' . $page_title;
                 $args       = array('wsid' => '0');
                 $ur_here   .= ' <code>&gt;</code> <a href="exchange.php">' .
@@ -237,8 +202,7 @@ function assign_ur_here($cat = 0, $str = '')
     }
 
     /* 处理最后一部分 */
-    if (!empty($str))
-    {
+    if (!empty($str)) {
         $page_title  = $str . '_' . $page_title;
         $ur_here    .= ' <code>&gt;</code> ' . $str;
     }
@@ -257,27 +221,22 @@ function assign_ur_here($cat = 0, $str = '')
 function get_parent_cats($cat)
 {
     $global = getInstance();
-    if ($cat == 0)
-    {
+    if ($cat == 0) {
         return array();
     }
 
     $arr = $global->db->GetAll('SELECT cat_id, cat_name, parent_id FROM ' . $global->ecs->table('category'));
 
-    if (empty($arr))
-    {
+    if (empty($arr)) {
         return array();
     }
 
     $index = 0;
     $cats  = array();
 
-    while (1)
-    {
-        foreach ($arr AS $row)
-        {
-            if ($cat == $row['cat_id'])
-            {
+    while (1) {
+        foreach ($arr as $row) {
+            if ($cat == $row['cat_id']) {
                 $cat = $row['parent_id'];
 
                 $cats[$index]['cat_id']   = $row['cat_id'];
@@ -288,8 +247,7 @@ function get_parent_cats($cat)
             }
         }
 
-        if ($index == 0 || $cat == 0)
-        {
+        if ($index == 0 || $cat == 0) {
             break;
         }
     }
@@ -309,8 +267,7 @@ function build_pagetitle($arr, $type = 'category')
 {
     $str = '';
 
-    foreach ($arr AS $val)
-    {
+    foreach ($arr as $val) {
         $str .= htmlspecialchars($val['cat_name']) . '_';
     }
 
@@ -330,10 +287,8 @@ function build_urhere($arr, $type = 'category')
     krsort($arr);
 
     $str = '';
-    foreach ($arr AS $val)
-    {
-        switch ($type)
-        {
+    foreach ($arr as $val) {
+        switch ($type) {
             case 'category':
             case 'brand':
                 $args = array('cid' => $val['cat_id']);
@@ -363,10 +318,8 @@ function assign_dynamic($tmp)
         " WHERE filename = '$tmp' AND type > 0 AND remarks ='' AND theme='" . C('template') . "'";
     $res = $global->db->getAll($sql);
 
-   foreach ($res AS $row)
-    {
-        switch ($row['type'])
-        {
+    foreach ($res as $row) {
+        switch ($row['type']) {
             case 1:
                 /* 分类下的商品 */
                 $global->tpl->assign('goods_cat_' . $row['id'], assign_cat_goods($row['id'], $row['number']));
@@ -429,8 +382,7 @@ function get_shop_help()
     $res = $global->db->getAll($sql);
 
     $arr = array();
-    foreach ($res AS $key => $row)
-    {
+    foreach ($res as $key => $row) {
         $arr[$row['cat_id']]['cat_id']                       = build_uri('article_cat', array('acid'=> $row['cat_id']), $row['cat_name']);
         $arr[$row['cat_id']]['cat_name']                     = $row['cat_name'];
         $arr[$row['cat_id']]['article'][$key]['article_id']  = $row['article_id'];
@@ -461,9 +413,23 @@ function get_shop_help()
  * @param   string  $price_max      最高价格
  * @return  void
  */
-function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1,
-                        $keywords = '', $brand = 0, $price_min = 0, $price_max = 0, $display_type = 'list', $filter_attr='', $url_format='', $sch_array='')
-{
+function assign_pager(
+    $app,
+    $cat,
+    $record_count,
+    $size,
+    $sort,
+    $order,
+    $page = 1,
+                        $keywords = '',
+    $brand = 0,
+    $price_min = 0,
+    $price_max = 0,
+    $display_type = 'list',
+    $filter_attr='',
+    $url_format='',
+    $sch_array=''
+) {
     $global = getInstance();
     $sch = array('keywords'  => $keywords,
                  'sort'      => $sort,
@@ -477,8 +443,7 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
         );
 
     $page = intval($page);
-    if ($page < 1)
-    {
+    if ($page < 1) {
         $page = 1;
     }
 
@@ -492,8 +457,7 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
     $pager['page_count']   = $page_count;
     $pager['display']      = $display_type;
 
-    switch ($app)
-    {
+    switch ($app) {
         case 'category':
             $uri_args = array('cid' => $cat, 'bid' => $brand, 'price_min'=>$price_min, 'price_max'=>$price_max, 'filter_attr'=>$filter_attr, 'sort' => $sort, 'order' => $order, 'display' => $display_type);
             break;
@@ -515,17 +479,13 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
 
     $page_prev  = ($page > 1) ? $page - 1 : 1;
     $page_next  = ($page < $page_count) ? $page + 1 : $page_count;
-    if ($pager['styleid'] == 0)
-    {
-        if (!empty($url_format))
-        {
+    if ($pager['styleid'] == 0) {
+        if (!empty($url_format)) {
             $pager['page_first'] = $url_format . 1;
             $pager['page_prev']  = $url_format . $page_prev;
             $pager['page_next']  = $url_format . $page_next;
             $pager['page_last']  = $url_format . $page_count;
-        }
-        else
-        {
+        } else {
             $pager['page_first'] = build_uri($app, $uri_args, '', 1, $keywords);
             $pager['page_prev']  = build_uri($app, $uri_args, '', $page_prev, $keywords);
             $pager['page_next']  = build_uri($app, $uri_args, '', $page_next, $keywords);
@@ -533,76 +493,57 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
         }
         $pager['array']      = array();
 
-        for ($i = 1; $i <= $page_count; $i++)
-        {
+        for ($i = 1; $i <= $page_count; $i++) {
             $pager['array'][$i] = $i;
         }
-    }
-    else
-    {
+    } else {
         $_pagenum = 10;     // 显示的页码
         $_offset = 2;       // 当前页偏移值
         $_from = $_to = 0;  // 开始页, 结束页
-        if($_pagenum > $page_count)
-        {
+        if ($_pagenum > $page_count) {
             $_from = 1;
             $_to = $page_count;
-        }
-        else
-        {
+        } else {
             $_from = $page - $_offset;
             $_to = $_from + $_pagenum - 1;
-            if($_from < 1)
-            {
+            if ($_from < 1) {
                 $_to = $page + 1 - $_from;
                 $_from = 1;
-                if($_to - $_from < $_pagenum)
-                {
+                if ($_to - $_from < $_pagenum) {
                     $_to = $_pagenum;
                 }
-            }
-            elseif($_to > $page_count)
-            {
+            } elseif ($_to > $page_count) {
                 $_from = $page_count - $_pagenum + 1;
                 $_to = $page_count;
             }
         }
-        if (!empty($url_format))
-        {
+        if (!empty($url_format)) {
             $pager['page_first'] = ($page - $_offset > 1 && $_pagenum < $page_count) ? $url_format . 1 : '';
             $pager['page_prev']  = ($page > 1) ? $url_format . $page_prev : '';
             $pager['page_next']  = ($page < $page_count) ? $url_format . $page_next : '';
             $pager['page_last']  = ($_to < $page_count) ? $url_format . $page_count : '';
             $pager['page_kbd']  = ($_pagenum < $page_count) ? true : false;
             $pager['page_number'] = array();
-            for ($i=$_from;$i<=$_to;++$i)
-            {
+            for ($i=$_from;$i<=$_to;++$i) {
                 $pager['page_number'][$i] = $url_format . $i;
             }
-        }
-        else
-        {
+        } else {
             $pager['page_first'] = ($page - $_offset > 1 && $_pagenum < $page_count) ? build_uri($app, $uri_args, '', 1, $keywords) : '';
             $pager['page_prev']  = ($page > 1) ? build_uri($app, $uri_args, '', $page_prev, $keywords) : '';
             $pager['page_next']  = ($page < $page_count) ? build_uri($app, $uri_args, '', $page_next, $keywords) : '';
             $pager['page_last']  = ($_to < $page_count) ? build_uri($app, $uri_args, '', $page_count, $keywords) : '';
             $pager['page_kbd']  = ($_pagenum < $page_count) ? true : false;
             $pager['page_number'] = array();
-            for ($i=$_from;$i<=$_to;++$i)
-            {
+            for ($i=$_from;$i<=$_to;++$i) {
                 $pager['page_number'][$i] = build_uri($app, $uri_args, '', $i, $keywords);
             }
         }
     }
-    if (!empty($sch_array))
-    {
+    if (!empty($sch_array)) {
         $pager['search'] = $sch_array;
-    }
-    else
-    {
+    } else {
         $pager['search']['category'] = $cat;
-        foreach ($sch AS $key => $row)
-        {
+        foreach ($sch as $key => $row) {
             $pager['search'][$key] = $row;
         }
     }
@@ -625,22 +566,19 @@ function assign_pager($app, $cat, $record_count, $size, $sort, $order, $page = 1
 function get_pager($url, $param, $record_count, $page = 1, $size = 10)
 {
     $size = intval($size);
-    if ($size < 1)
-    {
+    if ($size < 1) {
         $size = 10;
     }
 
     $page = intval($page);
-    if ($page < 1)
-    {
+    if ($page < 1) {
         $page = 1;
     }
 
     $record_count = intval($record_count);
 
     $page_count = $record_count > 0 ? intval(ceil($record_count / $size)) : 1;
-    if ($page > $page_count)
-    {
+    if ($page > $page_count) {
         $page = $page_count;
     }
     /* 分页样式 */
@@ -651,9 +589,8 @@ function get_pager($url, $param, $record_count, $page = 1, $size = 10)
 
     /* 将参数合成url字串 */
     
-    $param_url = strstr($url,'?') ? '&' : '?';
-    foreach ($param AS $key => $value)
-    {
+    $param_url = strstr($url, '?') ? '&' : '?';
+    foreach ($param as $key => $value) {
         $param_url .= $key . '=' . $value . '&';
     }
 
@@ -664,43 +601,32 @@ function get_pager($url, $param, $record_count, $page = 1, $size = 10)
     $pager['record_count'] = $record_count;
     $pager['page_count']   = $page_count;
 
-    if ($pager['styleid'] == 0)
-    {
+    if ($pager['styleid'] == 0) {
         $pager['page_first']   = $url . $param_url . 'page=1';
         $pager['page_prev']    = $url . $param_url . 'page=' . $page_prev;
         $pager['page_next']    = $url . $param_url . 'page=' . $page_next;
         $pager['page_last']    = $url . $param_url . 'page=' . $page_count;
         $pager['array']  = array();
-        for ($i = 1; $i <= $page_count; $i++)
-        {
+        for ($i = 1; $i <= $page_count; $i++) {
             $pager['array'][$i] = $i;
         }
-    }
-    else
-    {
+    } else {
         $_pagenum = 10;     // 显示的页码
         $_offset = 2;       // 当前页偏移值
         $_from = $_to = 0;  // 开始页, 结束页
-        if($_pagenum > $page_count)
-        {
+        if ($_pagenum > $page_count) {
             $_from = 1;
             $_to = $page_count;
-        }
-        else
-        {
+        } else {
             $_from = $page - $_offset;
             $_to = $_from + $_pagenum - 1;
-            if($_from < 1)
-            {
+            if ($_from < 1) {
                 $_to = $page + 1 - $_from;
                 $_from = 1;
-                if($_to - $_from < $_pagenum)
-                {
+                if ($_to - $_from < $_pagenum) {
                     $_to = $_pagenum;
                 }
-            }
-            elseif($_to > $page_count)
-            {
+            } elseif ($_to > $page_count) {
                 $_from = $page_count - $_pagenum + 1;
                 $_to = $page_count;
             }
@@ -712,8 +638,7 @@ function get_pager($url, $param, $record_count, $page = 1, $size = 10)
         $pager['page_last']  = ($_to < $page_count) ? $url_format . $page_count : '';
         $pager['page_kbd']  = ($_pagenum < $page_count) ? true : false;
         $pager['page_number'] = array();
-        for ($i=$_from;$i<=$_to;++$i)
-        {
+        for ($i=$_from;$i<=$_to;++$i) {
             $pager['page_number'][$i] = $url_format . $i;
         }
     }
@@ -733,16 +658,13 @@ function get_vote($id = '')
 {
     $global = getInstance();
     /* 随机取得一个调查的主题 */
-    if (empty($id))
-    {
+    if (empty($id)) {
         $time = gmtime();
         $sql = 'SELECT vote_id, vote_name, can_multi, vote_count, RAND() AS rnd' .
                ' FROM ' . $global->ecs->table('vote') .
                " WHERE start_time <= '$time' AND end_time >= '$time' ".
                ' ORDER BY rnd LIMIT 1';
-    }
-    else
-    {
+    } else {
         $sql = 'SELECT vote_id, vote_name, can_multi, vote_count' .
                ' FROM ' . $global->ecs->table('vote').
                " WHERE vote_id = '$id'";
@@ -750,8 +672,7 @@ function get_vote($id = '')
 
     $vote_arr = $global->db->getRow($sql);
 
-    if ($vote_arr !== false && !empty($vote_arr))
-    {
+    if ($vote_arr !== false && !empty($vote_arr)) {
         /* 通过调查的ID,查询调查选项 */
         $sql_option = 'SELECT v.*, o.option_id, o.vote_id, o.option_name, o.option_count ' .
                       'FROM ' . $global->ecs->table('vote') . ' AS v, ' .
@@ -766,14 +687,10 @@ function get_vote($id = '')
 
         $arr = array();
         $count = 100;
-        foreach ($res AS $idx => $row)
-        {
-            if ($option_num > 0 && $idx == count($res) - 1)
-            {
+        foreach ($res as $idx => $row) {
+            if ($option_num > 0 && $idx == count($res) - 1) {
                 $percent = $count;
-            }
-            else
-            {
+            } else {
                 $percent = ($row['vote_count'] > 0 && $option_num > 0) ? round(($row['option_count'] / $option_num) * 100) : 0;
 
                 $count -= $percent;
@@ -806,8 +723,7 @@ function get_vote($id = '')
  */
 function get_user_browser()
 {
-    if (empty($_SERVER['HTTP_USER_AGENT']))
-    {
+    if (empty($_SERVER['HTTP_USER_AGENT'])) {
         return '';
     }
 
@@ -815,58 +731,38 @@ function get_user_browser()
     $browser     = '';
     $browser_ver = '';
 
-    if (preg_match('/MSIE\s([^\s|;]+)/i', $agent, $regs))
-    {
+    if (preg_match('/MSIE\s([^\s|;]+)/i', $agent, $regs)) {
         $browser     = 'Internet Explorer';
         $browser_ver = $regs[1];
-    }
-    elseif (preg_match('/FireFox\/([^\s]+)/i', $agent, $regs))
-    {
+    } elseif (preg_match('/FireFox\/([^\s]+)/i', $agent, $regs)) {
         $browser     = 'FireFox';
         $browser_ver = $regs[1];
-    }
-    elseif (preg_match('/Maxthon/i', $agent, $regs))
-    {
+    } elseif (preg_match('/Maxthon/i', $agent, $regs)) {
         $browser     = '(Internet Explorer ' .$browser_ver. ') Maxthon';
         $browser_ver = '';
-    }
-    elseif (preg_match('/Opera[\s|\/]([^\s]+)/i', $agent, $regs))
-    {
+    } elseif (preg_match('/Opera[\s|\/]([^\s]+)/i', $agent, $regs)) {
         $browser     = 'Opera';
         $browser_ver = $regs[1];
-    }
-    elseif (preg_match('/OmniWeb\/(v*)([^\s|;]+)/i', $agent, $regs))
-    {
+    } elseif (preg_match('/OmniWeb\/(v*)([^\s|;]+)/i', $agent, $regs)) {
         $browser     = 'OmniWeb';
         $browser_ver = $regs[2];
-    }
-    elseif (preg_match('/Netscape([\d]*)\/([^\s]+)/i', $agent, $regs))
-    {
+    } elseif (preg_match('/Netscape([\d]*)\/([^\s]+)/i', $agent, $regs)) {
         $browser     = 'Netscape';
         $browser_ver = $regs[2];
-    }
-    elseif (preg_match('/safari\/([^\s]+)/i', $agent, $regs))
-    {
+    } elseif (preg_match('/safari\/([^\s]+)/i', $agent, $regs)) {
         $browser     = 'Safari';
         $browser_ver = $regs[1];
-    }
-    elseif (preg_match('/NetCaptor\s([^\s|;]+)/i', $agent, $regs))
-    {
+    } elseif (preg_match('/NetCaptor\s([^\s|;]+)/i', $agent, $regs)) {
         $browser     = '(Internet Explorer ' .$browser_ver. ') NetCaptor';
         $browser_ver = $regs[1];
-    }
-    elseif (preg_match('/Lynx\/([^\s]+)/i', $agent, $regs))
-    {
+    } elseif (preg_match('/Lynx\/([^\s]+)/i', $agent, $regs)) {
         $browser     = 'Lynx';
         $browser_ver = $regs[1];
     }
 
-    if (!empty($browser))
-    {
-       return addslashes($browser . ' ' . $browser_ver);
-    }
-    else
-    {
+    if (!empty($browser)) {
+        return addslashes($browser . ' ' . $browser_ver);
+    } else {
         return 'Unknow browser';
     }
 }
@@ -879,15 +775,13 @@ function get_user_browser()
  */
 function is_spider($record = true)
 {
-    static $spider = NULL;
+    static $spider = null;
 
-    if ($spider !== NULL)
-    {
+    if ($spider !== null) {
         return $spider;
     }
 
-    if (empty($_SERVER['HTTP_USER_AGENT']))
-    {
+    if (empty($_SERVER['HTTP_USER_AGENT'])) {
         $spider = '';
 
         return '';
@@ -921,14 +815,11 @@ function is_spider($record = true)
 
     $spider = strtolower($_SERVER['HTTP_USER_AGENT']);
 
-    foreach ($searchengine_bot AS $key => $value)
-    {
-        if (strpos($spider, $value) !== false)
-        {
+    foreach ($searchengine_bot as $key => $value) {
+        if (strpos($spider, $value) !== false) {
             $spider = $searchengine_name[$key];
 
-            if ($record === true)
-            {
+            if ($record === true) {
                 $global->db->autoReplace($global->ecs->table('searchengine'), array('date' => local_date('Y-m-d'), 'searchengine' => $spider, 'count' => 1), array('count' => 1));
             }
 
@@ -949,127 +840,70 @@ function is_spider($record = true)
  */
 function get_os()
 {
-    if (empty($_SERVER['HTTP_USER_AGENT']))
-    {
+    if (empty($_SERVER['HTTP_USER_AGENT'])) {
         return 'Unknown';
     }
 
     $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
     $os    = '';
 
-    if (strpos($agent, 'win') !== false)
-    {
-        if (strpos($agent, 'nt 5.1') !== false)
-        {
+    if (strpos($agent, 'win') !== false) {
+        if (strpos($agent, 'nt 5.1') !== false) {
             $os = 'Windows XP';
-        }
-        elseif (strpos($agent, 'nt 5.2') !== false)
-        {
+        } elseif (strpos($agent, 'nt 5.2') !== false) {
             $os = 'Windows 2003';
-        }
-        elseif (strpos($agent, 'nt 5.0') !== false)
-        {
+        } elseif (strpos($agent, 'nt 5.0') !== false) {
             $os = 'Windows 2000';
-        }
-        elseif (strpos($agent, 'nt 6.0') !== false)
-        {
+        } elseif (strpos($agent, 'nt 6.0') !== false) {
             $os = 'Windows Vista';
-        }
-        elseif (strpos($agent, 'nt') !== false)
-        {
+        } elseif (strpos($agent, 'nt') !== false) {
             $os = 'Windows NT';
-        }
-        elseif (strpos($agent, 'win 9x') !== false && strpos($agent, '4.90') !== false)
-        {
+        } elseif (strpos($agent, 'win 9x') !== false && strpos($agent, '4.90') !== false) {
             $os = 'Windows ME';
-        }
-        elseif (strpos($agent, '98') !== false)
-        {
+        } elseif (strpos($agent, '98') !== false) {
             $os = 'Windows 98';
-        }
-        elseif (strpos($agent, '95') !== false)
-        {
+        } elseif (strpos($agent, '95') !== false) {
             $os = 'Windows 95';
-        }
-        elseif (strpos($agent, '32') !== false)
-        {
+        } elseif (strpos($agent, '32') !== false) {
             $os = 'Windows 32';
-        }
-        elseif (strpos($agent, 'ce') !== false)
-        {
+        } elseif (strpos($agent, 'ce') !== false) {
             $os = 'Windows CE';
         }
-    }
-    elseif (strpos($agent, 'linux') !== false)
-    {
+    } elseif (strpos($agent, 'linux') !== false) {
         $os = 'Linux';
-    }
-    elseif (strpos($agent, 'unix') !== false)
-    {
+    } elseif (strpos($agent, 'unix') !== false) {
         $os = 'Unix';
-    }
-    elseif (strpos($agent, 'sun') !== false && strpos($agent, 'os') !== false)
-    {
+    } elseif (strpos($agent, 'sun') !== false && strpos($agent, 'os') !== false) {
         $os = 'SunOS';
-    }
-    elseif (strpos($agent, 'ibm') !== false && strpos($agent, 'os') !== false)
-    {
+    } elseif (strpos($agent, 'ibm') !== false && strpos($agent, 'os') !== false) {
         $os = 'IBM OS/2';
-    }
-    elseif (strpos($agent, 'mac') !== false && strpos($agent, 'pc') !== false)
-    {
+    } elseif (strpos($agent, 'mac') !== false && strpos($agent, 'pc') !== false) {
         $os = 'Macintosh';
-    }
-    elseif (strpos($agent, 'powerpc') !== false)
-    {
+    } elseif (strpos($agent, 'powerpc') !== false) {
         $os = 'PowerPC';
-    }
-    elseif (strpos($agent, 'aix') !== false)
-    {
+    } elseif (strpos($agent, 'aix') !== false) {
         $os = 'AIX';
-    }
-    elseif (strpos($agent, 'hpux') !== false)
-    {
+    } elseif (strpos($agent, 'hpux') !== false) {
         $os = 'HPUX';
-    }
-    elseif (strpos($agent, 'netbsd') !== false)
-    {
+    } elseif (strpos($agent, 'netbsd') !== false) {
         $os = 'NetBSD';
-    }
-    elseif (strpos($agent, 'bsd') !== false)
-    {
+    } elseif (strpos($agent, 'bsd') !== false) {
         $os = 'BSD';
-    }
-    elseif (strpos($agent, 'osf1') !== false)
-    {
+    } elseif (strpos($agent, 'osf1') !== false) {
         $os = 'OSF1';
-    }
-    elseif (strpos($agent, 'irix') !== false)
-    {
+    } elseif (strpos($agent, 'irix') !== false) {
         $os = 'IRIX';
-    }
-    elseif (strpos($agent, 'freebsd') !== false)
-    {
+    } elseif (strpos($agent, 'freebsd') !== false) {
         $os = 'FreeBSD';
-    }
-    elseif (strpos($agent, 'teleport') !== false)
-    {
+    } elseif (strpos($agent, 'teleport') !== false) {
         $os = 'teleport';
-    }
-    elseif (strpos($agent, 'flashget') !== false)
-    {
+    } elseif (strpos($agent, 'flashget') !== false) {
         $os = 'flashget';
-    }
-    elseif (strpos($agent, 'webzip') !== false)
-    {
+    } elseif (strpos($agent, 'webzip') !== false) {
         $os = 'webzip';
-    }
-    elseif (strpos($agent, 'offline') !== false)
-    {
+    } elseif (strpos($agent, 'offline') !== false) {
         $os = 'offline';
-    }
-    else
-    {
+    } else {
         $os = 'Unknown';
     }
 
@@ -1085,8 +919,7 @@ function get_os()
 function visit_stats()
 {
     $global = getInstance();
-    if (C('visit_stats') == 'off')
-    {
+    if (C('visit_stats') == 'off') {
         return;
     }
     $time = gmtime();
@@ -1100,38 +933,28 @@ function visit_stats()
     $area     = ecs_geoip($ip);
 
     /* 语言 */
-    if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-    {
+    if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
         $pos  = strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], ';');
         $lang = addslashes(($pos !== false) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, $pos) : $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-    }
-    else
-    {
+    } else {
         $lang = '';
     }
 
     /* 来源 */
-    if (!empty($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER']) > 9)
-    {
+    if (!empty($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER']) > 9) {
         $pos = strpos($_SERVER['HTTP_REFERER'], '/', 9);
-        if ($pos !== false)
-        {
+        if ($pos !== false) {
             $domain = substr($_SERVER['HTTP_REFERER'], 0, $pos);
             $path   = substr($_SERVER['HTTP_REFERER'], $pos);
 
             /* 来源关键字 */
-            if (!empty($domain) && !empty($path))
-            {
+            if (!empty($domain) && !empty($path)) {
                 save_searchengine_keyword($domain, $path);
             }
-        }
-        else
-        {
+        } else {
             $domain = $path = '';
         }
-    }
-    else
-    {
+    } else {
         $domain = $path = '';
     }
 
@@ -1152,116 +975,76 @@ function visit_stats()
  */
 function save_searchengine_keyword($domain, $path)
 {
-    if (strpos($domain, 'google.com.tw') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    if (strpos($domain, 'google.com.tw') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'GOOGLE TAIWAN';
         $keywords = urldecode($regs[1]); // google taiwan
     }
-    if (strpos($domain, 'google.cn') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    if (strpos($domain, 'google.cn') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'GOOGLE CHINA';
         $keywords = urldecode($regs[1]); // google china
     }
-    if (strpos($domain, 'google.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    if (strpos($domain, 'google.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'GOOGLE';
         $keywords = urldecode($regs[1]); // google
-    }
-    elseif (strpos($domain, 'baidu.') !== false && preg_match('/wd=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'baidu.') !== false && preg_match('/wd=([^&]*)/i', $path, $regs)) {
         $searchengine = 'BAIDU';
         $keywords = urldecode($regs[1]); // baidu
-    }
-    elseif (strpos($domain, 'baidu.') !== false && preg_match('/word=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'baidu.') !== false && preg_match('/word=([^&]*)/i', $path, $regs)) {
         $searchengine = 'BAIDU';
         $keywords = urldecode($regs[1]); // baidu
-    }
-    elseif (strpos($domain, '114.vnet.cn') !== false && preg_match('/kw=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, '114.vnet.cn') !== false && preg_match('/kw=([^&]*)/i', $path, $regs)) {
         $searchengine = 'CT114';
         $keywords = urldecode($regs[1]); // ct114
-    }
-    elseif (strpos($domain, 'iask.com') !== false && preg_match('/k=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'iask.com') !== false && preg_match('/k=([^&]*)/i', $path, $regs)) {
         $searchengine = 'IASK';
         $keywords = urldecode($regs[1]); // iask
-    }
-    elseif (strpos($domain, 'soso.com') !== false && preg_match('/w=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'soso.com') !== false && preg_match('/w=([^&]*)/i', $path, $regs)) {
         $searchengine = 'SOSO';
         $keywords = urldecode($regs[1]); // soso
-    }
-    elseif (strpos($domain, 'sogou.com') !== false && preg_match('/query=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'sogou.com') !== false && preg_match('/query=([^&]*)/i', $path, $regs)) {
         $searchengine = 'SOGOU';
         $keywords = urldecode($regs[1]); // sogou
-    }
-    elseif (strpos($domain, 'so.163.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'so.163.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'NETEASE';
         $keywords = urldecode($regs[1]); // netease
-    }
-    elseif (strpos($domain, 'yodao.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'yodao.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'YODAO';
         $keywords = urldecode($regs[1]); // yodao
-    }
-    elseif (strpos($domain, 'zhongsou.com') !== false && preg_match('/word=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'zhongsou.com') !== false && preg_match('/word=([^&]*)/i', $path, $regs)) {
         $searchengine = 'ZHONGSOU';
         $keywords = urldecode($regs[1]); // zhongsou
-    }
-    elseif (strpos($domain, 'search.tom.com') !== false && preg_match('/w=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'search.tom.com') !== false && preg_match('/w=([^&]*)/i', $path, $regs)) {
         $searchengine = 'TOM';
         $keywords = urldecode($regs[1]); // tom
-    }
-    elseif (strpos($domain, 'live.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'live.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'MSLIVE';
         $keywords = urldecode($regs[1]); // MSLIVE
-    }
-    elseif (strpos($domain, 'tw.search.yahoo.com') !== false && preg_match('/p=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'tw.search.yahoo.com') !== false && preg_match('/p=([^&]*)/i', $path, $regs)) {
         $searchengine = 'YAHOO TAIWAN';
         $keywords = urldecode($regs[1]); // yahoo taiwan
-    }
-    elseif (strpos($domain, 'cn.yahoo.') !== false && preg_match('/p=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'cn.yahoo.') !== false && preg_match('/p=([^&]*)/i', $path, $regs)) {
         $searchengine = 'YAHOO CHINA';
         $keywords = urldecode($regs[1]); // yahoo china
-    }
-    elseif (strpos($domain, 'yahoo.') !== false && preg_match('/p=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'yahoo.') !== false && preg_match('/p=([^&]*)/i', $path, $regs)) {
         $searchengine = 'YAHOO';
         $keywords = urldecode($regs[1]); // yahoo
-    }
-    elseif (strpos($domain, 'msn.com.tw') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'msn.com.tw') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'MSN TAIWAN';
         $keywords = urldecode($regs[1]); // msn taiwan
-    }
-    elseif (strpos($domain, 'msn.com.cn') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'msn.com.cn') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'MSN CHINA';
         $keywords = urldecode($regs[1]); // msn china
-    }
-    elseif (strpos($domain, 'msn.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs))
-    {
+    } elseif (strpos($domain, 'msn.com') !== false && preg_match('/q=([^&]*)/i', $path, $regs)) {
         $searchengine = 'MSN';
         $keywords = urldecode($regs[1]); // msn
     }
 
-    if (!empty($keywords))
-    {
+    if (!empty($keywords)) {
         $gb_search = array('YAHOO CHINA', 'TOM', 'ZHONGSOU', 'NETEASE', 'SOGOU', 'SOSO', 'IASK', 'CT114', 'BAIDU');
-        if (CHARSET == 'utf-8' && in_array($searchengine, $gb_search))
-        {
+        if (CHARSET == 'utf-8' && in_array($searchengine, $gb_search)) {
             $keywords = ecs_iconv('GBK', 'UTF8', $keywords);
         }
-        if (CHARSET == 'gbk' && !in_array($searchengine, $gb_search))
-        {
+        if (CHARSET == 'gbk' && !in_array($searchengine, $gb_search)) {
             $keywords = ecs_iconv('UTF8', 'GBK', $keywords);
         }
 
@@ -1281,22 +1064,18 @@ function get_tags($goods_id = 0, $user_id = 0)
 {
     $global = getInstance();
     $where = '';
-    if ($goods_id > 0)
-    {
+    if ($goods_id > 0) {
         $where .= " goods_id = '$goods_id'";
     }
 
-    if ($user_id > 0)
-    {
-        if ($goods_id > 0)
-        {
+    if ($user_id > 0) {
+        if ($goods_id > 0) {
             $where .= " AND";
         }
         $where .= " user_id = '$user_id'";
     }
 
-    if ($where > '')
-    {
+    if ($where > '') {
         $where = ' WHERE' . $where;
     }
 
@@ -1322,7 +1101,7 @@ function get_dyna_libs($theme, $tmp)
     $global = getInstance();
     $tmp_arr = explode('.', $tmp);
     $ext = end($tmp_arr);
-    $tmp = basename($tmp,".$ext");
+    $tmp = basename($tmp, ".$ext");
     $sql = 'SELECT region, library, sort_order, id, number, type' .
             ' FROM ' . $global->ecs->table('template') .
             " WHERE theme = '$theme' AND filename = '" . $tmp . "' AND type > 0 AND remarks=''".
@@ -1330,8 +1109,7 @@ function get_dyna_libs($theme, $tmp)
     $res = $global->db->getAll($sql);
 
     $dyna_libs = array();
-    foreach ($res AS $row)
-    {
+    foreach ($res as $row) {
         $dyna_libs[$row['region']][$row['library']][] = array(
             'id'     => $row['id'],
             'number' => $row['number'],
@@ -1354,11 +1132,9 @@ function dyna_libs_replace($matches)
 {
     $key = '/' . $matches[1];
 
-    if ($row = array_shift($GLOBALS['libs'][$key]))
-    {
+    if ($row = array_shift($GLOBALS['libs'][$key])) {
         $str = '';
-        switch($row['type'])
-        {
+        switch ($row['type']) {
             case 1:
                 // 分类的商品
                 $str = '{assign var="cat_goods" value=$cat_goods_' .$row['id']. '}{assign var="goods_cat" value=$goods_cat_' .$row['id']. '}';
@@ -1377,9 +1153,7 @@ function dyna_libs_replace($matches)
                 break;
         }
         return $str . $matches[0];
-    }
-    else
-    {
+    } else {
         return $matches[0];
     }
 }
@@ -1396,40 +1170,30 @@ function dyna_libs_replace($matches)
 function upload_file($upload, $type)
 {
     $global = getInstance();
-    if (!empty($upload['tmp_name']))
-    {
+    if (!empty($upload['tmp_name'])) {
         $ftype = check_file_type($upload['tmp_name'], $upload['name'], '|png|jpg|jpeg|gif|doc|xls|txt|zip|ppt|pdf|rar|docx|xlsx|pptx|');
-        if (!empty($ftype))
-        {
+        if (!empty($ftype)) {
             $name = date('Ymd');
-            for ($i = 0; $i < 6; $i++)
-            {
+            for ($i = 0; $i < 6; $i++) {
                 $name .= chr(mt_rand(97, 122));
             }
 
             $name = $_SESSION['user_id'] . '_' . $name . '.' . $ftype;
 
             $target = STORAGE_PATH . '/' . $type . '/' . $name;
-            if (!ecmoban_move_upload_file($upload, $target))
-            {
+            if (!ecmoban_move_upload_file($upload, $target)) {
                 $global->err->add(L('upload_file_error'), 1);
 
                 return false;
-            }
-            else
-            {
+            } else {
                 return $name;
             }
-        }
-        else
-        {
+        } else {
             $global->err->add(L('upload_file_type'), 1);
 
             return false;
         }
-    }
-    else
-    {
+    } else {
         $global->err->add(L('upload_file_error'));
         return false;
     }
@@ -1452,19 +1216,14 @@ function show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_
     assign_template();
 
     $msg['content'] = $content;
-    if (is_array($links) && is_array($hrefs))
-    {
-        if (!empty($links) && count($links) == count($hrefs))
-        {
-            foreach($links as $key =>$val)
-            {
+    if (is_array($links) && is_array($hrefs)) {
+        if (!empty($links) && count($links) == count($hrefs)) {
+            foreach ($links as $key =>$val) {
                 $msg['url_info'][$val] = $hrefs[$key];
             }
             $msg['back_url'] = $hrefs['0'];
         }
-    }
-    else
-    {
+    } else {
         $link   = empty($links) ? L('back_up_page') : $links;
         $href    = empty($hrefs) ? 'javascript:history.back()'       : $hrefs;
         $msg['url_info'][$link] = $href;
@@ -1474,10 +1233,9 @@ function show_message($content, $links = '', $hrefs = '', $type = 'info', $auto_
     $msg['type']    = $type;
     $position = assign_ur_here(0, L('sys_msg'));
     $global->tpl->assign('page_title', $position['title']);   // 页面标题
-    $global->tpl->assign('ur_here',    $position['ur_here']); // 当前位置
+    $global->tpl->assign('ur_here', $position['ur_here']); // 当前位置
 
-    if (is_null($global->tpl->get_template_vars('helps')))
-    {
+    if (is_null($global->tpl->get_template_vars('helps'))) {
         $global->tpl->assign('helps', get_shop_help()); // 网店帮助
     }
 
@@ -1502,26 +1260,19 @@ function parse_rate_value($str, &$operate)
     $is_rate = false;
 
     $str = trim($str);
-    if (empty($str))
-    {
+    if (empty($str)) {
         return 0;
     }
-    if ($str[strlen($str) - 1] == '%')
-    {
+    if ($str[strlen($str) - 1] == '%') {
         $value = floatval($str);
-        if ($value > 0)
-        {
+        if ($value > 0) {
             $operate = '*';
 
             return $value / 100;
-        }
-        else
-        {
+        } else {
             return 0;
         }
-    }
-    else
-    {
+    } else {
         return floatval($str);
     }
 }
@@ -1546,10 +1297,9 @@ function recalculate_price()
             "WHERE session_id = '" .SESS_ID. "' AND c.parent_id = 0 AND c.is_gift = 0 AND c.goods_id > 0 " .
             "AND c.rec_type = '" . CART_GENERAL_GOODS . "' AND c.extension_code <> 'package_buy'";
 
-            $res = $global->db->getAll($sql);
+    $res = $global->db->getAll($sql);
 
-    foreach ($res AS $row)
-    {
+    foreach ($res as $row) {
         $attr_id    = empty($row['goods_attr_id']) ? array() : explode(',', $row['goods_attr_id']);
 
 
@@ -1593,8 +1343,7 @@ function assign_comment($id, $type, $page = 1)
 
     $arr = array();
     $ids = '';
-    while ($row = $global->db->fetchRow($res))
-    {
+    while ($row = $global->db->fetchRow($res)) {
         $ids .= $ids ? ",$row[comment_id]" : $row['comment_id'];
         $arr[$row['comment_id']]['id']       = $row['comment_id'];
         $arr[$row['comment_id']]['email']    = $row['email'];
@@ -1605,13 +1354,11 @@ function assign_comment($id, $type, $page = 1)
         $arr[$row['comment_id']]['add_time'] = local_date(C('time_format'), $row['add_time']);
     }
     /* 取得已有回复的评论 */
-    if ($ids)
-    {
+    if ($ids) {
         $sql = 'SELECT * FROM ' . $global->ecs->table('comment') .
                 " WHERE parent_id IN( $ids )";
         $res = $global->db->query($sql);
-        while ($row = $global->db->fetch_array($res))
-        {
+        while ($row = $global->db->fetch_array($res)) {
             $arr[$row['parent_id']]['re_content']  = nl2br(str_replace('\n', '<br />', htmlspecialchars($row['content'])));
             $arr[$row['parent_id']]['re_add_time'] = local_date(C('time_format'), $row['add_time']);
             $arr[$row['parent_id']]['re_email']    = $row['email'];
@@ -1637,35 +1384,32 @@ function assign_comment($id, $type, $page = 1)
 function assign_template($ctype = '', $catlist = array())
 {
     $global = getInstance();
-    $global->tpl->assign('image_width',   C('image_width'));
-    $global->tpl->assign('image_height',  C('image_height'));
-    $global->tpl->assign('points_name',   C('integral_name'));
-    $global->tpl->assign('qq',            explode(',', C('qq')));
-    $global->tpl->assign('ww',            explode(',', C('ww')));
-    $global->tpl->assign('ym',            explode(',', C('ym')));
-    $global->tpl->assign('msn',           explode(',', C('msn')));
-    $global->tpl->assign('skype',         explode(',', C('skype')));
-    $global->tpl->assign('stats_code',    C('stats_code'));
-    $global->tpl->assign('copyright',     sprintf(L('copyright'), date('Y'), C('shop_name')));
-    $global->tpl->assign('shop_name',     C('shop_name'));
+    $global->tpl->assign('image_width', C('image_width'));
+    $global->tpl->assign('image_height', C('image_height'));
+    $global->tpl->assign('points_name', C('integral_name'));
+    $global->tpl->assign('qq', explode(',', C('qq')));
+    $global->tpl->assign('ww', explode(',', C('ww')));
+    $global->tpl->assign('ym', explode(',', C('ym')));
+    $global->tpl->assign('msn', explode(',', C('msn')));
+    $global->tpl->assign('skype', explode(',', C('skype')));
+    $global->tpl->assign('stats_code', C('stats_code'));
+    $global->tpl->assign('copyright', sprintf(L('copyright'), date('Y'), C('shop_name')));
+    $global->tpl->assign('shop_name', C('shop_name'));
     $global->tpl->assign('service_email', C('service_email'));
     $global->tpl->assign('service_phone', C('service_phone'));
-    $global->tpl->assign('shop_address',  C('shop_address'));
-    $global->tpl->assign('licensed',      license_info());
-    $global->tpl->assign('ecs_version',   VERSION);
-    $global->tpl->assign('icp_number',    C('icp_number'));
-    $global->tpl->assign('username',      !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : '');
-    $global->tpl->assign('category_list', cat_list(0, 0, true,  2, false));
-    $global->tpl->assign('catalog_list',  cat_list(0, 0, false, 1, false));
-    $global->tpl->assign('navigator_list',        get_navigator($ctype, $catlist));  //自定义导航栏
+    $global->tpl->assign('shop_address', C('shop_address'));
+    $global->tpl->assign('licensed', license_info());
+    $global->tpl->assign('ecs_version', VERSION);
+    $global->tpl->assign('icp_number', C('icp_number'));
+    $global->tpl->assign('username', !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : '');
+    $global->tpl->assign('category_list', cat_list(0, 0, true, 2, false));
+    $global->tpl->assign('catalog_list', cat_list(0, 0, false, 1, false));
+    $global->tpl->assign('navigator_list', get_navigator($ctype, $catlist));  //自定义导航栏
 
     $search_keywords = C('search_keywords');
-	if (!empty($search_keywords))
-    {
+    if (!empty($search_keywords)) {
         $searchkeywords = explode(',', trim(C('search_keywords')));
-    }
-    else
-    {
+    } else {
         $searchkeywords = array();
     }
     $global->tpl->assign('searchkeywords', $searchkeywords);
@@ -1694,8 +1438,7 @@ function time2gmt($time)
 function get_user_bonus($user_id = 0)
 {
     $global = getInstance();
-    if ($user_id == 0)
-    {
+    if ($user_id == 0) {
         $user_id = $_SESSION['user_id'];
     }
 
@@ -1720,30 +1463,19 @@ function get_user_bonus($user_id = 0)
 function set_affiliate()
 {
     $config = unserialize(C('affiliate'));
-    if (!empty($_GET['u']) && $config['on'] == 1)
-    {
-        if(!empty($config['config']['expire']))
-        {
-            if($config['config']['expire_unit'] == 'hour')
-            {
+    if (!empty($_GET['u']) && $config['on'] == 1) {
+        if (!empty($config['config']['expire'])) {
+            if ($config['config']['expire_unit'] == 'hour') {
                 $c = 1;
-            }
-            elseif($config['config']['expire_unit'] == 'day')
-            {
+            } elseif ($config['config']['expire_unit'] == 'day') {
                 $c = 24;
-            }
-            elseif($config['config']['expire_unit'] == 'week')
-            {
+            } elseif ($config['config']['expire_unit'] == 'week') {
                 $c = 24 * 7;
-            }
-            else
-            {
+            } else {
                 $c = 1;
             }
             setcookie('ecshop_affiliate_uid', intval($_GET['u']), gmtime() + 3600 * $config['config']['expire'] * $c);
-        }
-        else
-        {
+        } else {
             setcookie('ecshop_affiliate_uid', intval($_GET['u']), gmtime() + 3600 * 24); // 过期时间为 1 天
         }
     }
@@ -1761,15 +1493,11 @@ function set_affiliate()
 function get_affiliate()
 {
     $global = getInstance();
-    if (!empty($_COOKIE['ecshop_affiliate_uid']))
-    {
+    if (!empty($_COOKIE['ecshop_affiliate_uid'])) {
         $uid = intval($_COOKIE['ecshop_affiliate_uid']);
-        if ($global->db->getOne('SELECT user_id FROM ' . $global->ecs->table('users') . "WHERE user_id = '$uid'"))
-        {
+        if ($global->db->getOne('SELECT user_id FROM ' . $global->ecs->table('users') . "WHERE user_id = '$uid'")) {
             return $uid;
-        }
-        else
-        {
+        } else {
             setcookie('ecshop_affiliate_uid', '', 1);
         }
     }
@@ -1787,13 +1515,10 @@ function get_affiliate()
 function article_categories_tree($cat_id = 0)
 {
     $global = getInstance();
-    if ($cat_id > 0)
-    {
+    if ($cat_id > 0) {
         $sql = 'SELECT parent_id FROM ' . $global->ecs->table('article_cat') . " WHERE cat_id = '$cat_id'";
         $parent_id = $global->db->getOne($sql);
-    }
-    else
-    {
+    } else {
         $parent_id = 0;
     }
 
@@ -1803,17 +1528,14 @@ function article_categories_tree($cat_id = 0)
      如果不是取当前分类及其下的子分类
     */
     $sql = 'SELECT count(*) FROM ' . $global->ecs->table('article_cat') . " WHERE parent_id = '$parent_id'";
-    if ($global->db->getOne($sql))
-    {
+    if ($global->db->getOne($sql)) {
         /* 获取当前分类及其子分类 */
         $sql = 'SELECT a.cat_id, a.cat_name, a.sort_order AS parent_order, a.cat_id, ' .
                     'b.cat_id AS child_id, b.cat_name AS child_name, b.sort_order AS child_order ' .
                 'FROM ' . $global->ecs->table('article_cat') . ' AS a ' .
                 'LEFT JOIN ' . $global->ecs->table('article_cat') . ' AS b ON b.parent_id = a.cat_id ' .
                 "WHERE a.parent_id = '$parent_id' AND a.cat_type=1 ORDER BY parent_order ASC, a.cat_id ASC, child_order ASC";
-    }
-    else
-    {
+    } else {
         /* 获取当前分类及其父分类 */
         $sql = 'SELECT a.cat_id, a.cat_name, b.cat_id AS child_id, b.cat_name AS child_name, b.sort_order ' .
                 'FROM ' . $global->ecs->table('article_cat') . ' AS a ' .
@@ -1823,14 +1545,12 @@ function article_categories_tree($cat_id = 0)
     $res = $global->db->getAll($sql);
 
     $cat_arr = array();
-    foreach ($res AS $row)
-    {
+    foreach ($res as $row) {
         $cat_arr[$row['cat_id']]['id']   = $row['cat_id'];
         $cat_arr[$row['cat_id']]['name'] = $row['cat_name'];
         $cat_arr[$row['cat_id']]['url']  = build_uri('article_cat', array('acid' => $row['cat_id']), $row['cat_name']);
 
-        if ($row['child_id'] != NULL)
-        {
+        if ($row['child_id'] != null) {
             $cat_arr[$row['cat_id']]['children'][$row['child_id']]['id']   = $row['child_id'];
             $cat_arr[$row['cat_id']]['children'][$row['child_id']]['name'] = $row['child_name'];
             $cat_arr[$row['cat_id']]['children'][$row['child_id']]['url']  = build_uri('article_cat', array('acid' => $row['child_id']), $row['child_name']);
@@ -1850,27 +1570,22 @@ function article_categories_tree($cat_id = 0)
 function get_article_parent_cats($cat)
 {
     $global = getInstance();
-    if ($cat == 0)
-    {
+    if ($cat == 0) {
         return array();
     }
 
     $arr = $global->db->GetAll('SELECT cat_id, cat_name, parent_id FROM ' . $global->ecs->table('article_cat'));
 
-    if (empty($arr))
-    {
+    if (empty($arr)) {
         return array();
     }
 
     $index = 0;
     $cats  = array();
 
-    while (1)
-    {
-        foreach ($arr AS $row)
-        {
-            if ($cat == $row['cat_id'])
-            {
+    while (1) {
+        foreach ($arr as $row) {
+            if ($cat == $row['cat_id']) {
                 $cat = $row['parent_id'];
 
                 $cats[$index]['cat_id']   = $row['cat_id'];
@@ -1881,8 +1596,7 @@ function get_article_parent_cats($cat)
             }
         }
 
-        if ($index == 0 || $cat == 0)
-        {
+        if ($index == 0 || $cat == 0) {
             break;
         }
     }
@@ -1902,8 +1616,7 @@ function get_library_number($library, $template = null)
     $global = getInstance();
     global $page_libs;
 
-    if (empty($template))
-    {
+    if (empty($template)) {
         $template = basename(PHP_SELF);
         $template = substr($template, 0, strrpos($template, '.'));
     }
@@ -1912,32 +1625,26 @@ function get_library_number($library, $template = null)
     static $lib_list = array();
 
     /* 如果没有该模板的信息，取得该模板的信息 */
-    if (!isset($lib_list[$template]))
-    {
+    if (!isset($lib_list[$template])) {
         $lib_list[$template] = array();
         $sql = "SELECT library, number FROM " . $global->ecs->table('template') .
                 " WHERE theme = '" . C('template') . "'" .
                 " AND filename = '$template' AND remarks='' ";
         $res = $global->db->query($sql);
-        while ($row = $global->db->fetchRow($res))
-        {
+        while ($row = $global->db->fetchRow($res)) {
             $lib = basename(strtolower(substr($row['library'], 0, strpos($row['library'], '.'))));
             $lib_list[$template][$lib] = $row['number'];
         }
     }
 
     $num = 0;
-    if (isset($lib_list[$template][$library]))
-    {
+    if (isset($lib_list[$template][$library])) {
         $num = intval($lib_list[$template][$library]);
-    }
-    else
-    {
+    } else {
         /* 模板设置文件查找默认值 */
         include_once(ROOT_PATH . ADMIN_PATH . '/includes/lib_template.php');
         static $static_page_libs = null;
-        if ($static_page_libs == null)
-        {
+        if ($static_page_libs == null) {
             $static_page_libs = $page_libs;
         }
         $lib = '/library/' . $library . '.lbi';
@@ -1960,19 +1667,15 @@ function get_navigator($ctype = '', $catlist = array())
             WHERE ifshow = \'1\' ORDER BY type, vieworder';
     $res = $global->db->query($sql);
 
-    $cur_url = substr(strrchr($_SERVER['REQUEST_URI'],'/'),1);
+    $cur_url = substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
 
-    if (intval(C('rewrite')))
-    {
-        if(strpos($cur_url, '-'))
-        {
-            preg_match('/([a-z]*)-([0-9]*)/',$cur_url,$matches);
+    if (intval(C('rewrite'))) {
+        if (strpos($cur_url, '-')) {
+            preg_match('/([a-z]*)-([0-9]*)/', $cur_url, $matches);
             $cur_url = $matches[1].'.php?id='.$matches[2];
         }
-    }
-    else
-    {
-        $cur_url = substr(strrchr($_SERVER['REQUEST_URI'],'/'),1);
+    } else {
+        $cur_url = substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
     }
 
     $noindex = false;
@@ -1982,8 +1685,7 @@ function get_navigator($ctype = '', $catlist = array())
         'middle' => array(),
         'bottom' => array()
     );
-    while ($row = $global->db->fetchRow($res))
-    {
+    while ($row = $global->db->fetchRow($res)) {
         $navlist[$row['type']][] = array(
             'name'      =>  $row['name'],
             'opennew'   =>  $row['opennew'],
@@ -1994,25 +1696,19 @@ function get_navigator($ctype = '', $catlist = array())
     }
 
     /*遍历自定义是否存在currentPage*/
-    foreach($navlist['middle'] as $k=>$v)
-    {
+    foreach ($navlist['middle'] as $k=>$v) {
         $condition = empty($ctype) ? (strpos($cur_url, $v['url']) === 0) : (strpos($cur_url, $v['url']) === 0 && strlen($cur_url) == strlen($v['url']));
-        if ($condition)
-        {
+        if ($condition) {
             $navlist['middle'][$k]['active'] = 1;
             $noindex = true;
             $active += 1;
         }
     }
 
-    if(!empty($ctype) && $active < 1)
-    {
-        foreach($catlist as $key => $val)
-        {
-            foreach($navlist['middle'] as $k=>$v)
-            {
-                if(!empty($v['ctype']) && $v['ctype'] == $ctype && $v['cid'] == $val && $active < 1)
-                {
+    if (!empty($ctype) && $active < 1) {
+        foreach ($catlist as $key => $val) {
+            foreach ($navlist['middle'] as $k=>$v) {
+                if (!empty($v['ctype']) && $v['ctype'] == $ctype && $v['cid'] == $val && $active < 1) {
                     $navlist['middle'][$k]['active'] = 1;
                     $noindex = true;
                     $active += 1;
@@ -2035,15 +1731,11 @@ function get_navigator($ctype = '', $catlist = array())
  */
 function license_info()
 {
-    if(C('licensed') > 0)
-    {
+    if (C('licensed') > 0) {
         /* 获取HOST */
-        if (isset($_SERVER['HTTP_X_FORWARDED_HOST']))
-        {
+        if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
             $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
-        }
-        elseif (isset($_SERVER['HTTP_HOST']))
-        {
+        } elseif (isset($_SERVER['HTTP_HOST'])) {
             $host = $_SERVER['HTTP_HOST'];
         }
         $url_domain=url_domain();
@@ -2051,9 +1743,7 @@ function license_info()
         $license = '<a href="http://www.ectouch.cn/license.php?product=ectouch_b2c&url=' . urlencode($host) . '" target="_blank"
 >&nbsp;&nbsp;Licensed</a>';
         return $license;
-    }
-    else
-    {
+    } else {
         return '';
     }
 }
@@ -2065,8 +1755,7 @@ function url_domain()
 
     $root = str_replace('\\', '/', $curr);
 
-    if (substr($root, -1) != '/')
-    {
+    if (substr($root, -1) != '/') {
         $root .= '/';
     }
 
@@ -2089,19 +1778,14 @@ function show_service_message($content, $links = '', $hrefs = '', $type = 'info'
     assign_template();
 
     $msg['content'] = $content;
-    if (is_array($links) && is_array($hrefs))
-    {
-        if (!empty($links) && count($links) == count($hrefs))
-        {
-            foreach($links as $key =>$val)
-            {
+    if (is_array($links) && is_array($hrefs)) {
+        if (!empty($links) && count($links) == count($hrefs)) {
+            foreach ($links as $key =>$val) {
                 $msg['url_info'][$val] = $hrefs[$key];
             }
             $msg['back_url'] = $hrefs['0'];
         }
-    }
-    else
-    {
+    } else {
         $link   = empty($links) ? $GLOBALS['_LANG']['back_up_page'] : $links;
         $href    = empty($hrefs) ? 'javascript:history.back()'       : $hrefs;
         $msg['url_info'][$link] = $href;
@@ -2111,10 +1795,9 @@ function show_service_message($content, $links = '', $hrefs = '', $type = 'info'
     $msg['type']    = $type;
     $position = assign_ur_here(0, $GLOBALS['_LANG']['sys_msg']);
     $GLOBALS['smarty']->assign('page_title', $position['title']);   // 页面标题
-    $GLOBALS['smarty']->assign('ur_here',    $position['ur_here']); // 当前位置
+    $GLOBALS['smarty']->assign('ur_here', $position['ur_here']); // 当前位置
 
-    if (is_null($GLOBALS['smarty']->get_template_vars('helps')))
-    {
+    if (is_null($GLOBALS['smarty']->get_template_vars('helps'))) {
         $GLOBALS['smarty']->assign('helps', get_shop_help()); // 网店帮助
     }
     $GLOBALS['smarty']->assign('auto_redirect', $auto_redirect);

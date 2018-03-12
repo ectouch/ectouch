@@ -16,10 +16,12 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class AdminController extends BaseController {
+class AdminController extends BaseController
+{
     protected $sess = null;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         require BASE_PATH .'classes/session.php';
@@ -29,13 +31,14 @@ class AdminController extends BaseController {
         $this->assign('lang', L());
     }
 
-    protected function checkLogin() {
+    protected function checkLogin()
+    {
         $access = array(
-            'crowd' => '*', 
-            'wechat' => '*', 
-            'extend' => '*', 
-            'upload' => '*', 
-            'authorization' => '*', 
+            'crowd' => '*',
+            'wechat' => '*',
+            'extend' => '*',
+            'upload' => '*',
+            'authorization' => '*',
             'navigator' => '*',
             'upgrade' => '*',
             'index' => array('license', 'uploader')
@@ -48,18 +51,19 @@ class AdminController extends BaseController {
         }
 
         if (isset($access[$controller])) {
-            if($access[$controller] != '*'){
+            if ($access[$controller] != '*') {
                 if (!in_array($action, $access[$controller])) {
                     $this->redirect('./admin');
                 }
             }
-        }else{
+        } else {
             $this->redirect('./admin');
         }
     }
 
     //$upload_dir上传的目录名
-    protected function ectouchUpload($key = '', $upload_dir = 'images', $thumb = false, $width = 220, $height = 220) {
+    protected function ectouchUpload($key = '', $upload_dir = 'images', $thumb = false, $width = 220, $height = 220)
+    {
         $upload = new UploadFile();
         //设置上传文件大小
         $upload->maxSize = 1024 * 1024 * 5; //最大10M,但最佳5M以内。
@@ -82,7 +86,6 @@ class AdminController extends BaseController {
             return array('error' => 0, 'message' => $upload->getUploadFileInfo());
         }
     }
-
 }
 
 class_alias('AdminController', 'ECTouch');

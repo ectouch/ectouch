@@ -16,7 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ArticleModel extends BaseModel {
+class ArticleModel extends BaseModel
+{
 
     /**
      * 分配文章列表给smarty
@@ -26,7 +27,8 @@ class ArticleModel extends BaseModel {
      * @param   integer     $num    文章数量
      * @return  array
      */
-    function assign_articles($id, $num) {
+    public function assign_articles($id, $num)
+    {
         $sql = 'SELECT cat_name FROM ' . $this->pre . "article_cat WHERE cat_id = '" . $id . "'";
 
         $cat['id'] = $id;
@@ -46,7 +48,8 @@ class ArticleModel extends BaseModel {
      * @access  public
      * @return  array
      */
-    function get_shop_help() {
+    public function get_shop_help()
+    {
         $sql = 'SELECT c.cat_id, c.cat_name, c.sort_order, a.article_id, a.title, a.file_url, a.open_type ' .
                 'FROM ' . $this->pre . 'article AS a ' .
                 'LEFT JOIN ' . $this->pre . 'article_cat AS c ' .
@@ -55,7 +58,7 @@ class ArticleModel extends BaseModel {
         $res = $this->query($sql);
 
         $arr = array();
-        foreach ($res AS $key => $row) {
+        foreach ($res as $key => $row) {
             $arr[$row['cat_id']]['cat_id'] = url('article/index', array('id' => $row['cat_id']));
             $arr[$row['cat_id']]['cat_name'] = $row['cat_name'];
             $arr[$row['cat_id']]['article'][$key]['article_id'] = $row['article_id'];
@@ -74,7 +77,8 @@ class ArticleModel extends BaseModel {
      * @param   integer $cat    分类编号
      * @return  array
      */
-    function get_article_parent_cats($cat) {
+    public function get_article_parent_cats($cat)
+    {
         if ($cat == 0) {
             return array();
         }
@@ -89,7 +93,7 @@ class ArticleModel extends BaseModel {
         $cats = array();
 
         while (1) {
-            foreach ($arr AS $row) {
+            foreach ($arr as $row) {
                 if ($cat == $row['cat_id']) {
                     $cat = $row['parent_id'];
 
@@ -116,7 +120,8 @@ class ArticleModel extends BaseModel {
      * @param   integer     $cat_id     分类编号
      * @return  array
      */
-    function article_categories_tree($cat_id = 0) {
+    public function article_categories_tree($cat_id = 0)
+    {
         if ($cat_id > 0) {
             $sql = 'SELECT parent_id FROM ' . $this->pre .
                     "article_cat  WHERE cat_id = '$cat_id'";
@@ -138,7 +143,7 @@ class ArticleModel extends BaseModel {
             $sql = 'SELECT a.cat_id, a.cat_name, a.sort_order AS parent_order, a.cat_id, ' .
                     'b.cat_id AS child_id, b.cat_name AS child_name, b.sort_order AS child_order ' .
                     'FROM ' . $this->pre . 'article_cat AS a ' .
-                    'LEFT JOIN ' . $this->pre . 'article_cat AS b ON b.parent_id = a.cat_id ' . 
+                    'LEFT JOIN ' . $this->pre . 'article_cat AS b ON b.parent_id = a.cat_id ' .
                     "WHERE a.parent_id = '$parent_id' ORDER BY parent_order ASC, a.cat_id ASC, child_order ASC";
         } else {
             /* 获取当前分类及其父分类 */
@@ -149,13 +154,12 @@ class ArticleModel extends BaseModel {
         }
         $res = $this->query($sql);
         $cat_arr = array();
-        foreach ($res AS $row) {
+        foreach ($res as $row) {
             $cat_arr[$row['cat_id']]['id'] = $row['cat_id'];
             $cat_arr[$row['cat_id']]['name'] = $row['cat_name'];
 
             $cat_arr[$row['cat_id']]['children'][$row['child_id']]['url'] = url('article/art_list', array('acid' => $row ['cat_id']));
-            if ($row['child_id'] != NULL) {
-
+            if ($row['child_id'] != null) {
                 $cat_arr[$row['cat_id']]['children'][$row['child_id']]['id'] = $row['child_id'];
                 $cat_arr[$row['cat_id']]['children'][$row['child_id']]['name'] = $row['child_name'];
                 $cat_arr[$row['cat_id']]['children'][$row['child_id']]['url'] = url('article/art_list', array('acid' => $row ['child_id']));
@@ -172,7 +176,8 @@ class ArticleModel extends BaseModel {
      * @param   integer     $article_id
      * @return  array
      */
-    function get_article_info($article_id) {
+    public function get_article_info($article_id)
+    {
         /* 获得文章的信息 */
         $sql = "SELECT a.*, IFNULL(AVG(r.comment_rank), 0) AS comment_rank " .
                 "FROM " . $this->pre . "article AS a " .
@@ -183,7 +188,8 @@ class ArticleModel extends BaseModel {
         if ($row !== false) {
             $row['comment_rank'] = ceil($row['comment_rank']);                              // 用户评论级别取整
             $row['add_time'] = local_date(L('date_format'), $row['add_time']); // 修正添加时间显示
-            $row['content'] = html_out($row['content']);;
+            $row['content'] = html_out($row['content']);
+            ;
             
             /* 作者信息如果为空，则用网站名称替换 */
             if (empty($row['author']) || $row['author'] == '_SHOPHELP') {
@@ -201,7 +207,8 @@ class ArticleModel extends BaseModel {
      * @return  array
      */
 
-    function get_article_goods($article_id){
+    public function get_article_goods($article_id)
+    {
         $sql ="SELECT g.goods_id, g.goods_name, g.goods_thumb, g.goods_img, g.shop_price AS org_price, " .
               "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price, ".
               "g.market_price, g.promote_price, g.promote_start_date, g.promote_end_date " .
@@ -210,9 +217,9 @@ class ArticleModel extends BaseModel {
               "LEFT JOIN ".$this->pre ."member_price AS mp ON mp.goods_id = g.goods_id AND mp.user_rank = '$_SESSION[user_rank]' ".
               "WHERE ga.article_id ='$article_id' AND g.is_on_sale = 1 AND g.is_alone_sale = 1 AND g.is_delete = 0 " .
               "order by g.goods_id ASC limit 0, 4";
-        $res = $this->query($sql);        
+        $res = $this->query($sql);
         $arr = array();
-        foreach($res as $key=>$row){
+        foreach ($res as $key=>$row) {
             $arr[$key]['goods_id'] = $row['goods_id'];
             $arr[$key]['goods_name'] = $row['goods_name'];
             $arr[$key]['goods_thumb']   = get_image_path($row['goods_id'], $row['goods_thumb'], true);
@@ -231,5 +238,4 @@ class ArticleModel extends BaseModel {
         }
         return $arr;
     }
-
 }

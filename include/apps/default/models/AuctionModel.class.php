@@ -15,13 +15,15 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class AuctionModel extends BaseModel {
+class AuctionModel extends BaseModel
+{
 
     /**
      * 取得拍卖活动数量
      * @return  int
      */
-    function auction_count() {
+    public function auction_count()
+    {
         $now = gmtime();
         $sql = "SELECT COUNT(*) as count " .
                 "FROM " . $this->pre .
@@ -39,7 +41,8 @@ class AuctionModel extends BaseModel {
      * @param   str     $order  排序
      * @return  array
      */
-    function auction_list($size, $page, $sort, $order) {
+    public function auction_list($size, $page, $sort, $order)
+    {
         $auction_list = array();
         $auction_list['finished'] = $auction_list['finished'] = array();
 
@@ -53,7 +56,7 @@ class AuctionModel extends BaseModel {
                 "LEFT JOIN " . $this->pre . "touch_goods as tg ON g.goods_id = tg.goods_id " .
                 "WHERE a.act_type = '" . GAT_AUCTION . "' " .
                 //"AND a.start_time <= '$now' AND a.end_time >= '$now'".
-				" AND a.is_finished < 2 ORDER BY $sort $order LIMIT $start ,$size ";
+                " AND a.is_finished < 2 ORDER BY $sort $order LIMIT $start ,$size ";
         $res = $this->query($sql);
         
         foreach ($res as $row) {
@@ -75,7 +78,7 @@ class AuctionModel extends BaseModel {
             } else {
                 $auction_list['finished'][] = $auction;
             } */
-			if ($auction['status_no'] < 3) {
+            if ($auction['status_no'] < 3) {
                 $auction_list['under_way'][] = $auction;
             } else {
                 $auction_list['finished'][] = $auction;
@@ -104,7 +107,8 @@ class AuctionModel extends BaseModel {
      * @param   int     $act_id     活动id
      * @return  array
      */
-    function auction_info($act_id, $config = false) {
+    public function auction_info($act_id, $config = false)
+    {
         $sql = "SELECT * FROM " . $this->pre . "goods_activity WHERE act_id = '$act_id'";
         $auction = $this->row($sql);
         if ($auction['act_type'] != GAT_AUCTION) {
@@ -112,7 +116,6 @@ class AuctionModel extends BaseModel {
         }
         $auction['status_no'] = $this->auction_status($auction);
         if ($config == true) {
-
             $auction['start_time'] = local_date('Y-m-d H:i', $auction['start_time']);
             $auction['end_time'] = local_date('Y-m-d H:i', $auction['end_time']);
         } else {
@@ -169,7 +172,8 @@ class AuctionModel extends BaseModel {
      * @param   array   $auction    拍卖活动原始信息
      * @return  int
      */
-    function auction_status($auction) {
+    public function auction_status($auction)
+    {
         $now = gmtime();
         if ($auction['is_finished'] == 0) {
             if ($now < $auction['start_time']) {
@@ -191,7 +195,8 @@ class AuctionModel extends BaseModel {
      * @param   int     $act_id     活动id
      * @return  array
      */
-    function auction_log($act_id) {
+    public function auction_log($act_id)
+    {
         $log = array();
         $sql = "SELECT a.*, u.user_name " .
                 "FROM " . $this->pre . "auction_log AS a," .
@@ -207,5 +212,4 @@ class AuctionModel extends BaseModel {
         }
         return $log;
     }
-
 }

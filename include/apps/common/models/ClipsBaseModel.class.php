@@ -16,8 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class ClipsBaseModel extends BaseModel {
-
+class ClipsBaseModel extends BaseModel
+{
     protected $table = '';
 
     /**
@@ -28,7 +28,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $start          列表其实位置
      * @return  array   $arr
      */
-    public function get_collection_goods($user_id, $num = 10, $start = 0) {
+    public function get_collection_goods($user_id, $num = 10, $start = 0)
+    {
         $sql = 'SELECT g.goods_id, g.goods_name, g.goods_thumb, g.market_price, g.shop_price AS org_price, ' .
                 "IFNULL(mp.user_price, g.shop_price * '$_SESSION[discount]') AS shop_price, " .
                 'g.promote_price, g.promote_start_date,g.promote_end_date, c.rec_id, c.is_attention' .
@@ -70,7 +71,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $goods_id       商品ID
      * @return  int
      */
-    public function get_booking_rec($user_id, $goods_id) {
+    public function get_booking_rec($user_id, $goods_id)
+    {
         $this->table = 'booking_goods';
         $condition['user_id'] = $user_id;
         $condition['goods_id'] = $goods_id;
@@ -88,7 +90,8 @@ class ClipsBaseModel extends BaseModel {
      * @return  array   $msg            留言及回复列表
      * @return  string  $order_id       订单ID
      */
-    public function get_message_list($user_id, $user_name, $num, $start, $order_id = 0) {
+    public function get_message_list($user_id, $user_name, $num, $start, $order_id = 0)
+    {
         $this->table = 'feedback';
         /* 获取留言数据 */
         $condition['parent_id'] = 0;
@@ -134,7 +137,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   array       $message
      * @return  boolen      $bool
      */
-    public function add_message($message) {
+    public function add_message($message)
+    {
         $upload_size_limit = C('upload_size_limit') == '-1' ? ini_get('upload_max_filesize') : C('upload_size_limit');
         $status = 1 - C('message_check');
 
@@ -170,7 +174,7 @@ class ClipsBaseModel extends BaseModel {
 
         $message['msg_area'] = isset($message['msg_area']) ? intval($message['msg_area']) : 0;
 
-        $data['msg_id'] = NULL;
+        $data['msg_id'] = null;
         $data['parent_id'] = 0;
         $data['user_id'] = $message['user_id'];
         $data['user_name'] = $message['user_name'];
@@ -196,7 +200,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int         $user_id        用户的ID
      * @return  boolen      bool
      */
-    public function delete_tag($tag_words, $user_id) {
+    public function delete_tag($tag_words, $user_id)
+    {
         $this->table = 'tag';
         $condition['tag_words'] = $tag_words;
         $condition['user_id'] = $user_id;
@@ -211,7 +216,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $start          列表其实位置
      * @return  array   $booking
      */
-    public function get_booking_list($user_id, $num, $start) {
+    public function get_booking_list($user_id, $num, $start)
+    {
         $booking = array();
         $sql = "SELECT bg.rec_id, bg.goods_id, bg.goods_number, bg.booking_time, bg.dispose_note, g.goods_name " .
                 "FROM " . $this->pre . "booking_goods AS bg , " . $this->pre . "goods AS g" . " WHERE bg.goods_id = g.goods_id AND bg.user_id = '$user_id' ORDER BY bg.booking_time DESC limit " . $start . ',' . $num;
@@ -240,7 +246,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $goods_id    商品ID
      * @return  array   $info
      */
-    public function get_goodsinfo($goods_id) {
+    public function get_goodsinfo($goods_id)
+    {
         $info = array();
         $this->table = 'goods';
         $condition['goods_id'] = $goods_id;
@@ -269,7 +276,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int         $user_id        会员的ID
      * @return  boolen      $bool
      */
-    public function delete_booking($booking_id, $user_id) {
+    public function delete_booking($booking_id, $user_id)
+    {
         $this->table = 'booking_goods';
         $condition['rec_id'] = $booking_id;
         $condition['user_id'] = $user_id;
@@ -282,7 +290,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   array $booking
      * @return void
      */
-    public function add_booking($booking) {
+    public function add_booking($booking)
+    {
         $this->table = 'booking_goods';
         $data['user_id'] = $_SESSION['user_id'];
         $data['email'] = $booking['email'];
@@ -302,7 +311,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   string    $amount   余额
      * @return  int
      */
-    public function insert_user_account($surplus, $amount) {
+    public function insert_user_account($surplus, $amount)
+    {
         $this->table = 'user_account';
         $data['user_id'] = $surplus['user_id'];
         $data['admin_user'] = '';
@@ -323,7 +333,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   array     $surplus  会员余额信息
      * @return  int
      */
-    public function update_user_account($surplus) {
+    public function update_user_account($surplus)
+    {
         $this->table = 'user_account';
         $data['amount'] = $surplus['amount'];
         $data['user_note'] = $surplus['user_note'];
@@ -343,7 +354,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   integer     $is_paid    是否已支付
      * @return  int
      */
-    public function insert_pay_log($id, $amount, $type = PAY_SURPLUS, $is_paid = 0) {
+    public function insert_pay_log($id, $amount, $type = PAY_SURPLUS, $is_paid = 0)
+    {
         $this->table = 'pay_log';
         $data['order_id'] = $id;
         $data['order_amount'] = $amount;
@@ -359,7 +371,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   array     $pay_type    支付的类型：预付款/订单支付
      * @return  int
      */
-    public function get_paylog_id($surplus_id, $pay_type = PAY_SURPLUS) {
+    public function get_paylog_id($surplus_id, $pay_type = PAY_SURPLUS)
+    {
         $this->table = 'pay_log';
         $condition['order_id'] = $surplus_id;
         $condition['order_type'] = $pay_type;
@@ -373,7 +386,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $surplus_id  会员余额的ID
      * @return  int
      */
-    public function get_surplus_info($surplus_id) {
+    public function get_surplus_info($surplus_id)
+    {
         $this->table = 'user_account';
         $condition['id'] = $surplus_id;
         return $this->find($condition);
@@ -384,7 +398,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   bool    $include_balance    是否包含余额支付（冲值时不应包括）
      * @return  array   已安装的配送方式列表
      */
-    public function get_online_payment_list($include_balance = true) {
+    public function get_online_payment_list($include_balance = true)
+    {
         $sql = 'SELECT pay_id, pay_code, pay_name, pay_fee, pay_desc ' .
                 'FROM ' . $this->pre . "payment WHERE enabled = 1 AND is_cod <> 1";
         if (!$include_balance) {
@@ -393,7 +408,7 @@ class ClipsBaseModel extends BaseModel {
         $modules = M()->query($sql);
         foreach ($modules as $k => $v) {
             // 只保留显示手机版支付方式
-            if(!file_exists(ROOT_PATH . 'plugins/payment/'.$v['pay_code'].'.php')){
+            if (!file_exists(ROOT_PATH . 'plugins/payment/'.$v['pay_code'].'.php')) {
                 unset($modules[$k]);
             }
         }
@@ -437,7 +452,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $start      开始显示的条数
      * @return  array
      */
-    public function get_account_log($user_id, $num, $start) {
+    public function get_account_log($user_id, $num, $start)
+    {
         $account_log = array();
         $sql = 'SELECT * FROM ' . $this->pre . "user_account WHERE user_id = '$user_id'" .
                 " AND process_type " . db_create_in(array(SURPLUS_SAVE, SURPLUS_RETURN)) .
@@ -488,7 +504,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int         $user_id    会员的ID
      * @return  boolen
      */
-    public function del_user_account($rec_id, $user_id) {
+    public function del_user_account($rec_id, $user_id)
+    {
         $this->table = 'user_account';
         $condition['is_paid'] = 0;
         $condition['id'] = $rec_id;
@@ -502,7 +519,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $user_id        会员ID
      * @return  int
      */
-    public function get_user_surplus($user_id) {
+    public function get_user_surplus($user_id)
+    {
         $this->table = 'account_log';
         $condition['user_id'] = $user_id;
         return $this->field('SUM(user_money)', $condition);
@@ -514,7 +532,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   integer     $user_id
      * @return  void
      */
-    public function get_user_bonus($user_id = 0) {
+    public function get_user_bonus($user_id = 0)
+    {
         if ($user_id == 0) {
             $user_id = $_SESSION['user_id'];
         }
@@ -533,17 +552,18 @@ class ClipsBaseModel extends BaseModel {
      * @param   int         $user_id            用户ID
      * @return  array       $info               默认页面所需资料数组
      */
-    public function get_user_default($user_id) {
+    public function get_user_default($user_id)
+    {
         $user_bonus = $this->get_user_bonus();
 
         $sql = "SELECT pay_points, user_money, credit_line,parent_id, last_login, is_validated FROM " . $this->pre . "users WHERE user_id = '$user_id'";
-        $row = $this->row($sql);		
+        $row = $this->row($sql);
         $info = array();
-		if($row['parent_id'] > 0){
-			$sql = "SELECT user_name FROM " . $this->pre . "users WHERE user_id = ".$row['parent_id'];
-			$rows = $this->row($sql);
-			$info['parent_name'] =stripslashes($rows['user_name']);
-		}
+        if ($row['parent_id'] > 0) {
+            $sql = "SELECT user_name FROM " . $this->pre . "users WHERE user_id = ".$row['parent_id'];
+            $rows = $this->row($sql);
+            $info['parent_name'] =stripslashes($rows['user_name']);
+        }
         $info['username'] = stripslashes($_SESSION['user_name']);
         $info['shop_name'] = C('shop_name');
         $info['integral'] = $row['pay_points'] . C('integral_name');
@@ -554,7 +574,7 @@ class ClipsBaseModel extends BaseModel {
 
         //新增获取用户头像，昵称
         $u_row = '';
-        if(class_exists('WechatController')){
+        if (class_exists('WechatController')) {
             if (method_exists('WechatController', 'get_avatar')) {
                 $u_row = call_user_func(array('WechatController', 'get_avatar'), $user_id);
             }
@@ -595,7 +615,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   integer $user_id
      * @return  array
      */
-    public function get_tags($goods_id = 0, $user_id = 0) {
+    public function get_tags($goods_id = 0, $user_id = 0)
+    {
         $where = '';
         if ($goods_id > 0) {
             $where .= " goods_id = '$goods_id'";
@@ -626,7 +647,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   string      $tag
      * @return  void
      */
-    public function add_tag($id, $tag) {
+    public function add_tag($id, $tag)
+    {
         $this->table = 'tag';
         if (empty($tag)) {
             return;
@@ -634,7 +656,7 @@ class ClipsBaseModel extends BaseModel {
 
         $arr = explode(',', $tag);
 
-        foreach ($arr AS $val) {
+        foreach ($arr as $val) {
             /* 检查是否重复 */
             $condition['user_id'] = $_SESSION['user_id'];
             $condition['goods_id'] = $id;
@@ -656,7 +678,8 @@ class ClipsBaseModel extends BaseModel {
      * @author   Xuan Yan
      * @return array
      */
-    public function get_rank_info() {
+    public function get_rank_info()
+    {
         if (!empty($_SESSION['user_rank'])) {
             $sql = "SELECT rank_name, special_rank FROM " . $this->pre . "user_rank WHERE rank_id = '$_SESSION[user_rank]'";
             $row = $this->row($sql);
@@ -688,7 +711,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $user_id        用户id
      * @return  array
      */
-    public function get_user_prompt($user_id) {
+    public function get_user_prompt($user_id)
+    {
         $prompt = array();
         $now = gmtime();
         /* 夺宝奇兵 */
@@ -755,7 +779,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $start          列表起始页
      * @return  array
      */
-    public function get_comment_list($user_id, $page_size, $start) {
+    public function get_comment_list($user_id, $page_size, $start)
+    {
         $sql = "SELECT c.*, g.goods_name AS cmt_name, r.content AS reply_content, r.add_time AS reply_time " .
                 " FROM " . $this->pre . "comment AS c " .
                 " LEFT JOIN " . $this->pre . "comment AS r " .
@@ -809,7 +834,8 @@ class ClipsBaseModel extends BaseModel {
      * @param   int     $change_type    变动类型：参见常量文件
      * @return  void
      */
-    function log_account_change($user_id, $user_money = 0, $frozen_money = 0, $rank_points = 0, $pay_points = 0, $change_desc = '', $change_type = ACT_OTHER) {
+    public function log_account_change($user_id, $user_money = 0, $frozen_money = 0, $rank_points = 0, $pay_points = 0, $change_desc = '', $change_type = ACT_OTHER)
+    {
         /* 插入帐户变动记录 */
         $account_log = array(
             'user_id' => $user_id,
@@ -834,11 +860,12 @@ class ClipsBaseModel extends BaseModel {
     }
 
     /**
-     * 获取第三方登录配置信息 
+     * 获取第三方登录配置信息
      * @param type $type
      * @return type
      */
-    function get_third_user_info($type) {
+    public function get_third_user_info($type)
+    {
         $sql = "SELECT auth_config FROM " . $this->pre . "touch_auth WHERE `from` = '$type'";
         $info = $this->row($sql);
         if ($info) {
@@ -850,118 +877,122 @@ class ClipsBaseModel extends BaseModel {
             return $config;
         }
     }
-	 /**
-     * 获取用户红包数量
-     */
-	public function my_bonus($user_id) {
-	   $time = time();
-	   $sql="select count(u.bonus_id) from " . $this->pre .'user_bonus as u left join ' . $this->pre . 'bonus_type as b on u.bonus_type_id=b.type_id' .
-	   " where u.user_id='$user_id' and b.use_end_date>$time and u.order_id=0";
-	   $res = $this->query($sql);
-	   $count= $res[0]['count(u.bonus_id)'];
-	   return $count;
+    /**
+    * 获取用户红包数量
+    */
+    public function my_bonus($user_id)
+    {
+        $time = time();
+        $sql="select count(u.bonus_id) from " . $this->pre .'user_bonus as u left join ' . $this->pre . 'bonus_type as b on u.bonus_type_id=b.type_id' .
+       " where u.user_id='$user_id' and b.use_end_date>$time and u.order_id=0";
+        $res = $this->query($sql);
+        $count= $res[0]['count(u.bonus_id)'];
+        return $count;
     }
-	/**
+    /**
      * 获取收藏商品的数量
      */
-    public function num_collection_goods($user_id) {
-	   $where['user_id'] = $user_id;       
-       $count = $this->model->table('collect_goods')->where($where)->count();
-	   return $count;
+    public function num_collection_goods($user_id)
+    {
+        $where['user_id'] = $user_id;
+        $count = $this->model->table('collect_goods')->where($where)->count();
+        return $count;
     }
-	
-	/**
+    
+    /**
      * 获取未读取的消息数量
      */
-	public function msg_lists($user_id){
-		$sql = "select msg_id from " . $this->pre . "feedback where  user_name= '".$_SESSION["user_name"]."'";
-		$ress = $this->query($sql);				
-		if($ress){
-			foreach($ress as $k)
-			{
-			    $str.=$k['msg_id'].',';
-			}
-		}
-	    $reb = substr($str,0,-1) ;	
-		if(!$reb){
-			$reb = 0;
-		}
-		$sql = "select parent_id from " . $this->pre . "feedback where parent_id in ($reb)";
-		$res = $this->query($sql);
-		if($res){
-			foreach($res as $k)
-			{
-			    $strs.=$k['parent_id'].',';
-			}
-		}
-	    $rebs = substr($strs,0,-1) ;
-		if(!$rebs){
-			$rebs = 0;
-		}	
-		$sql = "select count(*) as num from " . $this->pre . "touch_feedback where msg_id in ($rebs) and msg_read =0 ";
-		$resb = $this->row($sql);
-		return $resb['num']; 		
-	}
-	 /**
-     * 获取未付款订单的数量
-     */
-    public function not_pay($user_id) {
-/*	   $where['user_id'] = $user_id;
-       $where['pay_status'] = 0;
-       $count = $this->model->table('order_info')->where($where)->count();*/
+    public function msg_lists($user_id)
+    {
+        $sql = "select msg_id from " . $this->pre . "feedback where  user_name= '".$_SESSION["user_name"]."'";
+        $ress = $this->query($sql);
+        if ($ress) {
+            foreach ($ress as $k) {
+                $str.=$k['msg_id'].',';
+            }
+        }
+        $reb = substr($str, 0, -1) ;
+        if (!$reb) {
+            $reb = 0;
+        }
+        $sql = "select parent_id from " . $this->pre . "feedback where parent_id in ($reb)";
+        $res = $this->query($sql);
+        if ($res) {
+            foreach ($res as $k) {
+                $strs.=$k['parent_id'].',';
+            }
+        }
+        $rebs = substr($strs, 0, -1) ;
+        if (!$rebs) {
+            $rebs = 0;
+        }
+        $sql = "select count(*) as num from " . $this->pre . "touch_feedback where msg_id in ($rebs) and msg_read =0 ";
+        $resb = $this->row($sql);
+        return $resb['num'];
+    }
+    /**
+    * 获取未付款订单的数量
+    */
+    public function not_pay($user_id)
+    {
+        /*	   $where['user_id'] = $user_id;
+               $where['pay_status'] = 0;
+               $count = $this->model->table('order_info')->where($where)->count();*/
 
-       $where = 'and pay_status = ' . PS_UNPAYED . ' and order_status not in(' . OS_CANCELED . ','. OS_INVALID .','. OS_RETURNED .')';
-       $sql = "SELECT count(*) as num FROM " . $this->pre . "order_info WHERE user_id = '$user_id' " . $where ;
-       $res = $this->row($sql);
-	   return $res['num'];
+        $where = 'and pay_status = ' . PS_UNPAYED . ' and order_status not in(' . OS_CANCELED . ','. OS_INVALID .','. OS_RETURNED .')';
+        $sql = "SELECT count(*) as num FROM " . $this->pre . "order_info WHERE user_id = '$user_id' " . $where ;
+        $res = $this->row($sql);
+        return $res['num'];
     }
-	
-	 /**
-     * 获取未收货订单的数量
-     */
-	public function not_shouhuo($user_id) {
-       $where = 'and pay_status = ' . PS_PAYED . ' and shipping_status not in(' . SS_RECEIVED .')';
-       $sql = "SELECT count(*) as num FROM " . $this->pre . "order_info WHERE user_id = '$user_id' " . $where ;
-       $res = $this->row($sql);
-       return $res['num'];
-	   
+    
+    /**
+    * 获取未收货订单的数量
+    */
+    public function not_shouhuo($user_id)
+    {
+        $where = 'and pay_status = ' . PS_PAYED . ' and shipping_status not in(' . SS_RECEIVED .')';
+        $sql = "SELECT count(*) as num FROM " . $this->pre . "order_info WHERE user_id = '$user_id' " . $where ;
+        $res = $this->row($sql);
+        return $res['num'];
     }
-	 /**
-     * 获取用户积分余额
-     */
-	public function pay_money($user_id) {
-	   $where['user_id'] = $user_id;
-       $res = $this->model->table('users')->field('user_money , pay_points')->where($where)->find();
-	   return $res;
+    /**
+    * 获取用户积分余额
+    */
+    public function pay_money($user_id)
+    {
+        $where['user_id'] = $user_id;
+        $res = $this->model->table('users')->field('user_money , pay_points')->where($where)->find();
+        return $res;
     }
-	 /**
-     * 获取未评价订单的数量
-     * 未评价订单条件：订单全部完成
-     */
-    public function not_pingjia($user_id) {
+    /**
+    * 获取未评价订单的数量
+    * 未评价订单条件：订单全部完成
+    */
+    public function not_pingjia($user_id)
+    {
         $sql = "select object_id from ".$this->model->pre."term_relationship";
-        $res = $this->query($sql);        
+        $res = $this->query($sql);
         $v = '';
-        foreach($res as $key =>$val){
-            if($val['object_id']){
+        foreach ($res as $key =>$val) {
+            if ($val['object_id']) {
                 $t = $val['object_id'];
                 $v .= $t.",";
             }
         }
-        $v = substr($v,0,-1) ;
+        $v = substr($v, 0, -1) ;
         $rec_id = model('Users')->order_rec_id($user_id);
 
         $sql="select  count(b.goods_id)   from " . $this->pre . "order_info as o  LEFT JOIN " .$this->pre. "order_goods  as b on o.order_id=b.order_id left join ".$this->pre."order_return as r on r.rec_id = b.rec_id " ." where o.user_id='$user_id' ".
             " AND o.shipping_status " . db_create_in(array(SS_RECEIVED)).
             " AND o.order_status " . db_create_in(array(OS_CONFIRMED, OS_SPLITED)).
             " AND o.pay_status " . db_create_in(array(PS_PAYED, PS_PAYING));
-        if($rec_id) {
+        if ($rec_id) {
             $sql .= ' AND b.rec_id NOT IN ( '. $rec_id .' )';
-        }         
+        }
         if ($v) {
             $sql .= ' AND b.rec_id NOT IN ( '. $v .' )';
-        }        
-        $res = $this->query($sql);        
+        }
+        $res = $this->query($sql);
         $row = $res[0]['count(b.goods_id)'];
         return $row;
     }

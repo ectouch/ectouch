@@ -6,22 +6,23 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * ECSHOP SESSION
  */
-class EcsApiSession {
+class EcsApiSession
+{
+    public $db = null;
+    public $session_table = '';
+    public $max_life_time = 1800;
+    public $session_name = '';
+    public $session_id = '';
+    public $session_expiry = '';
+    public $session_md5 = '';
+    public $session_cookie_path = '/';
+    public $session_cookie_domain = '';
+    public $session_cookie_secure = false;
+    public $_ip = '';
+    public $_time = 0;
 
-    var $db = NULL;
-    var $session_table = '';
-    var $max_life_time = 1800;
-    var $session_name = '';
-    var $session_id = '';
-    var $session_expiry = '';
-    var $session_md5 = '';
-    var $session_cookie_path = '/';
-    var $session_cookie_domain = '';
-    var $session_cookie_secure = false;
-    var $_ip = '';
-    var $_time = 0;
-
-    function __construct(&$db, $session_table, $session_data_table, $session_name = 'ECS_ID', $session_id = '') {
+    public function __construct(&$db, $session_table, $session_data_table, $session_name = 'ECS_ID', $session_id = '')
+    {
         $GLOBALS['_SESSION'] = array();
 
         if (!empty($GLOBALS['cookie_path'])) {
@@ -76,13 +77,15 @@ class EcsApiSession {
         register_shutdown_function(array(&$this, 'close_session'));
     }
 
-    function gen_session_id() {
+    public function gen_session_id()
+    {
         $this->session_id = md5(uniqid(mt_rand(), true));
 
         return $this->insert_session();
     }
 
-    function gen_session_key($session_id) {
+    public function gen_session_key($session_id)
+    {
         static $ip = '';
 
         if ($ip == '') {
@@ -92,11 +95,13 @@ class EcsApiSession {
         return sprintf('%08x', crc32(ROOT_PATH . $ip . $session_id));
     }
 
-    function insert_session() {
+    public function insert_session()
+    {
         return $this->db->query('INSERT INTO ' . $this->session_table . " (sesskey, expiry, ip, data) VALUES ('" . $this->session_id . "', '" . $this->_time . "', '" . $this->_ip . "', 'a:0:{}')");
     }
 
-    function load_session() {
+    public function load_session()
+    {
         $session = $this->db->query('SELECT userid, adminid, user_name, user_rank, discount, email, data, expiry FROM ' . $this->session_table . " WHERE sesskey = '" . $this->session_id . "'");
         $session = reset($session);
         if (empty($session)) {
@@ -138,7 +143,8 @@ class EcsApiSession {
         }
     }
 
-    function update_session() {
+    public function update_session()
+    {
         $adminid = !empty($GLOBALS['_SESSION']['admin_id']) ? intval($GLOBALS['_SESSION']['admin_id']) : 0;
         $userid = !empty($GLOBALS['_SESSION']['user_id']) ? intval($GLOBALS['_SESSION']['user_id']) : 0;
         $user_name = !empty($GLOBALS['_SESSION']['user_name']) ? trim($GLOBALS['_SESSION']['user_name']) : 0;
@@ -170,7 +176,8 @@ class EcsApiSession {
         return $this->db->query('UPDATE ' . $this->session_table . " SET expiry = '" . $this->_time . "', ip = '" . $this->_ip . "', userid = '" . $userid . "', adminid = '" . $adminid . "', user_name='" . $user_name . "', user_rank='" . $user_rank . "', discount='" . $discount . "', email='" . $email . "', data = '$data' WHERE sesskey = '" . $this->session_id . "' LIMIT 1");
     }
 
-    function close_session() {
+    public function close_session()
+    {
         $this->update_session();
 
         /* 闅忔満瀵 sessions_data 鐨勫簱杩涜?鍒犻櫎鎿嶄綔 */
@@ -185,7 +192,8 @@ class EcsApiSession {
         return true;
     }
 
-    function delete_spec_admin_session($adminid) {
+    public function delete_spec_admin_session($adminid)
+    {
         if (!empty($GLOBALS['_SESSION']['admin_id']) && $adminid) {
             return $this->db->query('DELETE FROM ' . $this->session_table . " WHERE adminid = '$adminid'");
         } else {
@@ -193,7 +201,8 @@ class EcsApiSession {
         }
     }
 
-    function destroy_session() {
+    public function destroy_session()
+    {
         $GLOBALS['_SESSION'] = array();
 
         setcookie($this->session_name, $this->session_id, 1, $this->session_cookie_path, $this->session_cookie_domain, $this->session_cookie_secure);
@@ -209,15 +218,14 @@ class EcsApiSession {
         return $this->db->query('DELETE FROM ' . $this->session_table . " WHERE sesskey = '" . $this->session_id . "' LIMIT 1");
     }
 
-    function get_session_id() {
+    public function get_session_id()
+    {
         return $this->session_id;
     }
 
-    function get_users_count() {
+    public function get_users_count()
+    {
         $array =  $this->db->query('SELECT count(*) FROM ' . $this->session_table);
         return reset($array);
     }
-
 }
-
-?>

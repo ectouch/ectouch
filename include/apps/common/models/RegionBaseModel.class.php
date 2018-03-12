@@ -16,8 +16,8 @@
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
-class RegionBaseModel extends BaseModel {
-
+class RegionBaseModel extends BaseModel
+{
     protected $table = 'region';
 
     /**
@@ -26,7 +26,8 @@ class RegionBaseModel extends BaseModel {
      * @param type $parent
      * @return type
      */
-    public function get_regions($type = 0, $parent = 0) {
+    public function get_regions($type = 0, $parent = 0)
+    {
         $condition['region_type'] = $type;
         $condition['parent_id'] = $parent;
         return $this->select($condition, 'region_id, region_name');
@@ -37,7 +38,8 @@ class RegionBaseModel extends BaseModel {
      * @param type $id
      * @return type
      */
-    public function get_region_name($id = 0) {
+    public function get_region_name($id = 0)
+    {
         $condition['region_id'] = $id;
         return $this->field('region_name', $condition);
     }
@@ -48,7 +50,8 @@ class RegionBaseModel extends BaseModel {
      * @param   int     $region_id  上级地区id
      * @return  void
      */
-    public function area_list($region_id = 0) {
+    public function area_list($region_id = 0)
+    {
         $area_arr = array();
         $condition['parent_id'] = $region_id;
         $list = $this->select($condition, '', 'region_id');
@@ -63,5 +66,4 @@ class RegionBaseModel extends BaseModel {
         }
         return $area_arr;
     }
-
 }

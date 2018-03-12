@@ -102,4 +102,3 @@ $_LANG['no_select_group_buy'] = '您现在没有团购活动记录！';
 
 /* 操作日志 */
 $_LANG['log_action']['group_buy'] = '团购商品';
-?>
