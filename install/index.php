@@ -3,8 +3,8 @@ header("Content-type: text/html; charset=utf-8");
 define('INSTALL_PATH', str_replace('\\', '/', dirname(__FILE__)) . '/');
 define('ROOT_PATH', dirname(INSTALL_PATH) . '/');
 define('APPNAME', 'ECTouch');
-define('VERSION', '2.6.28');
-define('RELEASE', '20160428');
+define('VERSION', '2.7.0');
+define('RELEASE', '20180313');
 //开启session
 session_save_path(ROOT_PATH . 'data/session');
 if (!session_id()) {

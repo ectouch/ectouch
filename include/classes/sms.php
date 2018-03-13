@@ -20,7 +20,7 @@ class sms
     public function send($phones, $msg, $send_date = '', $send_num = 1, $sms_type = '', $version = '1.0', &$sms_error = '')
     {
         //function send($phones, $msg, &$sms_error = '') {
-        require ROOT_PATH . 'include/vendor/Http.class.php';
+        require ROOT_PATH . 'vendor/Http.class.php';
         /* 检查发送信息的合法性 */
         $contents = $this->get_contents($phones, $msg);
         if (!$contents) {

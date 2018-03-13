@@ -2,13 +2,13 @@
 return array(
     /* ------系统------ */
     //系统名称
-    'name'=>'ECTouch微商城',
+    'name'=>'ECTouch',
     //系统版本
     'version'=>'2.0',
     //系统powered
     'powered'=>'Powered by ECTouch',
     //系统脚部信息
-    'footerInfo'=>'Copyright &copy; 2016 ECTouch.cn. All Rights Reserved.',
+    'footerInfo'=>'Copyright &copy; '. date('Y') .' ECTouch.cn. All Rights Reserved.',
     /* ------站点------ */
     //数据库文件
     'sqlFileName'=>array('structure.sql', 'data.sql', 'mobile.sql', 'wechat.sql'),

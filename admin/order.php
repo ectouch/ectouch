@@ -2709,8 +2709,8 @@ elseif ($_REQUEST['act'] == 'operate') {
 
         $html = '';
         $order_sn_list = explode(',', $_POST['order_id']);
-        include_once(ROOT_PATH . 'include/vendor/PHPExcel.php');
-        include_once(ROOT_PATH . 'include/vendor/PHPExcel/IOFactory.php');
+        include_once(ROOT_PATH . 'vendor/PHPExcel.php');
+        include_once(ROOT_PATH . 'vendor/PHPExcel/IOFactory.php');
         //require_once dirname(__FILE__) . '/Classes/PHPExcel.php';
         //require_once dirname(__FILE__) . '/Classes/PHPExcel/IOFactory.php';
         $PHPExcel = new PHPExcel();

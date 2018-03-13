@@ -49,8 +49,8 @@ if (isset($_SERVER['PHP_SELF'])) {
 
 // 版本信息
 defined('APPNAME') or define('APPNAME', 'ECTouch');
-defined('VERSION') or define('VERSION', '2.0-dev');
-defined('RELEASE') or define('RELEASE', '20150601');
+defined('VERSION') or define('VERSION', '2.7.0');
+defined('RELEASE') or define('RELEASE', '20180313');
 defined('CHARSET') or define('CHARSET', 'utf-8');
 defined('APP_DEBUG') or define('APP_DEBUG', true);
 
@@ -63,7 +63,7 @@ defined('__ROOT__') or define('__ROOT__', '../');
 defined('__PUBLIC__') or define('__PUBLIC__', '../data/assets');
 defined('__TPL__') or define('__TPL__', '../data/assets/admin');
 
-require(BASE_PATH . 'vendor/autoload.php');
+require(ROOT_PATH . 'vendor/autoload.php');
 require(BASE_PATH . 'config/constant.php');
 spl_autoload_register('autoload');
 require(ROOT_PATH . 'include/helpers/time_helper.php');
@@ -376,8 +376,8 @@ function dump($var, $echo=true, $label=null, $strict=true)
  */
 function url($route=null, $params=array())
 {
-    $controller = CONTROLLER_NAME;
-    $action = ACTION_NAME;
+    $controller = defined('CONTROLLER_NAME') ? CONTROLLER_NAME : '';
+    $action = defined('ACTION_NAME') ? ACTION_NAME : '';
     if ($route) {
         $route = explode('/', $route, 2);
         $routeNum = count($route);
@@ -559,7 +559,7 @@ function autoload($class)
         //$class = ucfirst($class);
         $array = array(
             ROOT_PATH . 'include/classes/' . $class . '.php',
-            ROOT_PATH . 'include/vendor/libraries/' . $class . '.php'
+            ROOT_PATH . 'vendor/libraries/' . $class . '.php'
         );
         foreach ($array as $file) {
             if (is_file($file)) {

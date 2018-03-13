@@ -581,7 +581,7 @@ elseif ($_REQUEST['act'] == 'aff_list') {
 //会员导出
 elseif ($_REQUEST['act'] == 'userexport') {
     $list=($_SESSION['user_list']);
-    include_once(ROOT_PATH . 'include/vendor/PHPExcel.php');
+    include_once(ROOT_PATH . 'vendor/PHPExcel.php');
     //创建处理对象实例
     $objPhpExcel = new PHPExcel();
     $objPhpExcel->getActiveSheet()->getDefaultColumnDimension()->setAutoSize(true);//设置单元格宽度
