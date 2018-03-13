@@ -766,7 +766,7 @@ function autoload($className)
         BASE_PATH . 'base/' . $className . '.class.php',
         BASE_PATH . 'classes/' . $className . '.class.php',
         BASE_PATH . 'libraries/' . $className . '.class.php',
-        BASE_PATH . 'vendor/' . $className . '.class.php'
+        ROOT_PATH . 'vendor/' . $className . '.class.php'
     );
     foreach ($array as $file) {
         $key = md5($file);

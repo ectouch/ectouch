@@ -27,7 +27,7 @@ defined('DEFAULT_APP') or define('DEFAULT_APP', 'default');
 defined('DEFAULT_CONTROLLER') or define('DEFAULT_CONTROLLER', 'Index');
 defined('DEFAULT_ACTION') or define('DEFAULT_ACTION', 'index');
 /* 加载vendor */
-require BASE_PATH . '../vendor/autoload.php';
+require ROOT_PATH . 'vendor/autoload.php';
 /* 系统函数 */
 require(BASE_PATH . 'base/helpers/function.php');
 /* 默认配置 */

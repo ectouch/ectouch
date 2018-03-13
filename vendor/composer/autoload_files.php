@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    '9f250a41a7dd6e0ec0b435f358c544bf' => $vendorDir . '/ecmoban/ecmoban.php',
+    '261615f98d6e06cd677ee02792318e25' => $vendorDir . '/ecmoban/ecmoban.php',
 );

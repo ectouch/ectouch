@@ -111,7 +111,7 @@ class BaseController extends Controller
             require(APP_PATH . C('_APP_NAME') . '/helpers/insert.php');
         }
         //加载模板解析扩展函数
-        require(BASE_PATH . 'vendor/Template.php');
+        require(ROOT_PATH . 'vendor/Template.php');
     }
 
     //读取静态缓存
