@@ -81,28 +81,6 @@
 			<a href="javascript:;" style="text-align:center" class="get_more"></a>
 		</ul>
 	</section>
-	<div class="n-footer-box">
-		<ul class="n-footer-minbox">
-			<li>
-				<a href="http://m.ecmoban.com/index.php?m=touch&amp;c=index&amp;a=download">
-					<div class="n-footer-img-box"><i class="iconfont icon-qunfengshangjiazhushouapperweimafuben is-ban-fize"></i></div>
-					<p class="footer-tit1">客户端</p>
-				</a>
-			</li>
-			<li>
-				<a href="{:url('index/index')}">
-					<div class="n-footer-img-box"><i class="iconfont icon-shoujiyanzheng is-ban-fize active"></i></div>
-					<p class="footer-tit">触屏版</p>
-				</a>
-			</li>
-			<li>
-				<a href="{$shop_url}/?pc">
-					<div class="n-footer-img-box"><i class="iconfont icon-pc is-ban-fize jian-top-2"></i></div>
-					<p class="footer-tit1">电脑版</p>
-				</a>
-			</li>
-		</ul>
-	</div>
 </div>
 <!--悬浮菜单s-->
 <div class="filter-top" id="scrollUp">
