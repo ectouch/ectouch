@@ -52,16 +52,16 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_activity` (
 CREATE TABLE IF NOT EXISTS `ecs_touch_topic` (
   `topic_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '',
-  `intro` text NOT NULL DEFAULT '',
+  `intro` text NOT NULL,
   `start_time` int(11) NOT NULL DEFAULT '0',
   `end_time` int(10) NOT NULL DEFAULT '0',
-  `data` text NOT NULL DEFAULT '',
+  `data` text NOT NULL,
   `template` varchar(255) NOT NULL DEFAULT '',
-  `css` text NOT NULL DEFAULT '',
+  `css` text NOT NULL,
   `topic_img` varchar(255) DEFAULT NULL,
   `title_pic` varchar(255) DEFAULT NULL,
-  `base_style` char(6) DEFAULT NULL,
-  `htmls` mediumtext,
+  `base_style` varchar(6) DEFAULT NULL,
+  `htmls` text NOT NULL,
   `keywords` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`topic_id`)
@@ -176,7 +176,7 @@ INSERT INTO `ecs_shop_config` (parent_id, code, type, store_range, store_dir, va
 
 CREATE TABLE IF NOT EXISTS `ecs_touch_auth` (
   `id` tinyint(2) NOT NULL AUTO_INCREMENT,
-  `auth_config` text NOT NULL DEFAULT '',
+  `auth_config` text NOT NULL,
   `from` varchar(10) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='登录插件';

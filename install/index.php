@@ -23,7 +23,7 @@ set_time_limit(1000);
 //php版本
 $phpversion = phpversion();
 //php版本过低提示
-if ($phpversion < '5.3.0' || $phpversion > '7.0.0') {
+if ($phpversion < '5.3.0') {
     exit(get_tip_html('您当前php版本('.$phpversion.')，不能安装本软件，请切换到5.3至5.6版本再安装，谢谢！'));
 }
 //数据库文件
@@ -278,8 +278,8 @@ switch ($step) {
         $appid = get_appid();
         $appkey_file = ROOT_PATH . 'data/certificate/appkey.php';
         if (!file_exists($appkey_file)) {
-            require ROOT_PATH . 'include/vendor/Http.class.php';
-            require ROOT_PATH . 'include/vendor/Cloud.class.php';
+            require ROOT_PATH . 'vendor/Http.class.php';
+            require ROOT_PATH . 'vendor/Cloud.class.php';
             $contents = "<?php define('EC_APPID', '".$appid."');";
             @file_put_contents($appkey_file, $contents);
             // 推送API

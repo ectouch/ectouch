@@ -55,7 +55,7 @@ if ($independent) {
     $ip = get_client_ip();
     $password = md5(md5($password).$verify);
     $email = trim($_POST['manager_email']);
-    $query = "INSERT INTO `{$dbPrefix}admin_user` (user_name, password, ec_salt, email, add_time, last_ip, action_list) VALUES ('{$username}', '{$password}', '{$verify}', '{$email}', '{$time}', '{$ip}', 'all')";
+    $query = "INSERT INTO `{$dbPrefix}admin_user` (user_name, password, ec_salt, email, add_time, last_ip, action_list, nav_list, agency_id) VALUES ('{$username}', '{$password}', '{$verify}', '{$email}', '{$time}', '{$ip}', 'all', '', 0)";
     if (mysqli_query($conn, $query)) {
         return array('status'=>2,'info'=>'成功添加管理员<br />成功写入配置文件<br>安装完成...');
     }

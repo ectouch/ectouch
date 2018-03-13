@@ -960,7 +960,7 @@ CREATE TABLE IF NOT EXISTS `ecs_group_goods` (
 --
 
 CREATE TABLE IF NOT EXISTS `ecs_keywords` (
-  `date` date NOT NULL DEFAULT '0000-00-00',
+  `date` date NOT NULL DEFAULT '1000-01-01',
   `searchengine` varchar(20) NOT NULL DEFAULT '',
   `keyword` varchar(90) NOT NULL DEFAULT '',
   `count` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -1336,7 +1336,7 @@ CREATE TABLE IF NOT EXISTS `ecs_role` (
 --
 
 CREATE TABLE IF NOT EXISTS `ecs_searchengine` (
-  `date` date NOT NULL DEFAULT '0000-00-00',
+  `date` date NOT NULL DEFAULT '1000-01-01',
   `searchengine` varchar(20) NOT NULL DEFAULT '',
   `count` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`date`,`searchengine`)
@@ -1561,7 +1561,7 @@ CREATE TABLE IF NOT EXISTS `ecs_users` (
   `question` varchar(255) NOT NULL DEFAULT '',
   `answer` varchar(255) NOT NULL DEFAULT '',
   `sex` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `birthday` date NOT NULL DEFAULT '0000-00-00',
+  `birthday` date NOT NULL DEFAULT '1000-01-01',
   `user_money` decimal(10,2) NOT NULL DEFAULT '0.00',
   `frozen_money` decimal(10,2) NOT NULL DEFAULT '0.00',
   `pay_points` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1569,7 +1569,7 @@ CREATE TABLE IF NOT EXISTS `ecs_users` (
   `address_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `reg_time` int(10) unsigned NOT NULL DEFAULT '0',
   `last_login` int(11) unsigned NOT NULL DEFAULT '0',
-  `last_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_time` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
   `last_ip` varchar(15) NOT NULL DEFAULT '',
   `visit_count` smallint(5) unsigned NOT NULL DEFAULT '0',
   `user_rank` tinyint(3) unsigned NOT NULL DEFAULT '0',
