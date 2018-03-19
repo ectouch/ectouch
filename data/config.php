@@ -11,6 +11,9 @@
  * ----------------------------------------------------------------------------
  */
 
+// 部署模式
+define('DEPLOY_MODE', 0);
+
 // 兼容运行环境
 $global_config = dirname(ROOT_PATH) . '/data/config.php';
 if (file_exists($global_config)) {
