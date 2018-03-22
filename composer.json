@@ -2,7 +2,7 @@
     "name": "ectouch/ectouch",
     "description": "ECTouch E-Commerce Platform for PHP.",
     "keywords": ["ectouch", "b2c", "o2o", "shop", "mall", "wechat"],
-    "license": "GPL",
+    "license": "GPL-3.0",
     "type": "project",
     "require": {
         "php": ">=5.3.0"
