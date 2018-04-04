@@ -1187,12 +1187,7 @@ function favourable_info($act_id)
             " WHERE act_id = '$act_id'";
     $row = $global->db->getRow($sql);
     if (!empty($row)) {
-        if (CHARSET == 'utf-8') {
-            $row['gift'] = asc_unserialize($row['gift']);
-        }
-        if (CHARSET == 'gbk') {
-            $row['gift'] = mb_unserialize($row['gift']);
-        }
+        $row['gift'] = unserialize($row['gift']);
         $row['start_time'] = local_date(C('time_format'), $row['start_time']);
         $row['end_time'] = local_date(C('time_format'), $row['end_time']);
         $row['formated_min_amount'] = price_format($row['min_amount']);
