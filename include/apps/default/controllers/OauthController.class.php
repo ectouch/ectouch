@@ -39,7 +39,7 @@ class OauthController extends CommonController
         }
 
         // 处理url
-        $url = U('index/', array('type' => $type, 'back_url' => $this->back_act), false, true);
+        $url = U('index/', array('type' => $type, 'back_url' => $this->back_act), false, true, 'org_mode');
 
         $info = model('ClipsBase')->get_third_user_info($type);
         // 判断是否安装
