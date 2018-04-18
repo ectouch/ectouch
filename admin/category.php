@@ -109,7 +109,12 @@ if ($_REQUEST['act'] == 'insert') {
         /*图片入库*/
         if (!empty($_FILES['category_image']['name'])) {
             $img_name = basename($image->upload_image($_FILES['category_image'], 'category'));
-            $gallery_thumb = $image->make_thumb('../data/attached/category/' . $img_name, 91, 68);
+            if ($_CFG['thumb_width'] != 0 || $_CFG['thumb_height'] != 0)
+            {
+                $gallery_thumb = $image->make_thumb('../data/attached/category/' . $img_name, $GLOBALS['_CFG']['thumb_width'],  $GLOBALS['_CFG']['thumb_height']);
+            }else{                    
+                $gallery_thumb = $image->make_thumb('../data/attached/category/' . $img_name, 91, 68);
+            }
             if ($gallery_thumb === false) {
                 sys_msg($image->error_msg(), 1, array(), false);
             }
@@ -296,7 +301,12 @@ if ($_REQUEST['act'] == 'update') {
         /*图片入库*/
         if (!empty($_FILES['category_image']['name'])) {
             $img_name = basename($image->upload_image($_FILES['category_image'], 'category'));
-            $gallery_thumb = $image->make_thumb('../data/attached/category/' . $img_name, 91, 68);
+            if ($_CFG['thumb_width'] != 0 || $_CFG['thumb_height'] != 0)
+            {
+                $gallery_thumb = $image->make_thumb('../data/attached/category/' . $img_name, $GLOBALS['_CFG']['thumb_width'],  $GLOBALS['_CFG']['thumb_height']);
+            }else{                    
+                $gallery_thumb = $image->make_thumb('../data/attached/category/' . $img_name, 91, 68);
+            }
             if ($gallery_thumb === false) {
                 sys_msg($image->error_msg(), 1, array(), false);
             }
