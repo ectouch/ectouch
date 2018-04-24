@@ -1901,3 +1901,6 @@ div.edui-box {
 .edui-default  .edui-pastecontainer .edui-button  .edui-state-hover .edui-plaintxticon{
     background-position: -72px -34px;
 }
+
+#edui1{width: 640px!important; z-index: 999;}
+#edui1_iframeholder{width: 640px!important; height: 400px !important; z-index: 999; overflow: hidden;}
