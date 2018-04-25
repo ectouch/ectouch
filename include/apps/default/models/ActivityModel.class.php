@@ -26,8 +26,9 @@ class ActivityModel extends BaseModel
      */
     public function get_activity_info($size, $page)
     {
+        $now = gmtime(); 
         $start = ($page - 1) * $size;
-        $sql = 'SELECT f.*  FROM ' . $this->pre . "favourable_activity f  ORDER BY f.sort_order ASC, f.end_time DESC LIMIT $start , $size";
+        $sql = 'SELECT f.*  FROM ' . $this->pre . "favourable_activity f where f.end_time >'$now' ORDER BY f.sort_order ASC, f.end_time DESC LIMIT $start , $size";
         $res = $this->query($sql);
         $arr = array();
         foreach ($res as $row) {
