@@ -47,8 +47,12 @@
 	<div class="other-login">
 		<h4 class="title-hrbg"><span>{$lang.third_login}</span><hr> </h4>
 		<ul class="dis-box">
+			{if $ectouch_auth.qq}
 			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'qq', 'back_url' => $this->_var['back_act']))}"><span class="qq"><i class="iconfont icon-qq"></i></span></a></li>
+			{/if}
+			{if $ectouch_auth.weibo}
 			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'weibo', 'back_url' => $this->_var['back_act']))}"><span class="weibo"><i class="iconfont icon-weibo"></i></span></a></li>
+			{/if}
 			{if $is_wechat}
 			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'weixin', 'back_url' => $this->_var['back_act']))}"><span class="weixin"><i class="iconfont icon-weibiaoti1"></i></span></a></li>
 			{/if}
