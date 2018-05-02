@@ -53,6 +53,7 @@ if (isset($set_modules) && $set_modules == true) {
         array('type' => 'text', 'name' => 'app_id', 'value' => ''),
         array('type' => 'text', 'name' => 'app_secret', 'value' => ''),
         array('type' => 'text', 'name' => 'token', 'value' => ''),
+        array('type' => 'select', 'name' => 'auto_login', 'value' => ''),
     );
     return;
 }

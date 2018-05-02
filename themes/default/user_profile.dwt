@@ -95,7 +95,7 @@
 	</a>
 	{/if}
 
-	{if $is_not_wechat}
+	{if $auto_login}
 	<a href="{:url('user/logout')}">
 		<div class="s-user-top">
 			<div class="dis-box s-user-top-1">

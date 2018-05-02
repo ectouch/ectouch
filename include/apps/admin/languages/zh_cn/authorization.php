@@ -32,6 +32,10 @@ $_LANG['app_id'] = 'APP ID';
 $_LANG['token'] = 'TOKEN';
 $_LANG['redirecturi'] = '回调地址';
 
+$_LANG['auto_login'] = '是否自动登录';
+$_LANG['auto_login_range'][0] = '是';
+$_LANG['auto_login_range'][1] = '否';
+
 $_LANG['yes_uninstall'] = '卸载成功';
 $_LANG['no_uninstall'] = '卸载失败,找不到文件';
 

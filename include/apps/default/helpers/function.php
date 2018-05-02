@@ -1764,3 +1764,25 @@ function update_wechat_unionid($info, $wechat_id = 0)
         }
     }
 }
+/**
+*获取微信登录安装插件是否自动微信授权登陆
+*@return
+**/
+function get_auto_login(){
+    $where['from'] = 'weixin';
+    $res = M()->table('touch_auth')->field('auth_config')->where($where)->getOne();
+    $res = unserialize($res);
+
+    $result = '';
+    foreach ($res as $key => $value) {
+        if($value['name'] == 'auto_login'){
+            //找到符合条件的数组键值
+            $k = $key;
+            break;
+        }
+    }
+
+    $result = $res[$k]['value'];
+    return $result; 
+}
+    

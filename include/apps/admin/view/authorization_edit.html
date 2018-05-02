@@ -9,7 +9,17 @@
         {loop $info['config'] $key $vo}
         <tr>
           <td width="200">{$vo['label']}</td>
-          <td><input type="text" name="cfg_value[]" maxlength="50" class="form-control input-sm" value="{$vo['value']}" />
+          <td>
+          
+          {if $vo['type']  == 'text'}
+          <input type="text" name="cfg_value[]" maxlength="50" class="form-control input-sm" value="{$vo['value']}" />
+          {elseif $vo['type']  == 'select'}
+          <select name="cfg_value[]">
+          {loop $vo['range'] $k $v}
+              <option value="{$k}" {if $k == $vo['value']}selected{/if} >{$v}</option>
+          {/loop}
+          </select>
+          {/if}
           <input name="cfg_name[]" type="hidden" value="{$vo['name']}" />
           <input name="cfg_type[]" type="hidden" value="{$vo['type']}" />
           <input name="cfg_label[]" type="hidden" value="{$vo['label']}" />

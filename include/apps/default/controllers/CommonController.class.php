@@ -37,6 +37,9 @@ class CommonController extends BaseController
         /* ecjia验证登录*/
         $this->ecjia_login();
 
+        //开启的登录插件
+        $this->ectouch_auth();
+
         $this->wechat_init();
 
         $this->assign('shop_url', dirname(__URL__));
@@ -184,7 +187,7 @@ class CommonController extends BaseController
         // 模板替换
         defined('__TPL__') or define('__TPL__', __ROOT__ . '/themes/' . C('template'));
         $stylename = C('stylename');
-        if (! empty($stylename)) {
+        if (! empty($stylename)) { 
             $this->assign('ecs_css_path', __ROOT__ . '/themes/' . C('template') . '/css/style_' . C('stylename') . '.css');
         } else {
             $this->assign('ecs_css_path', __ROOT__ . '/themes/' . C('template') . '/css/style.css');
@@ -200,11 +203,16 @@ class CommonController extends BaseController
      */
     protected function wechat_init()
     {
-        // 微信oauth处理
-        $this->init_oauth();
 
-        
+        // 是否开启微信自动授权登录
+        $res = get_auto_login();
+        $this->assign('auto_login', $res);
 
+        if($res !== 1){
+          // 微信oauth处理
+          $this->init_oauth();   
+        }
+                
         if (class_exists('WechatController') && is_wechat_browser()) {
             //是否显示关注按钮
             // $condition['openid'] = !empty($_SESSION['openid']) ? $_SESSION['openid'] : 0;
@@ -308,6 +316,22 @@ class CommonController extends BaseController
                 $this->redirect($url);
             }
         }
+    }
+    /**
+    * 已安装的登录插件（除微信登录插件）
+    **/
+    public function ectouch_auth() {
+        $sql = "SELECT `auth_config`, `from` FROM " . $this->model->pre . "touch_auth WHERE `from` != 'weixin' ";
+        $auth_config = $this->model->query($sql);
+        
+        $res = array();
+        if(!empty($auth_config)) {
+            foreach ($auth_config as $key=>$value) {
+                $res[$value['from']] = $value['from'];
+            }
+        }
+       
+        $this->assign('ectouch_auth', $res);
     }
 }
 
