@@ -1006,3 +1006,16 @@ $_LANG['shopping_package'] = '超值礼包列表';
 
 
 $_LANG['brand_hj'] = '品牌合集页';
+
+$_LANG['process_false'] = '此次操作失败，请返回重试！';
+$_LANG['relogin_lnk'] = '重新登录';
+$_LANG['no_register_auth'] = '还没有注册该插件，请与后台管理员联系';
+$_LANG['msg_go_back'] = '返回上一页';
+$_LANG['msg_authoriza_error'] = '授权回调失败';
+$_LANG['msg_input_namepwd'] = '请输入用户名或密码';
+$_LANG['msg_account_bound'] = '当前账号已经绑定了哦';
+$_LANG['msg_account_bound_fail'] = '账号绑定失败';
+$_LANG['msg_rebound'] = '重新绑定';
+$_LANG['msg_bound_account'] = '绑定已有帐号';
+$_LANG['msg_author_register_error'] = '授权注册失败';
+$_LANG['msg_re_registration'] = '重新注册';
