@@ -1774,13 +1774,16 @@ function get_auto_login(){
     $res = unserialize($res);
 
     $result = '';
-    foreach ($res as $key => $value) {
-        if($value['name'] == 'auto_login'){
-            //找到符合条件的数组键值
-            $k = $key;
-            break;
+    if(!empty($res)) {
+        foreach ($res as $key => $value) {
+            if($value['name'] == 'auto_login'){
+                //找到符合条件的数组键值
+                $k = $key;
+                break;
+            }
         }
     }
+    
 
     $result = $res[$k]['value'];
     return $result; 
