@@ -1019,3 +1019,5 @@ $_LANG['msg_rebound'] = '重新绑定';
 $_LANG['msg_bound_account'] = '绑定已有帐号';
 $_LANG['msg_author_register_error'] = '授权注册失败';
 $_LANG['msg_re_registration'] = '重新注册';
+$_LANG['msg_no_unionid'] = '无法获取unionid,请联系管理员绑定开放平台';
+

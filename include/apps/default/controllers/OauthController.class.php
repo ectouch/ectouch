@@ -26,6 +26,7 @@ class OauthController extends CommonController
     {
         $type = I('get.type');
         $back_url = I('get.back_url', '', 'urldecode');
+        $from = I('get.from');
         $this->back_act = empty($back_url) ? url('user/index') : $back_url;
 
         // 会员中心授权管理绑定
@@ -52,35 +53,97 @@ class OauthController extends CommonController
         if (isset($_GET['code']) && $_GET['code'] != '') {
             if ($res = $obj->call_back($url, $_GET['code'])) {
 
-                // 处理推荐u参数
-                $up_uid = get_affiliate();  // 获得推荐uid
-                $res['parent_id'] = (!empty($_GET['u']) && $_GET['u'] == $up_uid) ? intval($_GET['u']) : 0;
-
-                $res['unionid'] = $res['openid'];
-                $_SESSION['unionid'] = $res['unionid'];
-                $_SESSION['parent_id'] = $res['parent_id'];
-
-                // 会员中心授权管理绑定
-                if (isset($_SESSION['user_id']) && $user_id > 0 && $_SESSION['user_id'] == $user_id && !empty($res['unionid'])) {
-                    $this->UserBind($res, $user_id, $type);
+                //不存在unionid警告
+                if(!$res['unionid']){
+                    show_message(L('msg_no_unionid'), L('msg_go_back'), '', 'error');
+                    exit;
                 }
 
-                // 授权登录
-                if ($this->oauthLogin($res, $type) === true) {
-                    $this->redirect($this->back_act);
-                }
+                //开启自动登录或者从登录页面点击微信登录。
+                $res = get_auto_login();
+                if($res !== 1 && $from != 'user_login'){
+                    // 处理推荐u参数
+                    $up_uid = get_affiliate();  // 获得推荐uid
+                    $res['parent_id'] = (!empty($_GET['u']) && $_GET['u'] == $up_uid) ? intval($_GET['u']) : 0;
 
-                // 自动注册
-                if (!empty($_SESSION['unionid']) && isset($_SESSION['unionid']) || $res['unionid']) {
-                    $res['unionid'] = !empty($_SESSION['unionid']) ? $_SESSION['unionid'] : $res['unionid'];
-                    $res['parent_id'] = !empty($_SESSION['parent_id']) ? $_SESSION['parent_id'] : $res['parent_id'];
-                    // $res['nickname'] = session('nickname');
-                    // $res['headimgurl'] = session('headimgurl');
-                    $this->doRegister($res, $type, $this->back_act);
-                } else {
-                    show_message(L('msg_author_register_error'), L('msg_go_back'), url('user/login'), 'error');
+                    $res['unionid'] = $res['openid'];
+                    $_SESSION['unionid'] = $res['unionid'];
+                    $_SESSION['parent_id'] = $res['parent_id'];
+
+                    // 会员中心授权管理绑定
+                    if (isset($_SESSION['user_id']) && $user_id > 0 && $_SESSION['user_id'] == $user_id && !empty($res['unionid'])) {
+                        $this->UserBind($res, $user_id, $type);
+                    }
+
+                    // 授权登录
+                    if ($this->oauthLogin($res, $type) === true) {
+                        $this->redirect($this->back_act);
+                    }
+
+                    // 自动注册
+                    if (!empty($_SESSION['unionid']) && isset($_SESSION['unionid']) || $res['unionid']) {
+                        $res['unionid'] = !empty($_SESSION['unionid']) ? $_SESSION['unionid'] : $res['unionid'];
+                        $res['parent_id'] = !empty($_SESSION['parent_id']) ? $_SESSION['parent_id'] : $res['parent_id'];
+                        // $res['nickname'] = session('nickname');
+                        // $res['headimgurl'] = session('headimgurl');
+                        $this->doRegister($res, $type, $this->back_act);
+                    } else {
+                        show_message(L('msg_author_register_error'), L('msg_go_back'), url('user/login'), 'error');
+                    }
                 }
-                return;
+                else 
+                {   //未开启自动登录
+
+                    $data = array(
+                        'unionid' => $res['openid'],
+                        'nickname' => $res['nickname'],
+                        'sex' => $res['sex'],
+                        'headimgurl' => $res['headimgurl'],
+                        'city' => $res['city'],
+                        'province' => $res['province'],
+                        'country' => $res['country'],
+                    );
+
+                    //存SESSION
+                    $_SESSION['unionid'] = $data['unionid'];
+                    $_SESSION['parent_id'] = $data['parent_id'];
+
+                    // 已关注用户基本信息
+                    update_wechat_unionid($data); //兼容更新平台粉丝unionid
+                    
+                    //用户信息是否存在wechat_user表中
+                    $condition = array('unionid' => $data['unionid']);
+                    $result = $this->model->table('wechat_user')->field('uid, ect_uid, openid, unionid')->where($condition)->find();
+
+
+                    //如果不存在用户信息
+                    if(empty($result)){
+                        //保存微信粉丝信息
+                        model('Users')->add_wechat_user($data);
+                        $this->redirect($this->back_act);
+                    }else{
+                        //粉丝表是否绑定user_id
+                        if($result['ect_uid'] > 0){
+                            $condition = array('user_id' => $result['ect_uid']);
+                            $ress = $this->model->table('users')->field('user_id, user_name')->where($condition)->find();
+                            //粉丝表绑定用户id，则登录
+                            if($ress){
+                                // 会员中心授权管理绑定
+                                // if (isset($_SESSION['user_id']) && $user_id > 0 && $_SESSION['user_id'] == $user_id && !empty($res['unionid'])) {
+                                //     $this->UserBind($res, $user_id, $type);
+                                // }
+
+                                // 授权登录
+                                if ($this->oauthLogin($res, $type) === true) {
+                                    $this->redirect($this->back_act);
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                
+
             } else {
                 show_message(L('process_false'), L('relogin_lnk'), url('user/login', array('back_act' => urlencode($this->back_act))), 'error');
             }

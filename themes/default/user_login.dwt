@@ -54,7 +54,7 @@
 			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'weibo', 'back_url' => $this->_var['back_act']))}"><span class="weibo"><i class="iconfont icon-weibo"></i></span></a></li>
 			{/if}
 			{if $is_wechat}
-			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'weixin', 'back_url' => $this->_var['back_act']))}"><span class="weixin"><i class="iconfont icon-weibiaoti1"></i></span></a></li>
+			<li class="box-flex"><a href="{:url('oauth/index',array('type' => 'weixin', 'back_url' => $this->_var['back_act'],'from' => 'user_login'))}"><span class="weixin"><i class="iconfont icon-weibiaoti1"></i></span></a></li>
 			{/if}
 		</ul>
 	</div>

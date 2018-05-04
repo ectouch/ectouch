@@ -90,6 +90,18 @@ class UsersModel extends BaseModel
                 " last_login = '" . gmtime() . "'" .
                 " WHERE user_id = '" . $_SESSION['user_id'] . "'";
         $this->query($sql);
+
+        //更新绑定微信粉丝信息
+        if($_SESSION['unionid'] && $_SESSION['user_id']) {
+            $res = $this->model->table('wechat_user')->field('ect_uid, nickname, sex, province, city, country, headimgurl, unionid')->where(array('unionid' => $_SESSION['unionid']))->find();
+            if(!$res['ect_uid']){
+                //更新wechat_user表ect_uid
+                $sql = 'UPDATE ' . $this->pre . 'wechat_user SET ect_uid = ' . $_SESSION['user_id'] . ' WHERE unionid = ' .$_SESSION['unionid'];
+                //插入connect_user表
+                $res['user_id'] = $_SESSION['user_id'];
+                $this->update_connnect_user($res, 'user_login') 
+            }
+        }        
     }
 
     /**
@@ -2508,5 +2520,46 @@ class UsersModel extends BaseModel
     {
         $result = $this->model->table('wechat_user')->field('openid')->where(array('ect_uid' => $user_id))->find();
         return $result['openid'];
+    }
+
+    /**
+     * 更新微信用户信息
+     * @param array    $info 微信用户信息
+     * @param string   $wechat_id  公众号ID
+     * @return
+     */
+    public function add_wechat_user($info, $wechat_id = '')
+    {
+        //公众号id
+        $wechat = $this->model->table('wechat')->field('id')->where(array('type' => 2, 'status' => 1, 'default_wx' => 1))->find();
+        $wechat_id = !empty($wechat_id) ? $wechat_id : $wechat['id'];
+        // 组合数据
+        $data = array(
+            'wechat_id' => $wechat_id,
+            'openid' => $info['openid'],
+            'nickname' => !empty($info['nickname']) ? $info['nickname'] : '',
+            'sex' => !empty($info['sex']) ? $info['sex'] : 0,
+            'language' => !empty($info['language']) ? $info['language'] : '',
+            'city' => !empty($info['city']) ? $info['city'] : '',
+            'province' => !empty($info['province']) ? $info['province'] : '',
+            'country' => !empty($info['country']) ? $info['country'] : '',
+            'headimgurl' => !empty($info['headimgurl']) ? $info['headimgurl'] : '',
+            'unionid' => $info['unionid'],
+            'ect_uid' => 0,
+        );
+
+        // unionid 微信开放平台唯一标识
+        if (!empty($info['unionid'])) {
+            // 查询
+            $where = array('unionid' => $info['unionid'], 'wechat_id' => $wechat_id);
+            $result = $this->model->table('wechat_user')->field('openid, unionid')->where($where)->find();
+            if (empty($result)) {
+                // 新增记录
+                $this->model->table('wechat_user')->data($data)->insert();
+            } else {
+                // 更新记录
+                $this->model->table('wechat_user')->data($data)->where($where)->update();
+            }
+        }
     }
 }

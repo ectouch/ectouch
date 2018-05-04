@@ -208,10 +208,13 @@ class CommonController extends BaseController
         $res = get_auto_login();
         $this->assign('auto_login', $res);
 
-        if($res !== 1){
+        // //用户信息是否已注册
+        // $user_info = get_auto_login();
+
+        //if($res !== 1){
           // 微信oauth处理
           $this->init_oauth();   
-        }
+       // }
                 
         if (class_exists('WechatController') && is_wechat_browser()) {
             //是否显示关注按钮
