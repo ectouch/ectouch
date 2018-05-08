@@ -27,6 +27,10 @@ class OauthController extends CommonController
         $type = I('get.type');
         $back_url = I('get.back_url', '', 'urldecode');
         $from = I('get.from');
+
+        //兼容session丢失用户
+        $_SESSION['unionid'] = $_SESSION['unionid'] ? $_SESSION['unionid'] : ($_COOKIE['unionid'] ? $_COOKIE['unionid'] : '');
+
         $this->back_act = empty($back_url) ? url('user/index') : $back_url;
 
         // 会员中心授权管理绑定
@@ -40,7 +44,7 @@ class OauthController extends CommonController
         }
 
         // 处理url
-        $url = U('index/', array('type' => $type, 'back_url' => $this->back_act), false, true, 'org_mode');
+        $url = U('index/', array('type' => $type, 'back_url' => $this->back_act, 'from' => $from), false, true, 'org_mode');
 
         $info = model('ClipsBase')->get_third_user_info($type);
         // 判断是否安装
@@ -60,20 +64,20 @@ class OauthController extends CommonController
                 }
 
                 //开启自动登录或者从登录页面点击微信登录。
-                $res = get_auto_login();
-                if($res !== 1 && $from != 'user_login'){
+                $rese = get_auto_login();
+                if($rese == 0 || $from == 'user_login'){                    
                     // 处理推荐u参数
                     $up_uid = get_affiliate();  // 获得推荐uid
                     $res['parent_id'] = (!empty($_GET['u']) && $_GET['u'] == $up_uid) ? intval($_GET['u']) : 0;
 
-                    $res['unionid'] = $res['openid'];
+                    $res['unionid'] = $res['unionid'];
                     $_SESSION['unionid'] = $res['unionid'];
                     $_SESSION['parent_id'] = $res['parent_id'];
 
                     // 会员中心授权管理绑定
-                    if (isset($_SESSION['user_id']) && $user_id > 0 && $_SESSION['user_id'] == $user_id && !empty($res['unionid'])) {
-                        $this->UserBind($res, $user_id, $type);
-                    }
+                    // if (isset($_SESSION['user_id']) && $user_id > 0 && $_SESSION['user_id'] == $user_id && !empty($res['unionid'])) {
+                    //     $this->UserBind($res, $user_id, $type);
+                    // }
 
                     // 授权登录
                     if ($this->oauthLogin($res, $type) === true) {
@@ -84,8 +88,6 @@ class OauthController extends CommonController
                     if (!empty($_SESSION['unionid']) && isset($_SESSION['unionid']) || $res['unionid']) {
                         $res['unionid'] = !empty($_SESSION['unionid']) ? $_SESSION['unionid'] : $res['unionid'];
                         $res['parent_id'] = !empty($_SESSION['parent_id']) ? $_SESSION['parent_id'] : $res['parent_id'];
-                        // $res['nickname'] = session('nickname');
-                        // $res['headimgurl'] = session('headimgurl');
                         $this->doRegister($res, $type, $this->back_act);
                     } else {
                         show_message(L('msg_author_register_error'), L('msg_go_back'), url('user/login'), 'error');
@@ -93,9 +95,10 @@ class OauthController extends CommonController
                 }
                 else 
                 {   //未开启自动登录
-
+                   
                     $data = array(
-                        'unionid' => $res['openid'],
+                        'unionid' => $res['unionid'],
+                        'openid' => $res['openid'],
                         'nickname' => $res['nickname'],
                         'sex' => $res['sex'],
                         'headimgurl' => $res['headimgurl'],
@@ -106,8 +109,11 @@ class OauthController extends CommonController
 
                     //存SESSION
                     $_SESSION['unionid'] = $data['unionid'];
-                    $_SESSION['parent_id'] = $data['parent_id'];
 
+                    //兼容部分用户SESSION丢失
+                    setcookie("unionid",$data['unionid']);
+                    
+                    $_SESSION['parent_id'] = $data['parent_id'];
                     // 已关注用户基本信息
                     update_wechat_unionid($data); //兼容更新平台粉丝unionid
                     
@@ -117,11 +123,13 @@ class OauthController extends CommonController
 
 
                     //如果不存在用户信息
-                    if(empty($result)){
+                    if(empty($result)){                        
                         //保存微信粉丝信息
                         model('Users')->add_wechat_user($data);
                         $this->redirect($this->back_act);
+
                     }else{
+                     
                         //粉丝表是否绑定user_id
                         if($result['ect_uid'] > 0){
                             $condition = array('user_id' => $result['ect_uid']);
@@ -138,11 +146,13 @@ class OauthController extends CommonController
                                     $this->redirect($this->back_act);
                                 }
                             }
+                        }else{
+                            $this->redirect($this->back_act);
                         }
                     }
                     
                 }
-                
+              return;  
 
             } else {
                 show_message(L('process_false'), L('relogin_lnk'), url('user/login', array('back_act' => urlencode($this->back_act))), 'error');
@@ -287,21 +297,6 @@ class OauthController extends CommonController
                 // 更新用户信息
                 model('Users')->update_user_info();
 
-                // 更新微信用户绑定信息
-                if (class_exists('WechatController') && is_wechat_browser() && $type == 'weixin') {
-                    // 查找微信用户是否已经绑定过
-                    $result = $this->model->table('wechat_user')->where(array('ect_uid' => $_SESSION['user_id'], 'wechat_id' => 1))->find();
-                    if (!empty($result)) {
-                        show_message(L('msg_account_bound'), L('msg_go_back'), '', 'error');
-                    }
-                    $res['openid'] = session('openid');
-                    model('Users')->update_wechat_user($res);
-                    // 关注送红包
-                    // $this->sendBonus();
-                }
-                // exit('注册成功');
-                // $this->doLogin($username);
-                // 跳转链接
                 $back_url = empty($back_url) ? url('user/index') : $back_url;
                 $this->redirect($back_url);
             } else {

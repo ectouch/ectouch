@@ -205,16 +205,15 @@ class WechatController extends CommonController
         }
         // 已关注用户基本信息
         update_wechat_unionid($info, $this->wechat_id); //兼容更新平台粉丝unionid
-
-        $condition = array('unionid' => $data['unionid'], 'wechat_id' => $this->wechat_id);
-        $result = $this->model->table('wechat_user')->field('uid, ect_uid, openid, unionid')->where($condition)->find();
         
+        $sql = "SELECT uid, ect_uid, openid, unionid FROM " .$this->model->pre."wechat_user where unionid = '".$data['unionid']."' and wechat_id = ".$this->wechat_id;
+        $result = $this->model->getRow($sql);
 
         // 未关注
         if (empty($result)) {
             //开启自动登录
             $res = get_auto_login();
-            if($res !== 1){
+            if($res != 1){
                 // 兼容原touch_user_info表
                 $aite_id = 'wechat_' . $data['unionid'];
                 $old_userinfo = model('Users')->get_one_user($aite_id);
@@ -250,10 +249,7 @@ class WechatController extends CommonController
                     // 用户注册
                     $extend = array(
                         'parent_id' => $scene_user_id,
-                        // 'nick_name' => $data['nickname'],
-                        // 'aite_id' => 'wechat_' . $data['unionid'],
                         'sex' => $data['sex'],
-                        // 'user_picture' => $data['headimgurl']
                     );
                     if (model('Users')->register($username, $password, $email, $extend) !== false) {
                         // 同步社会化登录用户信息表
@@ -269,7 +265,6 @@ class WechatController extends CommonController
                     }
                     // 注册微信资料
                     $data['ect_uid'] = $_SESSION['user_id'];
-                    // $data['parent_id'] = $scene_user_id;
                 }
 
                 // 新增微信粉丝

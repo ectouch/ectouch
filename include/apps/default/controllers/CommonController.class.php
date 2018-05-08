@@ -204,19 +204,22 @@ class CommonController extends BaseController
     protected function wechat_init()
     {
 
+        //兼容session丢失用户
+        $_SESSION['unionid'] = $_SESSION['unionid'] ? $_SESSION['unionid'] : ($_COOKIE['unionid'] ? $_COOKIE['unionid'] : '');
+
         // 是否开启微信自动授权登录
         $res = get_auto_login();
         $this->assign('auto_login', $res);
+  
+        //用户是否已注册账号并绑定粉丝信息
+        if($_SESSION['user_id'] && $_SESSION['unionid']){
+          $this->assign('user_auto_login', 1);  
+        }
+        
+        // 微信oauth处理
+        $this->init_oauth();       
 
-        // //用户信息是否已注册
-        // $user_info = get_auto_login();
-
-        //if($res !== 1){
-          // 微信oauth处理
-          $this->init_oauth();   
-       // }
-                
-        if (class_exists('WechatController') && is_wechat_browser()) {
+        if(class_exists('WechatController') && is_wechat_browser()){
             //是否显示关注按钮
             // $condition['openid'] = !empty($_SESSION['openid']) ? $_SESSION['openid'] : 0;
             $condition['ect_uid'] = !empty($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
@@ -305,7 +308,7 @@ class CommonController extends BaseController
      */
     private function init_oauth()
     {
-        if (is_wechat_browser() && (empty($_SESSION['unionid']) && empty($_SESSION['user_id'])) && strtolower(CONTROLLER_NAME) != 'oauth') {
+        if (is_wechat_browser() && (empty($_SESSION['unionid']) && empty($_SESSION['user_id']) && empty($_COOKIE['unionid'])) && strtolower(CONTROLLER_NAME) != 'oauth') {
             $sql = "SELECT `auth_config` FROM " . $this->model->pre . "touch_auth WHERE `from` = 'weixin' ";
             $auth_config = $this->model->getRow($sql);
             if ($auth_config) {

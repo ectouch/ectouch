@@ -77,8 +77,8 @@ class AuthorizationController extends AdminController
                     'label' => L($value ['name']),
                 );
                 if ($info['config'][$key]['type'] == 'select') {
-                $info['config'][$key]['range'] = L($value ['name'].'_range');
-        }
+                    $info['config'][$key]['range'] = L($value ['name'].'_range');
+                }
             }
         }
 

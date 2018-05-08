@@ -112,7 +112,8 @@ class weixin
                 $_SESSION['headimgurl'] = $userinfo['headimgurl'];
 
                 $data = array(
-                    'openid' => $userinfo['unionid'],
+                    'unionid' => $userinfo['unionid'],
+                    'openid' => $userinfo['openid'],
                     'nickname' => $userinfo['nickname'],
                     'sex' => $userinfo['sex'],
                     'headimgurl' => $userinfo['headimgurl'],
