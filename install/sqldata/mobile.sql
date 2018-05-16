@@ -72,9 +72,9 @@ CREATE TABLE IF NOT EXISTS `ecs_touch_topic` (
 --
 
 INSERT INTO `ecs_ad` (`position_id`, `media_type`, `ad_name`, `ad_link`, `ad_code`, `start_time`, `end_time`, `link_man`, `link_email`, `link_phone`, `click_count`, `enabled`) VALUES
-(255, 0, '1', '', 'index_banner_1.png', 1396339200, 1525161600, '', '', '', 0, 1),
-(255, 0, '2', '', 'index_banner_2.png', 1396339200, 1525161600, '', '', '', 0, 1),
-(255, 0, '3', '', 'index_banner_3.png', 1396339200, 1525161600, '', '', '', 0, 1);
+(255, 0, '1', '', 'index_banner_1.png', 1396339200, 1625161600, '', '', '', 0, 1),
+(255, 0, '2', '', 'index_banner_2.png', 1396339200, 1625161600, '', '', '', 0, 1),
+(255, 0, '3', '', 'index_banner_3.png', 1396339200, 1625161600, '', '', '', 0, 1);
 
 --
 -- 转存表中的数据 `ecs_touch_ad_position`
