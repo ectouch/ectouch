@@ -117,11 +117,12 @@ class weibo
             $_SESSION['nickname'] = $this->get_user_name($userinfo);
             $_SESSION['headimgurl'] = $userinfo['profile_image_url'];
             $data = array(
-                'openid' => $openid,
+                'unionid' => $openid,
                 'nickname' => $this->get_user_name($userinfo),
                 'sex' => $userinfo['gender'],
                 'headimgurl' => $userinfo['profile_image_url']
             );
+
             return $data;
         } else {
             // echo "授权失败";
