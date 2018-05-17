@@ -99,7 +99,7 @@ class UsersModel extends BaseModel
                 $sql = 'UPDATE ' . $this->pre . 'wechat_user SET ect_uid = ' . $_SESSION['user_id'] . ' WHERE unionid = ' .$_SESSION['unionid'];
                 //插入connect_user表
                 $res['user_id'] = $_SESSION['user_id'];
-                $this->update_connnect_user($res, 'user_login') 
+                $this->update_connnect_user($res, 'user_login'); 
             }
         }        
     }
