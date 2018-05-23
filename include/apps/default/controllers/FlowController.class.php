@@ -1357,18 +1357,17 @@ class FlowController extends CommonController
             send_mail(C('shop_name'), C('service_email'), $tpl ['template_subject'], $content, $tpl ['is_html']);
         }
 
+
+
         /* 如果需要，发短信 */
-        if (C('sms_order_placed') == '1' && C('sms_shop_mobile') != '') {
+        //已配置的短信商家手机号
+        $sms_mobile = get_sms_config(get_default_smsment(), 'mobile');
+        if (C('sms_order_placed') == '1' && $sms_mobile != '') {
             $sms = new EcsSms();
             $msg = $order ['pay_status'] == PS_UNPAYED ? L('order_placed_sms') : L('order_placed_sms') . '[' . L('sms_paid') . ']';
-            $sms->send(C('sms_shop_mobile'), sprintf($msg, $order ['consignee'], $order ['mobile']), '', 13, 1);
+            $sms->send($sms_mobile, sprintf($msg, $order ['consignee'], $order ['mobile']), '', 1, '','1.0' , get_default_smsment());
         }
-        //  /* 如果需要，微信通知 by wanglu */
-        // if (method_exists('WechatController', 'snsapi_base') && is_wechat_browser()) {
-        //     $order_url = __HOST__ . url('user/order_detail', array('order_id' => $order ['order_id']));
-        //     $order_url = urlencode(base64_encode($order_url));
-        //     send_wechat_message('order_remind', '', $order['order_sn'] . L('order_effective'), $order_url, $order['order_sn']);
-        // }
+
         // 微信通模板消息
         if (class_exists('WechatController') && is_wechat_browser()) {
             $pushData = array(

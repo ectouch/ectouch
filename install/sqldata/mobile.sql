@@ -166,8 +166,6 @@ INSERT INTO `ecs_touch_nav` (`id`, `ctype`, `cid`, `name`, `ifshow`, `vieworder`
 -- ----------------------------
 -- 增加短信接口配置项
 -- ----------------------------
-INSERT INTO `ecs_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_ecmoban_user', 'text', '', '', '', 0);
-INSERT INTO `ecs_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_ecmoban_password', 'password', '', '', '', 0);
 INSERT INTO `ecs_shop_config` (parent_id, code, type, store_range, store_dir, value, sort_order)VALUES (8, 'sms_signin', 'select', '1,0', '', '0', 1);
 
 --
@@ -417,3 +415,21 @@ ALTER TABLE `ecs_cart` ADD COLUMN `group_id` varchar(255) NOT NULL ;
 ALTER TABLE `ecs_group_goods` ADD COLUMN `group_id` tinyint(3) unsigned NOT NULL DEFAULT '0';
 ALTER TABLE `ecs_goods` ADD COLUMN `virtual_sales` varchar( 10 ) NOT NULL DEFAULT '0';
 ALTER TABLE `ecs_order_info` ADD COLUMN `inv_text_id` varchar(120) NOT NULL DEFAULT '' AFTER `inv_content`;
+
+CREATE TABLE IF NOT EXISTS `ecs_sms` (
+  `sms_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `sms_code` varchar(20) NOT NULL DEFAULT '' COMMENT '短信code',
+  `sms_name` varchar(120) NOT NULL DEFAULT '' COMMENT '短信名称',
+  `sms_desc` text NOT NULL COMMENT '短信描述',
+  `sms_order` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
+  `sms_config` text NOT NULL COMMENT '短信配置',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0'COMMENT '是否开启',
+  PRIMARY KEY (`sms_id`),
+  UNIQUE KEY `sms_code` (`sms_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- ----------------------------
+-- Records of ecs_sms
+-- ----------------------------
+INSERT INTO `ecs_sms` VALUES ('1', 'ecmoban', '模板堂短信', '模板堂短信使用更便捷。', '1', 'a:3:{i:0;a:3:{s:4:\"name\";s:15:\"ecmoban_account\";s:4:\"type\";s:4:\"text\";s:5:\"value\";s:0:\"\";}i:1;a:3:{s:4:\"name\";s:11:\"ecmoban_key\";s:4:\"type\";s:4:\"text\";s:5:\"value\";s:0:\"\";}i:2;a:3:{s:4:\"name\";s:14:\"ecmoban_mobile\";s:4:\"type\";s:4:\"text\";s:5:\"value\";s:0:\"\";}}', '1');
+

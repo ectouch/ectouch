@@ -1,0 +1,63 @@
+
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,validator.js"}
+<form action="sms.php" method="post">
+<div class="main-div">
+<table cellspacing="1" cellpadding="3" width="100%">
+  <tr>
+    <td class="label">{$lang.sms_name}</td>
+    <td><input name="sms_name" type="text" value="{$sms.sms_name|escape}" size="40" /></td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.sms_desc}</td>
+    <td><textarea name="sms_desc" cols="60" rows="8">{$sms.sms_desc|escape}</textarea></td>
+  </tr>
+  {foreach from=$sms.sms_config item=config key=key}
+  <tr>
+    <td class="label">
+      {if $config.desc}
+      <a href="javascript:showNotice('notice{$config.name}');" title="{$lang.form_notice}"><img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}"></a>
+      {/if}
+      <span class="label">{$config.label}
+    </td>
+    <td>
+      <!-- {if $config.type == "text"} -->
+      <input name="cfg_value[]" type="{$config.type}" value="{$config.value}" size="40" />
+      <!-- {elseif $config.type == "textarea"} -->
+      <textarea name="cfg_value[]" cols="80" rows="5">{$config.value}</textarea>
+      <!-- {elseif $config.type == "select"} -->
+      <select name="cfg_value[]">{html_options options=$config.range selected=$config.value}</select>
+      <!-- {/if} -->
+      <input name="cfg_name[]" type="hidden" value="{$config.name}" />
+      <input name="cfg_type[]" type="hidden" value="{$config.type}" />
+      <input name="cfg_lang[]" type="hidden" value="{$config.lang}" />
+      {if $config.desc}
+      <br /><span class="notice-span" {if $help_open}style="display:block" {else} style="display:none" {/if} id="notice{$config.name}">{$config.desc}</span>
+      {/if}
+
+    </td>
+  </tr>
+  {/foreach}
+  <tr align="center">
+    <td colspan="2">
+      <input type="hidden"  name="sms_id"       value="{$sms.id}" />
+      <input type="hidden"  name="sms_code"     value="{$sms.sms_code}" />
+      <input type="submit" class="button" name="Submit"       value="{$lang.button_submit}" />
+      <input type="reset" class="button"  name="Reset"        value="{$lang.button_reset}" />
+    </td>
+  </tr>
+</table>
+</div>
+</form>
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+{/literal}
+//-->
+</script>
+{include file="pagefooter.htm"}

@@ -112,7 +112,8 @@ INSERT INTO `ecs_admin_action` (`action_id`, `parent_id`, `action_code`, `releva
 (132, 5, 'shop_authorized', ''),
 (133, 5, 'webcollect_manage', ''),
 (134, 4, 'suppliers_manage', ''),
-(135, 4, 'role_manage', '');
+(135, 4, 'role_manage', ''),
+(136, 5, 'sms', '');
 
 --
 --  `ecs_mail_templates`
@@ -3720,7 +3721,6 @@ INSERT INTO `ecs_shop_config` (`id`, `parent_id`, `code`, `type`, `store_range`,
 (705, 7, 'show_addtime', 'select', '1,0', '', '1', '1'),
 (706, 7, 'goodsattr_style', 'select', '1,0', '', '1', '1'),
 (707, 7, 'show_marketprice', 'select', '1,0', '', '1', '1'),
-(801, 8, 'sms_shop_mobile', 'text', '', '', '', '1'),
 (802, 8, 'sms_order_placed', 'select', '1,0', '', '0', '1'),
 (803, 8, 'sms_order_payed', 'select', '1,0', '', '0', '1'),
 (804, 8, 'sms_order_shipped', 'select', '1,0', '', '0', '1'),

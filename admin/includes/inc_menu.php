@@ -25,6 +25,7 @@ $modules['01_menu_system']['admin_list']             = 'privilege.php?act=list';
 //$modules['01_menu_system']['agency_list']            = 'agency.php?act=list';
 //$modules['01_menu_system']['suppliers_list']         = 'suppliers.php?act=list';
 //$modules['01_menu_system']['shop_authorized']             = 'license.php?act=list_edit';
+$modules['01_menu_system']['11_sms_list']            = 'sms.php?act=list';
 $modules['01_menu_system']['shop_authorized']             = '../index.php?m=admin&a=license';
 
 // 商品

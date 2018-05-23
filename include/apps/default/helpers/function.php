@@ -1779,4 +1779,33 @@ function get_auto_login(){
     $result = $res[$k]['value'];
     return $result; 
 }
+
+/**
+ * 根据条件获取sms表中的值
+ * @return 值
+ */
+function get_sms_config($sms_code = '' ,$type = '') {
+    $sql = "SELECT sms_config FROM ". M()->pre ."sms where sms_code = '$sms_code'";
+    $res = M()->getRow($sql);
+    $config = unserialize($res['sms_config']);
+    $type = $sms_code.'_'.$type;
+    if($config){
+        foreach ($config as $key => $value) {
+            if($value['name'] == $type){
+                $key = $key;
+                break;
+            }
+        }  
+    }        
+    return $config[$key]['value'];
+}
+/**
+ * 获取目前正在使用的短信服务
+ * @return 短信名称
+ */
+function get_default_smsment(){
+    $sql ="SELECT sms_code FROM ".M()->pre."sms where enabled = 1 order by sms_order ASC limit 0,1";
+    $sms_info = M()->getRow($sql);
+    return $sms_info['sms_code'];
+}
     

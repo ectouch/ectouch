@@ -57,7 +57,7 @@ if ($_REQUEST['act'] == '') {
     // 在PC端的情况下过滤菜单
     $normal = array(
         '00_menu_dashboard' => '*',
-        '01_menu_system' => array('shop_authorized' => 1,'02_payment_list' => 1),
+        '01_menu_system' => array('shop_authorized' => 1,'02_payment_list' => 1,'11_sms_list' => 1),
         '10_menu_tools' => array('01_navigator' => 1, '02_authorization' => 1, '99_upgrade' => 1),
         '11_menu_rec' => '*',
         '12_menu_wechat' => '*',

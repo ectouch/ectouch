@@ -81,8 +81,13 @@ class SmsController extends CommonController
         $this->mobile_code = $this->random(6, 1);
         $message = "您的验证码是：" . $this->mobile_code . "，请不要把验证码泄露给其他人，如非本人操作，可不用理会";
 
+        //查询已安装排序第一位的短信插件        
+        $sms_info = get_default_smsment();        
+        if(!$sms_info){
+            exit(json_encode(array('msg' => '未安装有效短信')));
+        }
         $sms = new EcsSms();
-        $send_result = $sms->send($this->mobile, $message);
+        $send_result = $sms->send($this->mobile, $message, '', 1, '', '1.0', $sms_info);
         $this->write_file($this->mobile, date("Y-m-d H:i:s"));
 
         if ($send_result === true) {

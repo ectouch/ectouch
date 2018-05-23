@@ -383,7 +383,7 @@ $_LANG['07_admin_logs'] = '管理员日志';
 $_LANG['08_agency_list'] = '办事处列表';
 $_LANG['09_suppliers_list'] = '供货商列表';
 $_LANG['10_shop_authorized'] = '授权证书';
-
+$_LANG['11_sms_list'] = '短信方式';
 // 商品
 
 

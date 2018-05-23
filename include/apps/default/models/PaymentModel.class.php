@@ -159,9 +159,10 @@ class PaymentModel extends BaseModel
                     model('OrderBase')->order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, $note, L('buyer'));
 
                     /* 如果需要，发短信 */
-                    if (C('sms_order_payed') == '1' && C('sms_shop_mobile') != '') {
+                    $sms_mobile = get_sms_config(get_default_smsment(), 'mobile');
+                    if (C('sms_order_payed') == '1' && $sms_mobile != '') {
                         $sms = new EcsSms();
-                        $sms->send(C('sms_shop_mobile'), sprintf(L('order_payed_sms'), $order_sn, $order['consignee'], $order['mobile']), '', 13, 1);
+                        $sms->send($sms_mobile, sprintf(L('order_payed_sms'), $order_sn, $order['consignee'], $order['mobile']), '', 1, '','1.0' , get_default_smsment());
                     }
                     /* 如果安装微信通,订单支付成功消息提醒 */
                     if (class_exists('WechatController')) {

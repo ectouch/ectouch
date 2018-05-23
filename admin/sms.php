@@ -1,15 +1,290 @@
 <?php
 
 /**
- * 短信模块 之 控制器
+ * 短信模块
  */
 
 define('IN_ECTOUCH', true);
 
 require(dirname(__FILE__) . '/includes/init.php');
-// require_once(ROOT_PATH . 'includes/cls_sms.php');
-// require_once(ROOT_PATH . 'includes/prism-php/lib/client.php');
 
+$exc = new exchange($ecs->table('sms'), $db, 'sms_code', 'sms_name');
+
+/*------------------------------------------------------ */
+//-- 列出短信方式
+/*------------------------------------------------------ */
+if ($_REQUEST['act'] == 'list') {
+
+    /* 查询数据库中启用的短信方式 */
+    $sms_list = array();
+    $sql = "SELECT * FROM " . $ecs->table('sms') . " WHERE enabled = '1' ORDER BY sms_order";
+    $res = $db->query($sql);
+    while ($row = $db->fetchRow($res)) {
+        $sms_list[$row['sms_code']] = $row;
+    }
+
+    /* 取得插件文件中的短信方式 */
+    $modules = read_modules('../include/modules/sms');
+    for ($i = 0; $i < count($modules); $i++) {
+        $code = $modules[$i]['code'];
+        $modules[$i]['sms_code'] = $modules[$i]['code'];
+        /* 如果数据库中有，取数据库中的名称和描述 */
+        if (isset($sms_list[$code])) {
+            $modules[$i]['name'] = $sms_list[$code]['sms_name'];
+            $modules[$i]['desc'] = $sms_list[$code]['sms_desc'];
+            $modules[$i]['sms_order'] = $sms_list[$code]['sms_order'];
+            $modules[$i]['install'] = '1';
+        } else {
+            $modules[$i]['name'] = $_LANG[$modules[$i]['code']];
+            $modules[$i]['desc'] = $_LANG[$modules[$i]['desc']];
+            $modules[$i]['install'] = '0';
+        }
+    }
+
+    assign_query_info();
+
+    $smarty->assign('ur_here', $_LANG['11_sms_list']);
+    $smarty->assign('modules', $modules);
+    $smarty->display('sms_list.htm');
+}
+
+/*------------------------------------------------------ */
+//-- 安装短信方式 ?act=install&code=".$code."
+/*------------------------------------------------------ */
+
+elseif ($_REQUEST['act'] == 'install') {
+    admin_priv('sms');
+
+    /* 取相应插件信息 */
+    $set_modules = true;
+    include_once(BASE_PATH.'modules/sms/' . $_REQUEST['code'] . '.php');
+
+    $data = $modules[0];
+
+    $sms['sms_code']    = $data['code'];
+    $sms['sms_name']    = $_LANG[$data['code']];
+    $sms['sms_desc']    = $_LANG[$data['desc']];
+    $sms['sms_config']  = array();
+
+    foreach ($data['config'] as $key => $value) {
+        $config_desc = (isset($_LANG[$value['name'] . '_desc'])) ? $_LANG[$value['name'] . '_desc'] : '';
+        $sms['sms_config'][$key] = $value +
+            array('label' => $_LANG[$value['name']], 'value' => $value['value'], 'desc' => $config_desc);
+
+        if ($sms['sms_config'][$key]['type'] == 'select' ||
+            $sms['sms_config'][$key]['type'] == 'radiobox') {
+            $sms['sms_config'][$key]['range'] = $_LANG[$sms['sms_config'][$key]['name'] . '_range'];
+        }
+    }
+//dump($sms);exit;
+    assign_query_info();
+
+    $smarty->assign('action_link', array('text' => $_LANG['11_sms_list'], 'href' => 'sms.php?act=list'));
+
+    $smarty->assign('sms', $sms);
+    $smarty->display('sms_edit.htm');
+} 
+/*------------------------------------------------------ */
+//-- 编辑短信方式 ?act=edit&code={$code}
+/*------------------------------------------------------ */
+elseif ($_REQUEST['act'] == 'edit') {
+    admin_priv('sms');
+
+    /* 查询该短信方式内容 */
+    if (isset($_REQUEST['code'])) {
+        $_REQUEST['code'] = trim($_REQUEST['code']);
+    } else {
+        die('invalid parameter');
+    }
+
+    $sql = "SELECT * FROM " . $ecs->table('sms') . " WHERE sms_code = '$_REQUEST[code]' AND enabled = '1'";
+    $sms = $db->getRow($sql);
+    if (empty($sms)) {
+        $links[] = array('text' => $_LANG['back_list'], 'href' => 'sms.php?act=list');
+        sys_msg($_LANG['sms_not_available'], 0, $links);
+    }
+
+    /* 取相应插件信息 */
+    $set_modules = true;
+    include_once(BASE_PATH . 'modules/sms/' . $_REQUEST['code'] . '.php');
+    $data = $modules[0];
+
+    /* 取得配置信息 */
+    if (is_string($sms['sms_config'])) {
+        $store = unserialize($sms['sms_config']);
+        /* 取出已经设置属性的code */
+        $code_list = array();
+        foreach ($store as $key=>$value) {
+            $code_list[$value['name']] = $value['value'];
+        }
+        $sms['sms_config'] = array();
+
+        /* 循环插件中所有属性 */
+        foreach ($data['config'] as $key => $value) {
+            $sms['sms_config'][$key]['desc'] = (isset($_LANG[$value['name'] . '_desc'])) ? $_LANG[$value['name'] . '_desc'] : '';
+            $sms['sms_config'][$key]['label'] = $_LANG[$value['name']];
+            $sms['sms_config'][$key]['name'] = $value['name'];
+            $sms['sms_config'][$key]['type'] = $value['type'];
+
+            if (isset($code_list[$value['name']])) {
+                $sms['sms_config'][$key]['value'] = $code_list[$value['name']];
+            } else {
+                $sms['sms_config'][$key]['value'] = $value['value'];
+            }
+
+            if ($sms['sms_config'][$key]['type'] == 'select' ||
+                $sms['sms_config'][$key]['type'] == 'radiobox') {
+                $sms['sms_config'][$key]['range'] = $_LANG[$sms['sms_config'][$key]['name'] . '_range'];
+            }
+        }
+    }
+
+
+
+    assign_query_info();
+
+    $smarty->assign('action_link', array('text' => $_LANG['11_sms_list'], 'href' => 'sms.php?act=list'));
+    $smarty->assign('ur_here', $_LANG['edit'] . $_LANG['sms']);
+    $smarty->assign('sms', $sms);
+    $smarty->display('sms_edit.htm');
+}
+
+/*------------------------------------------------------ */
+//-- 提交短信方式 post
+/*------------------------------------------------------ */
+elseif (isset($_POST['Submit'])) {
+   
+    admin_priv('sms');
+
+    /* 检查输入 */
+    if (empty($_POST['sms_name'])) {
+        sys_msg($_LANG['sms_name'] . $_LANG['empty']);
+    }
+
+    $sql = "SELECT COUNT(*) FROM " . $ecs->table('sms') .
+            " WHERE sms_name = '$_POST[sms_name]' AND sms_code <> '$_POST[sms_code]'";
+    if ($db->GetOne($sql) > 0) {
+        sys_msg($_LANG['sms_name'] . $_LANG['repeat'], 1);
+    }
+
+    /* 取得配置信息 */
+    $sms_config = array();
+    if (isset($_POST['cfg_value']) && is_array($_POST['cfg_value'])) {
+        for ($i = 0; $i < count($_POST['cfg_value']); $i++) {
+            $sms_config[] = array('name'  => trim($_POST['cfg_name'][$i]),
+                                  'type'  => trim($_POST['cfg_type'][$i]),
+                                  'value' => trim($_POST['cfg_value'][$i])
+            );
+        }
+    }
+
+    $sms_config = serialize($sms_config);
+
+    /* 检查是编辑还是安装 */
+    $link[] = array('text' => $_LANG['back_list'], 'href' => 'sms.php?act=list');
+    if ($_POST['sms_id']) {
+        /* 编辑 */
+        $sql = "UPDATE " . $ecs->table('sms') .
+               "SET sms_name = '$_POST[sms_name]'," .
+               "    sms_desc = '$_POST[sms_desc]'," .
+               "    sms_config = '$sms_config', " .
+               "WHERE sms_code = '$_POST[sms_code]' LIMIT 1";
+        $db->query($sql);
+
+        /* 记录日志 */
+        admin_log($_POST['sms_name'], 'edit', 'sms');
+
+        sys_msg($_LANG['edit_ok'], 0, $link);
+    } else {
+        /* 安装，检查该短信方式是否曾经安装过 */
+        $sql = "SELECT COUNT(*) FROM " . $ecs->table('sms') . " WHERE sms_code = '$_REQUEST[sms_code]'";
+        if ($db->GetOne($sql) > 0) {
+            /* 该短信方式已经安装过, 将该短信方式的状态设置为 enable */
+            $sql = "UPDATE " . $ecs->table('sms') .
+                   "SET sms_name = '$_POST[sms_name]'," .
+                   "    sms_desc = '$_POST[sms_desc]'," .
+                   "    sms_config = '$sms_config'," .
+                   "    enabled = '1' " .
+                   "WHERE sms_code = '$_POST[sms_code]' LIMIT 1";
+            $db->query($sql);
+        } else {
+            /* 该短信方式没有安装过, 将该短信方式的信息添加到数据库 */
+            $sql = "INSERT INTO " . $ecs->table('sms') . " (sms_code, sms_name, sms_desc, sms_config, enabled)" .
+                   "VALUES ('$_POST[sms_code]', '$_POST[sms_name]', '$_POST[sms_desc]', '$sms_config', 1)";
+                  
+            $db->query($sql);
+        }
+
+        /* 记录日志 */
+        admin_log($_POST['sms_name'], 'install', 'sms');
+
+        sys_msg($_LANG['install_ok'], 0, $link);
+    }
+}
+
+/*------------------------------------------------------ */
+//-- 卸载短信方式 ?act=uninstall&code={$code}
+/*------------------------------------------------------ */
+elseif ($_REQUEST['act'] == 'uninstall') {
+    admin_priv('sms');
+
+    /* 把 enabled 设为 0 */
+    $sql = "UPDATE " . $ecs->table('sms') .
+           "SET enabled = '0' " .
+           "WHERE sms_code = '$_REQUEST[code]' LIMIT 1";
+    $db->query($sql);
+
+    /* 记录日志 */
+    admin_log($_REQUEST['code'], 'uninstall', 'sms');
+
+    $link[] = array('text' => $_LANG['back_list'], 'href' => 'sms.php?act=list');
+    sys_msg($_LANG['uninstall_ok'], 0, $link);
+}
+
+/*------------------------------------------------------ */
+//-- 修改短信方式名称
+/*------------------------------------------------------ */
+
+elseif ($_REQUEST['act'] == 'edit_name') {
+    /* 检查权限 */
+    check_authz_json('sms');
+
+    /* 取得参数 */
+    $code = json_str_iconv(trim($_POST['id']));
+    $name = json_str_iconv(trim($_POST['val']));
+
+    /* 检查名称是否为空 */
+    if (empty($name)) {
+        make_json_error($_LANG['name_is_null']);
+    }
+
+    /* 检查名称是否重复 */
+    if (!$exc->is_only('sms_name', $name, $code)) {
+        make_json_error($_LANG['name_exists']);
+    }
+
+    /* 更新短信方式名称 */
+    $exc->edit("sms_name = '$name'", $code);
+    make_json_result(stripcslashes($name));
+}
+
+
+/*------------------------------------------------------ */
+//-- 修改短信方式排序
+/*------------------------------------------------------ */
+
+elseif ($_REQUEST['act'] == 'edit_order') {
+    /* 检查权限 */
+    check_authz_json('sms');
+
+    /* 取得参数 */
+    $code = json_str_iconv(trim($_POST['id']));
+    $order = intval($_POST['val']);
+
+    /* 更新排序 */
+    $exc->edit("sms_order = '$order'", $code);
+    make_json_result(stripcslashes($order));
+}
 
 $action = isset($_REQUEST['act']) ? $_REQUEST['act'] : 'display_my_info';
 if (isset($_POST['sms_sign_update'])) {
@@ -213,7 +488,7 @@ switch ($action) {
             assign_query_info();
             $smarty->display('sms_register_ui.htm');
         }
-         break;
+         break;  
 
 
         case 'sms_sign_update':

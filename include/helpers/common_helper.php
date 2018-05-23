@@ -2869,3 +2869,32 @@ function cause_options($spec_cat_id, $arr)
         return $spec_cat_id_array;
     }
 }
+
+/**
+ * 根据条件获取sms表中的值
+ * @return 值
+ */
+function get_sms_config($sms_code = '' ,$type = '') {
+    $sql = "SELECT sms_config FROM ". $GLOBALS['ecs']->table('sms')." where sms_code = '$sms_code'";
+    $res = $GLOBALS['db']->getOne($sql);
+    $config = unserialize($res);
+    $type = $sms_code.'_'.$type;
+    if($config){
+        foreach ($config as $key => $value) {
+            if($value['name'] == $type){
+                $key = $key;
+                break;
+            }
+        }  
+    }        
+    return $config[$key]['value'];
+}
+/**
+ * 获取目前正在使用的短信服务
+ * @return 短信名称
+ */
+function get_default_smsment(){
+    $sql ="SELECT sms_code FROM ". $GLOBALS['ecs']->table('sms')." where enabled = 1 order by sms_order ASC limit 0,1";
+    $sms_info = $GLOBALS['db']->getOne($sql);
+    return $sms_info;
+}

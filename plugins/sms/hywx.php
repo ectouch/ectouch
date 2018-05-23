@@ -1,31 +1,69 @@
 <?php
 
 /**
+ * ECTouch Open Source Project
+ * ============================================================================
+ * Copyright (c) 2012-2014 http://ectouch.cn All rights reserved.
+ * ----------------------------------------------------------------------------
+ * 文件名称：hywx.php
+ * ----------------------------------------------------------------------------
+ * 功能描述：互亿无线短信
+ * ----------------------------------------------------------------------------
+ */
+
+/* 访问控制 */
+defined('IN_ECTOUCH') or die('Deny Access');
+/**
  * 短信类
  */
 
-class sms
+class hywx
 {
-    // 发送短消息
-    public function send($phones, $msg, $send_date = '', $send_num = 1, $sms_type = '', $version = '1.0', $sms_code)
+    public $sms_name = null; //用户名
+    public $sms_password = null; //密码
+
+    public function __construct()
     {
-        require ROOT_PATH . 'vendor/Http.class.php';
+        /* 直接赋值 */
+
+        $this->sms_name = get_sms_config('hywx', 'account');
+        $this->sms_password = get_sms_config('hywx', 'key');
+    }
+
+    // 发送短消息
+    public function send($phones, $msg, $send_date = '', $send_num = 1, $sms_type = '', $version = '1.0', &$sms_error = '')
+    {
         /* 检查发送信息的合法性 */
         $contents = $this->get_contents($phones, $msg);
         if (!$contents) {
             return false;
         }
-        include_once(ROOT_PATH . 'plugins/sms/'.$sms_code.'.php');
-        if($sms_code == 'hywx'){
-            $smsment = new hywx();
-            return $smsment->send($phones, $msg);
+
+        /* 获取API URL */
+        $sms_url = "http://106.ihuyi.com/webservice/sms.php?method=Submit";
+
+        if (count($contents) > 1) {
+            foreach ($contents as $key => $val) {
+                $post_data = "account=" . $this->sms_name . "&password=" . md5($this->sms_password) . "&mobile=" . $val['phones'] . "&content=" . rawurlencode($val['content']); //密码可以使用明文密码或使用32位MD5加密
+                $get = Http::doPost($sms_url, $post_data);
+                $gets = $this->xml_to_array($get);
+                sleep(1);
+            }
+        } else {
+            $post_data = "account=" . $this->sms_name . "&password=" . md5($this->sms_password) . "&mobile=" . $contents[0]['phones'] . "&content=" . rawurlencode($contents[0]['content']); //密码可以使用明文密码或使用32位MD5加密
+            $get = Http::doPost($sms_url, $post_data);
+            $gets = $this->xml_to_array($get);
+            logResult(var_export($gets, true));
         }
-        else
-        {
-            $smsment = new ecmoban();
-            return $smsment->send($phones, $msg);
+
+
+        if ($gets['SubmitResult']['code'] == 2) {
+            return true;
+        } else {
+            $sms_error = $gets['SubmitResult']['msg'];
+            $this->logResult($sms_error);
+            return $sms_error;
         }
-        
     }
 
     public function Post($curlPost, $url)
@@ -66,6 +104,7 @@ class sms
         if (empty($phones) || empty($msg)) {
             return false;
         }
+        //$msg.='【'. $GLOBALS['_CFG']['shop_name'].'】'; //by wanganlin delete
         $phone_key = 0;
         $i = 0;
         $phones = explode(',', $phones);
