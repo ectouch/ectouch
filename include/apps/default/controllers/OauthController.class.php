@@ -63,6 +63,27 @@ class OauthController extends CommonController
                     exit;
                 }
 
+                //整理微信粉丝信息
+                $data = array(
+                    'unionid' => $res['unionid'],
+                    'openid' => $res['openid'],
+                    'nickname' => $res['nickname'],
+                    'sex' => $res['sex'],
+                    'headimgurl' => $res['headimgurl'],
+                    'city' => $res['city'],
+                    'province' => $res['province'],
+                    'country' => $res['country'],
+                );
+                //存SESSION
+                $_SESSION['unionid'] = $data['unionid'];
+
+                //兼容部分用户SESSION丢失
+                setcookie("unionid",$data['unionid']);                
+                $_SESSION['parent_id'] = $data['parent_id'];
+
+                //保存微信粉丝信息
+                model('Users')->add_wechat_user($data);
+
                 //开启自动登录或者从登录页面点击微信登录。
                 $rese = get_auto_login();
                 if($rese == 0 || $from == 'user_login'){                    
@@ -94,26 +115,8 @@ class OauthController extends CommonController
                     }
                 }
                 else 
-                {   //未开启自动登录
-                   
-                    $data = array(
-                        'unionid' => $res['unionid'],
-                        'openid' => $res['openid'],
-                        'nickname' => $res['nickname'],
-                        'sex' => $res['sex'],
-                        'headimgurl' => $res['headimgurl'],
-                        'city' => $res['city'],
-                        'province' => $res['province'],
-                        'country' => $res['country'],
-                    );
-
-                    //存SESSION
-                    $_SESSION['unionid'] = $data['unionid'];
-
-                    //兼容部分用户SESSION丢失
-                    setcookie("unionid",$data['unionid']);
-                    
-                    $_SESSION['parent_id'] = $data['parent_id'];
+                {   
+                    //未开启自动登录
                     // 已关注用户基本信息
                     update_wechat_unionid($data); //兼容更新平台粉丝unionid
                     
@@ -124,10 +127,7 @@ class OauthController extends CommonController
 
                     //如果不存在用户信息
                     if(empty($result)){                        
-                        //保存微信粉丝信息
-                        model('Users')->add_wechat_user($data);
                         $this->redirect($this->back_act);
-
                     }else{
                      
                         //粉丝表是否绑定user_id

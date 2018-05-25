@@ -96,7 +96,8 @@ class UsersModel extends BaseModel
             $res = $this->model->table('wechat_user')->field('ect_uid, nickname, sex, province, city, country, headimgurl, unionid')->where(array('unionid' => $_SESSION['unionid']))->find();
             if(!$res['ect_uid']){
                 //更新wechat_user表ect_uid
-                $sql = 'UPDATE ' . $this->pre . 'wechat_user SET ect_uid = ' . $_SESSION['user_id'] . ' WHERE unionid = ' .$_SESSION['unionid'];
+                $sql = 'UPDATE ' . $this->pre . 'wechat_user SET ect_uid = ' . $_SESSION['user_id'] . ' WHERE unionid = ' ."'".$_SESSION['unionid']."'";
+                $this->query($sql);
                 //插入connect_user表
                 $res['user_id'] = $_SESSION['user_id'];
                 $this->update_connnect_user($res, 'user_login'); 

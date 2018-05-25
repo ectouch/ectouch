@@ -95,7 +95,7 @@
 	</a>
 	{/if}
 
-	{if $auto_login && !$user_auto_login}
+	{if !$user_auto_login}
 	<a href="{:url('user/logout')}">
 		<div class="s-user-top">
 			<div class="dis-box s-user-top-1">
