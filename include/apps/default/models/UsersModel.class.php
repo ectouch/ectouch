@@ -2546,7 +2546,6 @@ class UsersModel extends BaseModel
             'country' => !empty($info['country']) ? $info['country'] : '',
             'headimgurl' => !empty($info['headimgurl']) ? $info['headimgurl'] : '',
             'unionid' => $info['unionid'],
-            'ect_uid' => 0,
         );
 
         // unionid 微信开放平台唯一标识
