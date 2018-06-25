@@ -229,6 +229,11 @@ class CommonController extends BaseController
         // 关注按钮 是否显示
         $this->assign('subscribe', $_SESSION['subscribe']);
 
+        //兼容SESSOIN丢失
+        if($_SESSION['user_id'] && empty($_SESSION['unionid'])) {
+            model('Users')->add_unionid($_SESSION['user_id']);
+        }
+
         // 判断微信通 用于JSSDK
         $is_wechat = class_exists('WechatController') && is_wechat_browser() ? 1 : 0;
         $this->assign('is_wechat', $is_wechat);

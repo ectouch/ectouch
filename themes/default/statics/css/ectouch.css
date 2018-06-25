@@ -748,7 +748,7 @@ a.a-sequence .iconfont.icon-icon-square:before{font-size:3.2rem;}
 .tab-title li{border-right:1px solid #F3F4F9;}
 .tab-title li:last-of-type{border-right:0;}
 .goods-info img{max-width: 100%; height:auto}
-.goods-info table{max-width:100%;}
+.goods-info table{width: 100%;height: auto;}
 .goods-info-attr li{margin:0 1.3rem; padding:1.5rem 0; border-bottom:1px solid #f3f4f9}
 .goods-info-attr li:last-of-type{border-bottom:0;}
 .goods-info-attr li span:first-of-type{max-width: 30%;}

@@ -2562,4 +2562,17 @@ class UsersModel extends BaseModel
             }
         }
     }
+
+    /**
+     * 完善用户session
+     * @access  public
+     * @param  $user_id 原会员id
+     */
+    function add_unionid($user_id) {
+        $result = $this->model->table('wechat_user')->field('unionid,openid')->where(array('ect_uid' => $user_id))->find();
+        if($result['unionid']){
+            $_SESSION['unionid'] = $result['unionid'];
+            $_SESSION['openid'] = $result['openid'];
+        }
+    }
 }
