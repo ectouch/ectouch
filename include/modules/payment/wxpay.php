@@ -50,6 +50,11 @@ if (isset($set_modules) && $set_modules == true) {
             'name' => 'wxpay_mchid',
             'type' => 'text',
             'value' => ''
+        ),
+        array(
+            'name' => 'is_h5',
+            'type' => 'select', 
+            'value' => ''
         )
     );
     

@@ -612,9 +612,9 @@ class FlowController extends CommonController
                         }
                     }
                 }
-                // 如果不是微信浏览器访问并且不是微信会员 则不显示微信支付
-                if ($payment ['pay_code'] == 'wxpay' && !is_wechat_browser() && empty($_SESSION['openid'])) {
-                    unset($payment_list [$key]);
+                // 非微信浏览控制显示h5
+                if($payment['pay_code'] == 'wxpay' && !is_wechat_browser() && is_wxh5() == 0) {                   
+                    unset($payment_list[$key]);
                 }
                 // 兼容过滤ecjia支付方式
                 if (substr($payment['pay_code'], 0, 4) == 'pay_') {
@@ -1485,9 +1485,9 @@ class FlowController extends CommonController
                             }
                         }
                     }
-                    // 如果不是微信浏览器访问并且不是微信会员 则不显示微信支付
-                    if ($payment ['pay_code'] == 'wxpay' && !is_wechat_browser() && empty($_SESSION['openid'])) {
-                        unset($payment_list [$key]);
+                    // 非微信浏览控制显示h5
+                    if($payment['pay_code'] == 'wxpay' && !is_wechat_browser() && is_wxh5() == 0) {                   
+                        unset($payment_list[$key]);
                     }
                     // 兼容过滤ecjia支付方式
                     if (substr($payment['pay_code'], 0, 4) == 'pay_') {

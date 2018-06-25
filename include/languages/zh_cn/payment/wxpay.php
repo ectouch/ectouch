@@ -21,5 +21,8 @@ $_LANG['wxpay_key'] = '商户支付密钥Key';
 $_LANG['wxpay_mchid'] = '受理商ID(即微信支付商户号)';
 $_LANG['wxpay_signtype'] = '签名方式';
 $_LANG['wxpay_button'] = '立即用微信支付';
+$_LANG['is_h5'] = '是否开通微信h5支付';
+$_LANG['is_h5_range'][0] = '未开通';
+$_LANG['is_h5_range'][1] = '已开通';
 
 return $_LANG;

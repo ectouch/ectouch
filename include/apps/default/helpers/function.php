@@ -1808,4 +1808,23 @@ function get_default_smsment(){
     $sms_info = M()->getRow($sql);
     return $sms_info['sms_code'];
 }
+
+/**
+ * 是否开通微信h5配置
+ * @param  string  $pay_code
+ * @return
+ */
+function is_wxh5($pay_code = 'wxpay')
+{
+    $sql ="SELECT pay_config FROM ".M()->pre."payment where pay_code = '$pay_code'";
+    $rs = M()->getRow($sql);
+    if (!empty($rs)) {
+        $rs = unserialize($rs['pay_config']);
+        foreach ($rs as $key => $value) {
+            $config[$value['name']] = $value['value'];
+        }
+    }    
+
+    return isset($config) ? $config['is_h5'] : 0;
+}
     
