@@ -87,7 +87,7 @@ if ($_REQUEST['act'] == 'install') {
 }
 
 if ($_REQUEST['act'] == 'view_install_log') {
-    $code = empty($_GET['code']) ? '' : trim($_GET['code']);
+    $code = empty($_GET['code']) ? '' : trim(addslashes($_GET['code']));
     if (empty($code) || file_exists(ROOT_PATH . DATA_DIR . '/attached/integrate_' . $code . '_log.php')) {
         sys_msg($_LANG['lost_intall_log'], 1);
     }
@@ -444,7 +444,7 @@ if ($_REQUEST['act'] == 'import_user') {
     while ($data = $db->fetch_array($query)) {
         $salt = rand(100000, 999999);
         $password = md5($data['password'] . $salt);
-        $data['username'] = addslashes($data['user_name']);
+        $data['username'] = trim(addslashes($data['user_name']));
         $lastuid = $data['user_id'] + $maxuid;
         $uc_userinfo = $ucdb->getRow("SELECT `uid`, `password`, `salt` FROM " . $cfg['db_pre'] . "members WHERE `username`='$data[username]'");
         if (!$uc_userinfo) {
