@@ -43,7 +43,7 @@ if ($_REQUEST['act'] == 'install') {
         }
     }
     if ($_GET['code'] == 'ecshop') {
-        $sql = "UPDATE " .$ecs->table('shop_config'). " SET value = 'ecshop' WHERE code = 'integrate_code'";
+        $sql = "UPDATE " . $ecs->table('shop_config') . " SET value = 'ecshop' WHERE code = 'integrate_code'";
         $db->query($sql);
         $sql = "UPDATE " . $GLOBALS['ecs']->table('shop_config') . " SET value = '' WHERE code = 'points_rule'";
         $GLOBALS['db']->query($sql);
@@ -56,11 +56,11 @@ if ($_REQUEST['act'] == 'install') {
         sys_msg($_LANG['update_success'], 0, $links);
     } else {
         $sql = "UPDATE " . $GLOBALS['ecs']->table('users') .
-               " SET flag = 0, alias=''".
-               " WHERE flag > 0";
+            " SET flag = 0, alias=''" .
+            " WHERE flag > 0";
         $db->query($sql); //如果有标记，清空标记
         $set_modules = true;
-        include_once(ROOT_PATH."include/modules/integrates/".$_GET['code'].".php");
+        include_once(ROOT_PATH . "include/modules/integrates/" . $_GET['code'] . ".php");
         $set_modules = false;
 
 //        if ($_GET['code'] == 'ucenter' && !empty($_CFG['integrate_config']))
@@ -136,7 +136,7 @@ if ($_REQUEST['act'] == 'setup') {
 if ($_REQUEST['act'] == 'check_config') {
     $code = $_POST['code'];
 
-    include_once(ROOT_PATH."include/modules/integrates/".$code.".php");
+    include_once(ROOT_PATH . "include/modules/integrates/" . $code . ".php");
     $_POST['cfg']['quiet'] = 1;
     $cls_user = new $code($_POST['cfg']);
 
@@ -146,7 +146,7 @@ if ($_REQUEST['act'] == 'check_config') {
             sys_msg($_LANG['error_db_msg']);
         } elseif ($cls_user->error == 2) {
             sys_msg($_LANG['error_table_exist']);
-        } elseif ($cls_user->error ==  1049) {
+        } elseif ($cls_user->error == 1049) {
             sys_msg($_LANG['error_db_exist']);
         } else {
             sys_msg($cls_user->db->error());
@@ -182,8 +182,8 @@ if ($_REQUEST['act'] == 'check_config') {
     }
 
     $sql = "SELECT " . $cls_user->field_name .
-           " FROM " . $cls_user->table($cls_user->user_table) .
-           " WHERE " . $cls_user->field_name . " = '$test_str'";
+        " FROM " . $cls_user->table($cls_user->user_table) .
+        " WHERE " . $cls_user->field_name . " = '$test_str'";
     $test = $cls_user->db->query($sql, 'SILENT');
 
     if (!$test) {
@@ -193,9 +193,9 @@ if ($_REQUEST['act'] == 'check_config') {
     if (!empty($_POST['save'])) {
         /* 直接保存修改 */
         if (save_integrate_config($code, $_POST['cfg'])) {
-            sys_msg($_LANG['save_ok'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+            sys_msg($_LANG['save_ok'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
         } else {
-            sys_msg($_LANG['save_error'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+            sys_msg($_LANG['save_error'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
         }
     }
 
@@ -230,7 +230,7 @@ if ($_REQUEST['act'] == 'save_uc_config') {
 
     $cfg = unserialize($_CFG['integrate_config']);
 
-    include_once(ROOT_PATH."include/modules/integrates/".$code.".php");
+    include_once(ROOT_PATH . "include/modules/integrates/" . $code . ".php");
     $_POST['cfg']['quiet'] = 1;
     $cls_user = new $code($_POST['cfg']);
 
@@ -240,7 +240,7 @@ if ($_REQUEST['act'] == 'save_uc_config') {
             sys_msg($_LANG['error_db_msg']);
         } elseif ($cls_user->error == 2) {
             sys_msg($_LANG['error_table_exist']);
-        } elseif ($cls_user->error ==  1049) {
+        } elseif ($cls_user->error == 1049) {
             sys_msg($_LANG['error_db_exist']);
         } else {
             sys_msg($cls_user->db->error());
@@ -252,9 +252,9 @@ if ($_REQUEST['act'] == 'save_uc_config') {
 
     /* 直接保存修改 */
     if (save_integrate_config($code, $cfg)) {
-        sys_msg($_LANG['save_ok'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+        sys_msg($_LANG['save_ok'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
     } else {
-        sys_msg($_LANG['save_error'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+        sys_msg($_LANG['save_error'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
     }
 }
 
@@ -264,7 +264,7 @@ if ($_REQUEST['act'] == 'save_uc_config') {
 if ($_REQUEST['act'] == 'save_uc_config_first') {
     $code = $_POST['code'];
 
-    include_once(ROOT_PATH."include/modules/integrates/".$code.".php");
+    include_once(ROOT_PATH . "include/modules/integrates/" . $code . ".php");
     $_POST['cfg']['quiet'] = 1;
     $cls_user = new $code($_POST['cfg']);
 
@@ -274,29 +274,29 @@ if ($_REQUEST['act'] == 'save_uc_config_first') {
             sys_msg($_LANG['error_db_msg']);
         } elseif ($cls_user->error == 2) {
             sys_msg($_LANG['error_table_exist']);
-        } elseif ($cls_user->error ==  1049) {
+        } elseif ($cls_user->error == 1049) {
             sys_msg($_LANG['error_db_exist']);
         } else {
             sys_msg($cls_user->db->error());
         }
     }
     list($appauthkey, $appid, $ucdbhost, $ucdbname, $ucdbuser, $ucdbpw, $ucdbcharset, $uctablepre, $uccharset, $ucapi, $ucip) = explode('|', $_POST['ucconfig']);
-    $uc_ip = !empty($ucip)? $ucip : trim($_POST['uc_ip']);
-    $uc_url = !empty($ucapi)? $ucapi : trim($_POST['uc_url']);
+    $uc_ip = !empty($ucip) ? $ucip : trim($_POST['uc_ip']);
+    $uc_url = !empty($ucapi) ? $ucapi : trim($_POST['uc_url']);
     $cfg = array(
-                    'uc_id' => $appid,
-                    'uc_key' => $appauthkey,
-                    'uc_url' => $uc_url,
-                    'uc_ip' => $uc_ip,
-                    'uc_connect' => 'mysql',
-                    'uc_charset' => $uccharset,
-                    'db_host' => $ucdbhost,
-                    'db_user' => $ucdbuser,
-                    'db_name' => $ucdbname,
-                    'db_pass' => $ucdbpw,
-                    'db_pre' => $uctablepre,
-                    'db_charset' => $ucdbcharset,
-                );
+        'uc_id' => $appid,
+        'uc_key' => $appauthkey,
+        'uc_url' => $uc_url,
+        'uc_ip' => $uc_ip,
+        'uc_connect' => 'mysql',
+        'uc_charset' => $uccharset,
+        'db_host' => $ucdbhost,
+        'db_user' => $ucdbuser,
+        'db_name' => $ucdbname,
+        'db_pass' => $ucdbpw,
+        'db_pre' => $uctablepre,
+        'db_charset' => $ucdbcharset,
+    );
     /* 增加UC语言项 */
     $cfg['uc_lang'] = $_LANG['uc_lang'];
 
@@ -307,9 +307,9 @@ if ($_REQUEST['act'] == 'save_uc_config_first') {
     /* 直接保存修改 */
     if (!empty($_POST['save'])) {
         if (save_integrate_config($code, $cfg)) {
-            sys_msg($_LANG['save_ok'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+            sys_msg($_LANG['save_ok'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
         } else {
-            sys_msg($_LANG['save_error'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+            sys_msg($_LANG['save_error'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
         }
     }
 
@@ -335,7 +335,7 @@ if ($_REQUEST['act'] == 'save_uc_config_first') {
 if ($_REQUEST['act'] == 'check_user') {
     $code = $_SESSION['code'];
     // include_once(ROOT_PATH . 'includes/cls_json.php');
-    include_once(BASE_PATH."modules/integrates/".$code.".php");
+    include_once(BASE_PATH . "modules/integrates/" . $code . ".php");
     $cls_user = new $code($_SESSION['cfg']);
     $json = new JSON();
 
@@ -343,7 +343,7 @@ if ($_REQUEST['act'] == 'check_user') {
     $size = empty($_GET['size']) ? 100 : intval($_GET['size']);
     $method = empty($_GET['method']) ? 1 : intval($_GET['method']);
     $domain = empty($_GET['domain']) ? '@ectouch' : trim($_GET['domain']);
-    if ($size <2) {
+    if ($size < 2) {
         $size = 2;
     }
     $_SESSION['domain'] = $domain;
@@ -351,7 +351,7 @@ if ($_REQUEST['act'] == 'check_user') {
     $sql = "SELECT COUNT(*) FROM " . $ecs->table('users');
     $total = $db->getOne($sql);
 
-    $result = array('error'=>0, 'message'=>'', 'start'=>0, 'size'=>$size, 'content'=>'','method'=>$method, 'domain'=>$domain, 'is_end'=>0);
+    $result = array('error' => 0, 'message' => '', 'start' => 0, 'size' => $size, 'content' => '', 'method' => $method, 'domain' => $domain, 'is_end' => 0);
 
     $sql = "SELECT user_name FROM " . $ecs->table('users') . " LIMIT $start, $size";
     $user_list = $db->getCol($sql);
@@ -373,7 +373,7 @@ if ($_REQUEST['act'] == 'check_user') {
             /* 需要改名,验证是否能成功改名 */
             $count = count($post_user_list);
             $test_user_list = array();
-            for ($i=0; $i<$count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $test_user_list[] = $post_user_list[$i] . $domain;
             }
             /* 检查改名后用户是否和论坛用户有重名 */
@@ -381,7 +381,7 @@ if ($_REQUEST['act'] == 'check_user') {
             if ($error_user_list) {
                 $domain_len = 0 - str_len($domain);
                 $count = count($error_user_list);
-                for ($i=0; $i < $count; $i++) {
+                for ($i = 0; $i < $count; $i++) {
                     $error_user_list[$i] = substr($error_user_list[$i], 0, $domain_len);
                 }
                 /* 将用户标记为改名失败 */
@@ -389,12 +389,12 @@ if ($_REQUEST['act'] == 'check_user') {
             }
 
             /* 检查改名后用户是否与商城用户重名 */
-            $sql = "SELECT user_name FROM " .$GLOBALS['ecs']->table('users') . " WHERE " . db_create_in($test_user_list, 'user_name');
+            $sql = "SELECT user_name FROM " . $GLOBALS['ecs']->table('users') . " WHERE " . db_create_in($test_user_list, 'user_name');
             $error_user_list = $GLOBALS['db']->getCol($sql);
             if ($error_user_list) {
                 $domain_len = 0 - str_len($domain);
                 $count = count($error_user_list);
-                for ($i=0; $i < $count; $i++) {
+                for ($i = 0; $i < $count; $i++) {
                     $error_user_list[$i] = substr($error_user_list[$i], 0, $domain_len);
                 }
                 /* 将用户标记为改名失败 */
@@ -443,26 +443,26 @@ if ($_REQUEST['act'] == 'import_user') {
     $query = $db->query("SELECT * FROM " . $ecs->table('users') . " ORDER BY `user_id` ASC");
     while ($data = $db->fetch_array($query)) {
         $salt = rand(100000, 999999);
-        $password = md5($data['password'].$salt);
+        $password = md5($data['password'] . $salt);
         $data['username'] = addslashes($data['user_name']);
         $lastuid = $data['user_id'] + $maxuid;
-        $uc_userinfo = $ucdb->getRow("SELECT `uid`, `password`, `salt` FROM ".$cfg['db_pre']."members WHERE `username`='$data[username]'");
+        $uc_userinfo = $ucdb->getRow("SELECT `uid`, `password`, `salt` FROM " . $cfg['db_pre'] . "members WHERE `username`='$data[username]'");
         if (!$uc_userinfo) {
-            $ucdb->query("INSERT LOW_PRIORITY INTO ".$cfg['db_pre']."members SET uid='$lastuid', username='$data[username]', password='$password', email='$data[email]', regip='$data[regip]', regdate='$data[regdate]', salt='$salt'", 'SILENT');
-            $ucdb->query("INSERT LOW_PRIORITY INTO ".$cfg['db_pre']."memberfields SET uid='$lastuid'", 'SILENT');
+            $ucdb->query("INSERT LOW_PRIORITY INTO " . $cfg['db_pre'] . "members SET uid='$lastuid', username='$data[username]', password='$password', email='$data[email]', regip='$data[regip]', regdate='$data[regdate]', salt='$salt'", 'SILENT');
+            $ucdb->query("INSERT LOW_PRIORITY INTO " . $cfg['db_pre'] . "memberfields SET uid='$lastuid'", 'SILENT');
         } else {
             if ($merge_method == 1) {
-                if (md5($data['password'].$uc_userinfo['salt']) == $uc_userinfo['password']) {
+                if (md5($data['password'] . $uc_userinfo['salt']) == $uc_userinfo['password']) {
                     $merge_uid[] = $data['user_id'];
                     $uc_uid[] = array('user_id' => $data['user_id'], 'uid' => $uc_userinfo['uid']);
                     continue;
                 }
             }
-            $ucdb->query("REPLACE INTO ".$cfg['db_pre']."mergemembers SET appid='".UC_APPID."', username='$data[username]'", 'SILENT');
+            $ucdb->query("REPLACE INTO " . $cfg['db_pre'] . "mergemembers SET appid='" . UC_APPID . "', username='$data[username]'", 'SILENT');
             $repeat_user[] = $data;
         }
     }
-    $ucdb->query("ALTER TABLE ".$cfg['db_pre']."members AUTO_INCREMENT=".($lastuid + 1), 'SILENT');
+    $ucdb->query("ALTER TABLE " . $cfg['db_pre'] . "members AUTO_INCREMENT=" . ($lastuid + 1), 'SILENT');
 
     //需要更新user_id的表
     $up_user_table = array('account_log', 'affiliate_log', 'booking_goods', 'collect_goods', 'comment', 'feedback', 'order_info', 'snatch_log', 'tag', 'users', 'user_account', 'user_address', 'user_bonus', 'reg_extend_info', 'user_feed', 'delivery_order', 'back_order');
@@ -508,7 +508,7 @@ if ($_REQUEST['act'] == 'modify') {
     }
 
     /* 显示重名用户及处理方法 */
-    $flags = array(0=>$_LANG['all_user'], 1=>$_LANG['error_user'], 2=>$_LANG['rename_user'], 3=>$_LANG['delete_user'], 4=>$_LANG['ignore_user'] );
+    $flags = array(0 => $_LANG['all_user'], 1 => $_LANG['error_user'], 2 => $_LANG['rename_user'], 3 => $_LANG['delete_user'], 4 => $_LANG['ignore_user']);
     $smarty->assign('flags', $flags);
 
     $arr = conflict_userlist();
@@ -543,7 +543,7 @@ if ($_REQUEST['act'] == 'query') {
 if ($_REQUEST['act'] == 'act_modify') {
     /* 先处理要改名的用户，改名用户要先检查是否有重名情况，有则标记出来 */
     $alias = array();
-    foreach ($_POST['opt'] as $user_id=>$val) {
+    foreach ($_POST['opt'] as $user_id => $val) {
         if ($val = 2) {
             $alias[] = $_POST['alias'][$user_id];
         }
@@ -555,7 +555,7 @@ if ($_REQUEST['act'] == 'act_modify') {
 
         /* 检查和商城是否有重名 */
         $code = $_SESSION['code'];
-        include_once(ROOT_PATH."include/modules/integrates/".$code.".php");
+        include_once(ROOT_PATH . "include/modules/integrates/" . $code . ".php");
         $cls_user = new $code($_SESSION['cfg']);
 
         $bbs_error_list = $cls_user->test_conflict($alias);
@@ -564,33 +564,33 @@ if ($_REQUEST['act'] == 'act_modify') {
 
         if ($error_list) {
             /* 将重名用户标记 */
-            foreach ($_POST['opt'] as $user_id=>$val) {
+            foreach ($_POST['opt'] as $user_id => $val) {
                 if ($val = 2) {
                     if (in_array($_POST['alias'][$user_id], $error_list)) {
                         /* 重名用户，需要标记 */
                         $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET flag = 1,  alias='' WHERE user_id = '$user_id'";
                     } else {
                         /* 用户名无重复，可以正常改名 */
-                        $sql = "UPDATE " . $GLOBALS['ecs']->table('users').
-                         " SET flag = 2, alias = '" . $_POST['alias'][$user_id] . "'".
-                         " WHERE user_id = '$user_id'";
+                        $sql = "UPDATE " . $GLOBALS['ecs']->table('users') .
+                            " SET flag = 2, alias = '" . $_POST['alias'][$user_id] . "'" .
+                            " WHERE user_id = '$user_id'";
                     }
                     $db->query($sql);
                 }
             }
         } else {
             /* 处理没有重名的情况 */
-            foreach ($_POST['opt'] as $user_id=>$val) {
-                $sql = "UPDATE " . $GLOBALS['ecs']->table('users').
-                       " SET flag = 2, alias = '" . $_POST['alias'][$user_id] . "'".
-                       " WHERE user_id = '$user_id'";
+            foreach ($_POST['opt'] as $user_id => $val) {
+                $sql = "UPDATE " . $GLOBALS['ecs']->table('users') .
+                    " SET flag = 2, alias = '" . $_POST['alias'][$user_id] . "'" .
+                    " WHERE user_id = '$user_id'";
                 $db->query($sql);
             }
         }
     }
 
     /* 处理删除和保留情况 */
-    foreach ($_POST['opt'] as $user_id=>$val) {
+    foreach ($_POST['opt'] as $user_id => $val) {
         if ($val == 3 || $val == 4) {
             $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET flag='$val' WHERE user_id='$user_id'";
             $db->query($sql);
@@ -613,35 +613,35 @@ if ($_REQUEST['act'] == 'sync') {
     $task_ignore = $db->getOne("SELECT COUNT(*) FROM " . $ecs->table("users") . " WHERE flag = 4");
     $task_sync = $total - $task_del - $task_ignore;
 
-    $_SESSION['task'] = array('del'=>array('total'=>$task_del, 'start'=>0), 'rename'=>array('total'=>$task_rename, 'start'=>0), 'sync'=>array('total'=>$task_sync, 'start'=>0));
+    $_SESSION['task'] = array('del' => array('total' => $task_del, 'start' => 0), 'rename' => array('total' => $task_rename, 'start' => 0), 'sync' => array('total' => $task_sync, 'start' => 0));
 
-    $del_list    = "";
+    $del_list = "";
     $rename_list = "";
     $ignore_list = "";
 
     $tasks = array();
     if ($task_del > 0) {
-        $tasks[] = array('task_name'=>sprintf($_LANG['task_del'], $task_del),'task_status'=>'<span id="task_del">' . $_LANG['task_uncomplete'] . '<span>');
+        $tasks[] = array('task_name' => sprintf($_LANG['task_del'], $task_del), 'task_status' => '<span id="task_del">' . $_LANG['task_uncomplete'] . '<span>');
         $sql = "SELECT user_name FROM " . $ecs->table('users') . " WHERE flag = 2";
         $del_list = $db->getCol($sql);
     }
 
     if ($task_rename > 0) {
-        $tasks[] = array('task_name'=>sprintf($_LANG['task_rename'], $task_rename),'task_status'=>'<span id="task_rename">' . $_LANG['task_uncomplete'] . '</span>');
+        $tasks[] = array('task_name' => sprintf($_LANG['task_rename'], $task_rename), 'task_status' => '<span id="task_rename">' . $_LANG['task_uncomplete'] . '</span>');
         $sql = "SELECT user_name, alias FROM " . $ecs->table('users') . " WHERE flag = 3";
         $rename_list = $db->getAll($sql);
     }
 
-    if ($task_ignore >0) {
+    if ($task_ignore > 0) {
         $sql = "SELECT user_name FROM " . $ecs->table('users') . " WHERE flag = 4";
         $ignore_list = $db->getCol($sql);
     }
 
     if ($task_sync > 0) {
-        $tasks[] = array('task_name'=>sprintf($_LANG['task_sync'], $task_sync),'task_status'=>'<span id="task_sync">' . $_LANG['task_uncomplete'] . '</span>');
+        $tasks[] = array('task_name' => sprintf($_LANG['task_sync'], $task_sync), 'task_status' => '<span id="task_sync">' . $_LANG['task_uncomplete'] . '</span>');
     }
 
-    $tasks[] = array('task_name'=>$_LANG['task_save'],'task_status'=>'<span id="task_save">' . $_LANG['task_uncomplete'] . '</span>');
+    $tasks[] = array('task_name' => $_LANG['task_save'], 'task_status' => '<span id="task_save">' . $_LANG['task_uncomplete'] . '</span>');
 
     /* 保存修改日志 */
     $fp = @fopen(ROOT_PATH . DATA_DIR . '/attached/integrate_' . $_SESSION['code'] . '_log.php', 'wb');
@@ -676,7 +676,7 @@ if ($_REQUEST['act'] == 'task') {
 
     // include_once(ROOT_PATH . 'includes/cls_json.php');
     $json = new JSON();
-    $result = array('message'=>'', 'error'=>0, 'content'=>'', 'id'=>'', 'end'=>0, 'size'=>$size);
+    $result = array('message' => '', 'error' => 0, 'content' => '', 'id' => '', 'end' => 0, 'size' => $size);
 
     if ($_SESSION['task']['del']['start'] < $_SESSION['task']['del']['total']) {
         /* 执行操作 */
@@ -712,12 +712,12 @@ if ($_REQUEST['act'] == 'task') {
         die($json->encode($result));
     } elseif ($_SESSION['task']['sync']['start'] < $_SESSION['task']['sync']['total']) {
         $code = $_SESSION['code'];
-        include_once(ROOT_PATH."include/modules/integrates/".$code.".php");
+        include_once(ROOT_PATH . "include/modules/integrates/" . $code . ".php");
         $cls_user = new $code($_SESSION['cfg']);
         $cls_user->need_sync = false;
 
-        $sql = "SELECT user_name, password, email, sex, birthday, reg_time ".
-                "FROM " . $ecs->table('users') . " LIMIT " . $_SESSION['task']['del']['start'] . ',' . $result['size'];
+        $sql = "SELECT user_name, password, email, sex, birthday, reg_time " .
+            "FROM " . $ecs->table('users') . " LIMIT " . $_SESSION['task']['del']['start'] . ',' . $result['size'];
         $arr = $db->getAll($sql);
         foreach ($arr as $user) {
             @$cls_user->add_user($user['user_name'], '', $user['email'], $user['sex'], $user['birthday'], $user['reg_time'], $user['password']);
@@ -737,13 +737,13 @@ if ($_REQUEST['act'] == 'task') {
         /* 记录合并用户 */
 
         /* 插入code到shop_config表 */
-        $sql = "SELECT COUNT(*) FROM " .$ecs->table('shop_config'). " WHERE code = 'integrate_code'";
+        $sql = "SELECT COUNT(*) FROM " . $ecs->table('shop_config') . " WHERE code = 'integrate_code'";
 
         if ($db->GetOne($sql) == 0) {
-            $sql = "INSERT INTO " .$ecs->table('shop_config'). " (code, value) ".
-                    "VALUES ('integrate_code', '$_SESSION[code]')";
+            $sql = "INSERT INTO " . $ecs->table('shop_config') . " (code, value) " .
+                "VALUES ('integrate_code', '$_SESSION[code]')";
         } else {
-            $sql = "UPDATE " .$ecs->table('shop_config'). " SET value = '$_SESSION[code]' WHERE code = 'integrate_code'";
+            $sql = "UPDATE " . $ecs->table('shop_config') . " SET value = '$_SESSION[code]' WHERE code = 'integrate_code'";
         }
         $db->query($sql);
 
@@ -774,9 +774,9 @@ if ($_REQUEST['act'] == 'setup_ucenter') {
     $json = new JSON();
     $result = array('error' => 0, 'message' => '');
 
-    $app_type   = 'ECTouch';
-    $app_name   = $db->getOne('SELECT value FROM ' . $ecs->table('shop_config') . " WHERE code = 'shop_name'");
-    $app_url    = $GLOBALS['ecs']->url();
+    $app_type = 'ECTouch';
+    $app_name = $db->getOne('SELECT value FROM ' . $ecs->table('shop_config') . " WHERE code = 'shop_name'");
+    $app_url = $GLOBALS['ecs']->url();
     $app_charset = CHARSET;
     $app_dbcharset = strtolower((str_replace('-', '', CHARSET)));
     $ucapi = !empty($_POST['ucapi']) ? trim($_POST['ucapi']) : '';
@@ -797,19 +797,19 @@ if ($_REQUEST['act'] == 'setup_ucenter') {
     }
 
     $ucfounderpw = trim($_POST['ucfounderpw']);
-    $app_tagtemplates = 'apptagtemplates[template]='.urlencode('<a href="{url}" target="_blank">{goods_name}</a>').'&'.
-        'apptagtemplates[fields][goods_name]='.urlencode($_LANG['tagtemplates_goodsname']).'&'.
-        'apptagtemplates[fields][uid]='.urlencode($_LANG['tagtemplates_uid']).'&'.
-        'apptagtemplates[fields][username]='.urlencode($_LANG['tagtemplates_username']).'&'.
-        'apptagtemplates[fields][dateline]='.urlencode($_LANG['tagtemplates_dateline']).'&'.
-        'apptagtemplates[fields][url]='.urlencode($_LANG['tagtemplates_url']).'&'.
-        'apptagtemplates[fields][image]='.urlencode($_LANG['tagtemplates_image']).'&'.
-        'apptagtemplates[fields][goods_price]='.urlencode($_LANG['tagtemplates_price']);
-    $postdata ="m=app&a=add&ucfounder=&ucfounderpw=".urlencode($ucfounderpw)."&apptype=".urlencode($app_type).
-        "&appname=".urlencode($app_name)."&appurl=".urlencode($app_url)."&appip=&appcharset=".$app_charset.
-        '&appdbcharset='.$app_dbcharset.'&apptagtemplates='.$app_tagtemplates;
+    $app_tagtemplates = 'apptagtemplates[template]=' . urlencode('<a href="{url}" target="_blank">{goods_name}</a>') . '&' .
+        'apptagtemplates[fields][goods_name]=' . urlencode($_LANG['tagtemplates_goodsname']) . '&' .
+        'apptagtemplates[fields][uid]=' . urlencode($_LANG['tagtemplates_uid']) . '&' .
+        'apptagtemplates[fields][username]=' . urlencode($_LANG['tagtemplates_username']) . '&' .
+        'apptagtemplates[fields][dateline]=' . urlencode($_LANG['tagtemplates_dateline']) . '&' .
+        'apptagtemplates[fields][url]=' . urlencode($_LANG['tagtemplates_url']) . '&' .
+        'apptagtemplates[fields][image]=' . urlencode($_LANG['tagtemplates_image']) . '&' .
+        'apptagtemplates[fields][goods_price]=' . urlencode($_LANG['tagtemplates_price']);
+    $postdata = "m=app&a=add&ucfounder=&ucfounderpw=" . urlencode($ucfounderpw) . "&apptype=" . urlencode($app_type) .
+        "&appname=" . urlencode($app_name) . "&appurl=" . urlencode($app_url) . "&appip=&appcharset=" . $app_charset .
+        '&appdbcharset=' . $app_dbcharset . '&apptagtemplates=' . $app_tagtemplates;
     $t = new transport;
-    $ucconfig = $t->request($ucapi.'/index.php', $postdata);
+    $ucconfig = $t->request($ucapi . '/index.php', $postdata);
     $ucconfig = $ucconfig['body'];
     if (empty($ucconfig)) {
         //ucenter 验证失败
@@ -836,7 +836,7 @@ if ($_REQUEST['act'] == 'setup_ucenter') {
 
 /* 显示整合成功信息 */
 if ($_REQUEST['act'] == 'complete') {
-    sys_msg($_LANG['sync_ok'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+    sys_msg($_LANG['sync_ok'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
 }
 
 if ($_REQUEST['act'] == 'points_set') {
@@ -846,9 +846,9 @@ if ($_REQUEST['act'] == 'points_set') {
     $points = $user->get_points_name(); //获取商城可用积分
 
     if (empty($points)) {
-        sys_msg($_LANG['no_points'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+        sys_msg($_LANG['no_points'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
     } elseif ($points == 'ucenter') {
-        sys_msg($_LANG['uc_points'], 0, array(array('text'=>$_LANG['uc_set_credits'],'href'=>UC_API, 'target'=>'_blank')), false);
+        sys_msg($_LANG['uc_points'], 0, array(array('text' => $_LANG['uc_set_credits'], 'href' => UC_API, 'target' => '_blank')), false);
     }
 
     $rule = array(); //取得一样规则
@@ -862,32 +862,32 @@ if ($_REQUEST['act'] == 'points_set') {
 
     $select_rule = array();
     $exist_rule = array();
-    for ($i=0; $i < $count ; $i++) {
+    for ($i = 0; $i < $count; $i++) {
         if (!isset($rule[TO_P . $points_key[$i]])) {
             $select_rule[TO_P . $points_key[$i]] = $_LANG['bbs'] . $points[$points_key[$i]]['title'] . '->' . $_LANG['shop_pay_points'];
         } else {
             $exist_rule[TO_P . $points_key[$i]] = $_LANG['bbs'] . $points[$points_key[$i]]['title'] . '->' . $_LANG['shop_pay_points'];
         }
     }
-    for ($i=0; $i < $count ; $i++) {
+    for ($i = 0; $i < $count; $i++) {
         if (!isset($rule[TO_R . $points_key[$i]])) {
             $select_rule[TO_R . $points_key[$i]] = $_LANG['bbs'] . $points[$points_key[$i]]['title'] . '->' . $_LANG['shop_rank_points'];
         } else {
             $exist_rule[TO_R . $points_key[$i]] = $_LANG['bbs'] . $points[$points_key[$i]]['title'] . '->' . $_LANG['shop_rank_points'];
         }
     }
-    for ($i=0; $i < $count ; $i++) {
+    for ($i = 0; $i < $count; $i++) {
         if (!isset($rule[FROM_P . $points_key[$i]])) {
-            $select_rule[FROM_P . $points_key[$i]] =  $_LANG['shop_pay_points'] . '->' . $_LANG['bbs'] . $points[$points_key[$i]]['title'];
+            $select_rule[FROM_P . $points_key[$i]] = $_LANG['shop_pay_points'] . '->' . $_LANG['bbs'] . $points[$points_key[$i]]['title'];
         } else {
-            $exist_rule[FROM_P . $points_key[$i]] =  $_LANG['shop_pay_points'] . '->' . $_LANG['bbs'] . $points[$points_key[$i]]['title'];
+            $exist_rule[FROM_P . $points_key[$i]] = $_LANG['shop_pay_points'] . '->' . $_LANG['bbs'] . $points[$points_key[$i]]['title'];
         }
     }
-    for ($i=0; $i < $count ; $i++) {
+    for ($i = 0; $i < $count; $i++) {
         if (!isset($rule[FROM_R . $points_key[$i]])) {
-            $select_rule[FROM_R . $points_key[$i]] =  $_LANG['shop_rank_points'] . '->' . $_LANG['bbs'] . $points[$points_key[$i]]['title'];
+            $select_rule[FROM_R . $points_key[$i]] = $_LANG['shop_rank_points'] . '->' . $_LANG['bbs'] . $points[$points_key[$i]]['title'];
         } else {
-            $exist_rule[FROM_R . $points_key[$i]] =  $_LANG['shop_rank_points'] . '->' . $_LANG['bbs'] . $points[$points_key[$i]]['title'];
+            $exist_rule[FROM_R . $points_key[$i]] = $_LANG['shop_rank_points'] . '->' . $_LANG['bbs'] . $points[$points_key[$i]]['title'];
         }
     }
 
@@ -935,7 +935,7 @@ if ($_REQUEST['act'] == 'edit_points') {
             $rule[$rule_index] = $from_val . ':' . $to_val;
         } else {
             $tmp_rule = array();
-            foreach ($rule as $key=>$val) {
+            foreach ($rule as $key => $val) {
                 if ($key == $old_rule_index) {
                     $tmp_rule[$rule_index] = $from_val . ':' . $to_val;
                 } else {
@@ -980,7 +980,7 @@ if ($_REQUEST['act'] == 'save_points') {
     }
     $db->query($sql);
     clear_cache_files();
-    sys_msg($_LANG['save_ok'], 0, array(array('text'=>$_LANG['06_list_integrate'],'href'=>'integrate.php?act=list')));
+    sys_msg($_LANG['save_ok'], 0, array(array('text' => $_LANG['06_list_integrate'], 'href' => 'integrate.php?act=list')));
 }
 
 /**
@@ -1007,14 +1007,14 @@ function conflict_userlist()
 
     /* 分页大小 */
     $filter = page_and_size($filter);
-    $sql = "SELECT user_id, user_name, email, reg_time, flag, alias ".
-            " FROM " . $GLOBALS['ecs']->table('users') . $where .
-            " ORDER BY user_id ASC".
-            " LIMIT " . $filter['start'] . ',' . $filter['page_size'];
+    $sql = "SELECT user_id, user_name, email, reg_time, flag, alias " .
+        " FROM " . $GLOBALS['ecs']->table('users') . $where .
+        " ORDER BY user_id ASC" .
+        " LIMIT " . $filter['start'] . ',' . $filter['page_size'];
     $list = $GLOBALS['db']->getAll($sql);
 
     $list_count = count($list);
-    for ($i=0; $i < $list_count; $i++) {
+    for ($i = 0; $i < $list_count; $i++) {
         $list[$i]['reg_date'] = local_date($GLOBALS['_CFG']['date_format'], $list[$i]['reg_time']);
     }
 
@@ -1033,11 +1033,11 @@ function conflict_userlist()
  */
 function save_integrate_config($code, $cfg)
 {
-    $sql = "SELECT COUNT(*) FROM " .$GLOBALS['ecs']->table('shop_config'). " WHERE code = 'integrate_code'";
+    $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('shop_config') . " WHERE code = 'integrate_code'";
 
     if ($GLOBALS['db']->GetOne($sql) == 0) {
-        $sql = "INSERT INTO " .$ecs->table('shop_config'). " (code, value) ".
-                "VALUES ('integrate_code', '$code')";
+        $sql = "INSERT INTO " . $ecs->table('shop_config') . " (code, value) " .
+            "VALUES ('integrate_code', '$code')";
     } else {
         $sql = "SELECT value FROM " . $GLOBALS['ecs']->table('shop_config') . " WHERE code = 'integrate_code'";
         if ($code != $GLOBALS['db']->getOne($sql)) {
@@ -1045,7 +1045,7 @@ function save_integrate_config($code, $cfg)
             $sql = "UPDATE " . $GLOBALS['ecs']->table('shop_config') . " SET value = '' WHERE code = 'points_rule'";
             $GLOBALS['db']->query($sql);
         }
-        $sql = "UPDATE " .$GLOBALS['ecs']->table('shop_config'). " SET value = '$code' WHERE code = 'integrate_code'";
+        $sql = "UPDATE " . $GLOBALS['ecs']->table('shop_config') . " SET value = '$code' WHERE code = 'integrate_code'";
     }
 
     $GLOBALS['db']->query($sql);
@@ -1070,8 +1070,8 @@ function save_integrate_config($code, $cfg)
     }
 
     if ($cur_domain != $int_domain) {
-        $same_domain    = true;
-        $domain         = '';
+        $same_domain = true;
+        $domain = '';
 
         /* 域名不一样，检查是否在同一域下 */
         $cur_domain_arr = explode(".", $cur_domain);
@@ -1086,8 +1086,8 @@ function save_integrate_config($code, $cfg)
 
             for ($i = 1; $i < $count; $i++) {
                 if ($cur_domain_arr[$i] != $int_domain_arr[$i]) {
-                    $domain         = '';
-                    $same_domain    = false;
+                    $domain = '';
+                    $same_domain = false;
                     break;
                 } else {
                     $domain .= ".$cur_domain_arr[$i]";
@@ -1097,24 +1097,24 @@ function save_integrate_config($code, $cfg)
 
         if ($same_domain == false) {
             /* 不在同一域，设置提示信息 */
-            $cfg['cookie_domain']   = '';
-            $cfg['cookie_path']     = '/';
+            $cfg['cookie_domain'] = '';
+            $cfg['cookie_path'] = '/';
         } else {
-            $cfg['cookie_domain']   = $domain;
-            $cfg['cookie_path']     = '/';
+            $cfg['cookie_domain'] = $domain;
+            $cfg['cookie_path'] = '/';
         }
     } else {
-        $cfg['cookie_domain']   = '';
-        $cfg['cookie_path']     = '/';
+        $cfg['cookie_domain'] = '';
+        $cfg['cookie_path'] = '/';
     }
 
     $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('shop_config') . " WHERE code = 'integrate_config'";
     if ($GLOBALS['db']->GetOne($sql) == 0) {
-        $sql =  "INSERT INTO " . $GLOBALS['ecs']->table('shop_config') . " (code, value) ".
-                "VALUES ('integrate_config', '" . serialize($cfg) . "')";
+        $sql = "INSERT INTO " . $GLOBALS['ecs']->table('shop_config') . " (code, value) " .
+            "VALUES ('integrate_config', '" . serialize($cfg) . "')";
     } else {
-        $sql = "UPDATE " . $GLOBALS['ecs']->table('shop_config') . " SET value='". serialize($cfg) ."' ".
-                "WHERE code='integrate_config'";
+        $sql = "UPDATE " . $GLOBALS['ecs']->table('shop_config') . " SET value='" . serialize($cfg) . "' " .
+            "WHERE code='integrate_config'";
     }
 
     $GLOBALS['db']->query($sql);

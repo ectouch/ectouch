@@ -21,9 +21,9 @@ if ($_REQUEST['act'] == 'list') {
 
     /* 获得可用的模版 */
     $available_templates = array();
-    $template_dir        = @opendir(ROOT_PATH . 'themes/');
+    $template_dir = @opendir(ROOT_PATH . 'themes/');
     while ($file = readdir($template_dir)) {
-        if ($file != '.' && $file != '..' && is_dir(ROOT_PATH. 'themes/' . $file) && $file != '.svn' && $file != 'index.htm') {
+        if ($file != '.' && $file != '..' && is_dir(ROOT_PATH . 'themes/' . $file) && $file != '.svn' && $file != 'index.htm') {
             $available_templates[] = get_template_info($file);
         }
     }
@@ -39,14 +39,14 @@ if ($_REQUEST['act'] == 'list') {
 
     /* 清除不需要的模板设置 */
     $available_code = array();
-    $sql = "DELETE FROM ".$ecs->table('template')." WHERE 1 ";
+    $sql = "DELETE FROM " . $ecs->table('template') . " WHERE 1 ";
     foreach ($available_templates as $tmp) {
-        $sql .= " AND theme <> '".$tmp['code']."' ";
+        $sql .= " AND theme <> '" . $tmp['code'] . "' ";
         $available_code[] = $tmp['code'];
     }
     $tmp_bak_dir = @opendir(ROOT_PATH . 'data/backup/library/');
     while ($file = readdir($tmp_bak_dir)) {
-        if ($file != '.' && $file != '..' && $file != '.svn' && $file != 'index.htm' && $file != '.gitignore' && is_file(ROOT_PATH .'data/backup/library/' . $file) == true) {
+        if ($file != '.' && $file != '..' && $file != '.svn' && $file != 'index.htm' && $file != '.gitignore' && is_file(ROOT_PATH . 'data/backup/library/' . $file) == true) {
             $code = substr($file, 0, strpos($file, '-'));
             if (!in_array($code, $available_code)) {
                 @unlink(ROOT_PATH . 'data/backup/library/' . $file);
@@ -74,13 +74,13 @@ if ($_REQUEST['act'] == 'setup') {
     admin_priv('template_setup');
 
     $template_theme = $_CFG['template'];
-    $curr_template  = empty($_REQUEST['template_file']) ? 'index' : $_REQUEST['template_file'];
+    $curr_template = empty($_REQUEST['template_file']) ? 'index' : $_REQUEST['template_file'];
 
-    $temp_options   = array();
-    $temp_regions   = get_template_region($template_theme, $curr_template.'.dwt', false);
-    $temp_libs      = get_template_region($template_theme, $curr_template.'.dwt', true);
+    $temp_options = array();
+    $temp_regions = get_template_region($template_theme, $curr_template . '.dwt', false);
+    $temp_libs = get_template_region($template_theme, $curr_template . '.dwt', true);
 
-    $editable_libs      = get_editable_libs($curr_template, $page_libs[$curr_template]);
+    $editable_libs = get_editable_libs($curr_template, $page_libs[$curr_template]);
 
     if (empty($editable_libs)) {
         /* 获取数据库中数据，并跟模板中数据核对,并设置动态内容 */
@@ -89,8 +89,8 @@ if ($_REQUEST['act'] == 'setup') {
             $lib = basename(strtolower(substr($val, 0, strpos($val, '.'))));
             if (!in_array($lib, $GLOBALS['dyna_libs'])) {
                 /* 先排除动态内容 */
-                $temp_options[$lib]            = get_setted($val, $temp_libs);
-                $temp_options[$lib]['desc']    = $_LANG['template_libs'][$lib];
+                $temp_options[$lib] = get_setted($val, $temp_libs);
+                $temp_options[$lib]['desc'] = $_LANG['template_libs'][$lib];
                 $temp_options[$lib]['library'] = $val;
                 $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0;
                 $temp_options[$lib]['number'] = $number_enabled;
@@ -103,8 +103,8 @@ if ($_REQUEST['act'] == 'setup') {
             $lib = basename(strtolower(substr($val, 0, strpos($val, '.'))));
             if (!in_array($lib, $GLOBALS['dyna_libs'])) {
                 /* 先排除动态内容 */
-                $temp_options[$lib]            = get_setted($val, $temp_libs);
-                $temp_options[$lib]['desc']    = $_LANG['template_libs'][$lib];
+                $temp_options[$lib] = get_setted($val, $temp_libs);
+                $temp_options[$lib]['desc'] = $_LANG['template_libs'][$lib];
                 $temp_options[$lib]['library'] = $val;
                 $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0;
                 $temp_options[$lib]['number'] = $number_enabled;
@@ -117,18 +117,18 @@ if ($_REQUEST['act'] == 'setup') {
     }
 
     /* 动态内容 */
-    $cate_goods   = array();
-    $brand_goods  = array();
+    $cate_goods = array();
+    $brand_goods = array();
     $cat_articles = array();
     $ad_positions = array();
 
-    $sql = "SELECT region, library, sort_order, id, number, type FROM ".$ecs->table('template') ." ".
-           "WHERE theme='$template_theme' AND filename='$curr_template' AND remarks='' ".
-           "ORDER BY region, sort_order ASC ";
+    $sql = "SELECT region, library, sort_order, id, number, type FROM " . $ecs->table('template') . " " .
+        "WHERE theme='$template_theme' AND filename='$curr_template' AND remarks='' " .
+        "ORDER BY region, sort_order ASC ";
 
     $rc = $db->query($sql);
     $db_dyna_libs = array();
-    while ($row= $db->FetchRow($rc)) {
+    while ($row = $db->FetchRow($rc)) {
         if ($row['type'] > 0) {
             /* 动态内容 */
             $db_dyna_libs[$row['region']][$row['library']][] = array('id' => $row['id'], 'number' => $row['number'], 'type' => $row['type']);
@@ -146,34 +146,30 @@ if ($_REQUEST['act'] == 'setup') {
         if ($val['lib'] == 'cat_goods') {
             /* 分类下的商品 */
             if (isset($db_dyna_libs[$val['region']][$val['library']]) && ($row = array_shift($db_dyna_libs[$val['region']][$val['library']]))) {
-                $cate_goods[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => $row['number'], 'cats'=>cat_list(0, $row['id']));
+                $cate_goods[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => $row['number'], 'cats' => cat_list(0, $row['id']));
             } else {
-                $cate_goods[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number'=>0, 'cats'=>cat_list(0));
+                $cate_goods[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => 0, 'cats' => cat_list(0));
             }
         } elseif ($val['lib'] == 'brand_goods') {
             /* 品牌下的商品 */
             if (isset($db_dyna_libs[$val['region']][$val['library']]) && ($row = array_shift($db_dyna_libs[$val['region']][$val['library']]))) {
                 $brand_goods[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => $row['number'], 'brand' => $row['id']);
             } else {
-                $brand_goods[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number'=>0, 'brand'=>0);
+                $brand_goods[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => 0, 'brand' => 0);
             }
-        }
-
-        /* 文章列表 */
+        } /* 文章列表 */
         elseif ($val['lib'] == 'cat_articles') {
             if (isset($db_dyna_libs[$val['region']][$val['library']]) && ($row = array_shift($db_dyna_libs[$val['region']][$val['library']]))) {
                 $cat_articles[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => $row['number'], 'cat' => article_cat_list(0, $row['id']));
             } else {
-                $cat_articles[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number'=>0, 'cat'=>article_cat_list(0));
+                $cat_articles[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => 0, 'cat' => article_cat_list(0));
             }
-        }
-
-        /* 广告位 */
+        } /* 广告位 */
         elseif ($val['lib'] == 'ad_position') {
             if (isset($db_dyna_libs[$val['region']][$val['library']]) && ($row = array_shift($db_dyna_libs[$val['region']][$val['library']]))) {
                 $ad_positions[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => $row['number'], 'ad_pos' => $row['id']);
             } else {
-                $ad_positions[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number'=>0, 'ad_pos'=>0);
+                $ad_positions[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => 0, 'ad_pos' => 0);
             }
         }
     }
@@ -202,16 +198,16 @@ if ($_REQUEST['act'] == 'setting') {
     admin_priv('template_setup');
 
     $curr_template = $_CFG['template'];
-    $db->query("DELETE FROM " .$ecs->table('template'). " WHERE remarks = '' AND filename = '$_POST[template_file]' AND theme = '$curr_template'");
+    $db->query("DELETE FROM " . $ecs->table('template') . " WHERE remarks = '' AND filename = '$_POST[template_file]' AND theme = '$curr_template'");
 
     /* 先处理固定内容 */
     foreach ($_POST['regions'] as $key => $val) {
         $number = isset($_POST['number'][$key]) ? intval($_POST['number'][$key]) : 0;
         if (!in_array($key, $GLOBALS['dyna_libs']) and (isset($_POST['display'][$key]) and $_POST['display'][$key] == 1 or $number > 0)) {
-            $sql = "INSERT INTO " .$ecs->table('template').
-                        "(theme, filename, region, library, sort_order, number)".
-                    " VALUES ".
-                        "('$curr_template', '$_POST[template_file]', '$val', '".$_POST['map'][$key]."', '" . @$_POST['sort_order'][$key] . "', '$number')";
+            $sql = "INSERT INTO " . $ecs->table('template') .
+                "(theme, filename, region, library, sort_order, number)" .
+                " VALUES " .
+                "('$curr_template', '$_POST[template_file]', '$val', '" . $_POST['map'][$key] . "', '" . @$_POST['sort_order'][$key] . "', '$number')";
             $db->query($sql);
         }
     }
@@ -220,14 +216,14 @@ if ($_REQUEST['act'] == 'setting') {
     if (isset($_POST['regions']['cat_goods'])) {
         foreach ($_POST['regions']['cat_goods'] as $key => $val) {
             if ($_POST['categories']['cat_goods'][$key] != '' && intval($_POST['categories']['cat_goods'][$key]) > 0) {
-                $sql = "INSERT INTO " .$ecs->table('template'). " (".
-                            "theme, filename, region, library, sort_order, type, id, number".
-                        ") VALUES (".
-                            "'$curr_template', ".
-                            "'$_POST[template_file]', '" .$val. "', '/library/cat_goods.lbi', ".
-                            "'" .$_POST['sort_order']['cat_goods'][$key]. "', 1, '" .$_POST['categories']['cat_goods'][$key].
-                            "', '" .$_POST['number']['cat_goods'][$key]. "'".
-                        ")";
+                $sql = "INSERT INTO " . $ecs->table('template') . " (" .
+                    "theme, filename, region, library, sort_order, type, id, number" .
+                    ") VALUES (" .
+                    "'$curr_template', " .
+                    "'$_POST[template_file]', '" . $val . "', '/library/cat_goods.lbi', " .
+                    "'" . $_POST['sort_order']['cat_goods'][$key] . "', 1, '" . $_POST['categories']['cat_goods'][$key] .
+                    "', '" . $_POST['number']['cat_goods'][$key] . "'" .
+                    ")";
                 $db->query($sql);
             }
         }
@@ -237,14 +233,14 @@ if ($_REQUEST['act'] == 'setting') {
     if (isset($_POST['regions']['brand_goods'])) {
         foreach ($_POST['regions']['brand_goods'] as $key => $val) {
             if ($_POST['brands']['brand_goods'][$key] != '' && intval($_POST['brands']['brand_goods'][$key]) > 0) {
-                $sql = "INSERT INTO " .$ecs->table('template'). " (".
-                            "theme, filename, region, library, sort_order, type, id, number".
-                        ") VALUES (".
-                            "'$curr_template', ".
-                            "'$_POST[template_file]', '" .$val. "', '/library/brand_goods.lbi', ".
-                            "'" .$_POST['sort_order']['brand_goods'][$key]. "', 2, '" .$_POST['brands']['brand_goods'][$key].
-                            "', '" .$_POST['number']['brand_goods'][$key]. "'".
-                        ")";
+                $sql = "INSERT INTO " . $ecs->table('template') . " (" .
+                    "theme, filename, region, library, sort_order, type, id, number" .
+                    ") VALUES (" .
+                    "'$curr_template', " .
+                    "'$_POST[template_file]', '" . $val . "', '/library/brand_goods.lbi', " .
+                    "'" . $_POST['sort_order']['brand_goods'][$key] . "', 2, '" . $_POST['brands']['brand_goods'][$key] .
+                    "', '" . $_POST['number']['brand_goods'][$key] . "'" .
+                    ")";
                 $db->query($sql);
             }
         }
@@ -254,14 +250,14 @@ if ($_REQUEST['act'] == 'setting') {
     if (isset($_POST['regions']['cat_articles'])) {
         foreach ($_POST['regions']['cat_articles'] as $key => $val) {
             if ($_POST['article_cat']['cat_articles'][$key] != '' && intval($_POST['article_cat']['cat_articles'][$key]) > 0) {
-                $sql = "INSERT INTO " .$ecs->table('template'). " (".
-                            "theme, filename, region, library, sort_order, type, id, number".
-                        ") VALUES (".
-                            "'$curr_template', ".
-                            "'$_POST[template_file]', '" .$val. "', '/library/cat_articles.lbi', ".
-                            "'" .$_POST['sort_order']['cat_articles'][$key]. "', 3, '" .$_POST['article_cat']['cat_articles'][$key].
-                            "', '" .$_POST['number']['cat_articles'][$key]. "'".
-                        ")";
+                $sql = "INSERT INTO " . $ecs->table('template') . " (" .
+                    "theme, filename, region, library, sort_order, type, id, number" .
+                    ") VALUES (" .
+                    "'$curr_template', " .
+                    "'$_POST[template_file]', '" . $val . "', '/library/cat_articles.lbi', " .
+                    "'" . $_POST['sort_order']['cat_articles'][$key] . "', 3, '" . $_POST['article_cat']['cat_articles'][$key] .
+                    "', '" . $_POST['number']['cat_articles'][$key] . "'" .
+                    ")";
                 $db->query($sql);
             }
         }
@@ -271,14 +267,14 @@ if ($_REQUEST['act'] == 'setting') {
     if (isset($_POST['regions']['ad_position'])) {
         foreach ($_POST['regions']['ad_position'] as $key => $val) {
             if ($_POST['ad_position'][$key] != '' && intval($_POST['ad_position'][$key]) > 0) {
-                $sql = "INSERT INTO " .$ecs->table('template'). " (".
-                            "theme, filename, region, library, sort_order, type, id, number".
-                        ") VALUES (".
-                            "'$curr_template', ".
-                            "'$_POST[template_file]', '" .$val. "', '/library/ad_position.lbi', ".
-                            "'" .$_POST['sort_order']['ad_position'][$key]. "', 4, '" .$_POST['ad_position'][$key].
-                            "', '" .$_POST['number']['ad_position'][$key]. "'".
-                        ")";
+                $sql = "INSERT INTO " . $ecs->table('template') . " (" .
+                    "theme, filename, region, library, sort_order, type, id, number" .
+                    ") VALUES (" .
+                    "'$curr_template', " .
+                    "'$_POST[template_file]', '" . $val . "', '/library/ad_position.lbi', " .
+                    "'" . $_POST['sort_order']['ad_position'][$key] . "', 4, '" . $_POST['ad_position'][$key] .
+                    "', '" . $_POST['number']['ad_position'][$key] . "'" .
+                    ")";
                 $db->query($sql);
             }
         }
@@ -291,59 +287,59 @@ if ($_REQUEST['act'] == 'setting') {
             case 'cat_goods':
                 foreach ($val as $k => $v) {
                     if (intval($_POST['categories']['cat_goods'][$k]) > 0) {
-                        $post_regions[] = array('region'     => $v,
-                                                'type'       => 1,
-                                                'number'     => $_POST['number']['cat_goods'][$k],
-                                                'library'    => '/library/' .$key. '.lbi',
-                                                'sort_order' => $_POST['sort_order']['cat_goods'][$k],
-                                                'id'         => $_POST['categories']['cat_goods'][$k]);
+                        $post_regions[] = array('region' => $v,
+                            'type' => 1,
+                            'number' => $_POST['number']['cat_goods'][$k],
+                            'library' => '/library/' . $key . '.lbi',
+                            'sort_order' => $_POST['sort_order']['cat_goods'][$k],
+                            'id' => $_POST['categories']['cat_goods'][$k]);
                     }
                 }
                 break;
             case 'brand_goods':
                 foreach ($val as $k => $v) {
                     if (intval($_POST['brands']['brand_goods'][$k]) > 0) {
-                        $post_regions[] = array('region'     => $v,
-                                                'type'       => 2,
-                                                'number'     => $_POST['number']['brand_goods'][$k],
-                                                'library'    => '/library/' .$key. '.lbi',
-                                                'sort_order' => $_POST['sort_order']['brand_goods'][$k],
-                                                'id'         => $_POST['brands']['brand_goods'][$k]);
+                        $post_regions[] = array('region' => $v,
+                            'type' => 2,
+                            'number' => $_POST['number']['brand_goods'][$k],
+                            'library' => '/library/' . $key . '.lbi',
+                            'sort_order' => $_POST['sort_order']['brand_goods'][$k],
+                            'id' => $_POST['brands']['brand_goods'][$k]);
                     }
                 }
                 break;
             case 'cat_articles':
                 foreach ($val as $k => $v) {
                     if (intval($_POST['article_cat']['cat_articles'][$k]) > 0) {
-                        $post_regions[] = array('region'     => $v,
-                                                'type'       => 3,
-                                                'number'     => $_POST['number']['cat_articles'][$k],
-                                                'library'    => '/library/' .$key. '.lbi',
-                                                'sort_order' => $_POST['sort_order']['cat_articles'][$k],
-                                                'id'         => $_POST['article_cat']['cat_articles'][$k]);
+                        $post_regions[] = array('region' => $v,
+                            'type' => 3,
+                            'number' => $_POST['number']['cat_articles'][$k],
+                            'library' => '/library/' . $key . '.lbi',
+                            'sort_order' => $_POST['sort_order']['cat_articles'][$k],
+                            'id' => $_POST['article_cat']['cat_articles'][$k]);
                     }
                 }
                 break;
             case 'ad_position':
                 foreach ($val as $k => $v) {
                     if (intval($_POST['ad_position'][$k]) > 0) {
-                        $post_regions[] = array('region'     => $v,
-                                                'type'       => 4,
-                                                'number'     => $_POST['number']['ad_position'][$k],
-                                                'library'    => '/library/' .$key. '.lbi',
-                                                'sort_order' => $_POST['sort_order']['ad_position'][$k],
-                                                'id'         => $_POST['ad_position'][$k]);
+                        $post_regions[] = array('region' => $v,
+                            'type' => 4,
+                            'number' => $_POST['number']['ad_position'][$k],
+                            'library' => '/library/' . $key . '.lbi',
+                            'sort_order' => $_POST['sort_order']['ad_position'][$k],
+                            'id' => $_POST['ad_position'][$k]);
                     }
                 }
                 break;
             default:
                 if (!empty($_POST['display'][$key])) {
-                    $post_regions[] = array('region'     => $val,
-                                            'type'       => 0,
-                                            'number'     => 0,
-                                            'library'    => $_POST['map'][$key],
-                                            'sort_order' => $_POST['sort_order'][$key],
-                                            'id'         => 0);
+                    $post_regions[] = array('region' => $val,
+                        'type' => 0,
+                        'number' => 0,
+                        'library' => $_POST['map'][$key],
+                        'sort_order' => $_POST['sort_order'][$key],
+                        'id' => 0);
                 }
 
         }
@@ -353,15 +349,15 @@ if ($_REQUEST['act'] == 'setting') {
     usort($post_regions, "array_sort");
 
     /* 修改模板文件 */
-    $template_file    = '../themes/' . $curr_template . '/' . $_POST['template_file'] . '.dwt';
+    $template_file = '../themes/' . $curr_template . '/' . $_POST['template_file'] . '.dwt';
     $template_content = file_get_contents($template_file);
     $template_content = str_replace("\xEF\xBB\xBF", '', $template_content);
-    $org_regions      = get_template_region($curr_template, $_POST['template_file'].'.dwt', false);
+    $org_regions = get_template_region($curr_template, $_POST['template_file'] . '.dwt', false);
 
-    $region_content   = '';
-    $pattern          = '/(<!--\\s*TemplateBeginEditable\\sname="%s"\\s*-->)(.*?)(<!--\\s*TemplateEndEditable\\s*-->)/s';
-    $replacement      = "\\1\n%s\\3";
-    $lib_template     = "<!-- #BeginLibraryItem \"%s\" -->\n%s\n <!-- #EndLibraryItem -->\n";
+    $region_content = '';
+    $pattern = '/(<!--\\s*TemplateBeginEditable\\sname="%s"\\s*-->)(.*?)(<!--\\s*TemplateEndEditable\\s*-->)/s';
+    $replacement = "\\1\n%s\\3";
+    $lib_template = "<!-- #BeginLibraryItem \"%s\" -->\n%s\n <!-- #EndLibraryItem -->\n";
 
     foreach ($org_regions as $region) {
         $region_content = ''; // 获取当前区域内容
@@ -370,9 +366,9 @@ if ($_REQUEST['act'] == 'setting') {
                 if (!file_exists('../themes/' . $curr_template . $lib['library'])) {
                     continue;
                 }
-                $lib_content     = file_get_contents('../themes/' . $curr_template . $lib['library']);
-                $lib_content     = preg_replace('/<meta\\shttp-equiv=["|\']Content-Type["|\']\\scontent=["|\']text\/html;\\scharset=.*["|\']>/i', '', $lib_content);
-                $lib_content     = str_replace("\xEF\xBB\xBF", '', $lib_content);
+                $lib_content = file_get_contents('../themes/' . $curr_template . $lib['library']);
+                $lib_content = preg_replace('/<meta\\shttp-equiv=["|\']Content-Type["|\']\\scontent=["|\']text\/html;\\scharset=.*["|\']>/i', '', $lib_content);
+                $lib_content = str_replace("\xEF\xBB\xBF", '', $lib_content);
                 $region_content .= sprintf($lib_template, $lib['library'], $lib_content);
             }
         }
@@ -384,10 +380,10 @@ if ($_REQUEST['act'] == 'setting') {
     if (file_put_contents($template_file, $template_content)) {
         //clear_tpl_files(false, '.dwt.php'); // 清除对应的编译文件
         clear_cache_files();
-        $lnk[] = array('text' => $_LANG['go_back'], 'href'=>'template.php?act=setup&template_file=' .$_POST['template_file']);
+        $lnk[] = array('text' => $_LANG['go_back'], 'href' => 'template.php?act=setup&template_file=' . $_POST['template_file']);
         sys_msg($_LANG['setup_success'], 0, $lnk);
     } else {
-        sys_msg(sprintf($_LANG['modify_dwt_failed'], 'themes/' . $curr_template. '/' . $_POST['template_file'] . '.dwt'), 1, null, false);
+        sys_msg(sprintf($_LANG['modify_dwt_failed'], 'themes/' . $curr_template . '/' . $_POST['template_file'] . '.dwt'), 1, null, false);
     }
 }
 
@@ -399,24 +395,24 @@ if ($_REQUEST['act'] == 'library') {
     admin_priv('library_manage');
 
     /* 包含插件语言项 */
-    $sql = "SELECT code FROM ".$ecs->table('plugins');
+    $sql = "SELECT code FROM " . $ecs->table('plugins');
     $rs = $db->query($sql);
     while ($row = $db->FetchRow($rs)) {
         /* 取得语言项 */
-        if (file_exists(ROOT_PATH . 'plugins/'.$row['code'].'/languages/common_'.$_CFG['lang'].'.php')) {
-            include_once(ROOT_PATH . 'plugins/'.$row['code'].'/languages/common_'.$_CFG['lang'].'.php');
+        if (file_exists(ROOT_PATH . 'plugins/' . $row['code'] . '/languages/common_' . $_CFG['lang'] . '.php')) {
+            include_once(ROOT_PATH . 'plugins/' . $row['code'] . '/languages/common_' . $_CFG['lang'] . '.php');
         }
     }
     $curr_template = $_CFG['template'];
-    $arr_library   = array();
-    $library_path  = '../themes/' . $curr_template . '/library';
-    $library_dir   = @opendir($library_path);
-    $curr_library  = '';
+    $arr_library = array();
+    $library_path = '../themes/' . $curr_template . '/library';
+    $library_dir = @opendir($library_path);
+    $curr_library = '';
 
     while ($file = @readdir($library_dir)) {
         if (substr($file, -3) == "lbi") {
-            $filename               = substr($file, 0, -4);
-            $arr_library[$filename] = $file. ' - ' . @$_LANG['template_libs'][$filename];
+            $filename = substr($file, 0, -4);
+            $arr_library[$filename] = $file . ' - ' . @$_LANG['template_libs'][$filename];
 
             if ($curr_library == '') {
                 $curr_library = $filename;
@@ -446,12 +442,12 @@ if ($_REQUEST['act'] == 'install') {
     check_authz_json('backup_setting');
 
     $tpl_name = trim($_GET['tpl_name']);
-    $tpl_fg=0;
+    $tpl_fg = 0;
     $tpl_fg = trim($_GET['tpl_fg']);
 
-    $sql = "UPDATE " .$GLOBALS['ecs']->table('shop_config'). " SET value = '$tpl_name' WHERE code = 'template'";
+    $sql = "UPDATE " . $GLOBALS['ecs']->table('shop_config') . " SET value = '$tpl_name' WHERE code = 'template'";
     $step_one = $db->query($sql, 'SILENT');
-    $sql = "UPDATE " .$GLOBALS['ecs']->table('shop_config'). " SET value = '$tpl_fg' WHERE code = 'stylename'";
+    $sql = "UPDATE " . $GLOBALS['ecs']->table('shop_config') . " SET value = '$tpl_fg' WHERE code = 'stylename'";
     $step_two = $db->query($sql, 'SILENT');
 
     if ($step_one && $step_two) {
@@ -475,7 +471,7 @@ if ($_REQUEST['act'] == 'install') {
 if ($_REQUEST['act'] == 'backup') {
     check_authz_json('backup_setting');
     include_once('includes/cls_phpzip.php');
-    $tpl= $_CFG['template'];
+    $tpl = $_CFG['template'];
     //$tpl = trim($_REQUEST['tpl_name']);
 
     $filename = '../data/backup/' . $tpl . '_' . date('Ymd') . '.zip';
@@ -528,9 +524,9 @@ if ($_REQUEST['act'] == 'update_library') {
 /*------------------------------------------------------ */
 if ($_REQUEST['act'] == 'restore_library') {
     admin_priv('backup_setting');
-    $lib_name   = trim($_GET['lib']);
-    $lib_file   = '../themes/' . $_CFG['template'] . '/library/' . $lib_name . '.lbi';
-    $lib_file   = str_replace("0xa", '', $lib_file); // 过滤 0xa 非法字符
+    $lib_name = trim($_GET['lib']);
+    $lib_file = '../themes/' . $_CFG['template'] . '/library/' . $lib_name . '.lbi';
+    $lib_file = str_replace("0xa", '', $lib_file); // 过滤 0xa 非法字符
     $lib_backup = '../data/backup/library/' . $_CFG['template'] . '-' . $lib_name . '.lbi';
     $lib_backup = str_replace("0xa", '', $lib_backup); // 过滤 0xa 非法字符
 
@@ -552,7 +548,7 @@ if ($_REQUEST['act'] == 'backup_setting') {
     $col = $db->getCol($sql);
     $remarks = array();
     foreach ($col as $val) {
-        $remarks[] = array('content'=>$val, 'url'=>urlencode($val));
+        $remarks[] = array('content' => $val, 'url' => urlencode($val));
     }
 
     $sql = "SELECT DISTINCT(filename) FROM " . $ecs->table('template') . " WHERE theme = '" . $_CFG['template'] . "' AND remarks = ''";
@@ -584,14 +580,14 @@ if ($_REQUEST['act'] == 'act_backup_setting') {
     }
 
     $sql = "INSERT INTO " . $ecs->table('template') .
-           " (filename, region, library, sort_order, id, number, type, theme, remarks)".
-           " SELECT filename, region, library, sort_order, id, number, type, theme, '$remarks'".
-           " FROM " . $ecs->table('template') .
-           " WHERE remarks = '' AND theme = '" . $_CFG['template'] . "'".
-           " AND " . db_create_in($files, 'filename');
+        " (filename, region, library, sort_order, id, number, type, theme, remarks)" .
+        " SELECT filename, region, library, sort_order, id, number, type, theme, '$remarks'" .
+        " FROM " . $ecs->table('template') .
+        " WHERE remarks = '' AND theme = '" . $_CFG['template'] . "'" .
+        " AND " . db_create_in($files, 'filename');
 
     $db->query($sql);
-    sys_msg($_LANG['backup_template_ok'], 0, array(array('text'=>$_LANG['backup_setting'], 'href'=>'template.php?act=backup_setting')));
+    sys_msg($_LANG['backup_template_ok'], 0, array(array('text' => $_LANG['backup_setting'], 'href' => 'template.php?act=backup_setting')));
 }
 
 if ($_REQUEST['act'] == 'del_backup') {
@@ -600,27 +596,27 @@ if ($_REQUEST['act'] == 'del_backup') {
         $sql = "DELETE FROM " . $ecs->table('template') . " WHERE remarks='$remarks' AND theme = '" . $_CFG['template'] . "'";
         $db->query($sql);
     }
-    sys_msg($_LANG['del_backup_ok'], 0, array(array('text'=>$_LANG['backup_setting'], 'href'=>'template.php?act=backup_setting')));
+    sys_msg($_LANG['del_backup_ok'], 0, array(array('text' => $_LANG['backup_setting'], 'href' => 'template.php?act=backup_setting')));
 }
 
 if ($_REQUEST['act'] == 'restore_backup') {
     $remarks = empty($_GET['remarks']) ? '' : trim($_GET['remarks']);
     if ($remarks) {
-        $sql = "SELECT filename, region, library, sort_order ".
-               " FROM " . $ecs->table('template').
-               " WHERE remarks='$remarks' AND theme = '" . $_CFG['template'] . "'".
-               " ORDER BY filename, region, sort_order";
+        $sql = "SELECT filename, region, library, sort_order " .
+            " FROM " . $ecs->table('template') .
+            " WHERE remarks='$remarks' AND theme = '" . $_CFG['template'] . "'" .
+            " ORDER BY filename, region, sort_order";
         $arr = $db->getAll($sql);
         if ($arr) {
             $data = array();
             foreach ($arr as $val) {
-                $lib_content     = file_get_contents(ROOT_PATH . 'themes/' . $_CFG['template'] . $val['library']);
+                $lib_content = file_get_contents(ROOT_PATH . 'themes/' . $_CFG['template'] . $val['library']);
                 //去除lib头部
-                $lib_content     = preg_replace('/<meta\\shttp-equiv=["|\']Content-Type["|\']\\scontent=["|\']text\/html;\\scharset=utf-8"|\']>/i', '', $lib_content);
+                $lib_content = preg_replace('/<meta\\shttp-equiv=["|\']Content-Type["|\']\\scontent=["|\']text\/html;\\scharset=utf-8"|\']>/i', '', $lib_content);
                 //去除utf bom
-                $lib_content     = str_replace("\xEF\xBB\xBF", '', $lib_content);
+                $lib_content = str_replace("\xEF\xBB\xBF", '', $lib_content);
                 //加入dw 标识
-                $lib_content     = '<!-- #BeginLibraryItem "' . $val['library'] . "\" -->\r\n" . $lib_content . "\r\n" . '<!-- #EndLibraryItem -->';
+                $lib_content = '<!-- #BeginLibraryItem "' . $val['library'] . "\" -->\r\n" . $lib_content . "\r\n" . '<!-- #EndLibraryItem -->';
                 if (isset($data[$val['filename']][$val['region']])) {
                     $data[$val['filename']][$val['region']] .= $lib_content;
                 } else {
@@ -629,7 +625,7 @@ if ($_REQUEST['act'] == 'restore_backup') {
             }
 
             foreach ($data as $file => $regions) {
-                $pattern = '/(?:<!--\\s*TemplateBeginEditable\\sname="('. implode('|', array_keys($regions)) .')"\\s*-->)(?:.*?)(?:<!--\\s*TemplateEndEditable\\s*-->)/se';
+                $pattern = '/(?:<!--\\s*TemplateBeginEditable\\sname="(' . implode('|', array_keys($regions)) . ')"\\s*-->)(?:.*?)(?:<!--\\s*TemplateEndEditable\\s*-->)/se';
                 $temple_file = ROOT_PATH . 'themes/' . $_CFG['template'] . '/' . $file . '.dwt';
                 $template_content = file_get_contents($temple_file);
                 $match = array();
@@ -644,19 +640,19 @@ if ($_REQUEST['act'] == 'restore_backup') {
             }
 
             /* 文件修改成功后，恢复数据库 */
-            $sql = "DELETE FROM " .$ecs->table('template').
-                   " WHERE remarks = '' AND  theme = '" . $_CFG['template'] . "'".
-                   " AND " . db_create_in(array_keys($data), 'filename');
+            $sql = "DELETE FROM " . $ecs->table('template') .
+                " WHERE remarks = '' AND  theme = '" . $_CFG['template'] . "'" .
+                " AND " . db_create_in(array_keys($data), 'filename');
             $db->query($sql);
             $sql = "INSERT INTO " . $ecs->table('template') .
-                   " (filename, region, library, sort_order, id, number, type, theme, remarks)".
-                   " SELECT filename, region, library, sort_order, id, number, type, theme, ''".
-                   " FROM " . $ecs->table('template') .
-                   " WHERE remarks = '$remarks' AND theme = '" . $_CFG['template'] . "'";
+                " (filename, region, library, sort_order, id, number, type, theme, remarks)" .
+                " SELECT filename, region, library, sort_order, id, number, type, theme, ''" .
+                " FROM " . $ecs->table('template') .
+                " WHERE remarks = '$remarks' AND theme = '" . $_CFG['template'] . "'";
             $db->query($sql);
         }
     }
-    sys_msg($_LANG['restore_backup_ok'], 0, array(array('text'=>$_LANG['backup_setting'], 'href'=>'template.php?act=backup_setting')));
+    sys_msg($_LANG['restore_backup_ok'], 0, array(array('text' => $_LANG['backup_setting'], 'href' => 'template.php?act=backup_setting')));
 }
 
 function array_sort($a, $b)
@@ -674,15 +670,15 @@ function array_sort($a, $b)
  * 载入库项目内容
  *
  * @access  public
- * @param   string  $curr_template  模版名称
- * @param   string  $lib_name       库项目名称
+ * @param   string $curr_template 模版名称
+ * @param   string $lib_name 库项目名称
  * @return  array
  */
 function load_library($curr_template, $lib_name)
 {
     $lib_name = str_replace("0xa", '', $lib_name); // 过滤 0xa 非法字符
 
-    $lib_file    = '../themes/' . $curr_template . '/library/' . $lib_name . '.lbi';
+    $lib_file = '../themes/' . $curr_template . '/library/' . $lib_name . '.lbi';
     $arr['mark'] = file_mode_info($lib_file);
     $arr['html'] = str_replace("\xEF\xBB\xBF", '', file_get_contents($lib_file));
 
@@ -693,11 +689,11 @@ function load_library($curr_template, $lib_name)
  * 读取模板风格列表
  *
  * @access  public
- * @param   string  $tpl_name       模版名称
- * @param   int     $flag           1，AJAX数据；2，Array
+ * @param   string $tpl_name 模版名称
+ * @param   int $flag 1，AJAX数据；2，Array
  * @return
  */
-function read_tpl_style($tpl_name, $flag=1)
+function read_tpl_style($tpl_name, $flag = 1)
 {
     if (empty($tpl_name) && $flag == 1) {
         return 0;
@@ -754,8 +750,8 @@ function read_tpl_style($tpl_name, $flag=1)
  * 读取当前风格信息与当前模板风格列表
  *
  * @access  public
- * @param   string  $tpl_name       模版名称
- * @param   string  $tpl_style 模版风格名
+ * @param   string $tpl_name 模版名称
+ * @param   string $tpl_style 模版风格名
  * @return
  */
 function read_style_and_tpl($tpl_name, $tpl_style)

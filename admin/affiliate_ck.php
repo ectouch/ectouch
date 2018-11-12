@@ -28,7 +28,7 @@ if ($_REQUEST['act'] == 'list') {
     $smarty->assign('page_count', $logdb['page_count']);
     if (!empty($_GET['auid'])) {
         $auid = intval($_GET['auid']);
-        $smarty->assign('action_link', array('text' => $_LANG['back_note'], 'href'=>"users.php?act=edit&id=$auid"));
+        $smarty->assign('action_link', array('text' => $_LANG['back_note'], 'href' => "users.php?act=edit&id=$auid"));
     }
     assign_query_info();
     $smarty->display('affiliate_ck_list.htm');
@@ -45,12 +45,11 @@ elseif ($_REQUEST['act'] == 'query') {
     $smarty->assign('record_count', $logdb['record_count']);
     $smarty->assign('page_count', $logdb['page_count']);
 
-    $sort_flag  = sort_flag($logdb['filter']);
+    $sort_flag = sort_flag($logdb['filter']);
     $smarty->assign($sort_flag['tag'], $sort_flag['img']);
 
     make_json_result($smarty->fetch('affiliate_ck_list.htm'), '', array('filter' => $logdb['filter'], 'page_count' => $logdb['page_count']));
-}
-/*
+} /*
     取消分成，不再能对该订单进行分成
 */
 elseif ($_REQUEST['act'] == 'del') {
@@ -58,14 +57,13 @@ elseif ($_REQUEST['act'] == 'del') {
     $stat = $db->getOne("SELECT is_separate FROM " . $GLOBALS['ecs']->table('order_info') . " WHERE order_id = '$oid'");
     if (empty($stat)) {
         $sql = "UPDATE " . $GLOBALS['ecs']->table('order_info') .
-               " SET is_separate = 2" .
-               " WHERE order_id = '$oid'";
+            " SET is_separate = 2" .
+            " WHERE order_id = '$oid'";
         $db->query($sql);
     }
     $links[] = array('text' => $_LANG['affiliate_ck'], 'href' => 'affiliate_ck.php?act=list');
     sys_msg($_LANG['edit_ok'], 0, $links);
-}
-/*
+} /*
     撤销某次分成，将已分成的收回来
 */
 elseif ($_REQUEST['act'] == 'rollback') {
@@ -81,14 +79,13 @@ elseif ($_REQUEST['act'] == 'rollback') {
         }
         log_account_change($stat['user_id'], -$stat['money'], 0, -$stat['point'], 0, $_LANG['loginfo']['cancel']);
         $sql = "UPDATE " . $GLOBALS['ecs']->table('affiliate_log') .
-               " SET separate_type = '$flag'" .
-               " WHERE log_id = '$logid'";
+            " SET separate_type = '$flag'" .
+            " WHERE log_id = '$logid'";
         $db->query($sql);
     }
     $links[] = array('text' => $_LANG['affiliate_ck'], 'href' => 'affiliate_ck.php?act=list');
     sys_msg($_LANG['edit_ok'], 0, $links);
-}
-/*
+} /*
     分成
 */
 elseif ($_REQUEST['act'] == 'separate') {
@@ -100,9 +97,9 @@ elseif ($_REQUEST['act'] == 'separate') {
 
     $oid = intval(addslashes($_REQUEST['oid'])); //(int)$_REQUEST['oid'];
 
-    $row = $db->getRow("SELECT o.order_sn, o.is_separate, (o.goods_amount - o.discount) AS goods_amount, o.user_id FROM " . $GLOBALS['ecs']->table('order_info') . " o".
-                    " LEFT JOIN " . $GLOBALS['ecs']->table('users') . " u ON o.user_id = u.user_id".
-            " WHERE order_id = '$oid'");
+    $row = $db->getRow("SELECT o.order_sn, o.is_separate, (o.goods_amount - o.discount) AS goods_amount, o.user_id FROM " . $GLOBALS['ecs']->table('order_info') . " o" .
+        " LEFT JOIN " . $GLOBALS['ecs']->table('users') . " u ON o.user_id = u.user_id" .
+        " WHERE order_id = '$oid'");
 
     $order_sn = $row['order_sn'];
 
@@ -116,9 +113,9 @@ elseif ($_REQUEST['act'] == 'separate') {
         if ($affiliate['config']['level_money_all']) {
             $affiliate['config']['level_money_all'] /= 100;
         }
-        $goods_list = $db->getAll("SELECT goods_id,goods_number FROM " . $GLOBALS['ecs']->table('order_goods') .  " where order_id = $oid");
+        $goods_list = $db->getAll("SELECT goods_id,goods_number FROM " . $GLOBALS['ecs']->table('order_goods') . " where order_id = $oid");
 
-        foreach ($goods_list as $key=>$val) {
+        foreach ($goods_list as $key => $val) {
             $money = round($affiliate['config']['level_money_all'] * $row['goods_amount'], 2);
             $integral = integral_to_give(array('order_id' => $oid, 'extension_code' => ''));
             $point = $money;
@@ -126,7 +123,7 @@ elseif ($_REQUEST['act'] == 'separate') {
             if (empty($separate_by)) {
                 //推荐注册分成
                 $num = count($affiliate['item']);
-                for ($i=0; $i < $num; $i++) {
+                for ($i = 0; $i < $num; $i++) {
                     $affiliate['item'][$i]['level_point'] = (float)$affiliate['item'][$i]['level_point'];
                     $affiliate['item'][$i]['level_money'] = (float)$affiliate['item'][$i]['level_money'];
                     if ($affiliate['item'][$i]['level_point']) {
@@ -139,7 +136,7 @@ elseif ($_REQUEST['act'] == 'separate') {
                     $setpoint = round($point * $affiliate['item'][$i]['level_point'], 0);
                     $row = $db->getRow(
                         "SELECT o.parent_id as user_id,u.user_name FROM " . $GLOBALS['ecs']->table('users') . " o" .
-                        " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.parent_id = u.user_id".
+                        " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.parent_id = u.user_id" .
                         " WHERE o.user_id = '$row[user_id]'"
                     );
                     $up_uid = $row['user_id'];
@@ -155,7 +152,7 @@ elseif ($_REQUEST['act'] == 'separate') {
                 //推荐订单分成
                 $row = $db->getRow(
                     "SELECT o.parent_id, u.user_name FROM " . $GLOBALS['ecs']->table('order_info') . " o" .
-                    " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.parent_id = u.user_id".
+                    " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.parent_id = u.user_id" .
                     " WHERE o.order_id = '$oid'"
                 );
                 $up_uid = $row['parent_id'];
@@ -202,22 +199,22 @@ function get_affiliate_ck()
     if (!empty($affiliate['on'])) {
         if (empty($separate_by)) {
             //推荐注册分成
-            $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_info') . " o".
-                    " LEFT JOIN".$GLOBALS['ecs']->table('users')." u ON o.user_id = u.user_id".
-                    " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
-                    " WHERE o.user_id > 0 AND (u.parent_id > 0 AND o.is_separate = 0 OR o.is_separate > 0) $sqladd";
+            $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_info') . " o" .
+                " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.user_id = u.user_id" .
+                " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
+                " WHERE o.user_id > 0 AND (u.parent_id > 0 AND o.is_separate = 0 OR o.is_separate > 0) $sqladd";
         } else {
             //推荐订单分成
-            $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_info') . " o".
-                    " LEFT JOIN".$GLOBALS['ecs']->table('users')." u ON o.user_id = u.user_id".
-                    " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
-                    " WHERE o.user_id > 0 AND (o.parent_id > 0 AND o.is_separate = 0 OR o.is_separate > 0) $sqladd";
+            $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_info') . " o" .
+                " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.user_id = u.user_id" .
+                " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
+                " WHERE o.user_id > 0 AND (o.parent_id > 0 AND o.is_separate = 0 OR o.is_separate > 0) $sqladd";
         }
     } else {
-        $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_info') . " o".
-                " LEFT JOIN".$GLOBALS['ecs']->table('users')." u ON o.user_id = u.user_id".
-                " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
-                " WHERE o.user_id > 0 AND o.is_separate > 0 $sqladd";
+        $sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_info') . " o" .
+            " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.user_id = u.user_id" .
+            " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
+            " WHERE o.user_id > 0 AND o.is_separate > 0 $sqladd";
     }
 
 
@@ -229,31 +226,31 @@ function get_affiliate_ck()
     if (!empty($affiliate['on'])) {
         if (empty($separate_by)) {
             //推荐注册分成
-            $sql = "SELECT o.*, a.log_id, a.user_id as suid,  a.user_name as auser, a.money, a.point, a.separate_type,u.parent_id as up FROM " . $GLOBALS['ecs']->table('order_info') . " o".
-                    " LEFT JOIN".$GLOBALS['ecs']->table('users')." u ON o.user_id = u.user_id".
-                    " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
-                    " WHERE o.user_id > 0 AND (u.parent_id > 0 AND o.is_separate = 0 OR o.is_separate > 0) $sqladd".
-                    " ORDER BY order_id DESC" .
-                    " LIMIT " . $filter['start'] . ",$filter[page_size]";
+            $sql = "SELECT o.*, a.log_id, a.user_id as suid,  a.user_name as auser, a.money, a.point, a.separate_type,u.parent_id as up FROM " . $GLOBALS['ecs']->table('order_info') . " o" .
+                " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.user_id = u.user_id" .
+                " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
+                " WHERE o.user_id > 0 AND (u.parent_id > 0 AND o.is_separate = 0 OR o.is_separate > 0) $sqladd" .
+                " ORDER BY order_id DESC" .
+                " LIMIT " . $filter['start'] . ",$filter[page_size]";
 
-        /*
-            SQL解释：
+            /*
+                SQL解释：
 
-            列出同时满足以下条件的订单分成情况：
-            1、有效订单o.user_id > 0
-            2、满足以下情况之一：
-                a.有用户注册上线的未分成订单 u.parent_id > 0 AND o.is_separate = 0
-                b.已分成订单 o.is_separate > 0
+                列出同时满足以下条件的订单分成情况：
+                1、有效订单o.user_id > 0
+                2、满足以下情况之一：
+                    a.有用户注册上线的未分成订单 u.parent_id > 0 AND o.is_separate = 0
+                    b.已分成订单 o.is_separate > 0
 
-        */
+            */
         } else {
             //推荐订单分成
-            $sql = "SELECT o.*, a.log_id,a.user_id as suid, a.user_name as auser, a.money, a.point, a.separate_type,u.parent_id as up FROM " . $GLOBALS['ecs']->table('order_info') . " o".
-                    " LEFT JOIN".$GLOBALS['ecs']->table('users')." u ON o.user_id = u.user_id".
-                    " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
-                    " WHERE o.user_id > 0 AND (o.parent_id > 0 AND o.is_separate = 0 OR o.is_separate > 0) $sqladd" .
-                    " ORDER BY order_id DESC" .
-                    " LIMIT " . $filter['start'] . ",$filter[page_size]";
+            $sql = "SELECT o.*, a.log_id,a.user_id as suid, a.user_name as auser, a.money, a.point, a.separate_type,u.parent_id as up FROM " . $GLOBALS['ecs']->table('order_info') . " o" .
+                " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.user_id = u.user_id" .
+                " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
+                " WHERE o.user_id > 0 AND (o.parent_id > 0 AND o.is_separate = 0 OR o.is_separate > 0) $sqladd" .
+                " ORDER BY order_id DESC" .
+                " LIMIT " . $filter['start'] . ",$filter[page_size]";
 
             /*
                 SQL解释：
@@ -268,12 +265,12 @@ function get_affiliate_ck()
         }
     } else {
         //关闭
-        $sql = "SELECT o.*, a.log_id,a.user_id as suid, a.user_name as auser, a.money, a.point, a.separate_type,u.parent_id as up FROM " . $GLOBALS['ecs']->table('order_info') . " o".
-                " LEFT JOIN".$GLOBALS['ecs']->table('users')." u ON o.user_id = u.user_id".
-                " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
-                " WHERE o.user_id > 0 AND o.is_separate > 0 $sqladd" .
-                " ORDER BY order_id DESC" .
-                " LIMIT " . $filter['start'] . ",$filter[page_size]";
+        $sql = "SELECT o.*, a.log_id,a.user_id as suid, a.user_name as auser, a.money, a.point, a.separate_type,u.parent_id as up FROM " . $GLOBALS['ecs']->table('order_info') . " o" .
+            " LEFT JOIN" . $GLOBALS['ecs']->table('users') . " u ON o.user_id = u.user_id" .
+            " LEFT JOIN " . $GLOBALS['ecs']->table('affiliate_log') . " a ON o.order_id = a.order_id" .
+            " WHERE o.user_id > 0 AND o.is_separate > 0 $sqladd" .
+            " ORDER BY order_id DESC" .
+            " LIMIT " . $filter['start'] . ",$filter[page_size]";
     }
 
 
@@ -301,11 +298,12 @@ function get_affiliate_ck()
 
     return $arr;
 }
+
 function write_affiliate_log($oid, $uid, $username, $money, $point, $separate_by)
 {
     $time = gmtime();
-    $sql = "INSERT INTO " . $GLOBALS['ecs']->table('affiliate_log') . "( order_id, user_id, user_name, time, money, point, separate_type)".
-                                                              " VALUES ( '$oid', '$uid', '$username', '$time', '$money', '$point', $separate_by)";
+    $sql = "INSERT INTO " . $GLOBALS['ecs']->table('affiliate_log') . "( order_id, user_id, user_name, time, money, point, separate_type)" .
+        " VALUES ( '$oid', '$uid', '$username', '$time', '$money', '$point', $separate_by)";
     if ($oid) {
         $GLOBALS['db']->query($sql);
     }
