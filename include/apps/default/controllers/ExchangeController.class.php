@@ -260,11 +260,11 @@ class ExchangeController extends CommonController
         // 如果分类ID为0，则返回总分类页
         $page_size = C('page_size');
         $this->size = intval($page_size) > 0 ? intval($page_size) : 10;
-        $this->page = I('request.page') ? intval(I('request.page')) : 1;
+        $this->page = I('request.page', 1, 'intval');
         $this->ext = '';
-        $this->cat_id = I('request.cat_id');
-        $this->integral_max = I('request.integral_max');
-        $this->integral_min = I('request.integral_min');
+        $this->cat_id = I('request.cat_id', 0, 'intval');
+        $this->integral_max = I('request.integral_max', 0, 'intval');
+        $this->integral_min = I('request.integral_min', 0, 'intval');
         /* 排序、显示方式以及类型 */
         $default_display_type = C('show_order_type') == '0' ? 'list' : (C('show_order_type') == '1' ? 'grid' : 'album');
         $default_sort_order_method = C('sort_order_method') == '0' ? 'DESC' : 'ASC';
