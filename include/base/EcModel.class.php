@@ -410,13 +410,13 @@ class EcModel
     // 返回错误信息
     public function error()
     {
-        return mysql_error();
+        return mysqli_error();
     }
     
     // 返回错误代号
     public function errno()
     {
-        return mysql_errno();
+        return mysqli_errno();
     }
     
     //输出错误信息
@@ -477,7 +477,7 @@ class EcModel
                 $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
             }
         } else {
-            if (mysql_get_server_info() >= '4.1') {
+            if (mysqli_get_server_info() >= '4.1') {
                 if (!empty($fields)) {
                     $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
                     if (!empty($sets)) {
@@ -534,48 +534,48 @@ class EcModel
     //  函数返回结果集中一个字段的值
     public function result($query, $row)
     {
-        return @mysql_result($query, $row);
+        return @mysqli_result($query, $row);
     }
     
     // 返回结果集的条数
     public function num_rows($query)
     {
-        return mysql_num_rows($query);
+        return mysqli_num_rows($query);
     }
     
     // 返回结果集中的字段数
     public function num_fields($query)
     {
-        return mysql_num_fields($query);
+        return mysqli_num_fields($query);
     }
     
     public function free_result($query)
     {
-        return mysql_free_result($query);
+        return mysqli_free_result($query);
     }
     
     // 返回根据从结果集取得的行生成的关联数组
     public function fetchRow($query)
     {
-        return mysql_fetch_assoc($query);
+        return mysqli_fetch_assoc($query);
     }
     
     public function fetch_fields($query)
     {
-        return mysql_fetch_field($query);
+        return mysqli_fetch_field($query);
     }
     
     // 返回mysql版本号
     public function version()
     {
-        return mysql_get_server_info();
+        return mysqli_get_server_info();
     }
     
     // 如果存在连接，则返回 true。如果失败，则返回 false。
     public function ping()
     {
         if (PHP_VERSION >= '4.3') {
-            return mysql_ping();
+            return mysqli_ping();
         } else {
             return false;
         }
@@ -584,9 +584,9 @@ class EcModel
     public function escape_string($unescaped_string)
     {
         if (PHP_VERSION >= '4.3') {
-            return mysql_real_escape_string($unescaped_string);
+            return mysqli_real_escape_string($unescaped_string);
         } else {
-            return mysql_escape_string($unescaped_string);
+            return mysqli_escape_string($unescaped_string);
         }
     }
 }
