@@ -499,9 +499,19 @@ class UsersModel extends BaseModel
             $this->table = 'user_address';
             return $this->find($where);
         } else {
-            $sql = 'select ua.*,u.address_id as adds_id from ' . $this->pre . 'user_address as ua left join '. $this->pre . 'users as u on ua.address_id =u.address_id'. ' where ua.user_id = ' . $user_id . ' order by ua.address_id limit ' . $start . ', ' . $num;
-
-            return $this->query($sql);
+            $sql = 'select * from ' . $this->pre . 'user_address  where user_id = ' . $user_id . ' order by address_id desc limit ' . $start . ', ' . $num;
+            $res = $this->query($sql);
+            
+            $sql = 'select address_id as adds_id from ' . $this->pre . 'users  where user_id = ' . $user_id ;
+            $user = $this->row($sql);
+            foreach ($res as $key => $value) {
+                if($value['address_id'] == $user['adds_id']){
+                    $res[$key]['adds_id'] = $user['adds_id'];
+                }else{
+                    $res[$key]['adds_id'] = '';
+                }
+            }
+            return $res;
         }
     }
 

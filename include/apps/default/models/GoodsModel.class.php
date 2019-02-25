@@ -492,7 +492,10 @@ class GoodsModel extends BaseModel
     public function get_linked_goods($goods_id)
     {
         foreach ($goods_id as $gid) {
-            $goodsId[] = $gid['goods_id'];
+            //排除已下架的商品
+            if($gid['is_on_sale'] == 1) {
+                $goodsId[] = $gid['goods_id'];
+            }
         }
         $related_goods_number = C('related_goods_number') ? C('related_goods_number') : 0;
         $related_goods_number = $related_goods_number * 3;

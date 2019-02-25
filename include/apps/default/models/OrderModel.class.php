@@ -958,10 +958,9 @@ class OrderModel extends BaseModel
             'total_number' => 0,
         );
         /* 循环、统计 */
-        $sql = "SELECT *, IF(parent_id, parent_id, goods_id) AS pid " .
-            " FROM " . $this->pre . "cart " .
-            " WHERE session_id='".SESS_ID."' AND rec_type = '" . CART_GENERAL_GOODS . "'" .
-            " ORDER BY pid, parent_id";
+        $sql = "SELECT c.*, g.is_on_sale, IF(c.parent_id, c.parent_id, c.goods_id) AS pid " .
+            " FROM " . $this->pre . "cart as c, " .$this->pre."goods as g  WHERE c.goods_id = g.goods_id AND c.session_id='".SESS_ID."' AND c.rec_type = '" . CART_GENERAL_GOODS . "'" .
+            " ORDER BY pid, c.parent_id";
         $res = $this->query($sql);
         /* 用于统计购物车中实体商品和虚拟商品的个数 */
         $virtual_goods_count = 0;
@@ -974,6 +973,11 @@ class OrderModel extends BaseModel
             $row['subtotal'] = price_format($row['goods_price'] * $row['goods_number'], false);
             $row['goods_price'] = price_format($row['goods_price'], false);
             $row['market_price'] = price_format($row['market_price'], false);
+
+            /* 统计是否有已下架商品 */
+            if($row['is_on_sale'] == 0){
+                $is_no_sale = 1;
+            }
 
             /* 统计实体商品和虚拟商品的个数 */
             if ($row['is_real']) {
@@ -1017,7 +1021,7 @@ class OrderModel extends BaseModel
         $total['real_goods_count'] = $real_goods_count;
         $total['virtual_goods_count'] = $virtual_goods_count;
 
-        return array('goods_list' => $goods_list, 'total' => $total);
+        return array('goods_list' => $goods_list, 'total' => $total, 'is_no_sale' => $is_no_sale);
     }
 
     /**
@@ -2545,5 +2549,16 @@ class OrderModel extends BaseModel
         $result['goods_price']  = model('GoodsBase')->get_final_price($goods_id, $num, true, $spec);
     
         return $result;
+    }
+
+    /**
+     * 更新未付款下架商品的订单为取消
+     */
+    function update_no_sale_goods_order(){
+        $user_id = $_SESSION['user_id'];
+        if($user_id){
+            $sql = "update " . $this->pre ."order_info as c, (select o.order_id from " . $this->pre ."order_info as o left join ". $this->pre ."order_goods as og on o.order_id = og.order_id left join ". $this->pre ."goods as go on og.goods_id = go.goods_id where o.order_status = ".OS_UNCONFIRMED." AND go.is_on_sale = 0 GROUP BY o.order_id) as d set  c.order_status = ".OS_CANCELED." where c.order_id = d.order_id ";
+            $this->query($sql);
+        }
     }
 }

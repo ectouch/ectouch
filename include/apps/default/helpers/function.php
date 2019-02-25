@@ -1827,4 +1827,23 @@ function is_wxh5($pay_code = 'wxpay')
 
     return isset($config) ? $config['is_h5'] : 0;
 }
+
+/**购物车下架商品数量
+ * @return mixed
+ */
+function get_cart_no_sale_count(){
+    $sql = "SELECT count(*) as num " .
+        " FROM ".M()->pre."cart as c inner join " .M()->pre."goods as g  WHERE g.goods_id = c.goods_id AND g.is_on_sale =1 AND c.session_id='".SESS_ID."' AND c.rec_type = '" . CART_GENERAL_GOODS . "'";
+    $res = M()->getRow($sql);
+    return $res['num'];
+}
+
+/**删除购物车下架商品
+ * @return mixed
+ */
+function delete_no_sale_goods(){
+    $sql = "DELETE c FROM ".M()->pre."cart as c, ".M()->pre."goods as g where g.goods_id = c.goods_id AND c.session_id='".SESS_ID."' AND g.is_on_sale = 0 AND c.rec_type = '" . CART_GENERAL_GOODS . "'";
+    $res = M()->query($sql);
+    return $res;
+}
     

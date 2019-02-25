@@ -64,6 +64,9 @@ class UserController extends CommonController
         // 待评价
         $not_comment = model('ClipsBase')->not_pingjia($this->user_id);
 
+        //取消未付款下架商品订单
+        model('Order')->update_no_sale_goods_order();
+
         // 用户积分余额
         $user_pay = model('ClipsBase')->pay_money($this->user_id);
         $user_money = $user_pay['user_money'];  //余额
@@ -583,6 +586,8 @@ class UserController extends CommonController
      */
     public function not_pay_order_list()
     {
+        //取消未付款下架商品订单
+        model('Order')->update_no_sale_goods_order();
         $pay = 0;
         $size = I(C('page_size'), 10);
         $this->assign('show_asynclist', C('show_asynclist'));

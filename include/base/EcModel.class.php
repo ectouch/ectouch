@@ -416,7 +416,7 @@ class EcModel
     // 返回错误代号
     public function errno()
     {
-        return mysql_errno();
+        return $this->db->errno;
     }
     
     //输出错误信息

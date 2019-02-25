@@ -144,7 +144,9 @@ function sendTemplate($openid, $code = '')
             $rs = $weObj->sendTemplateMessage($data);
             //logResult(var_export($rs, 1));
             if (empty($rs)) {
-                // logResult($weObj->errMsg);
+                if ($weObj->errCode == '40001'){
+                    $weObj->resetAuth();
+                }
                 return false;
             }
             M()->table('wechat_template_log')->data(array('msgid' => $rs['msgid']))->where(array('code' => $v['code'], 'openid' => $v['openid']))->update();

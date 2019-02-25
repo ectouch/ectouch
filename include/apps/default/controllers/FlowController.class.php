@@ -34,6 +34,13 @@ class FlowController extends CommonController
         $this->assign('goods_list', $cart_goods ['goods_list']);
         $this->assign('total', $cart_goods ['total']);
 
+        if($cart_goods['is_no_sale'] == 1){
+            //删除无效商品
+            delete_no_sale_goods();
+
+            show_message('已移除下架的商品','购物车', url('flow/cart'));
+        }
+
         if ($cart_goods['goods_list']) {
             // 相关产品
             $linked_goods = model('Goods')->get_linked_goods($cart_goods ['goods_list']);
@@ -433,9 +440,8 @@ class FlowController extends CommonController
             // 正常购物流程 清空其他购物流程情况
             $_SESSION ['flow_order'] ['extension_code'] = '';
         }
-        /* 检查购物车中是否有商品 */
-        $condition = "session_id = '" . SESS_ID . "' " . "AND parent_id = 0 AND is_gift = 0 AND rec_type = '$flow_type'";
-        $count = $this->model->table('cart')->field('COUNT(*)')->where($condition)->getOne();
+        /* 检查购物车中是否有上架商品 */
+        $count = get_cart_no_sale_count();
         if ($count == 0) {
             show_message(L('no_goods_in_cart'), '', '', 'warning');
         }
