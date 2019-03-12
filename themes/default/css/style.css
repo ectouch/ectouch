@@ -153,13 +153,13 @@ footer.logo img{width:8em; height:auto; display:block; margin:0.8em auto;}
 .user-tab .tab-content .pinglun-list dl dd{margin-top:0.2em; font-size:1em;}
 .user-tab .tab-content .pinglun-list dl dd.date{color:#999 !important;}
 /*单选按钮样式,复选按钮样式*/
-.ect-radio input[type=radio],.ect-checkbox input[type=checkbox]{display:none}
-.ect-radio label,.ect-checkbox label{margin-bottom:0;}
-.ect-radio label i,.ect-checkbox label i{width:1.2em; height:1.2em; margin-right:0.3em; display:block; float:left; margin-top:0.1em; border-radius:100%; background:rgba(255,255,255,0); border:2px solid #bbb;}
+.ect-radio input[type=radio],.ect-radio1 input[type=radio],.ect-checkbox input[type=checkbox]{display:none;}
+.ect-radio label,.ect-radio1 label,.ect-checkbox label{margin-bottom:0;}
+.ect-radio label i,.ect-radio1 label i,.ect-checkbox label i{width:1.2em; height:1.2em; margin-right:0.3em; display:block; float:left; margin-top:0.7em; border-radius:100%; background:rgba(255,255,255,0); border:2px solid #bbb;}
 .ect-checkbox label i{ border-radius:4px !important;}
-.ect-radio input:checked+label i,.ect-checkbox input:checked+label i{color:#F00; background:url(../images/radio.png) center center #1cbb7f no-repeat; background-size:80%; border:none;}
-.ect-radio input:disabled+label i,.ect-checkbox input:disabled+label i{background:#fff; border:2px solid #e8e8e8;}
-.ect-radio input.disabled:disabled+label i,.ect-checkbox input.disabled:disabled+label i{background:url(../images/radio.png) center center #e8e8e8 no-repeat; border:none; background-size:80%;}
+.ect-radio input[type=radio]:checked+label i,.ect-radio1 input[type=radio]:checked+label i,.ect-checkbox input:checked+label i{color:#F00; background:url(../images/radio.png) center center #1cbb7f no-repeat; background-size:80%; border:none;}
+.ect-radio input:disabled+label i,.ect-radio1 input:disabled+label i,.ect-checkbox input:disabled+label i{background:#fff; border:2px solid #e8e8e8;}
+.ect-radio input.disabled:disabled+label i,.ect-radio1 input.disabled:disabled+label i,.ect-checkbox input.disabled:disabled+label i{background:url(../images/radio.png) center center #e8e8e8 no-repeat; border:none; background-size:80%;}
 /*下拉框样式*/
 .form-select{position:relative; overflow:hidden; height:auto; text-align:center; margin-top:0.1em; height:2.5em;}
 .form-select i.fa{display:block; display:inline-block; position:absolute; top:50%; margin-top:-0.65em; right:0.6em; z-index:1; color:#aaa;}

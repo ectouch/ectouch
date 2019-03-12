@@ -23,7 +23,7 @@
         <p><b>{$lang.shipping_method}</b><span class="label ect-bg-colory">{$lang.require_field}</span></p>
         <i class="fa fa-angle-down"></i></a>
         <div id="collapseOne" class="panel-collapse collapse in">
-          <ul class="ect-radio">
+          <ul class="ect-radio1">
             <!-- {foreach from=$shipping_list item=shipping} 循环配送方式 -->
             <li>
               <input name="shipping" type="radio" id="shipping_{$shipping.shipping_id}" value="{$shipping.shipping_id}"  {if $order.shipping_id eq $shipping.shipping_id}checked="true"{/if} supportCod="{$shipping.support_cod}" insure="{$shipping.insure}" onclick="selectShipping(this)">
@@ -40,7 +40,7 @@
         <p><b>{$lang.payment_method}</b><span class="label ect-bg-colory">{$lang.require_field}</span></p>
         <i class="fa fa-angle-down"></i></a>
         <div id="collapseTwo" class="panel-collapse collapse in">
-          <ul class="ect-radio">
+          <ul class="ect-radio1">
             <!-- {foreach from=$payment_list item=payment} -->
             <li>
               <input name="payment" type="radio" id="payment_{$payment.pay_id}" value="{$payment.pay_id}" {if $order.pay_id eq $payment.pay_id}checked{/if} isCod="{$payment.is_cod}" onclick="selectPayment(this)" {if $cod_disabled and $payment.is_cod eq "1"}disabled="true"{/if} style="vertical-align:middle">
@@ -67,7 +67,7 @@
         <p><b>{$lang.goods_package}</b></p>
         <i class="fa fa-angle-down"></i></a>
         <div id="collapseThree" class="panel-collapse collapse in">
-          <ul class="ect-radio">
+          <ul class="ect-radio1">
             <li>
               <input  type="radio" id="pack_{$pack.pack_id}"  name="pack" value="0" {if $order.pack_id eq 0}checked="true"{/if} onclick="selectPack(this)" >
               <label for="pack_{$pack.pack_id}">{$lang.no_pack}<i></i></label>
@@ -86,7 +86,7 @@
         <p><b>{$lang.goods_card}</b></p>
         <i class="fa fa-angle-down"></i></a>
         <div id="collapseFour" class="panel-collapse collapse in">
-          <ul class="ect-radio">
+          <ul class="ect-radio1">
             <li>
               <input name="card" type="radio"  value="0" {if $order.card_id eq 0}checked="true"{/if} onclick="selectCard(this)" id="card_0" />
               <label for="card_0">{$lang.no_card}<i></i></label>
@@ -109,7 +109,7 @@
         <p><b>{$lang.use_bonus}</b></p>
         <i class="fa fa-angle-down"></i></a>
         <div id="collapseBonus" class="panel-collapse collapse in">
-      <ul class="ect-radio">
+      <ul class="ect-radio1">
             <li>
               <input  type="radio" id="bonus_{$bonus.bonus_id}"  name="bonus" value="0" {if $order.bonus_id eq 0}checked="true"{/if} onclick="changeBonus(this)" >
               <label for="bonus_{$bonus.bonus_id}">{$lang.no_use_bonus}<i></i></label>
