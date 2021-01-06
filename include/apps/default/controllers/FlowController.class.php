@@ -166,6 +166,7 @@ class FlowController extends CommonController
         }
         $json = new EcsJson;
         $goods = $json->decode($_POST ['goods']);
+        $goods->goods_id = (int) $goods->goods_id;
         $result['goods_id'] = $goods->goods_id;
         $result['product_spec'] = $goods->spec;
         // 检查：如果商品有规格，而post的数据没有规格，把商品的规格属性通过JSON传到前台
@@ -2061,6 +2062,7 @@ class FlowController extends CommonController
         }
         $json = new EcsJson;
         $package = $json->decode($_POST['package_info']);
+        $package->package_id = (int) $package->package_id;
 
         /* 如果是一步购物，先清空购物车 */
         if (C('one_step_buy') == '1') {
@@ -2302,6 +2304,7 @@ class FlowController extends CommonController
         }
 
         $goods = $json->decode($_POST['goods']);
+        $goods->goods_id = (int) $goods->goods_id;
         /* 检查：如果商品有规格，而post的数据没有规格，把商品的规格属性通过JSON传到前台 */
         if (empty($goods->spec) and empty($goods->quick)) {
             $sql = "SELECT a.attr_id, a.attr_name, a.attr_type, ".
@@ -2414,6 +2417,7 @@ class FlowController extends CommonController
         }
 
         $goods = $json->decode($_POST['goods']);
+        $goods->goods_id = (int) $goods->goods_id;
 
         if ($goods->parent == 0) {
             //更新临时购物车（删除基本件）
@@ -2455,6 +2459,7 @@ class FlowController extends CommonController
         }
 
         $goods = $json->decode($_POST['goods']);
+        $goods->goods_id = (int) $goods->goods_id;
         $group = $goods->group ."_". $goods->goods_id;//套餐组
         //批量加入购物车
         $sql = "SELECT rec_id FROM " . $this->model->pre . 'cart_combo' . " WHERE session_id = '" . SESS_ID . "'" .
