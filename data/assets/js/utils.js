@@ -73,7 +73,7 @@ Utils.isEmail = function( email )
 
 Utils.isTel = function ( tel )
 {
-  var reg = /^1[3|4|5|8|7][0-9]\d{4,8}$/; //只允许使用数字-空格等
+  var reg = /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/; //只允许使用数字-空格等
 
   return reg.test( tel );
 }

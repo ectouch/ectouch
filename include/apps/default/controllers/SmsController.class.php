@@ -53,7 +53,7 @@ class SmsController extends CommonController
             exit(json_encode(array('msg' => '手机号码不能为空')));
         }
 
-        $preg = '/^13[0-9]{9}|15[012356789][0-9]{8}|18[0-9]{9}|14[579][0-9]{8}|17[0-9]{9}$/'; //简单的方法
+        $preg = '/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/'; //简单的方法
         if (!preg_match($preg, $this->mobile)) {
             exit(json_encode(array('msg' => '手机号码格式不正确')));
         }
