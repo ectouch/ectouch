@@ -452,32 +452,19 @@ class EcsImage
         switch ($img_type) {
             case 'image/gif':
             case 1:
-
-                if (PHP_VERSION >= '4.3') {
-                    return function_exists('imagecreatefromgif');
-                } else {
-                    return (imagetypes() & IMG_GIF) > 0;
-                }
+                return function_exists('imagecreatefromgif');
                 break;
 
             case 'image/pjpeg':
             case 'image/jpeg':
             case 2:
-                if (PHP_VERSION >= '4.3') {
-                    return function_exists('imagecreatefromjpeg');
-                } else {
-                    return (imagetypes() & IMG_JPG) > 0;
-                }
+                return function_exists('imagecreatefromjpeg');
                 break;
 
             case 'image/x-png':
             case 'image/png':
             case 3:
-                if (PHP_VERSION >= '4.3') {
-                    return function_exists('imagecreatefrompng');
-                } else {
-                    return (imagetypes() & IMG_PNG) > 0;
-                }
+                return function_exists('imagecreatefrompng');
                 break;
 
             default:
@@ -593,19 +580,18 @@ class EcsImage
             $version = 0;
         } else {
             // 尝试使用gd_info函数
-            if (PHP_VERSION >= '4.3') {
-                if (function_exists('gd_info')) {
-                    $ver_info = gd_info();
-                    preg_match('/\d/', $ver_info['GD Version'], $match);
-                    $version = $match[0];
-                } else {
-                    if (function_exists('imagecreatetruecolor')) {
-                        $version = 2;
-                    } elseif (function_exists('imagecreate')) {
-                        $version = 1;
-                    }
-                }
+            if (function_exists('gd_info')) {
+                $ver_info = gd_info();
+                preg_match('/\d/', $ver_info['GD Version'], $match);
+                $version = $match[0];
             } else {
+                if (function_exists('imagecreatetruecolor')) {
+                    $version = 2;
+                } elseif (function_exists('imagecreate')) {
+                    $version = 1;
+                }
+            }
+        } else {
                 if (preg_match('/phpinfo/', ini_get('disable_functions'))) {
                     /* 如果phpinfo被禁用，无法确定gd版本 */
                     $version = 1;

@@ -107,7 +107,7 @@ class mysql
 
             if ($this->platform == 'OTHER' &&
                 ($dbhost != '.' && strtolower($dbhost) != 'localhost:3306' && $dbhost != '127.0.0.1:3306') ||
-                (PHP_VERSION >= '5.1' && date_default_timezone_get() == 'UTC')) {
+                date_default_timezone_get() == 'UTC') {
                 $result = mysqli_query($this->link_id, "SELECT UNIX_TIMESTAMP() AS timeline, UNIX_TIMESTAMP('" . date('Y-m-d H:i:s', $this->starttime) . "') AS timezone");
                 $row    = mysqli_fetch_assoc($result);
 
@@ -115,7 +115,7 @@ class mysql
                     $this->timeline = $this->starttime - $row['timeline'];
                 }
 
-                if (PHP_VERSION >= '5.1' && date_default_timezone_get() == 'UTC') {
+                if (date_default_timezone_get() == 'UTC') {
                     $this->timezone = $this->starttime - $row['timezone'];
                 }
             }
@@ -183,9 +183,7 @@ class mysql
         }
 
         /* 当当前的时间大于类初始化时间的时候，自动执行 ping 这个自动重新连接操作 */
-        if (time() > $this->starttime + 1) {
-            mysqli_ping($this->link_id);
-        }
+        mysqli_ping($this->link_id);
 
         if (!($query = mysqli_query($this->link_id, $sql)) && $type != 'SILENT') {
             $this->error_message[]['message'] = 'MySQL Query Error';

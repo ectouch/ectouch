@@ -105,11 +105,7 @@ class EcModel
             $this->queryLog[] = $sql;
         }
         if ($this->queryTime == '') {
-            if (PHP_VERSION >= '5.0.0') {
-                $this->queryTime = microtime(true);
-            } else {
-                $this->queryTime = microtime();
-            }
+            $this->queryTime = microtime(true);
         }
         //判断当前的sql是否是查询语句
         if ($is_query || stripos(trim($sql), 'select') === 0) {
@@ -574,19 +570,11 @@ class EcModel
     // 如果存在连接，则返回 true。如果失败，则返回 false。
     public function ping()
     {
-        if (PHP_VERSION >= '4.3') {
-            return mysql_ping();
-        } else {
-            return false;
-        }
+        return mysql_ping();
     }
     
     public function escape_string($unescaped_string)
     {
-        if (PHP_VERSION >= '4.3') {
-            return mysql_real_escape_string($unescaped_string);
-        } else {
-            return mysql_escape_string($unescaped_string);
-        }
+        return mysql_real_escape_string($unescaped_string);
     }
 }

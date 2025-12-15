@@ -14,13 +14,7 @@ function insert_query_info()
     if (M()->queryTime == '') {
         $query_time = 0;
     } else {
-        if (PHP_VERSION >= '5.0.0') {
-            $query_time = number_format(microtime(true) - M()->queryTime, 6);
-        } else {
-            list($now_usec, $now_sec) = explode(' ', microtime());
-            list($start_usec, $start_sec) = explode(' ', M()->queryTime);
-            $query_time = number_format(($now_sec - $start_sec) + ($now_usec - $start_usec), 6);
-        }
+        $query_time = number_format(microtime(true) - M()->queryTime, 6);
     }
 
     /* 内存占用情况 */

@@ -17,11 +17,7 @@ function gmtime()
  */
 function server_timezone()
 {
-    if (function_exists('date_default_timezone_get')) {
-        return date_default_timezone_get();
-    } else {
-        return date('Z') / 3600;
-    }
+    return date_default_timezone_get();
 }
 
 

@@ -135,11 +135,11 @@ class captcha
             $bg_width  = imagesx($img_bg);
             $bg_height = imagesy($img_bg);
 
-            $img_org   = ((function_exists('imagecreatetruecolor')) && PHP_VERSION >= '4.3') ?
+            $img_org   = function_exists('imagecreatetruecolor') ?
                           imagecreatetruecolor($this->width, $this->height) : imagecreate($this->width, $this->height);
 
             /* 将背景图象复制原始图象并调整大小 */
-            if (function_exists('imagecopyresampled') && PHP_VERSION >= '4.3') { // GD 2.x
+            if (function_exists('imagecopyresampled')) { // GD 2.x
                 imagecopyresampled($img_org, $img_bg, 0, 0, 0, 0, $this->width, $this->height, $bg_width, $bg_height);
             } else { // GD 1.x
                 imagecopyresized($img_org, $img_bg, 0, 0, 0, 0, $this->width, $this->height, $bg_width, $bg_height);

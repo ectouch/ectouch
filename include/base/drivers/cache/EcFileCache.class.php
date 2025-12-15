@@ -290,7 +290,7 @@ class EcFileCache
         }
 
         ignore_user_abort(true);
-        $support_usleep = version_compare(PHP_VERSION, 5, '>=') ? 20 : 1;
+        $support_usleep = 20;
         $lockfile = $this->_file . '.lck';
 
         if (file_exists($lockfile)) {

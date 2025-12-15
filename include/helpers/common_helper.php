@@ -111,13 +111,7 @@ function assign_query_info()
     if ($global->db->queryTime == '') {
         $query_time = 0;
     } else {
-        if (PHP_VERSION >= '5.0.0') {
-            $query_time = number_format(microtime(true) - $global->db->queryTime, 6);
-        } else {
-            list($now_usec, $now_sec)     = explode(' ', microtime());
-            list($start_usec, $start_sec) = explode(' ', $global->db->queryTime);
-            $query_time = number_format(($now_sec - $start_sec) + ($now_usec - $start_usec), 6);
-        }
+        $query_time = number_format(microtime(true) - $global->db->queryTime, 6);
     }
     $global->tpl->assign('query_info', sprintf(L('query_info'), $global->db->queryCount, $query_time));
 

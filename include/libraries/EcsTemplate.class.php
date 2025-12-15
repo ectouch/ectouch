@@ -251,14 +251,10 @@ class EcsTemplate
                 $source = str_replace('%%%SMARTYSP' . $curr_sp . '%%%', '<?php echo \'' . str_replace("'", "\'", $sp_match[1][$curr_sp]) . '\'; ?>' . "\n", $source);
             }
         }
-        if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
-            return preg_replace("/{([^\}\{\n]*)}/e", "\$this->select('\\1');", $source);
-        } else {
-            $template = $this;
-            return preg_replace_callback("/{([^\}\{\n]*)}/", function ($r) use (&$template) {
-                return $template->select($r[1]);
-            }, $source);
-        }
+        $template = $this;
+        return preg_replace_callback("/{([^\}\{\n]*)}/", function ($r) use (&$template) {
+            return $template->select($r[1]);
+        }, $source);
     }
 
     /**
@@ -428,13 +424,9 @@ class EcsTemplate
                 case 'insert':
                     $t = $this->get_para(substr($tag, 7), false);
 
-                    if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
-                        $out = "<?php \n" . '$k = ' . preg_replace("/(\'\\$[^,]+)/e", "stripslashes(trim('\\1','\''));", var_export($t, true)) . ";\n";
-                    } else {
-                        $out = "<?php \n" . '$k = ' . preg_replace_callback("/(\'\\$[^,]+)/", function ($r) {
-                            return stripcslashes(trim($r[1], '\''));
-                        }, var_export($t, true)) . ";\n";
-                    }
+                    $out = "<?php \n" . '$k = ' . preg_replace_callback("/(\'\\$[^,]+)/", function ($r) {
+                        return stripcslashes(trim($r[1], '\''));
+                    }, var_export($t, true)) . ";\n";
                     $out .= 'echo $this->_echash . $k[\'name\'] . \'|\' . serialize($k) . $this->_echash;' . "\n?>";
 
                     return $out;

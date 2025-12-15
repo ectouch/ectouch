@@ -105,7 +105,7 @@ class EcsMysql
 
             if ($this->platform == 'OTHER' &&
                     ($dbhost != '.' && strtolower($dbhost) != 'localhost:3306' && $dbhost != '127.0.0.1:3306') ||
-                    (PHP_VERSION >= '5.1' && date_default_timezone_get() == 'UTC')) {
+                    date_default_timezone_get() == 'UTC') {
                 $result = mysqli_query($this->link_id, "SELECT UNIX_TIMESTAMP() AS timeline, UNIX_TIMESTAMP('" . date('Y-m-d H:i:s', $this->starttime) . "') AS timezone");
                 $row = mysqli_fetch_assoc($result);
 
@@ -113,7 +113,7 @@ class EcsMysql
                     $this->timeline = $this->starttime - $row['timeline'];
                 }
 
-                if (PHP_VERSION >= '5.1' && date_default_timezone_get() == 'UTC') {
+                if (date_default_timezone_get() == 'UTC') {
                     $this->timezone = $this->starttime - $row['timezone'];
                 }
             }
@@ -177,17 +177,11 @@ class EcsMysql
             $this->queryLog[] = $sql;
         }
         if ($this->queryTime == '') {
-            if (PHP_VERSION >= '5.0.0') {
-                $this->queryTime = microtime(true);
-            } else {
-                $this->queryTime = microtime();
-            }
+            $this->queryTime = microtime(true);
         }
 
         /* 当当前的时间大于类初始化时间的时候，自动执行 ping 这个自动重新连接操作 */
-        if (PHP_VERSION >= '4.3' && time() > $this->starttime + 1) {
-            mysqli_ping($this->link_id);
-        }
+        mysqli_ping($this->link_id);
 
         if (!($query = mysqli_query($this->link_id, $sql)) && $type != 'SILENT') {
             $this->error_message[]['message'] = 'MySQL Query Error';
@@ -204,15 +198,7 @@ class EcsMysql
             $logfilename = $this->root_path . DATA_DIR . '/mysql_query_' . $this->dbhash . '_' . date('Y_m_d') . '.log';
             $str = $sql . "\n\n";
 
-            if (PHP_VERSION >= '5.0') {
-                file_put_contents($logfilename, $str, FILE_APPEND);
-            } else {
-                $fp = @fopen($logfilename, 'ab+');
-                if ($fp) {
-                    fwrite($fp, $str);
-                    fclose($fp);
-                }
-            }
+            file_put_contents($logfilename, $str, FILE_APPEND);
         }
 
         return $query;
@@ -275,20 +261,12 @@ class EcsMysql
 
     public function ping()
     {
-        if (PHP_VERSION >= '4.3') {
-            return mysqli_ping($this->link_id);
-        } else {
-            return false;
-        }
+        return mysqli_ping($this->link_id);
     }
 
     public function escape_string($unescaped_string)
     {
-        if (PHP_VERSION >= '4.3') {
-            return mysqli_real_escape_string($unescaped_string);
-        } else {
-            return mysqli_escape_string($unescaped_string);
-        }
+        return mysqli_real_escape_string($this->link_id, $unescaped_string);
     }
 
     public function close()

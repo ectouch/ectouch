@@ -37,9 +37,7 @@ if (defined('DEBUG_MODE') == false) {
     define('DEBUG_MODE', 0);
 }
 
-if (PHP_VERSION >= '5.1') {
-    date_default_timezone_set(DEFAULT_TIMEZONE);
-}
+date_default_timezone_set(DEFAULT_TIMEZONE);
 
 if (isset($_SERVER['PHP_SELF'])) {
     define('PHP_SELF', $_SERVER['PHP_SELF']);

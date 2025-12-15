@@ -66,7 +66,7 @@ class iconv
             $this->iconv_enabled = true;
         }
 
-        if (PHP_VERSION >= '5.0' && function_exists('mb_convert_encoding') && function_exists('mb_list_encodings')) {
+        if (function_exists('mb_convert_encoding') && function_exists('mb_list_encodings')) {
             $encodings = mb_list_encodings();
 
             if (in_array('UTF-8', $encodings) == true && in_array('BIG-5', $encodings) == true && in_array('CP936', $encodings) == true) { // CP936 就是 GBK 字符集的别名

@@ -111,7 +111,6 @@ class SmsController extends CommonController
 
     private function random($length = 6, $numeric = 0)
     {
-        PHP_VERSION < '4.2.0' && mt_srand((double) microtime() * 1000000);
         if ($numeric) {
             $hash = sprintf('%0' . $length . 'd', mt_rand(0, pow(10, $length) - 1));
         } else {
