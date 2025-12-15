@@ -11,9 +11,9 @@ if (is_null($ossClient)) exit(1);
 $bucket = Common::getBucketName();
 
 
-//******************************* 简单使用 ****************************************************************
+//******************************* Simple usage****************************************************************
 
-// 设置cors配置
+// Set cors configuration
 $corsConfig = new CorsConfig();
 $rule = new CorsRule();
 $rule->addAllowedHeader("x-oss-header");
@@ -24,15 +24,47 @@ $corsConfig->addRule($rule);
 $ossClient->putBucketCors($bucket, $corsConfig);
 Common::println("bucket $bucket corsConfig created:" . $corsConfig->serializeToXml());
 
-// 获取cors配置
+// Get cors configuration
 $corsConfig = $ossClient->getBucketCors($bucket);
-Common::println("bucket $bucket corsConfig fetched:" . $corsConfig->serializeToXml());
 
-// 删除cors配置
+if ($corsConfig->getResponseVary()){
+    printf("Response Vary : true" .PHP_EOL);
+}else{
+    printf("Response Vary : false" .PHP_EOL);
+}
+
+foreach ($corsConfig->getRules() as $key => $rule){
+    if($rule->getAllowedHeaders()){
+        foreach($rule->getAllowedHeaders() as $header){
+            printf("Allowed Headers :" .$header .PHP_EOL);
+        }
+    }
+    if ($rule->getAllowedMethods()){
+        foreach($rule->getAllowedMethods() as $method){
+            printf("Allowed Methods :" .$method . PHP_EOL);
+        }
+
+    }
+    if($rule->getAllowedOrigins()){
+        foreach($rule->getAllowedOrigins() as $origin){
+            printf("Allowed Origins :" .$origin , PHP_EOL);
+        }
+
+    }
+    if($rule->getExposeHeaders()){
+        foreach($rule->getExposeHeaders() as $exposeHeader){
+            printf("Expose Headers :" .$exposeHeader . PHP_EOL);
+        }
+    }
+    printf("Max Age Seconds :" .$rule->getMaxAgeSeconds() .PHP_EOL);
+
+}
+
+// Delete cors configuration
 $ossClient->deleteBucketCors($bucket);
 Common::println("bucket $bucket corsConfig deleted");
 
-//******************************* 完整用法参考下面函数  *****************************************************
+//******************************* For complete usage, see the following functions  *****************************************************
 
 putBucketCors($ossClient, $bucket);
 getBucketCors($ossClient, $bucket);
@@ -40,10 +72,10 @@ deleteBucketCors($ossClient, $bucket);
 getBucketCors($ossClient, $bucket);
 
 /**
- * 设置bucket的cors配置
+ * Set bucket cores
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function putBucketCors($ossClient, $bucket)
@@ -67,10 +99,10 @@ function putBucketCors($ossClient, $bucket)
 }
 
 /**
- * 获取并打印bucket的cors配置
+ * Get and print the cors configuration of a bucket
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function getBucketCors($ossClient, $bucket)
@@ -78,20 +110,51 @@ function getBucketCors($ossClient, $bucket)
     $corsConfig = null;
     try {
         $corsConfig = $ossClient->getBucketCors($bucket);
+
+        if ($corsConfig->getResponseVary()){
+            printf("Response Vary : true" .PHP_EOL);
+        }else{
+            printf("Response Vary : false" .PHP_EOL);
+        }
+        foreach ($corsConfig->getRules() as $key => $rule){
+            if($rule->getAllowedHeaders()){
+                foreach($rule->getAllowedHeaders() as $header){
+                    printf("Allowed Headers :" .$header .PHP_EOL);
+                }
+            }
+            if ($rule->getAllowedMethods()){
+                foreach($rule->getAllowedMethods() as $method){
+                    printf("Allowed Methods :" .$method . PHP_EOL);
+                }
+
+            }
+            if($rule->getAllowedOrigins()){
+                foreach($rule->getAllowedOrigins() as $origin){
+                    printf("Allowed Origins :" .$origin , PHP_EOL);
+                }
+
+            }
+            if($rule->getExposeHeaders()){
+                foreach($rule->getExposeHeaders() as $exposeHeader){
+                    printf("Expose Headers :" .$exposeHeader . PHP_EOL);
+                }
+            }
+            printf("Max Age Seconds :" .$rule->getMaxAgeSeconds() .PHP_EOL);
+
+        }
     } catch (OssException $e) {
         printf(__FUNCTION__ . ": FAILED\n");
         printf($e->getMessage() . "\n");
         return;
     }
     print(__FUNCTION__ . ": OK" . "\n");
-    print($corsConfig->serializeToXml() . "\n");
 }
 
 /**
- * 删除bucket的所有的cors配置
+ * Delete all cors configuraiton of a bucket
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function deleteBucketCors($ossClient, $bucket)

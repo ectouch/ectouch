@@ -5,7 +5,7 @@ namespace OSS\Core;
 /**
  * Class OssUtil
  *
- * Oss工具类，主要供OssClient使用，用户也可以使用本类进行返回结果的格式化
+ * Oss Util class for OssClient. The caller could use it for formating the result from OssClient.
  *
  * @package OSS
  */
@@ -20,10 +20,10 @@ class OssUtil
     const OSS_MIN_PART_SIZE = 102400; // 100KB
 
     /**
-     * 生成query params
+     * Generate query params
      *
-     * @param array $options 关联数组
-     * @return string 返回诸如 key1=value1&key2=value2
+     * @param array $options: a key-value pair array.
+     * @return string: the key-value list in the format such as key1=value1&key2=value2
      */
     public static function toQueryString($options = array())
     {
@@ -31,14 +31,18 @@ class OssUtil
         uksort($options, 'strnatcasecmp');
         foreach ($options as $key => $value) {
             if (is_string($key) && !is_array($value)) {
-                $temp[] = rawurlencode($key) . '=' . rawurlencode($value);
+                if (strlen($value) > 0) {
+                    $temp[] = rawurlencode($key) . '=' . rawurlencode($value);
+                } else {
+                    $temp[] = rawurlencode($key);
+                }
             }
         }
         return implode('&', $temp);
     }
 
     /**
-     * 转义字符替换
+     * Html encoding '<', '>', '&', '\', '"' in subject parameter. 
      *
      * @param string $subject
      * @return string
@@ -51,7 +55,7 @@ class OssUtil
     }
 
     /**
-     * 检查是否是中文编码
+     * Check whether the string includes any chinese character
      *
      * @param $str
      * @return int
@@ -62,10 +66,10 @@ class OssUtil
     }
 
     /**
-     * 检测是否GB2312编码
+     * Checks if the string is encoded by GB2312.
      *
      * @param string $str
-     * @return boolean false UTF-8编码  TRUE GB2312编码
+     * @return boolean false UTF-8 encoding  TRUE GB2312 encoding
      */
     public static function isGb2312($str)
     {
@@ -87,7 +91,7 @@ class OssUtil
     }
 
     /**
-     * 检测是否GBK编码
+     * Checks if the string is encoded by GBK
      *
      * @param string $str
      * @param boolean $gbk
@@ -114,13 +118,13 @@ class OssUtil
     }
 
     /**
-     * 检验bucket名称是否合法
-     * bucket的命名规范：
-     * 1. 只能包括小写字母，数字
-     * 2. 必须以小写字母或者数字开头
-     * 3. 长度必须在3-63字节之间
+     * Checks if the bucket name is valid
+     * bucket naming rules
+     * 1. Can only include lowercase letters, numbers, or dashes
+     * 2. Must start and end with lowercase letters or numbers
+     * 3. Must be within a length from 3 to 63 bytes.
      *
-     * @param string $bucket Bucket名称
+     * @param string $bucket Bucket name
      * @return boolean
      */
     public static function validateBucket($bucket)
@@ -133,11 +137,11 @@ class OssUtil
     }
 
     /**
-     * 检验object名称是否合法
-     * object命名规范:
-     * 1. 规则长度必须在1-1023字节之间
-     * 2. 使用UTF-8编码
-     * 3. 不能以 "/" "\\"开头
+     * Checks if object name is valid
+     * object naming rules:
+     * 1. Must be within a length from 1 to 1023 bytes
+     * 2. Cannot start with '/' or '\\'.
+     * 3. Must be encoded in UTF-8.
      *
      * @param string $object Object名称
      * @return boolean
@@ -145,7 +149,7 @@ class OssUtil
     public static function validateObject($object)
     {
         $pattern = '/^.{1,1023}$/';
-        if (empty($object) || !preg_match($pattern, $object) ||
+        if (!preg_match($pattern, $object) ||
             self::startsWith($object, '/') || self::startsWith($object, '\\')
         ) {
             return false;
@@ -155,7 +159,7 @@ class OssUtil
 
 
     /**
-     * 判断字符串$str是不是以$findMe开始
+     * Checks if $str starts with $findMe
      *
      * @param string $str
      * @param string $findMe
@@ -170,12 +174,25 @@ class OssUtil
         }
     }
 
+
     /**
-     * 检验$options
+     * Generate the xml message of createBucketXmlBody.
+     *
+     * @param string $storageClass
+     * @return string
+     */
+    public static function createBucketXmlBody($storageClass)
+    {
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><CreateBucketConfiguration></CreateBucketConfiguration>');
+        $xml->addChild('StorageClass',  $storageClass);
+        return $xml->asXML();
+    }
+
+    /**
+     * validate $options
      *
      * @param array $options
      * @throws OssException
-     * @return boolean
      */
     public static function validateOptions($options)
     {
@@ -186,7 +203,7 @@ class OssUtil
     }
 
     /**
-     * 检查上传文件的内容是否合法
+     * check whether the Content is valid.
      *
      * @param $content string
      * @throws OssException
@@ -199,7 +216,7 @@ class OssUtil
     }
 
     /**
-     * 校验BUCKET/OBJECT/OBJECT GROUP是否为空
+     * Check if BUCKET/OBJECT/OBJECT GROUP is empty.
      *
      * @param  string $name
      * @param  string $errMsg
@@ -209,19 +226,21 @@ class OssUtil
     public static function throwOssExceptionWithMessageIfEmpty($name, $errMsg)
     {
         if (empty($name)) {
+            if (is_string($name) && $name == '0')
+                return;
             throw new OssException($errMsg);
         }
     }
 
     /**
-     * 仅供测试使用的接口,请勿使用
+     * This is a method for test only. DO NOT USE.
      *
      * @param $filename
      * @param $size
      */
     public static function generateFile($filename, $size)
     {
-        if (file_exists($filename) && $size == filesize($filename)) {
+        if (file_exists($filename) && $size == sprintf('%u',filesize($filename))) {
             echo $filename . " already exists, no need to create again. ";
             return;
         }
@@ -255,7 +274,7 @@ BBB;
     }
 
     /**
-     * 得到文件的md5编码
+     * Get MD5 of the file.
      *
      * @param $filename
      * @param $from_pos
@@ -268,7 +287,7 @@ BBB;
         if (($to_pos - $from_pos) > self::OSS_MAX_PART_SIZE) {
             return $content_md5;
         }
-        $filesize = filesize($filename);
+        $filesize = sprintf('%u',filesize($filename));
         if ($from_pos >= $filesize || $to_pos >= $filesize || $from_pos < 0 || $to_pos < 0) {
             return $content_md5;
         }
@@ -305,7 +324,7 @@ BBB;
     }
 
     /**
-     * 检测是否windows系统，因为windows系统默认编码为GBK
+     * Check if the OS is Windows. The default encoding in Windows is GBK.
      *
      * @return bool
      */
@@ -315,7 +334,9 @@ BBB;
     }
 
     /**
-     * 主要是由于windows系统编码是gbk，遇到中文时候，如果不进行转换处理会出现找不到文件的问题
+     * Encodes the file path from GBK to UTF-8.
+     * The default encoding in Windows is GBK. 
+     * And if the file path is in Chinese, the file would not be found without the transcoding to UTF-8.
      *
      * @param $file_path
      * @return string
@@ -329,9 +350,9 @@ BBB;
     }
 
     /**
-     * 判断用户输入的endpoint是否是 xxx.xxx.xxx.xxx:port 或者 xxx.xxx.xxx.xxx的ip格式
+     * Check if the endpoint is in the IPv4 format, such as xxx.xxx.xxx.xxx:port or xxx.xxx.xxx.xxx.
      *
-     * @param string $endpoint 需要做判断的endpoint
+     * @param string $endpoint The endpoint to check.
      * @return boolean
      */
     public static function isIPFormat($endpoint)
@@ -347,7 +368,49 @@ BBB;
     }
 
     /**
-     * 生成DeleteMultiObjects接口的xml消息
+     * Get the host:port from endpoint.
+     *
+     * @param string $endpoint the endpoint.
+     * @return string
+     * @throws OssException
+     */
+    public static function getHostPortFromEndpoint($endpoint)
+    {
+        $str = $endpoint;
+        $pos = strpos($str, "://");
+        if ($pos !== false) {
+            $str = substr($str, $pos+3);
+        }
+    
+        $pos = strpos($str, '#');
+        if ($pos !== false) {
+            $str = substr($str, 0, $pos);
+        }
+    
+        $pos = strpos($str, '?');
+        if ($pos !== false) {
+            $str = substr($str, 0, $pos);
+        }
+    
+        $pos = strpos($str, '/');
+        if ($pos !== false) {
+            $str = substr($str, 0, $pos);
+        }
+    
+        $pos = strpos($str, '@');
+        if ($pos !== false) {
+            $str = substr($str, $pos+1);
+        }
+       
+        if (!preg_match('/^[\w.-]+(:[0-9]+)?$/', $str)) {
+            throw new OssException("endpoint is invalid:" . $endpoint);
+        }
+
+        return $str;
+    }
+
+    /**
+     * Generate the xml message of DeleteMultiObjects.
      *
      * @param string[] $objects
      * @param bool $quiet
@@ -366,7 +429,30 @@ BBB;
     }
 
     /**
-     * 生成CompleteMultipartUpload接口的xml消息
+     * Generate the xml message of DeleteMultiObjects.
+     *
+     * @param DeleteObjectInfo[] $objects
+     * @param bool $quiet
+     * @return string
+     */
+    public static function createDeleteObjectVersionsXmlBody($objects, $quiet)
+    {
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><Delete></Delete>');
+        $xml->addChild('Quiet', $quiet);
+        foreach ($objects as $object) {
+            $sub_object = $xml->addChild('Object');
+            $key = OssUtil::sReplace($object->getKey());
+            $sub_object->addChild('Key', $key);
+            $versionId = $object->getVersionId();
+            if (!empty($versionId)) {
+                $sub_object->addChild('VersionId', $object->getVersionId());
+            }
+        }
+        return $xml->asXML();
+    }
+
+    /**
+     * Generate the xml message of CompleteMultipartUpload.
      *
      * @param array[] $listParts
      * @return string
@@ -383,7 +469,7 @@ BBB;
     }
 
     /**
-     * 读取目录
+     * Read the directory, return a associative array in which the MD5 is the named key and the <path,filanme> is the value.
      *
      * @param string $dir
      * @param string $exclude
@@ -444,5 +530,14 @@ BBB;
         } else {
             throw new OssException("Unrecognized encoding type: " . $encoding);
         }
+    }
+
+    public static function unparseUrl($parsed_url) {
+        $scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+        $host     = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+        $port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+        $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+        $query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+        return "$scheme$host$port$path$query";
     }
 }

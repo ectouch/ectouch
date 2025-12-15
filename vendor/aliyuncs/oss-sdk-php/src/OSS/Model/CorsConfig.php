@@ -22,7 +22,7 @@ class CorsConfig implements XmlConfig
     }
 
     /**
-     * 得到CorsRule列表
+     * Get CorsRule list
      *
      * @return CorsRule[]
      */
@@ -33,7 +33,7 @@ class CorsConfig implements XmlConfig
 
 
     /**
-     * 添加一条CorsRule
+     * Add a new CorsRule
      *
      * @param CorsRule $rule
      * @throws OssException
@@ -45,10 +45,26 @@ class CorsConfig implements XmlConfig
         }
         $this->rules[] = $rule;
     }
+    /**
+     * @param boolean $value
+     */
+    public function setResponseVary($value)
+    {
+        $this->responseVary = $value;
+    }
 
     /**
-     * 从xml数据中解析出CorsConfig
-     *
+     * @return boolean
+     */
+    public function getResponseVary(){
+        if (isset($this->responseVary)) {
+            return $this->responseVary;
+        }
+        return false;
+    }
+
+    /**
+     * Parse CorsConfig from the xml.
      * @param string $strXml
      * @throws OssException
      * @return null
@@ -56,6 +72,10 @@ class CorsConfig implements XmlConfig
     public function parseFromXml($strXml)
     {
         $xml = simplexml_load_string($strXml);
+        if(isset($xml->ResponseVary)){
+            $this->responseVary =
+            (strval($xml->ResponseVary) === 'TRUE' || strval($xml->ResponseVary) === 'true') ? true : false;
+        }
         if (!isset($xml->CORSRule)) return;
         foreach ($xml->CORSRule as $rule) {
             $corsRule = new CorsRule();
@@ -74,11 +94,10 @@ class CorsConfig implements XmlConfig
             }
             $this->addRule($corsRule);
         }
-        return;
     }
 
     /**
-     * 生成xml字符串
+     * Serialize the object into xml string.
      *
      * @return string
      */
@@ -88,6 +107,13 @@ class CorsConfig implements XmlConfig
         foreach ($this->rules as $rule) {
             $xmlRule = $xml->addChild('CORSRule');
             $rule->appendToXml($xmlRule);
+        }
+        if(isset($this->responseVary)){
+            if ($this->responseVary) {
+                $xml->addChild('ResponseVary', 'true');
+            } else {
+                $xml->addChild('ResponseVary', 'false');
+            }
         }
         return $xml->asXML();
     }
@@ -105,9 +131,10 @@ class CorsConfig implements XmlConfig
     const OSS_MAX_RULES = 10;
 
     /**
-     * orsRule列表
+     * CorsRule list
      *
      * @var CorsRule[]
      */
     private $rules = array();
+    private $responseVary;
 }

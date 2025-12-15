@@ -5,8 +5,9 @@ namespace OSS\Tests;
 
 use OSS\Core\OssException;
 use OSS\Core\OssUtil;
+use OSS\OssClient;
 
-class OssUtilTest extends \PHPUnit_Framework_TestCase
+class OssUtilTest extends \PHPUnit\Framework\TestCase
 {
     public function testIsChinese()
     {
@@ -106,6 +107,15 @@ BBBB;
         $this->assertEquals($this->cleanXml(OssUtil::createCompleteMultipartUploadXmlBody($a)), $xml);
     }
 
+    public function testCreateBucketXmlBody()
+    {
+        $xml = <<<BBBB
+<?xml version="1.0" encoding="UTF-8"?><CreateBucketConfiguration><StorageClass>Standard</StorageClass></CreateBucketConfiguration>
+BBBB;
+        $storageClass ="Standard";
+        $this->assertEquals($this->cleanXml(OssUtil::createBucketXmlBody($storageClass)), $xml);
+    }
+
     public function testValidateBucket()
     {
         $this->assertTrue(OssUtil::validateBucket("xxx"));
@@ -133,25 +143,29 @@ BBBB;
 
     public function testReadDir()
     {
-        $list = OssUtil::readDir("./src", ".|..|.svn|.git", true);
+        $list = OssUtil::readDir(__DIR__, ".|..|.svn|.git", true);
         $this->assertNotNull($list);
     }
 
-    public function testIsWin()
-    {
-        //$this->assertTrue(OssUtil::isWin());
-    }
+    //public function testIsWin()
+    //{
+    //    //$this->assertTrue(OssUtil::isWin());
+    //}
 
     public function testGetMd5SumForFile()
     {
-        $this->assertEquals(OssUtil::getMd5SumForFile(__FILE__, 0, filesize(__FILE__) - 1), base64_encode(md5(file_get_contents(__FILE__), true)));
+        $this->assertEquals(OssUtil::getMd5SumForFile(__FILE__, 0, sprintf('%u',filesize(__FILE__)) - 1), base64_encode(md5(file_get_contents(__FILE__), true)));
+        // false case
+        $this->assertEquals(OssUtil::getMd5SumForFile(__FILE__, 0, OssClient::OSS_MAX_PART_SIZE + 1), "");
+        $this->assertEquals(OssUtil::getMd5SumForFile(__FILE__, 0, sprintf('%u',filesize(__FILE__)) + 1), "");
+
     }
 
     public function testGenerateFile()
     {
         $path = __DIR__ . DIRECTORY_SEPARATOR . "generatedFile.txt";
         OssUtil::generateFile($path, 1024 * 1024);
-        $this->assertEquals(filesize($path), 1024 * 1024);
+        $this->assertEquals(sprintf('%u',filesize($path)), 1024 * 1024);
         unlink($path);
     }
 
@@ -210,5 +224,77 @@ BBBB;
     private function cleanXml($xml)
     {
         return str_replace("\n", "", str_replace("\r", "", $xml));
+    }
+
+	public function testGetHostPortFromEndpoint()
+    {
+        $str =  OssUtil::getHostPortFromEndpoint('http://username:password@hostname:80/path?arg=value#anchor');
+        $this->assertEquals('hostname:80', $str);
+
+        $str =  OssUtil::getHostPortFromEndpoint('hostname:80');
+        $this->assertEquals('hostname:80', $str);
+
+        $str =  OssUtil::getHostPortFromEndpoint('www.hostname.com');
+        $this->assertEquals('www.hostname.com', $str);
+
+        $str =  OssUtil::getHostPortFromEndpoint('http://www.hostname.com');
+        $this->assertEquals('www.hostname.com', $str);
+
+        $str =  OssUtil::getHostPortFromEndpoint('https://www.hostname.com');
+        $this->assertEquals('www.hostname.com', $str);
+
+        $str =  OssUtil::getHostPortFromEndpoint('192.168.1.10:8080');
+        $this->assertEquals('192.168.1.10:8080', $str);
+
+        $str =  OssUtil::getHostPortFromEndpoint('file://username:password@hostname:80/path?arg=value#anchor');
+        $this->assertEquals('hostname:80', $str);
+
+        $str =  OssUtil::getHostPortFromEndpoint('https://WWW.hostname.com-_www.test.com');
+        $this->assertEquals('WWW.hostname.com-_www.test.com', $str);
+
+        try {
+            $str =  OssUtil::getHostPortFromEndpoint('http:///path?arg=value#anchor');
+            $this->assertTrue(false);
+        } catch (OssException $e) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            $str =  OssUtil::getHostPortFromEndpoint('https://www.hostname.com\www.test.com');
+            $this->assertTrue(false);
+        } catch (OssException $e) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            $str =  OssUtil::getHostPortFromEndpoint('www.hostname.com-_*www.test.com');
+            $this->assertTrue(false);
+        } catch (OssException $e) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            $str =  OssUtil::getHostPortFromEndpoint('www.hostname.com:ab123');
+            $this->assertTrue(false);
+        } catch (OssException $e) {
+            $this->assertTrue(true);
+        }
+
+        try {
+            $str =  OssUtil::getHostPortFromEndpoint('www.hostname.com:');
+            $this->assertTrue(false);
+        } catch (OssException $e) {
+            $this->assertTrue(true);
+        }
+    }
+
+    public function testDecodeKey()
+    {
+        try {
+            OssUtil::decodeKey("key", "unknown");
+            $this->assertTrue(false);
+        } catch (OssException $e) {
+            $this->assertTrue(true);
+        }
     }
 }

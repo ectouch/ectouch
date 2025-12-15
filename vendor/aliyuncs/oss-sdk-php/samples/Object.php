@@ -3,13 +3,14 @@ require_once __DIR__ . '/Common.php';
 
 use OSS\OssClient;
 use OSS\Core\OssException;
+use OSS\Model\RestoreConfig;
 
 $bucket = Common::getBucketName();
 $ossClient = Common::getOssClient();
 if (is_null($ossClient)) exit(1);
-//*******************************简单使用***************************************************************
+//******************************* Simple usage ***************************************************************
 
-// 简单上传变量的内容到oss文件
+// Upload the in-memory string (hi, oss) to an OSS file
 $result = $ossClient->putObject($bucket, "b.file", "hi, oss");
 Common::println("b.file is created");
 Common::println($result['x-oss-request-id']);
@@ -17,7 +18,7 @@ Common::println($result['etag']);
 Common::println($result['content-md5']);
 Common::println($result['body']);
 
-// 上传本地文件
+// Uploads a local file to an OSS file
 $result = $ossClient->uploadFile($bucket, "c.file", __FILE__);
 Common::println("c.file is created");
 Common::println("b.file is created");
@@ -26,12 +27,21 @@ Common::println($result['etag']);
 Common::println($result['content-md5']);
 Common::println($result['body']);
 
-// 下载object到本地变量
+// Download an oss object as an in-memory variable
 $content = $ossClient->getObject($bucket, "b.file");
 Common::println("b.file is fetched, the content is: " . $content);
 
+// Add a symlink to an object
+$content = $ossClient->putSymlink($bucket, "test-symlink", "b.file");
+Common::println("test-symlink is created");
+Common::println($result['x-oss-request-id']);
+Common::println($result['etag']);
 
-// 下载object到本地文件
+// Get a symlink
+$content = $ossClient->getSymlink($bucket, "test-symlink");
+Common::println("test-symlink refer to : " . $content[OssClient::OSS_SYMLINK_TARGET]);
+
+// Download an object to a local file.
 $options = array(
     OssClient::OSS_FILE_DOWNLOAD => "./c.file.localcopy",
 );
@@ -39,26 +49,37 @@ $ossClient->getObject($bucket, "c.file", $options);
 Common::println("b.file is fetched to the local file: c.file.localcopy");
 Common::println("b.file is created");
 
-// 拷贝object
+
+// Restore Object
+$day = 3;
+$tier = 'Expedited';
+$config = new RestoreConfig($day,$tier);
+$options = array(
+    OssClient::OSS_RESTORE_CONFIG => $config
+);
+$ossClient->restoreObject($bucket, 'b.file',$options);
+
+
+// Copy an object
 $result = $ossClient->copyObject($bucket, "c.file", $bucket, "c.file.copy");
 Common::println("lastModifiedTime: " . $result[0]);
 Common::println("ETag: " . $result[1]);
 
-// 判断object是否存在
+// Check whether an object exists
 $doesExist = $ossClient->doesObjectExist($bucket, "c.file.copy");
 Common::println("file c.file.copy exist? " . ($doesExist ? "yes" : "no"));
 
-// 删除object
+// Delete an object
 $result = $ossClient->deleteObject($bucket, "c.file.copy");
 Common::println("c.file.copy is deleted");
 Common::println("b.file is created");
 Common::println($result['x-oss-request-id']);
 
-// 判断object是否存在
+// Check whether an object exists
 $doesExist = $ossClient->doesObjectExist($bucket, "c.file.copy");
 Common::println("file c.file.copy exist? " . ($doesExist ? "yes" : "no"));
 
-// 批量删除object
+// Delete multiple objects in batch
 $result = $ossClient->deleteObjects($bucket, array("b.file", "c.file"));
 foreach($result as $object)
     Common::println($object);
@@ -66,9 +87,37 @@ foreach($result as $object)
 sleep(2);
 unlink("c.file.localcopy");
 
-//******************************* 完整用法参考下面函数 ****************************************************
+// Normal upload and download speed limit
+$object= "b.file";
+$content = "hello world";
+
+// The speed limit is 100 KB/s, which is 819200 bit/s.
+$options = array(
+    OssClient::OSS_HEADERS => array(
+        OssClient::OSS_TRAFFIC_LIMIT => 819200,
+    ));
+// Speed limit upload.
+$ossClient->putObject($bucket, $object, $content, $options);
+
+// Speed limit download.
+$ossClient->getObject($bucket, $object, $options);
+
+// Signed URL upload and download speed limit
+
+// Create a URL for uploading with a limited rate, and the validity period is 60s.
+$timeout = 60;
+$signedUrl = $ossClient->signUrl($bucket, $object, $timeout, "PUT", $options);
+Common::println("b.file speed limit upload url:".$signedUrl.PHP_EOL);
+
+// Create a URL for speed-limited downloads, with a validity period of 120s.
+$timeout = 120;
+$signedUrl = $ossClient->signUrl($bucket, $object, $timeout, "GET", $options);
+Common::println("b.file speed limit download url:".$signedUrl.PHP_EOL);
+
+//******************************* For complete usage, see the following functions ****************************************************
 
 listObjects($ossClient, $bucket);
+listObjectsV2($ossClient, $bucket);
 listAllObjects($ossClient, $bucket);
 createObjectDir($ossClient, $bucket);
 putObject($ossClient, $bucket);
@@ -81,12 +130,18 @@ getObjectMeta($ossClient, $bucket);
 deleteObject($ossClient, $bucket);
 deleteObjects($ossClient, $bucket);
 doesObjectExist($ossClient, $bucket);
-
+getSymlink($ossClient, $bucket);
+putSymlink($ossClient, $bucket);
+putObjectSpeed($ossClient, $bucket);
+getObjectSpeed($ossClient, $bucket);
+signUrlSpeedUpload($ossClient, $bucket);
+signUrlSpeedDownload($ossClient, $bucket);
+restoreObject($ossClient,$bucket);
 /**
- * 创建虚拟目录
+ * Create a 'virtual' folder
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function createObjectDir($ossClient, $bucket)
@@ -102,12 +157,12 @@ function createObjectDir($ossClient, $bucket)
 }
 
 /**
- * 把本地变量的内容到文件
+ * Upload in-memory data to oss
  *
- * 简单上传,上传指定变量的内存值作为object的内容
+ * Simple upload---upload specified in-memory data to an OSS object
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function putObject($ossClient, $bucket)
@@ -127,10 +182,10 @@ function putObject($ossClient, $bucket)
 
 
 /**
- * 上传指定的本地文件内容
+ * Uploads a local file to OSS
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function uploadFile($ossClient, $bucket)
@@ -150,11 +205,12 @@ function uploadFile($ossClient, $bucket)
 }
 
 /**
- * 列出Bucket内所有目录和文件, 注意如果符合条件的文件数目超过设置的max-keys， 用户需要使用返回的nextMarker作为入参，通过
- * 循环调用ListObjects得到所有的文件，具体操作见下面的 listAllObjects 示例
+ * Lists all files and folders in the bucket.
+ * Note if there's more items than the max-keys specified, the caller needs to use the nextMarker returned as the value for the next call's maker paramter.
+ * Loop through all the items returned from ListObjects.
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function listObjects($ossClient, $bucket)
@@ -171,38 +227,127 @@ function listObjects($ossClient, $bucket)
     );
     try {
         $listObjectInfo = $ossClient->listObjects($bucket, $options);
+        printf("Bucket Name: %s". "\n",$listObjectInfo->getBucketName());
+        printf("Prefix: %s". "\n",$listObjectInfo->getPrefix());
+        printf("Marker: %s". "\n",$listObjectInfo->getMarker());
+        printf("Next Marker: %s". "\n",$listObjectInfo->getNextMarker());
+        printf("Max Keys: %s". "\n",$listObjectInfo->getMaxKeys());
+        printf("Delimiter: %s". "\n",$listObjectInfo->getDelimiter());
+        printf("Is Truncated: %s". "\n",$listObjectInfo->getIsTruncated());
+        $objectList = $listObjectInfo->getObjectList(); // object list
+        $prefixList = $listObjectInfo->getPrefixList(); // directory list
+        if (!empty($objectList)) {
+            print("objectList:\n");
+            foreach ($objectList as $objectInfo) {
+                printf("Object Name: %s". "\n",$objectInfo->getKey());
+                printf("Object Size: %s". "\n",$objectInfo->getSize());
+                printf("Object Type: %s". "\n",$objectInfo->getType());
+                printf("Object ETag: %s". "\n",$objectInfo->getETag());
+                printf("Object Last Modified: %s". "\n",$objectInfo->getLastModified());
+                printf("Object Storage Class: %s". "\n",$objectInfo->getStorageClass());
+
+                if ($objectInfo->getRestoreInfo()){
+                    printf("Restore Info: %s". "\n",$objectInfo->getRestoreInfo() );
+                }
+
+                if($objectInfo->getOwner()){
+                    printf("Owner Id:".$objectInfo->getOwner()->getId() . "\n");
+                    printf("Owner Name:".$objectInfo->getOwner()->getDisplayName() . "\n");
+                }
+            }
+        }
+        if (!empty($prefixList)) {
+            print("prefixList: \n");
+            foreach ($prefixList as $prefixInfo) {
+                printf("Common Prefix:%s\n",$prefixInfo->getPrefix());
+            }
+        }
     } catch (OssException $e) {
         printf(__FUNCTION__ . ": FAILED\n");
         printf($e->getMessage() . "\n");
         return;
     }
     print(__FUNCTION__ . ": OK" . "\n");
-    $objectList = $listObjectInfo->getObjectList(); // 文件列表
-    $prefixList = $listObjectInfo->getPrefixList(); // 目录列表
-    if (!empty($objectList)) {
-        print("objectList:\n");
-        foreach ($objectList as $objectInfo) {
-            print($objectInfo->getKey() . "\n");
-        }
-    }
-    if (!empty($prefixList)) {
-        print("prefixList: \n");
-        foreach ($prefixList as $prefixInfo) {
-            print($prefixInfo->getPrefix() . "\n");
-        }
-    }
 }
 
 /**
- * 列出Bucket内所有目录和文件， 根据返回的nextMarker循环得到所有Objects
+ * Lists all files and folders in the bucket.
+ * Note if there's more items than the max-keys specified, the caller needs to use the nextMarker returned as the value for the next call's maker paramter.
+ * Loop through all the items returned from ListObjects.
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
+ * @return null
+ */
+function listObjectsV2($ossClient, $bucket)
+{
+    $prefix = 'oss-php-sdk-test/';
+    $delimiter = '/';
+    $maxkeys = 1000;
+    $options = array(
+        'delimiter' => $delimiter,
+        'prefix' => $prefix,
+        'max-keys' => $maxkeys,
+        'start-after' =>'test-object',
+        'fetch-owner' =>'true',
+    );
+    try {
+        $listObjectInfo = $ossClient->listObjectsV2($bucket, $options);
+        printf("Bucket Name: %s". "\n",$listObjectInfo->getBucketName());
+        printf("Prefix: %s". "\n",$listObjectInfo->getPrefix());
+        printf("Next Continuation Token: %s". "\n",$listObjectInfo->getNextContinuationToken());
+        printf("Continuation Token: %s". "\n",$listObjectInfo->getContinuationToken());
+        printf("Max Keys: %s". "\n",$listObjectInfo->getMaxKeys());
+        printf("Key Count: %s". "\n",$listObjectInfo->getKeyCount());
+        printf("Delimiter: %s". "\n",$listObjectInfo->getDelimiter());
+        printf("Is Truncated: %s". "\n",$listObjectInfo->getIsTruncated());
+        printf("Start After: %s". "\n",$listObjectInfo->getStartAfter());
+        $objectList = $listObjectInfo->getObjectList(); // object list
+        $prefixList = $listObjectInfo->getPrefixList(); // directory list
+        if (!empty($objectList)) {
+            print("objectList:\n");
+            foreach ($objectList as $objectInfo) {
+                printf("Object Name: %s". "\n",$objectInfo->getKey());
+                printf("Object Size: %s". "\n",$objectInfo->getSize());
+                printf("Object Type: %s". "\n",$objectInfo->getType());
+                printf("Object ETag: %s". "\n",$objectInfo->getETag());
+                printf("Object Last Modified: %s". "\n",$objectInfo->getLastModified());
+                printf("Object Storage Class: %s". "\n",$objectInfo->getStorageClass());
+
+                if ($objectInfo->getRestoreInfo()){
+                    printf("Restore Info: %s". "\n",$objectInfo->getRestoreInfo() );
+                }
+
+                if($objectInfo->getOwner()){
+                    printf("Owner Id:".$objectInfo->getOwner()->getId() . "\n");
+                    printf("Owner Name:".$objectInfo->getOwner()->getDisplayName() . "\n");
+                }
+            }
+        }
+        if (!empty($prefixList)) {
+            print("prefixList: \n");
+            foreach ($prefixList as $prefixInfo) {
+                printf("Common Prefix:%s\n",$prefixInfo->getPrefix());
+            }
+        }
+    } catch (OssException $e) {
+        printf(__FUNCTION__ . ": FAILED\n");
+        printf($e->getMessage() . "\n");
+        return;
+    }
+    print(__FUNCTION__ . ": OK" . "\n");
+}
+
+/**
+ * Lists all folders and files under the bucket. Use nextMarker repeatedly to get all objects.
+ *
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function listAllObjects($ossClient, $bucket)
 {
-    //构造dir下的文件和虚拟目录
+    // Create dir/obj 'folder' and put some files into it.
     for ($i = 0; $i < 100; $i += 1) {
         $ossClient->putObject($bucket, "dir/obj" . strval($i), "hi");
         $ossClient->createObjectDir($bucket, "dir/obj" . strval($i));
@@ -228,7 +373,7 @@ function listAllObjects($ossClient, $bucket)
             printf($e->getMessage() . "\n");
             return;
         }
-        // 得到nextMarker，从上一次listObjects读到的最后一个文件的下一个文件开始继续获取文件列表
+        // Get the nextMarker, and it would be used as the next call's marker parameter to resume from the last call
         $nextMarker = $listObjectInfo->getNextMarker();
         $listObject = $listObjectInfo->getObjectList();
         $listPrefix = $listObjectInfo->getPrefixList();
@@ -241,10 +386,10 @@ function listAllObjects($ossClient, $bucket)
 }
 
 /**
- * 获取object的内容
+ * Get the content of an object.
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function getObject($ossClient, $bucket)
@@ -267,13 +412,69 @@ function getObject($ossClient, $bucket)
 }
 
 /**
- * get_object_to_local_file
+ * Put symlink
  *
- * 获取object
- * 将object下载到指定的文件
+ * @param OssClient $ossClient  The Instance of OssClient
+ * @param string $bucket bucket name
+ * @return null
+ */
+function putSymlink($ossClient, $bucket)
+{
+    $symlink = "test-samples-symlink";
+    $object = "test-samples-object";
+    try {
+        $ossClient->putObject($bucket, $object, 'test-content');
+        $ossClient->putSymlink($bucket, $symlink, $object);
+        $content = $ossClient->getObject($bucket, $symlink);
+    } catch (OssException $e) {
+        printf(__FUNCTION__ . ": FAILED\n");
+        printf($e->getMessage() . "\n");
+        return;
+    }
+    print(__FUNCTION__ . ": OK" . "\n");
+    if ($content == 'test-content') {
+        print(__FUNCTION__ . ": putSymlink checked OK" . "\n");
+    } else {
+        print(__FUNCTION__ . ": putSymlink checked FAILED" . "\n");
+    }
+}
+
+/**
+ * Get symlink
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient  OssClient instance
+ * @param string $bucket  bucket name
+ * @return null
+ */
+function getSymlink($ossClient, $bucket)
+{
+    $symlink = "test-samples-symlink";
+    $object = "test-samples-object";
+    try {
+        $ossClient->putObject($bucket, $object, 'test-content');
+        $ossClient->putSymlink($bucket, $symlink, $object);
+        $content = $ossClient->getSymlink($bucket, $symlink);
+    } catch (OssException $e) {
+        printf(__FUNCTION__ . ": FAILED\n");
+        printf($e->getMessage() . "\n");
+        return;
+    }
+    print(__FUNCTION__ . ": OK" . "\n");
+    if ($content[OssClient::OSS_SYMLINK_TARGET]) {
+        print(__FUNCTION__ . ": getSymlink checked OK" . "\n");
+    } else {
+        print(__FUNCTION__ . ": getSymlink checked FAILED" . "\n");
+    }
+}
+
+/**
+ * Get_object_to_local_file
+ *
+ * Get object
+ * Download object to a specified file.
+ *
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function getObjectToLocalFile($ossClient, $bucket)
@@ -303,11 +504,11 @@ function getObjectToLocalFile($ossClient, $bucket)
 }
 
 /**
- * 拷贝object
- * 当目的object和源object完全相同时，表示修改object的meta信息
+ * Copy object
+ * When the source object is same as the target one, copy operation will just update the metadata.
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function copyObject($ossClient, $bucket)
@@ -329,11 +530,11 @@ function copyObject($ossClient, $bucket)
 }
 
 /**
- * 修改Object Meta
- * 利用copyObject接口的特性：当目的object和源object完全相同时，表示修改object的meta信息
+ * Update Object Meta
+ * it leverages the feature of copyObject： when the source object is just the target object, the metadata could be updated via copy
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function modifyMetaForObject($ossClient, $bucket)
@@ -359,10 +560,10 @@ function modifyMetaForObject($ossClient, $bucket)
 }
 
 /**
- * 获取object meta, 也就是getObjectMeta接口
+ * Get object meta, that is, getObjectMeta
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function getObjectMeta($ossClient, $bucket)
@@ -386,10 +587,10 @@ function getObjectMeta($ossClient, $bucket)
 }
 
 /**
- * 删除object
+ * Delete an object
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function deleteObject($ossClient, $bucket)
@@ -407,10 +608,10 @@ function deleteObject($ossClient, $bucket)
 
 
 /**
- * 批量删除object
+ * Delete multiple objects in batch
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function deleteObjects($ossClient, $bucket)
@@ -429,10 +630,10 @@ function deleteObjects($ossClient, $bucket)
 }
 
 /**
- * 判断object是否存在
+ * Check whether an object exists
  *
- * @param OssClient $ossClient OssClient实例
- * @param string $bucket 存储空间名称
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
  * @return null
  */
 function doesObjectExist($ossClient, $bucket)
@@ -449,3 +650,116 @@ function doesObjectExist($ossClient, $bucket)
     var_dump($exist);
 }
 
+/**
+ * Speed limit upload.
+ *
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
+ * @return null
+ */
+function putObjectSpeed($ossClient, $bucket)
+{
+    $object = "upload-test-object-name.txt";
+    $content = file_get_contents(__FILE__);
+    $options = array(
+        OssClient::OSS_HEADERS => array(
+            OssClient::OSS_TRAFFIC_LIMIT => 819200,
+        ));
+    try {
+        $ossClient->putObject($bucket, $object, $content, $options);
+    } catch (OssException $e) {
+        printf(__FUNCTION__ . ": FAILED\n");
+        printf($e->getMessage() . "\n");
+        return;
+    }
+    print(__FUNCTION__ . ": OK" . "\n");
+}
+
+/**
+ * Speed limit download.
+ *
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
+ * @return null
+ */
+function getObjectSpeed($ossClient, $bucket)
+{
+    $object = "upload-test-object-name.txt";
+    $options = array(
+        OssClient::OSS_HEADERS => array(
+            OssClient::OSS_TRAFFIC_LIMIT => 819200,
+        ));
+    try {
+        $ossClient->getObject($bucket, $object, $options);
+    } catch (OssException $e) {
+        printf(__FUNCTION__ . ": FAILED\n");
+        printf($e->getMessage() . "\n");
+        return;
+    }
+    print(__FUNCTION__ . ": OK" . "\n");
+}
+
+/**
+ * Speed limit download.
+ *
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
+ * @return null
+ */
+function signUrlSpeedUpload($ossClient, $bucket)
+{
+    $object = "upload-test-object-name.txt";
+    $timeout = 120;
+    $options = array(
+        OssClient::OSS_TRAFFIC_LIMIT => 819200,
+    );
+    $timeout = 60;
+    $signedUrl = $ossClient->signUrl($bucket, $object, $timeout, "PUT", $options);
+    print($signedUrl);
+}
+
+
+/**
+ * Speed limit download.
+ *
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
+ * @return null
+ */
+function signUrlSpeedDownload($ossClient, $bucket)
+{
+    $object = "upload-test-object-name.txt";
+    $timeout = 120;
+    $options = array(
+        OssClient::OSS_TRAFFIC_LIMIT => 819200,
+    );
+    $signedUrl = $ossClient->signUrl($bucket, $object, $timeout, "GET", $options);
+    print($signedUrl);
+    print(__FUNCTION__ . ": OK" . "\n");
+}
+
+/**
+ * Restore object
+ *
+ * @param OssClient $ossClient OssClient instance
+ * @param string $bucket bucket name
+ * @return null
+ */
+function restoreObject($ossClient, $bucket)
+{
+    $object = "oss-php-sdk-test/upload-test-object-name.txt";
+    $day = 3;
+    $tier = 'Expedited';
+    $config = new RestoreConfig($day,$tier);
+    $options = array(
+        OssClient::OSS_RESTORE_CONFIG => $config
+    );
+    try {
+        $ossClient->restoreObject($bucket, $object,$options);
+    } catch (OssException $e) {
+        printf(__FUNCTION__ . ": FAILED\n");
+        printf($e->getMessage() . "\n");
+        return;
+    }
+    print(__FUNCTION__ . ": OK" . "\n");
+}

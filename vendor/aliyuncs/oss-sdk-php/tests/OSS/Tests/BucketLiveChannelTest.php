@@ -7,20 +7,24 @@ require_once __DIR__ . '/Common.php';
 use OSS\Model\LiveChannelConfig;
 use OSS\Core\OssException;
 
-class BucketLiveChannelTest extends \PHPUnit_Framework_TestCase
+class BucketLiveChannelTest extends \PHPUnit\Framework\TestCase
 {
     private $bucketName;
     private $client;
 
-    public function setUp()
+    protected function setUp(): void
     {
-        $this->client = Common::getOssClient();
-        $this->bucketName = 'php-sdk-test-rtmp-bucket-name-' . strval(rand(0, 10000));
-        $this->client->createBucket($this->bucketName);
-        Common::waitMetaSync();
+        try {
+            $this->client = Common::getOssClient();
+            $this->bucketName = 'php-sdk-test-rtmp-bucket-name-' . strval(rand(0, 10000));
+            $this->client->createBucket($this->bucketName);
+            Common::waitMetaSync();
+        }catch(\Exception $e) {
+
+        }
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
     ////to delete created bucket
     //1. delele live channel
@@ -193,6 +197,39 @@ class BucketLiveChannelTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($query['Signature']));
         $this->assertTrue(intval($query['Expires']) - ($now + 900) < 3);
         $this->assertEquals('playlist.m3u8', $query['playlistName']);
+    }
+
+    public function testGetgenPreSignedRtmpUrlVsSignedRtmpUrl()
+    {
+        $channelName = '90475';
+        $bucket = 'douyu';
+        $url1 = '245';
+        $url2 = '123';
+        $expiration = 0;
+
+        do {
+            $begin = time();
+            $expiration = time() + 900;
+            $url1 = $this->client->generatePresignedRtmpUrl($bucket, $channelName, $expiration, array(
+                'params' => array(
+                    'playlistName' => 'playlist.m3u8'
+                )
+            ));
+
+            $url2 = $this->client->signRtmpUrl($bucket, $channelName, 900, array(
+                'params' => array(
+                    'playlistName' => 'playlist.m3u8'
+                )
+            ));
+
+            $end = time();
+
+            if ($begin == $end)
+                break;
+            usleep(500000);
+        } while (true);
+        $this->assertEquals($url1, $url1);
+        $this->assertTrue(strpos($url1, 'Expires='.$expiration) !== false);
     }
 
     public function testLiveChannelInfo()

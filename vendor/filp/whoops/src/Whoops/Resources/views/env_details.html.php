@@ -1,5 +1,7 @@
 <?php /* List data-table values, i.e: $_SERVER, $_GET, .... */ ?>
 <div class="details">
+  <h2 class="details-heading">Environment &amp; details:</h2>
+
   <div class="data-table-container" id="data-tables">
     <?php foreach ($tables as $label => $data): ?>
       <div class="data-table" id="sg-<?php echo $tpl->escape($tpl->slug($label)) ?>">
@@ -15,7 +17,7 @@
             <?php foreach ($data as $k => $value): ?>
               <tr>
                 <td><?php echo $tpl->escape($k) ?></td>
-                <td><?php echo $tpl->escape(print_r($value, true)) ?></td>
+                <td><?php echo $tpl->dump($value) ?></td>
               </tr>
             <?php endforeach ?>
             </table>
@@ -30,9 +32,9 @@
   <?php /* List registered handlers, in order of first to last registered */ ?>
   <div class="data-table-container" id="handlers">
     <label>Registered Handlers</label>
-    <?php foreach ($handlers as $i => $handler): ?>
-      <div class="handler <?php echo ($handler === $handler) ? 'active' : ''?>">
-        <?php echo $i ?>. <?php echo $tpl->escape(get_class($handler)) ?>
+    <?php foreach ($handlers as $i => $h): ?>
+      <div class="handler <?php echo ($h === $handler) ? 'active' : ''?>">
+        <?php echo $i ?>. <?php echo $tpl->escape(get_class($h)) ?>
       </div>
     <?php endforeach ?>
   </div>

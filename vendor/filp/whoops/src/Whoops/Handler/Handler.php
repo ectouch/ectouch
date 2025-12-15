@@ -6,49 +6,55 @@
 
 namespace Whoops\Handler;
 
-use Exception;
-use Whoops\Exception\Inspector;
-use Whoops\Run;
+use Whoops\Inspector\InspectorInterface;
+use Whoops\RunInterface;
 
 /**
  * Abstract implementation of a Handler.
  */
 abstract class Handler implements HandlerInterface
 {
-    /**
-     * Return constants that can be returned from Handler::handle
-     * to message the handler walker.
+    /*
+     Return constants that can be returned from Handler::handle
+     to message the handler walker.
      */
     const DONE         = 0x10; // returning this is optional, only exists for
                                // semantic purposes
+    /**
+     * The Handler has handled the Throwable in some way, and wishes to skip any other Handler.
+     * Execution will continue.
+     */
     const LAST_HANDLER = 0x20;
+    /**
+     * The Handler has handled the Throwable in some way, and wishes to quit/stop execution
+     */
     const QUIT         = 0x30;
 
     /**
-     * @var Run
+     * @var RunInterface
      */
     private $run;
 
     /**
-     * @var Inspector $inspector
+     * @var InspectorInterface $inspector
      */
     private $inspector;
 
     /**
-     * @var Exception $exception
+     * @var \Throwable $exception
      */
     private $exception;
 
     /**
-     * @param Run $run
+     * @param RunInterface $run
      */
-    public function setRun(Run $run)
+    public function setRun(RunInterface $run)
     {
         $this->run = $run;
     }
 
     /**
-     * @return Run
+     * @return RunInterface
      */
     protected function getRun()
     {
@@ -56,15 +62,15 @@ abstract class Handler implements HandlerInterface
     }
 
     /**
-     * @param Inspector $inspector
+     * @param InspectorInterface $inspector
      */
-    public function setInspector(Inspector $inspector)
+    public function setInspector(InspectorInterface $inspector)
     {
         $this->inspector = $inspector;
     }
 
     /**
-     * @return Inspector
+     * @return InspectorInterface
      */
     protected function getInspector()
     {
@@ -72,15 +78,15 @@ abstract class Handler implements HandlerInterface
     }
 
     /**
-     * @param Exception $exception
+     * @param \Throwable $exception
      */
-    public function setException(Exception $exception)
+    public function setException($exception)
     {
         $this->exception = $exception;
     }
 
     /**
-     * @return Exception
+     * @return \Throwable
      */
     protected function getException()
     {

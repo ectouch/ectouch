@@ -7,8 +7,8 @@ use OSS\Http\ResponseCore;
 
 
 /**
- * Class Result, 操作结果类的基类，不同的请求在处理返回数据的时候有不同的逻辑，
- * 具体的解析逻辑推迟到子类实现
+ * Class Result, The result class of The operation of the base class, different requests in dealing with the return of data have different logic,
+ * The specific parsing logic postponed to subclass implementation
  *
  * @package OSS\Model
  */
@@ -29,7 +29,7 @@ abstract class Result
     }
 
     /**
-     * 获取requestId
+     * Get requestId
      *
      * @return string
      */
@@ -46,7 +46,7 @@ abstract class Result
     }
 
     /**
-     * 得到返回数据，不同的请求返回数据格式不同
+     * Get the returned data, different request returns the data format is different
      *
      * $return mixed
      */
@@ -56,14 +56,14 @@ abstract class Result
     }
 
     /**
-     * 由子类实现，不同的请求返回数据有不同的解析逻辑，由子类实现
+     * Subclass implementation, different requests return data has different analytical logic, implemented by subclasses
      *
      * @return mixed
      */
     abstract protected function parseDataFromResponse();
 
     /**
-     * 操作是否成功
+     * Whether the operation is successful
      *
      * @return mixed
      */
@@ -99,7 +99,7 @@ abstract class Result
     }
 
     /**
-     * 尝试从body中获取错误Message
+     * Try to get the error message from body
      *
      * @param $body
      * @return string
@@ -109,15 +109,34 @@ abstract class Result
         if (empty($body) || false === strpos($body, '<?xml')) {
             return '';
         }
-        $xml = simplexml_load_string($body);
-        if (isset($xml->Message)) {
-            return strval($xml->Message);
+        $flag = false;
+        try {
+            $xml = simplexml_load_string($body);
+            if (isset($xml->Message)) {
+                return strval($xml->Message);
+            }
+            $flag = true;
+        } catch (\Exception $e) {
+            $flag = true;
         }
+        if ($flag === true) {
+            $start = strpos($body, '<Message>');
+            if ($start === false) {
+                return '';
+            }
+            $start += 9;
+            $end = strpos($body, '</Message>', $start);
+            if ($end === false) {
+                return '';
+            }
+            return substr($body, $start, $end - $start);
+        }
+
         return '';
     }
 
     /**
-     * 尝试从body中获取错误Code
+     * Try to get the error Code from body
      *
      * @param $body
      * @return string
@@ -127,15 +146,34 @@ abstract class Result
         if (empty($body) || false === strpos($body, '<?xml')) {
             return '';
         }
-        $xml = simplexml_load_string($body);
-        if (isset($xml->Code)) {
-            return strval($xml->Code);
+        $flag = false;
+        try {
+            $xml = simplexml_load_string($body);
+            if (isset($xml->Code)) {
+                return strval($xml->Code);
+            }
+            $flag = true;
+        } catch (\Exception $e) {
+            $flag = true;
         }
+        if ($flag === true) {
+            $start = strpos($body, '<Code>');
+            if ($start === false) {
+                return '';
+            }
+            $start += 6;
+            $end = strpos($body, '</Code>', $start);
+            if ($end === false) {
+                return '';
+            }
+            return substr($body, $start, $end - $start);
+        }
+
         return '';
     }
 
     /**
-     * 根据返回http状态码判断，[200-299]即认为是OK
+     * Judging from the return http status code, [200-299] that is OK
      *
      * @return bool
      */
@@ -149,7 +187,7 @@ abstract class Result
     }
 
     /**
-     * 返回原始的返回数据
+     * Return the original return data
      *
      * @return ResponseCore
      */
@@ -159,15 +197,15 @@ abstract class Result
     }
 
     /**
-     * 标示请求是否成功
+     * Indicate whether the request is successful
      */
     protected $isOk = false;
     /**
-     * 由子类解析过的数据
+     * Data parsed by subclasses
      */
     protected $parsedData = null;
     /**
-     * 存放auth函数返回的原始Response
+     * Store the original Response returned by the auth function
      *
      * @var ResponseCore
      */
