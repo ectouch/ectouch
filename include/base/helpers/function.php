@@ -171,25 +171,28 @@ function get_client_ip($type = 0, $adv = false)
 
 /**
  * 截取字符串，字节格式化
- * @param unknown $str
- * @param unknown $length
- * @param number $start
+ * @param string $str
+ * @param int $length
+ * @param int $start
  * @param string $charset
- * @param string $suffix
+ * @param bool $suffix
  * @return string
  */
-function msubstr($str, $length, $start = 0, $charset = "utf-8", $suffix = true)
+function msubstr(string $str, int $length, int $start = 0, string $charset = "utf-8", bool $suffix = true): string
 {
     if (function_exists("mb_substr")) {
         $slice = mb_substr($str, $start, $length, $charset);
     } elseif (function_exists('iconv_substr')) {
         $slice = iconv_substr($str, $start, $length, $charset);
     } else {
-        $re['utf-8'] = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/";
-        $re['gb2312'] = "/[\x01-\x7f]|[\xb0-\xf7][\xa0-\xfe]/";
-        $re['gbk'] = "/[\x01-\x7f]|[\x81-\xfe][\x40-\xfe]/";
-        $re['big5'] = "/[\x01-\x7f]|[\x81-\xfe]([\x40-\x7e]|\xa1-\xfe])/";
-        preg_match_all($re[$charset], $str, $match);
+        $re = match($charset) {
+            'utf-8' => "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/",
+            'gb2312' => "/[\x01-\x7f]|[\xb0-\xf7][\xa0-\xfe]/",
+            'gbk' => "/[\x01-\x7f]|[\x81-\xfe][\x40-\xfe]/",
+            'big5' => "/[\x01-\x7f]|[\x81-\xfe]([\x40-\x7e]|\xa1-\xfe])/",
+            default => throw new \Exception("Unsupported charset: $charset")
+        };
+        preg_match_all($re, $str, $match);
         $slice = join("", array_slice($match[0], $start, $length));
     }
     return $suffix ? $slice . '...' : $slice;
@@ -197,11 +200,11 @@ function msubstr($str, $length, $start = 0, $charset = "utf-8", $suffix = true)
 
 /**
  * 字节格式化 把字节数格式为 B K M G T 描述的大小
- * @param unknown $size
- * @param number $dec
+ * @param int|float $size
+ * @param int $dec
  * @return string
  */
-function byte_format($size, $dec = 2)
+function byte_format(int|float $size, int $dec = 2): string
 {
     $a = array(
         "B", "KB", "MB", "GB", "TB", "PB"
