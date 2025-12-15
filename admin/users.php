@@ -581,32 +581,32 @@ elseif ($_REQUEST['act'] == 'aff_list') {
 //会员导出
 elseif ($_REQUEST['act'] == 'userexport') {
     $list=($_SESSION['user_list']);
-    include_once(ROOT_PATH . 'vendor/PHPExcel.php');
+    
     //创建处理对象实例
-    $objPhpExcel = new PHPExcel();
-    $objPhpExcel->getActiveSheet()->getDefaultColumnDimension()->setAutoSize(true);//设置单元格宽度
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $spreadsheet->getActiveSheet()->getDefaultColumnDimension()->setAutoSize(true);//设置单元格宽度
     //设置表格的宽度  手动
-    $objPhpExcel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
-    $objPhpExcel->getActiveSheet()->getColumnDimension('H')->setWidth(15);
-    $objPhpExcel->getActiveSheet()->getColumnDimension('I')->setWidth(15);
-    $objPhpExcel->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+    $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+    $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(15);
+    $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(15);
+    $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(20);
     //设置标题
     $rowVal = array(0=>'编号',1=>'会员名', 2=>'性别', 3=>'生日', 4=>'手机号码', 5=>'邮箱', 6=>'状态',7=>'可用资金',8=>'冻结资金',9=>'等级积分',10=>'消费积分',11=>'注册时间',);
     foreach ($rowVal as $k=>$r) {
-        $objPhpExcel->getActiveSheet()->getStyleByColumnAndRow($k, 1)->getFont()->setBold(true);//字体加粗
-            $objPhpExcel->getActiveSheet()->getStyleByColumnAndRow($k, 1)->getAlignment(); //->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);//文字居中
-            $objPhpExcel->getActiveSheet()->setCellValueByColumnAndRow($k, 1, $r);
+        $spreadsheet->getActiveSheet()->getCellByColumnAndRow($k + 1, 1)->getStyle()->getFont()->setBold(true);//字体加粗
+        $spreadsheet->getActiveSheet()->getCellByColumnAndRow($k + 1, 1)->getStyle()->getAlignment(); //->setHorizontal(Alignment::HORIZONTAL_CENTER);//文字居中
+        $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($k + 1, 1, $r);
     }
     //设置当前的sheet索引 用于后续内容操作
-    $objPhpExcel->setActiveSheetIndex(0);
-    $objActSheet=$objPhpExcel->getActiveSheet();
+    $spreadsheet->setActiveSheetIndex(0);
+    $objActSheet=$spreadsheet->getActiveSheet();
     //设置当前活动的sheet的名称
     $title="会员管理";
     $objActSheet->setTitle($title);
     //设置单元格内容
     foreach ($list as $k => $v) {
         $num = $k+2;
-        $objPhpExcel->setActiveSheetIndex(0)
+        $spreadsheet->setActiveSheetIndex(0)
             //Excel的第A列，uid是你查出数组的键值，下面以此类推
             ->setCellValue('A'.$num, $v['user_id'])
             ->setCellValue('B'.$num, $v['user_name'])
@@ -630,11 +630,11 @@ elseif ($_REQUEST['act'] == 'userexport') {
     header("Content-Type: application/download");
     header("Content-Transfer-Encoding:utf-8");
     header("Pragma: no-cache");
-    header('Content-Type: application/vnd.ms-e xcel');
+    header('Content-Type: application/vnd.ms-excel');
     header('Content-Disposition: attachment;filename="'.$title.'_'.urlencode($name).'.xls"');
     header('Cache-Control: max-age=0');
-    $objWriter = \PHPExcel_IOFactory::createWriter($objPhpExcel, 'Excel5');
-    $objWriter->save('php://output');
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+    $writer->save('php://output');
 }
 
 

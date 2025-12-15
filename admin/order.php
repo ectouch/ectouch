@@ -2709,97 +2709,94 @@ elseif ($_REQUEST['act'] == 'operate') {
 
         $html = '';
         $order_sn_list = explode(',', $_POST['order_id']);
-        include_once(ROOT_PATH . 'vendor/PHPExcel.php');
-        include_once(ROOT_PATH . 'vendor/PHPExcel/IOFactory.php');
-        //require_once dirname(__FILE__) . '/Classes/PHPExcel.php';
-        //require_once dirname(__FILE__) . '/Classes/PHPExcel/IOFactory.php';
-        $PHPExcel = new PHPExcel();
+        
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
         //设置excel属性基本信息
-        $PHPExcel->getProperties()->setCreator("Neo")
+        $spreadsheet->getProperties()->setCreator("Neo")
         ->setLastModifiedBy("Neo")
         ->setTitle("111")
         ->setSubject("订单列表")
         ->setDescription("")
         ->setKeywords("订单列表")
         ->setCategory("");
-        $PHPExcel->setActiveSheetIndex(0);
-        $PHPExcel->getActiveSheet()->setTitle("订单列表");
+        $spreadsheet->setActiveSheetIndex(0);
+        $spreadsheet->getActiveSheet()->setTitle("订单列表");
         //填入表头主标题
-        $PHPExcel->getActiveSheet()->setCellValue('A1', $_CFG['shop_name'].'订单列表');
+        $spreadsheet->getActiveSheet()->setCellValue('A1', $_CFG['shop_name'].'订单列表');
         //填入表头副标题
-        $PHPExcel->getActiveSheet()->setCellValue('A2', '操作者：'.$_SESSION['admin_name'].' 导出日期：'.date('Y-m-d', time()).' 地址：'.$_CFG['shop_address'].' 电话：'.$_CFG['service_phone']);
+        $spreadsheet->getActiveSheet()->setCellValue('A2', '操作者：'.$_SESSION['admin_name'].' 导出日期：'.date('Y-m-d', time()).' 地址：'.$_CFG['shop_address'].' 电话：'.$_CFG['service_phone']);
         //合并表头单元格
-        $PHPExcel->getActiveSheet()->mergeCells('A1:T1');
-        $PHPExcel->getActiveSheet()->mergeCells('A2:T2');
+        $spreadsheet->getActiveSheet()->mergeCells('A1:T1');
+        $spreadsheet->getActiveSheet()->mergeCells('A2:T2');
 
         //设置表头行高
-        $PHPExcel->getActiveSheet()->getRowDimension(1)->setRowHeight(40);
-        $PHPExcel->getActiveSheet()->getRowDimension(2)->setRowHeight(20);
-        $PHPExcel->getActiveSheet()->getRowDimension(3)->setRowHeight(30);
+        $spreadsheet->getActiveSheet()->getRowDimension(1)->setRowHeight(40);
+        $spreadsheet->getActiveSheet()->getRowDimension(2)->setRowHeight(20);
+        $spreadsheet->getActiveSheet()->getRowDimension(3)->setRowHeight(30);
 
         //设置表头字体
-        $PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setName('黑体');
-        $PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
-        $PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-        $PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setName('宋体');
-        $PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setSize(14);
-        $PHPExcel->getActiveSheet()->getStyle('A3:T3')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setName('黑体');
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A2')->getFont()->setName('宋体');
+        $spreadsheet->getActiveSheet()->getStyle('A2')->getFont()->setSize(14);
+        $spreadsheet->getActiveSheet()->getStyle('A3:T3')->getFont()->setBold(true);
 
         //设置单元格边框
         $styleArray = array(
             'borders' => array(
-                'allborders' => array(
-                    //'style' => PHPExcel_Style_Border::BORDER_THICK,//边框是粗的
-                    'style' => PHPExcel_Style_Border::BORDER_THIN,//细边框
+                'allBorders' => array(
+                    //'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,//边框是粗的
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,//细边框
                     //'color' => array('argb' => 'FFFF0000'),
                 ),
             ),
         );
 
         //表格宽度
-        $PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(18);//订单编号
-        $PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);//下单时间
-        $PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(20);//付款时间
-        $PHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(20);//发货时间
-        $PHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(18);//发货单号
-        $PHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);//支付方式
-        $PHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(10);//配送方式
-        $PHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(10);//配送费用
-        $PHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(10);//收件人
-        $PHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(35);//收货地址
-        $PHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(15);//电话
-        $PHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(15);//手机
-        $PHPExcel->getActiveSheet()->getColumnDimension('M')->setWidth(25);//邮箱
-        $PHPExcel->getActiveSheet()->getColumnDimension('N')->setWidth(15);//货号
-        $PHPExcel->getActiveSheet()->getColumnDimension('O')->setWidth(15);//商品名称
-        $PHPExcel->getActiveSheet()->getColumnDimension('P')->setWidth(15);//属性
-        $PHPExcel->getActiveSheet()->getColumnDimension('Q')->setWidth(10);//价格
-        $PHPExcel->getActiveSheet()->getColumnDimension('R')->setWidth(6);//数量
-        $PHPExcel->getActiveSheet()->getColumnDimension('S')->setWidth(15);//小计
-        $PHPExcel->getActiveSheet()->getColumnDimension('T')->setWidth(15);//应付款金额
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(18);//订单编号
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(20);//下单时间
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(20);//付款时间
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(20);//发货时间
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(18);//发货单号
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);//支付方式
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(10);//配送方式
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(10);//配送费用
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(10);//收件人
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(35);//收货地址
+        $spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(15);//电话
+        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setWidth(15);//手机
+        $spreadsheet->getActiveSheet()->getColumnDimension('M')->setWidth(25);//邮箱
+        $spreadsheet->getActiveSheet()->getColumnDimension('N')->setWidth(15);//货号
+        $spreadsheet->getActiveSheet()->getColumnDimension('O')->setWidth(15);//商品名称
+        $spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth(15);//属性
+        $spreadsheet->getActiveSheet()->getColumnDimension('Q')->setWidth(10);//价格
+        $spreadsheet->getActiveSheet()->getColumnDimension('R')->setWidth(6);//数量
+        $spreadsheet->getActiveSheet()->getColumnDimension('S')->setWidth(15);//小计
+        $spreadsheet->getActiveSheet()->getColumnDimension('T')->setWidth(15);//应付款金额
 
         //表格标题
-        $PHPExcel->getActiveSheet()->setCellValue('A3', '订单编号');
-        $PHPExcel->getActiveSheet()->setCellValue('B3', '下单时间');
-        $PHPExcel->getActiveSheet()->setCellValue('C3', '付款时间');
-        $PHPExcel->getActiveSheet()->setCellValue('D3', '发货时间');
-        $PHPExcel->getActiveSheet()->setCellValue('E3', '发货单号');
-        $PHPExcel->getActiveSheet()->setCellValue('F3', '支付方式');
-        $PHPExcel->getActiveSheet()->setCellValue('G3', '配送方式');
-        $PHPExcel->getActiveSheet()->setCellValue('H3', '配送费用');
-        $PHPExcel->getActiveSheet()->setCellValue('I3', '收件人');
-        $PHPExcel->getActiveSheet()->setCellValue('J3', '收货地址');
-        $PHPExcel->getActiveSheet()->setCellValue('K3', '电话');
-        $PHPExcel->getActiveSheet()->setCellValue('L3', '手机');
-        $PHPExcel->getActiveSheet()->setCellValue('M3', '邮箱');
-        $PHPExcel->getActiveSheet()->setCellValue('N3', '货号');
-        $PHPExcel->getActiveSheet()->setCellValue('O3', '商品名称');
-        $PHPExcel->getActiveSheet()->setCellValue('P3', '属性');
-        $PHPExcel->getActiveSheet()->setCellValue('Q3', '价格');
-        $PHPExcel->getActiveSheet()->setCellValue('R3', '数量');
-        $PHPExcel->getActiveSheet()->setCellValue('S3', '小计');
-        $PHPExcel->getActiveSheet()->setCellValue('T3', '商品总金额');
+        $spreadsheet->getActiveSheet()->setCellValue('A3', '订单编号');
+        $spreadsheet->getActiveSheet()->setCellValue('B3', '下单时间');
+        $spreadsheet->getActiveSheet()->setCellValue('C3', '付款时间');
+        $spreadsheet->getActiveSheet()->setCellValue('D3', '发货时间');
+        $spreadsheet->getActiveSheet()->setCellValue('E3', '发货单号');
+        $spreadsheet->getActiveSheet()->setCellValue('F3', '支付方式');
+        $spreadsheet->getActiveSheet()->setCellValue('G3', '配送方式');
+        $spreadsheet->getActiveSheet()->setCellValue('H3', '配送费用');
+        $spreadsheet->getActiveSheet()->setCellValue('I3', '收件人');
+        $spreadsheet->getActiveSheet()->setCellValue('J3', '收货地址');
+        $spreadsheet->getActiveSheet()->setCellValue('K3', '电话');
+        $spreadsheet->getActiveSheet()->setCellValue('L3', '手机');
+        $spreadsheet->getActiveSheet()->setCellValue('M3', '邮箱');
+        $spreadsheet->getActiveSheet()->setCellValue('N3', '货号');
+        $spreadsheet->getActiveSheet()->setCellValue('O3', '商品名称');
+        $spreadsheet->getActiveSheet()->setCellValue('P3', '属性');
+        $spreadsheet->getActiveSheet()->setCellValue('Q3', '价格');
+        $spreadsheet->getActiveSheet()->setCellValue('R3', '数量');
+        $spreadsheet->getActiveSheet()->setCellValue('S3', '小计');
+        $spreadsheet->getActiveSheet()->setCellValue('T3', '商品总金额');
 
         $hang = 4;
         foreach ($order_sn_list as $order_sn) {
@@ -2878,67 +2875,67 @@ elseif ($_REQUEST['act'] == 'operate') {
 
                 //var_dump($order);die;
                 //输出订单的商品，由于可能一个人购买多个商品，所以在这先输出了
-                $PHPExcel->getActiveSheet()->setCellValue('N' . $chanpin, $row['goods_sn']);
-                $PHPExcel->getActiveSheet()->setCellValue('O' . $chanpin, $row['goods_name']);
-                $PHPExcel->getActiveSheet()->setCellValue('P' . $chanpin, $row['goods_attr']);
-                $PHPExcel->getActiveSheet()->setCellValue('Q' . $chanpin, $row['goods_price']);
-                $PHPExcel->getActiveSheet()->setCellValue('R' . $chanpin, $row['goods_number']);
-                $PHPExcel->getActiveSheet()->setCellValue('S' . $chanpin, $row['formated_subtotal']);
+                $spreadsheet->getActiveSheet()->setCellValue('N' . $chanpin, $row['goods_sn']);
+                $spreadsheet->getActiveSheet()->setCellValue('O' . $chanpin, $row['goods_name']);
+                $spreadsheet->getActiveSheet()->setCellValue('P' . $chanpin, $row['goods_attr']);
+                $spreadsheet->getActiveSheet()->setCellValue('Q' . $chanpin, $row['goods_price']);
+                $spreadsheet->getActiveSheet()->setCellValue('R' . $chanpin, $row['goods_number']);
+                $spreadsheet->getActiveSheet()->setCellValue('S' . $chanpin, $row['formated_subtotal']);
 
                 $chanpin      = $chanpin + 1;
             }
 
             for ($kk = $hang; $kk < ($hang + $shuliang); $kk++) {
                 //合并单元格
-                $PHPExcel->getActiveSheet()->mergeCells('A' . $hang . ':A' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('B' . $hang . ':B' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('C' . $hang . ':C' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('D' . $hang . ':D' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('E' . $hang . ':E' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('F' . $hang . ':F' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('G' . $hang . ':G' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('H' . $hang . ':H' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('I' . $hang . ':I' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('J' . $hang . ':J' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('K' . $hang . ':K' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('L' . $hang . ':L' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('M' . $hang . ':M' . $kk);
-                $PHPExcel->getActiveSheet()->mergeCells('T' . $hang . ':T' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('A' . $hang . ':A' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('B' . $hang . ':B' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('C' . $hang . ':C' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('D' . $hang . ':D' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('E' . $hang . ':E' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('F' . $hang . ':F' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('G' . $hang . ':G' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('H' . $hang . ':H' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('I' . $hang . ':I' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('J' . $hang . ':J' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('K' . $hang . ':K' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('L' . $hang . ':L' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('M' . $hang . ':M' . $kk);
+                $spreadsheet->getActiveSheet()->mergeCells('T' . $hang . ':T' . $kk);
             }
-            $PHPExcel->getActiveSheet()->setCellValue('A' . ($hang), $order['order_sn']." ");//加个空格，防止时间戳被转换
-            $PHPExcel->getActiveSheet()->setCellValue('B' . ($hang), $order['order_time']);
-            $PHPExcel->getActiveSheet()->setCellValue('C' . ($hang), $order['pay_time']);
-            $PHPExcel->getActiveSheet()->setCellValue('D' . ($hang), $order['shipping_time']);
-            $PHPExcel->getActiveSheet()->setCellValue('E' . ($hang), $order['invoice_no']." ");
-            $PHPExcel->getActiveSheet()->setCellValue('F' . ($hang), $order['pay_name']);
-            $PHPExcel->getActiveSheet()->setCellValue('G' . ($hang), $order['shipping_name']);
-            $PHPExcel->getActiveSheet()->setCellValue('H' . ($hang), $order['shipping_fee'].'元');
-            $PHPExcel->getActiveSheet()->setCellValue('I' . ($hang), $order['consignee']);
-            $PHPExcel->getActiveSheet()->setCellValue('J' . ($hang), str_replace(" ", "", $order['region']).$order['address']);
-            $PHPExcel->getActiveSheet()->setCellValue('K' . ($hang), $order['tel']);
-            $PHPExcel->getActiveSheet()->setCellValue('L' . ($hang), $order['mobile']);
-            $PHPExcel->getActiveSheet()->setCellValue('M' . ($hang), $order['email']);
-            $PHPExcel->getActiveSheet()->setCellValue('T' . ($hang), $order['formated_goods_amount']);
+            $spreadsheet->getActiveSheet()->setCellValue('A' . ($hang), $order['order_sn']." ");//加个空格，防止时间戳被转换
+            $spreadsheet->getActiveSheet()->setCellValue('B' . ($hang), $order['order_time']);
+            $spreadsheet->getActiveSheet()->setCellValue('C' . ($hang), $order['pay_time']);
+            $spreadsheet->getActiveSheet()->setCellValue('D' . ($hang), $order['shipping_time']);
+            $spreadsheet->getActiveSheet()->setCellValue('E' . ($hang), $order['invoice_no']." ");
+            $spreadsheet->getActiveSheet()->setCellValue('F' . ($hang), $order['pay_name']);
+            $spreadsheet->getActiveSheet()->setCellValue('G' . ($hang), $order['shipping_name']);
+            $spreadsheet->getActiveSheet()->setCellValue('H' . ($hang), $order['shipping_fee'].'元');
+            $spreadsheet->getActiveSheet()->setCellValue('I' . ($hang), $order['consignee']);
+            $spreadsheet->getActiveSheet()->setCellValue('J' . ($hang), str_replace(" ", "", $order['region']).$order['address']);
+            $spreadsheet->getActiveSheet()->setCellValue('K' . ($hang), $order['tel']);
+            $spreadsheet->getActiveSheet()->setCellValue('L' . ($hang), $order['mobile']);
+            $spreadsheet->getActiveSheet()->setCellValue('M' . ($hang), $order['email']);
+            $spreadsheet->getActiveSheet()->setCellValue('T' . ($hang), $order['formated_goods_amount']);
 
             $hang = $hang + $shuliang;
         }
 
         //设置单元格边框
-        $PHPExcel->getActiveSheet()->getStyle('A1:T'.$hang)->applyFromArray($styleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A1:T'.$hang)->applyFromArray($styleArray);
         //设置自动换行
-        $PHPExcel->getActiveSheet()->getStyle('A4:T'.$hang)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('A4:T'.$hang)->getAlignment()->setWrapText(true);
         //设置字体大小
-        $PHPExcel->getActiveSheet()->getStyle('A4:T'.$hang)->getFont()->setSize(12);
+        $spreadsheet->getActiveSheet()->getStyle('A4:T'.$hang)->getFont()->setSize(12);
         //垂直居中
-        $PHPExcel->getActiveSheet()->getStyle('A1:T'.$hang)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A1:T'.$hang)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
         //水平居中
-        $PHPExcel->getActiveSheet()->getStyle('A1:T'.$hang)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A1:T'.$hang)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="order_'.date('Y-m-d').'.xls"');
         header('Cache-Control: max-age=0');
-        $Writer = PHPExcel_IOFactory::createWriter($PHPExcel, 'Excel5');
-        $Writer->save("php://output");
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        $writer->save("php://output");
         exit;
     }
     /* 导出订单功能结束 */
