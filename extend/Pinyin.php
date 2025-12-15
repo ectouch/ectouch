@@ -6,7 +6,8 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * 汉字转化为拼音类
  */
-class Pinyin {
+class Pinyin
+{
 
     /**
      * 汉字ASCII码库
@@ -18,17 +19,19 @@ class Pinyin {
      * 构造函数
      * @return void
      */
-    public function __construct() {
-        
+    public function __construct()
+    {
+
     }
 
     /**
      * 汉字转化并输出拼音
-     * @param string $str		所要转化拼音的汉字
-     * @param boolean $utf8 	汉字编码是否为utf8
+     * @param string $str 所要转化拼音的汉字
+     * @param boolean $utf8 汉字编码是否为utf8
      * @return string
      */
-    public function output($str, $utf8 = true) {
+    public function output($str, $utf8 = true)
+    {
         //参数分析
         if (!$str) {
             return false;
@@ -57,7 +60,8 @@ class Pinyin {
      * @param integer $num
      * @return string
      */
-    protected function num2str($num) {
+    protected function num2str($num)
+    {
 
         if (!$this->lib) {
             $this->parse_lib();
@@ -85,7 +89,8 @@ class Pinyin {
      * 返回汉字编码库
      * @return array
      */
-    protected function parse_lib() {
+    protected function parse_lib()
+    {
 
         return $this->lib = array(
             array("a", -20319),
@@ -495,7 +500,8 @@ class Pinyin {
      * @param type $fContents
      * @return type
      */
-    protected function iconvStr($from, $to, $fContents) {
+    protected function iconvStr($from, $to, $fContents)
+    {
         if (is_string($fContents)) {
             if (function_exists('mb_convert_encoding')) {
                 return mb_convert_encoding($fContents, $to, $from);
@@ -512,7 +518,8 @@ class Pinyin {
      * @access public
      * @return void
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         if (isset($this->lib)) {
             unset($this->lib);
         }

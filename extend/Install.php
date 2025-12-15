@@ -6,7 +6,8 @@ defined('IN_ECTOUCH') or die('Deny Access');
 /**
  * 数据库安装类,用于导入mysql数据库文件
  */
-class Install {
+class Install
+{
 
     /**
      * 数据库文件导入
@@ -16,7 +17,8 @@ class Install {
      * @param type $separator
      * @return boolean|string
      */
-    static public function mysql($sql_path, $old_prefix = "", $new_prefix = "", $separator = ";\n") {
+    static public function mysql($sql_path, $old_prefix = "", $new_prefix = "", $separator = ";\n")
+    {
         $commenter = array('#', '--');
         //判断文件是否存在
         if (!file_exists($sql_path))

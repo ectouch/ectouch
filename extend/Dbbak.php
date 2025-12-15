@@ -5,28 +5,29 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 /**
  * 内置MYSQL连接，只需要简单配置数据连接
-  使用方法如下
-
-  $db = new Dbbak('localhost','root','','ectouch_db','utf8','data/dbbak/');
-
-  //查找数据库内所有数据表
-  $tableArry = $db->getTables();
-
-  //备份并生成sql文件
-  if(!$db->exportSql($tableArry)){
-  echo '备份失败';
-  }else{
-  echo '备份成功';
-  }
-
-  //恢复导入sql文件夹
-  if($db->importSql()){
-  echo '恢复成功';
-  }else{
-  echo '恢复失败';
-  }
+ * 使用方法如下
+ *
+ * $db = new Dbbak('localhost','root','','ectouch_db','utf8','data/dbbak/');
+ *
+ * //查找数据库内所有数据表
+ * $tableArry = $db->getTables();
+ *
+ * //备份并生成sql文件
+ * if(!$db->exportSql($tableArry)){
+ * echo '备份失败';
+ * }else{
+ * echo '备份成功';
+ * }
+ *
+ * //恢复导入sql文件夹
+ * if($db->importSql()){
+ * echo '恢复成功';
+ * }else{
+ * echo '恢复失败';
+ * }
  */
-class Dbbak {
+class Dbbak
+{
 
     public $dbhost; //数据库主机
     public $dbuser; //数据库用户名
@@ -35,7 +36,8 @@ class Dbbak {
     public $dataDir; //备份文件存放的路径
     protected $transfer = "";   //临时存放sql[切勿不要对该属性赋值，否则会生成错误的sql语句]
 
-    public function __construct($dbhost, $dbuser, $dbpw, $dbname, $charset = 'utf8', $dir = 'data/dbbak/') {
+    public function __construct($dbhost, $dbuser, $dbpw, $dbname, $charset = 'utf8', $dir = 'data/dbbak/')
+    {
         $this->connect($dbhost, $dbuser, $dbpw, $dbname, $charset); //连接数据
         $this->dataDir = $dir;
     }
@@ -44,16 +46,18 @@ class Dbbak {
      * 数据库连接
      * @param string $host 数据库主机名
      * @param string $user 用户名
-     * @param string $pwd  密码
-     * @param string $db   选择数据库名
+     * @param string $pwd 密码
+     * @param string $db 选择数据库名
      * @param string $charset 编码方式
      */
-    public function connect($dbhost, $dbuser, $dbpw, $dbname, $charset = 'utf8') {
+    public function connect($dbhost, $dbuser, $dbpw, $dbname, $charset = 'utf8')
+    {
         $this->dbhost = $dbhost;
         $this->dbuser = $dbuser;
         $this->dbpw = $dbpw;
         $this->dbname = $dbname;
-        if (!$conn = mysqli_connect($dbhost, $dbuser, $dbpw)) {
+        $conn = mysqli_connect($dbhost, $dbuser, $dbpw) OR $this->error('选择数据库失败');
+        if (!$conn) {
             $this->error('无法连接数据库服务器');
             return false;
         }
@@ -67,7 +71,8 @@ class Dbbak {
      * @param  database $database 要操作的数据库名
      * @return array    $dbArray  所列表的数据库表
      */
-    public function getTables($database = '') {
+    public function getTables($database = '')
+    {
         $database = empty($database) ? $this->dbname : $database;
         $result = mysqli_query("SHOW TABLES FROM `$database`") or die(mysqli_error());
         //	$result = mysql_list_tables($database);//mysql_list_tables函数不建议使用
@@ -82,7 +87,8 @@ class Dbbak {
      * @param string $sql sql    语句
      * @param number $subsection 分卷大小，以KB为单位，为0表示不分卷
      */
-    public function exportSql($table = '', $subsection = 0) {
+    public function exportSql($table = '', $subsection = 0)
+    {
         $table = empty($table) ? $this->getTables() : $table;
         if (!$this->_checkDir($this->dataDir)) {
             $this->error('您没有权限操作目录,备份失败');
@@ -129,7 +135,8 @@ class Dbbak {
      * @return booln
      * 注意:请不在目录下面存放其它文件和目录，以节省恢复时间
      */
-    public function importSql($dir = '') {
+    public function importSql($dir = '')
+    {
 
         if (is_file($dir)) {
             return $this->_importSqlFile($dir);
@@ -155,7 +162,8 @@ class Dbbak {
      * @param type $filename
      * @return boolean
      */
-    protected function _importSqlFile($filename = '') {
+    protected function _importSqlFile($filename = '')
+    {
         $sqls = file_get_contents($filename);
         $sqls = substr($sqls, 13);
         $sqls = explode("\n", $sqls);
@@ -178,7 +186,8 @@ class Dbbak {
      * @param   $table     要备份的表
      * @return  $tabledump 生成的sql语句
      */
-    protected function _setSql($table, $subsection = 0, &$tableDom = '') {
+    protected function _setSql($table, $subsection = 0, &$tableDom = '')
+    {
         $tableDom .= "DROP TABLE IF EXISTS $table\n";
         $createtable = mysqli_query("SHOW CREATE TABLE $table");
         $create = mysqli_fetch_row($createtable);
@@ -214,7 +223,8 @@ class Dbbak {
      * @param diretory $dir
      * @return booln
      */
-    protected function _checkDir($dir) {
+    protected function _checkDir($dir)
+    {
         if (!is_dir($dir)) {
             @mkdir($dir, 0777);
         }
@@ -234,10 +244,11 @@ class Dbbak {
     /**
      * 将数据写入到文件中
      * @param file $fileName 文件名
-     * @param string $str   要写入的信息
+     * @param string $str 要写入的信息
      * @return booln 写入成功则返回true,否则false
      */
-    protected function _writeSql($fileName, $str) {
+    protected function _writeSql($fileName, $str)
+    {
         $re = true;
         if (!$fp = @fopen($fileName, "w+")) {
             $re = false;
@@ -259,10 +270,9 @@ class Dbbak {
      * @param type $str
      * @throws Exception]
      */
-    public function error($str) {
+    public function error($str)
+    {
+        die($str);
         throw new Exception($str);
     }
-
 }
-
-?>
