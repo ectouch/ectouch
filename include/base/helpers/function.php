@@ -365,12 +365,12 @@ function get_ip_info($ip = '')
 
 /**
  * 加密函数，可用ec_decode()函数解密，$data：待加密的字符串或数组；$key：密钥；$expire 过期时间
- * @param unknown $data
+ * @param mixed $data
  * @param string $key
- * @param number $expire
+ * @param int $expire
  * @return string
  */
-function ec_encode($data, $key = '', $expire = 0)
+function ec_encode(mixed $data, string $key = '', int $expire = 0): string
 {
     $string = serialize($data);
     $ckey_length = 4;
@@ -412,11 +412,11 @@ function ec_encode($data, $key = '', $expire = 0)
 
 /**
  * ec_encode之后的解密函数，$string待解密的字符串，$key，密钥
- * @param unknown $string
+ * @param string $string
  * @param string $key
- * @return mixed|string
+ * @return mixed
  */
-function ec_decode($string, $key = '')
+function ec_decode(string $string, string $key = ''): mixed
 {
     $ckey_length = 4;
     $key = md5($key);
