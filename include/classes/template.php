@@ -318,15 +318,15 @@ class template
 
         if (empty($tag)) {
             return '{}';
-        } elseif ($tag{0} == '*' && substr($tag, -1) == '*') { // 注释部分
+        } elseif ($tag[0] == '*' && substr($tag, -1) == '*') { // 注释部分
             return '';
-        } elseif ($tag{0} == '$') { // 变量
+        } elseif ($tag[0] == '$') { // 变量
 //            if(strpos($tag,"'") || strpos($tag,"]"))
 //            {
 //                 return '';
 //            }
             return '<?php echo ' . $this->get_val(substr($tag, 1)) . '; ?>';
-        } elseif ($tag{0} == '/') { // 结束 tag
+        } elseif ($tag[0] == '/') { // 结束 tag
             switch (substr($tag, 1)) {
                 case 'if':
                     return '<?php endif; ?>';
@@ -352,7 +352,7 @@ class template
                     return '{'. $tag .'}';
                     break;
             }
-        } elseif ($tag{0} == ':') { // 函数
+        } elseif ($tag[0] == ':') { // 函数
             $tag = substr($tag, 1);
             return '<?php echo ' . $tag . '; ?>';
         } else {
@@ -391,7 +391,7 @@ class template
                 case 'assign':
                     $t = $this->get_para(substr($tag, 7), 0);
 
-                    if ($t['value']{0} == '$') {
+                    if ($t['value'][0] == '$') {
                         /* 如果传进来的值是变量，就不用用引号 */
                         $tmp = '$this->assign(\'' . $t['var'] . '\',' . $t['value'] . ');';
                     } else {
@@ -545,7 +545,7 @@ class template
                         break;
 
                     case 'default':
-                        $s[1] = $s[1]{0} == '$' ?  $this->get_val(substr($s[1], 1)) : "'$s[1]'";
+                        $s[1] = $s[1][0] == '$' ?  $this->get_val(substr($s[1], 1)) : "'$s[1]'";
                         $p = 'empty(' . $p . ') ? ' . $s[1] . ' : ' . $p;
                         break;
 
@@ -616,7 +616,7 @@ class template
         foreach ($pa as $value) {
             if (strrpos($value, '=')) {
                 list($a, $b) = explode('=', str_replace(array(' ', '"', "'", '&quot;'), '', $value));
-                if ($b{0} == '$') {
+                if ($b[0] == '$') {
                     if ($type) {
                         eval('$para[\'' . $a . '\']=' . $this->get_val(substr($b, 1)) . ';');
                     } else {
@@ -913,7 +913,7 @@ class template
         foreach ($arr as $val) {
             if (in_array($val, $scripts) == false) {
                 $scripts[] = $val;
-                if ($val{0} == '.') {
+                if ($val[0] == '.') {
                     $val = str_replace('../js', '../data/assets/js', $val);
                     $str .= '<script type="text/javascript" src="' . $val . '"></script>';
                 } else {
@@ -1210,7 +1210,7 @@ class template
     {
         $out = '';
         foreach ($arr as $key => $val) {
-            if ($val{0} == '$') {
+            if ($val[0] == '$') {
                 $out .= $out ? ",'$key'=>$val" : "array('$key'=>$val";
             } else {
                 $out .= $out ? ",'$key'=>'$val'" : "array('$key'=>'$val'";

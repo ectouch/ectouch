@@ -678,7 +678,7 @@ function utf82u2($str)
     }
 
     while ($start < $len) {
-        $num = ord($str{$start});
+        $num = ord($str[$start]);
         if ($num < 127) {
             $result .= chr($num) . chr($num >> 8);
             $start += 1;
@@ -688,26 +688,26 @@ function utf82u2($str)
                 $start ++;
             } elseif ($num < 224) {
                 if ($start + 1 <  $len) {
-                    $num = (ord($str{$start}) & 0x3f) << 6;
-                    $num += ord($str{$start+1}) & 0x3f;
+                    $num = (ord($str[$start]) & 0x3f) << 6;
+                    $num += ord($str[$start+1]) & 0x3f;
                     $result .=   chr($num & 0xff) . chr($num >> 8) ;
                 }
                 $start += 2;
             } elseif ($num < 240) {
                 if ($start + 2 <  $len) {
-                    $num = (ord($str{$start}) & 0x1f) << 12;
-                    $num += (ord($str{$start+1}) & 0x3f) << 6;
-                    $num += ord($str{$start+2}) & 0x3f;
+                    $num = (ord($str[$start]) & 0x1f) << 12;
+                    $num += (ord($str[$start+1]) & 0x3f) << 6;
+                    $num += ord($str[$start+2]) & 0x3f;
 
                     $result .=   chr($num & 0xff) . chr($num >> 8) ;
                 }
                 $start += 3;
             } elseif ($num < 248) {
                 if ($start + 3 <  $len) {
-                    $num = (ord($str{$start}) & 0x0f) << 18;
-                    $num += (ord($str{$start+1}) & 0x3f) << 12;
-                    $num += (ord($str{$start+2}) & 0x3f) << 6;
-                    $num += ord($str{$start+3}) & 0x3f;
+                    $num = (ord($str[$start]) & 0x0f) << 18;
+                    $num += (ord($str[$start+1]) & 0x3f) << 12;
+                    $num += (ord($str[$start+2]) & 0x3f) << 6;
+                    $num += ord($str[$start+3]) & 0x3f;
                     $result .= chr($num & 0xff) . chr($num >> 8) . chr($num >>16);
                 }
                 $start += 4;

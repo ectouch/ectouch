@@ -1347,7 +1347,7 @@ function smarty_insert_scripts($args)
     foreach ($arr as $val) {
         if (in_array($val, $scripts) == false) {
             $scripts[] = $val;
-            if ($val{0} == '.') {
+            if ($val[0] == '.') {
                 $str .= '<script type="text/javascript" src="' . $val . '"></script>';
             } else {
                 $str .= '<script type="text/javascript" src="js/' . $val . '"></script>';

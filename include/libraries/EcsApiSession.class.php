@@ -167,7 +167,7 @@ class EcsApiSession
 
         $data = addslashes($data);
 
-        if (isset($data{255})) {
+        if (isset($data[255])) {
             $this->db->autoReplace($this->session_data_table, array('sesskey' => $this->session_id, 'expiry' => $this->_time, 'data' => $data), array('expiry' => $this->_time, 'data' => $data));
 
             $data = '';

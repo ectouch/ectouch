@@ -96,7 +96,7 @@ class mysql
             if ($dbhost != '.') {
                 $result = mysqli_query($this->link_id, "SHOW VARIABLES LIKE 'basedir'");
                 $row    = mysqli_fetch_assoc($result);
-                if (!empty($row['Value']{1}) && $row['Value']{1} == ':' && !empty($row['Value']{2}) && $row['Value']{2} == "\\") {
+                if (!empty($row['Value'][1]) && $row['Value'][1] == ':' && !empty($row['Value'][2]) && $row['Value'][2] == "\\") {
                     $this->platform = 'WINDOWS';
                 } else {
                     $this->platform = 'OTHER';
@@ -564,7 +564,7 @@ class mysql
         $result['filename'] = $this->root_path . $this->cache_data_dir . 'sqlcache_' . abs(crc32($this->dbhash . $sql)) . '_' . md5($this->dbhash . $sql) . '.php';
 
         $data = @file_get_contents($result['filename']);
-        if (isset($data{23})) {
+        if (isset($data[23])) {
             $filetime = substr($data, 13, 10);
             $data     = substr($data, 23);
 

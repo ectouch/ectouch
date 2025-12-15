@@ -245,7 +245,7 @@ class iconv
         $bindata = '';
 
         for ($i = 0, $count = strlen($hexdata); $i < $count; $i += 2) {
-            $bindata .= chr(hexdec($hexdata{$i} . $hexdata{$i + 1}));
+            $bindata .= chr(hexdec($hexdata[$i] . $hexdata[$i + 1]));
         }
 
         return $bindata;
@@ -414,12 +414,12 @@ class iconv
             $ret = '';
 
             while ($this->SourceText) {
-                if (ord($this->SourceText{0}) > 127) {
+                if (ord($this->SourceText[0]) > 127) {
                     if ($this->config['source_lang'] == 'BIG-5') {
-                        $utf8 = $this->CHSUtoUTF8(hexdec(@$this->unicode_table[hexdec(bin2hex($this->SourceText{0} . $this->SourceText{1}))]));
+                        $utf8 = $this->CHSUtoUTF8(hexdec(@$this->unicode_table[hexdec(bin2hex($this->SourceText[0] . $this->SourceText[1]))]));
                     }
                     if ($this->config['source_lang'] == 'GBK') {
-                        $utf8 = $this->CHSUtoUTF8(hexdec(@$this->unicode_table[hexdec(bin2hex($this->SourceText{0} . $this->SourceText{1})) - 0x8080]));
+                        $utf8 = $this->CHSUtoUTF8(hexdec(@$this->unicode_table[hexdec(bin2hex($this->SourceText[0] . $this->SourceText[1])) - 0x8080]));
                     }
                     for ($i = 0, $count = strlen($utf8); $i < $count; $i += 3) {
                         $ret .= chr(substr($utf8, $i, 3));
@@ -427,7 +427,7 @@ class iconv
 
                     $this->SourceText = substr($this->SourceText, 2, strlen($this->SourceText));
                 } else {
-                    $ret .= $this->SourceText{0};
+                    $ret .= $this->SourceText[0];
                     $this->SourceText = substr($this->SourceText, 1, strlen($this->SourceText));
                 }
             }
@@ -442,15 +442,15 @@ class iconv
             $out = '';
             $len = strlen($this->SourceText);
             while ($i < $len) {
-                $c = ord($this->SourceText{$i++});
+                $c = ord($this->SourceText[$i++]);
                 switch ($c >> 4) {
                     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
                         // 0xxxxxxx
-                        $out .= $this->SourceText{$i - 1};
+                        $out .= $this->SourceText[$i - 1];
                         break;
                     case 12: case 13:
                         // 110x xxxx   10xx xxxx
-                        $char2 = ord($this->SourceText{$i++});
+                        $char2 = ord($this->SourceText[$i++]);
                         $char3 = @$this->unicode_table[(($c & 0x1F) << 6) | ($char2 & 0x3F)];
 
                         if ($this->config['target_lang'] == 'GBK') {
@@ -461,8 +461,8 @@ class iconv
                         break;
                     case 14:
                         // 1110 xxxx  10xx xxxx  10xx xxxx
-                        $char2 = ord($this->SourceText{$i++});
-                        $char3 = ord($this->SourceText{$i++});
+                        $char2 = ord($this->SourceText[$i++]);
+                        $char3 = ord($this->SourceText[$i++]);
                         $char4 = @$this->unicode_table[(($c & 0x0F) << 12) | (($char2 & 0x3F) << 6) | (($char3 & 0x3F) << 0)];
 
                         if ($this->config['target_lang'] == 'GBK') {
@@ -494,16 +494,16 @@ class iconv
         $utf = '';
 
         while ($this->SourceText) {
-            if (ord($this->SourceText{0}) > 127) {
+            if (ord($this->SourceText[0]) > 127) {
                 if ($this->config['source_lang'] == 'GBK') {
-                    $utf .= '&#x' . $this->unicode_table[hexdec(bin2hex($this->SourceText{0} . $this->SourceText{1})) - 0x8080] . ';';
+                    $utf .= '&#x' . $this->unicode_table[hexdec(bin2hex($this->SourceText[0] . $this->SourceText[1])) - 0x8080] . ';';
                 } elseif ($this->config['source_lang'] == 'BIG-5') {
-                    $utf .= '&#x' . $this->unicode_table[hexdec(bin2hex($this->SourceText{0} . $this->SourceText{1}))] . ';';
+                    $utf .= '&#x' . $this->unicode_table[hexdec(bin2hex($this->SourceText[0] . $this->SourceText[1]))] . ';';
                 }
 
                 $this->SourceText = substr($this->SourceText, 2, strlen($this->SourceText));
             } else {
-                $utf .= $this->SourceText{0};
+                $utf .= $this->SourceText[0];
                 $this->SourceText = substr($this->SourceText, 1, strlen($this->SourceText));
             }
         }
@@ -525,9 +525,9 @@ class iconv
         $max = strlen($this->SourceText) - 1;
 
         for ($i = 0; $i < $max; $i++) {
-            $h = ord($this->SourceText{$i});
+            $h = ord($this->SourceText[$i]);
             if ($h >= 160) {
-                $l = ord($this->SourceText{$i + 1});
+                $l = ord($this->SourceText[$i + 1]);
 
                 if ($h == 161 && $l == 64) {
                     $gb = '  ';
@@ -536,8 +536,8 @@ class iconv
                     $gb = fread($this->ctf, 2);
                 }
 
-                $this->SourceText{$i}     = $gb{0};
-                $this->SourceText{$i + 1} = $gb{1};
+                $this->SourceText[$i]     = $gb[0];
+                $this->SourceText[$i + 1] = $gb[1];
 
                 $i++;
             }

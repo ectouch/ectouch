@@ -275,7 +275,7 @@ class weibo
                         if (is_array($v)) {
                             $img_c = $v[2];
                             $img_n = $v[1];
-                        } elseif ($v{0} == '@') {
+                        } elseif ($v[0] == '@') {
                             $url = ltrim($v, '@');
                             $img_c = file_get_contents($url);
                             $url_a = explode('?', basename($url));

@@ -137,7 +137,7 @@ function add_message($message)
     $upload_size_limit = C('upload_size_limit') == '-1' ? ini_get('upload_max_filesize') : C('upload_size_limit');
     $status = 1 - C('message_check');
 
-    $last_char = strtolower($upload_size_limit{strlen($upload_size_limit)-1});
+    $last_char = strtolower($upload_size_limit[strlen($upload_size_limit)-1]);
 
     switch ($last_char) {
         case 'm':

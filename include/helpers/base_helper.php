@@ -846,9 +846,9 @@ function ecs_geoip($ip)
     $length = $offset['len'] - 1028;
     $start = unpack('Vlen', $index[$ipdot[0] * 4] . $index[$ipdot[0] * 4 + 1] . $index[$ipdot[0] * 4 + 2] . $index[$ipdot[0] * 4 + 3]);
     for ($start = $start['len'] * 8 + 1024; $start < $length; $start += 8) {
-        if ($index{$start} . $index{$start + 1} . $index{$start + 2} . $index{$start + 3} >= $ip) {
-            $index_offset = unpack('Vlen', $index{$start + 4} . $index{$start + 5} . $index{$start + 6} . "\x0");
-            $index_length = unpack('Clen', $index{$start + 7});
+        if ($index[$start] . $index[$start + 1] . $index[$start + 2] . $index[$start + 3] >= $ip) {
+            $index_offset = unpack('Vlen', $index[$start + 4] . $index[$start + 5] . $index[$start + 6] . "\x0");
+            $index_length = unpack('Clen', $index[$start + 7]);
             break;
         }
     }
@@ -873,20 +873,20 @@ function trim_right($str)
 {
     $len = strlen($str);
     /* 为空或单个字符直接返回 */
-    if ($len == 0 || ord($str{$len - 1}) < 127) {
+    if ($len == 0 || ord($str[$len - 1]) < 127) {
         return $str;
     }
     /* 有前导字符的直接把前导字符去掉 */
-    if (ord($str{$len - 1}) >= 192) {
+    if (ord($str[$len - 1]) >= 192) {
         return substr($str, 0, $len - 1);
     }
     /* 有非独立的字符，先把非独立字符去掉，再验证非独立的字符是不是一个完整的字，不是连原来前导字符也截取掉 */
     $r_len = strlen(rtrim($str, "\x80..\xBF"));
-    if ($r_len == 0 || ord($str{$r_len - 1}) < 127) {
+    if ($r_len == 0 || ord($str[$r_len - 1]) < 127) {
         return sub_str($str, 0, $r_len);
     }
 
-    $as_num = ord(~$str{$r_len - 1});
+    $as_num = ord(~$str[$r_len - 1]);
     if ($as_num > (1 << (6 + $r_len - $len))) {
         return $str;
     } else {

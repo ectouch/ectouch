@@ -53,7 +53,7 @@ class EcHtmlCache
             $file = $url;
         } else { //静态缓存
             $url_md5 = md5($url);
-            $file = $url_md5{0} . '/' . $url_md5{1} . '/' . $url_md5 . '.html';
+            $file = $url_md5[0] . '/' . $url_md5[1] . '/' . $url_md5 . '.html';
         }
         $file = $cachePath . $file;
         $dir = dirname($file);
