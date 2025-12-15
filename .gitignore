@@ -5,6 +5,7 @@ node_modules
 data/caches
 data/install.lock
 data/database.php
+vendor/
 
 # IDE Files
 #-------------------------

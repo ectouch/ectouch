@@ -6,15 +6,18 @@
     "type": "project",
     "require": {
         "php": "^8.4",
-        "filp/whoops": "^2.15",
         "aliyuncs/oss-sdk-php": "^2.7",
+        "filp/whoops": "^2.15",
+        "phpoffice/phpspreadsheet": "^5.3",
         "riverslei/payment": "^5.0"
     },
     "autoload": {
-        "psr-4": {
-            "ecmoban\\": "vendor/ecmoban/"
+        "psr-0": {
+            "": "extend/"
         },
-        "files": ["vendor/ecmoban/ecmoban.php"]
+        "files": [
+            "include/support/helpers.php"
+        ]
     },
     "config": {
         "preferred-install": "dist",

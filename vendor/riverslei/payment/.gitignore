@@ -1,7 +1,0 @@
-.idea
-.DS_Store
-/codecept.phar
-/vendor/
-composer.lock
-/examples/config
-/examples/wx/pem
