@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ECTouch Open Source Project
  * ============================================================================
@@ -45,15 +47,20 @@ defined('IS_ECSHOP') or define('IS_ECSHOP', RUN_ON_ECS);
 
 /* 错误等级 */
 if (APP_DEBUG) {
-    // 除了notice提示，其他类型的错误都报告
-    error_reporting(E_ALL ^ E_NOTICE);
-    $whoops = new \Whoops\Run;
-    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+    // PHP 8.4: 报告所有错误和警告
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+    
+    // 使用Whoops进行友好的错误显示
+    $whoops = new \Whoops\Run();
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
     $whoops->register();
 } else {
-    @ini_set("display_errors", 0);
-    // 把错误报告，全部屏蔽
-    error_reporting(0);
+    // 生产环境：不显示错误，但记录到日志
+    ini_set('display_errors', '0');
+    ini_set('log_errors', '1');
+    error_reporting(E_ALL);
 }
 
 /* 自动注册类文件 */

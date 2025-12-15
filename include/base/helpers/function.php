@@ -825,33 +825,49 @@ function redirect($url, $time=0, $msg='')
 
 /**
  * 自动加载
- * @param unknown $className
- * @return boolean
+ * PHP 8.4优化版本：添加类型声明，优化查找逻辑，确保PSR-4兼容性
+ * 
+ * @param string $className 要加载的类名
+ * @return bool 是否成功加载类
  */
-function autoload($className)
+function autoload(string $className): bool
 {
-    static $classes = array();
-    $array = array(
-        APP_PATH . 'common/models/' . $className . '.class.php',
-        APP_PATH . 'common/controllers/' . $className . '.class.php',
-        APP_PATH . C('_APP_NAME') . '/models/' . $className . '.class.php',
+    static $classes = [];
+    
+    // 如果类已经加载过，直接返回
+    if (isset($classes[$className])) {
+        return true;
+    }
+    
+    // 处理命名空间（PSR-4兼容性）
+    $classFile = str_replace('\\', '/', $className);
+    
+    // 定义类文件可能的路径（按优先级排序）
+    $searchPaths = [
+        // 应用特定路径
         APP_PATH . C('_APP_NAME') . '/controllers/' . $className . '.class.php',
-        BASE_PATH . 'base/' . $className . '.class.php',
+        APP_PATH . C('_APP_NAME') . '/models/' . $className . '.class.php',
+        // 公共路径
+        APP_PATH . 'common/controllers/' . $className . '.class.php',
+        APP_PATH . 'common/models/' . $className . '.class.php',
+        // 基础类库
         BASE_PATH . 'classes/' . $className . '.class.php',
         BASE_PATH . 'libraries/' . $className . '.class.php',
-        ROOT_PATH . 'vendor/' . $className . '.class.php'
-    );
-    foreach ($array as $file) {
-        $key = md5($file);
-        if (isset($classes[$key])) {
-            return true;
-        }
+        BASE_PATH . 'base/' . $className . '.class.php',
+        // PSR-4风格路径（支持命名空间）
+        BASE_PATH . 'classes/' . $classFile . '.php',
+        BASE_PATH . 'libraries/' . $classFile . '.php',
+    ];
+    
+    // 遍历搜索路径
+    foreach ($searchPaths as $file) {
         if (is_file($file)) {
             require $file;
-            $classes[$key] = true;
-            return $classes[$key];
+            $classes[$className] = true;
+            return true;
         }
     }
+    
     return false;
 }
 
@@ -1274,7 +1290,8 @@ function I($name, $default = '', $filter = null, $datas = null)
             $input = &$_SERVER;
             break;
         case 'globals':
-            $input = &$GLOBALS;
+            // PHP 8.1+: Cannot take reference to $GLOBALS, use direct access
+            $input = $GLOBALS;
             break;
         case 'data':
             $input = &$datas;
