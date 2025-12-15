@@ -9,7 +9,7 @@
  *
  * @return  string
  */
-function sub_str($str, $length = 0, $append = true)
+function sub_str(string $str, int $length = 0, bool $append = true): string
 {
     $str = trim($str);
     $strlength = strlen($str);
@@ -45,7 +45,7 @@ function sub_str($str, $length = 0, $append = true)
  * @access  public
  * @return  string
  */
-function real_ip()
+function real_ip(): string
 {
     static $realip = null;
 
@@ -67,27 +67,19 @@ function real_ip()
                     break;
                 }
             }
-        } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            $realip = $_SERVER['HTTP_CLIENT_IP'];
         } else {
-            if (isset($_SERVER['REMOTE_ADDR'])) {
-                $realip = $_SERVER['REMOTE_ADDR'];
-            } else {
-                $realip = '0.0.0.0';
-            }
+            $realip = $_SERVER['HTTP_CLIENT_IP'] 
+                ?? $_SERVER['REMOTE_ADDR'] 
+                ?? '0.0.0.0';
         }
     } else {
-        if (getenv('HTTP_X_FORWARDED_FOR')) {
-            $realip = getenv('HTTP_X_FORWARDED_FOR');
-        } elseif (getenv('HTTP_CLIENT_IP')) {
-            $realip = getenv('HTTP_CLIENT_IP');
-        } else {
-            $realip = getenv('REMOTE_ADDR');
-        }
+        $realip = getenv('HTTP_X_FORWARDED_FOR') 
+            ?: (getenv('HTTP_CLIENT_IP') 
+            ?: (getenv('REMOTE_ADDR') ?: '0.0.0.0'));
     }
 
     preg_match("/[\d\.]{7,15}/", $realip, $onlineip);
-    $realip = !empty($onlineip[0]) ? $onlineip[0] : '0.0.0.0';
+    $realip = $onlineip[0] ?? '0.0.0.0';
 
     return $realip;
 }
@@ -99,7 +91,7 @@ function real_ip()
  *
  * @return  int
  */
-function str_len($str)
+function str_len(string $str): int
 {
     $length = strlen(preg_replace('/[\x00-\x7F]/', '', $str));
 
@@ -142,7 +134,7 @@ function get_crlf()
  *
  * @return boolean
  */
-function send_mail($name, $email, $subject, $content, $type = 0, $notification = false)
+function send_mail(string $name, string $email, string $subject, string $content, int $type = 0, bool $notification = false): bool
 {
     $global = getInstance();
     /* 如果邮件编码不是CHARSET，创建字符集转换对象，转换编码 */
@@ -170,11 +162,13 @@ function send_mail($name, $email, $subject, $content, $type = 0, $notification =
 
         if (!$res) {
             $global->err->add(L('sendemail_false'));
-
-            return false;
-        } else {
-            return true;
+            throw new ECTouchException(
+                message: '邮件发送失败',
+                context: ['email' => $email, 'subject' => $subject]
+            );
         }
+        
+        return true;
     } /**
      * 使用smtp服务发送邮件
      */
@@ -203,17 +197,20 @@ function send_mail($name, $email, $subject, $content, $type = 0, $notification =
         $params['pass'] = C('smtp_pass');
 
         if (empty($params['host']) || empty($params['port'])) {
-            // 如果没有设置主机和端口直接返回 false
+            // 如果没有设置主机和端口直接抛出异常
             $global->err->add(L('smtp_setting_error'));
-
-            return false;
+            throw new ECTouchException(
+                message: 'SMTP配置错误: 主机或端口未设置',
+                context: ['host' => $params['host'] ?? '', 'port' => $params['port'] ?? '']
+            );
         } else {
             // 发送邮件
             if (!function_exists('fsockopen')) {
-                //如果fsockopen被禁用，直接返回
+                //如果fsockopen被禁用，直接抛出异常
                 $global->err->add(L('disabled_fsockopen'));
-
-                return false;
+                throw new ECTouchException(
+                    message: 'fsockopen函数被禁用，无法发送SMTP邮件'
+                );
             }
 
             // include_once(ROOT_PATH . 'includes/cls_smtp.php');
@@ -234,19 +231,37 @@ function send_mail($name, $email, $subject, $content, $type = 0, $notification =
                 $err_msg = $smtp->error_msg();
                 if (empty($err_msg)) {
                     $global->err->add('Unknown Error');
+                    throw new ECTouchException(
+                        message: 'SMTP邮件发送失败: 未知错误',
+                        context: ['email' => $email]
+                    );
                 } else {
-                    if (strpos($err_msg, 'Failed to connect to server') !== false) {
+                    if (str_contains($err_msg, 'Failed to connect to server')) {
                         $global->err->add(sprintf(L('smtp_connect_failure'), $params['host'] . ':' . $params['port']));
-                    } elseif (strpos($err_msg, 'AUTH command failed') !== false) {
+                        throw new ECTouchException(
+                            message: 'SMTP连接失败',
+                            context: ['host' => $params['host'], 'port' => $params['port'], 'error' => $err_msg]
+                        );
+                    } elseif (str_contains($err_msg, 'AUTH command failed')) {
                         $global->err->add(L('smtp_login_failure'));
-                    } elseif (strpos($err_msg, 'bad sequence of commands') !== false) {
+                        throw new ECTouchException(
+                            message: 'SMTP认证失败',
+                            context: ['user' => $params['user'], 'error' => $err_msg]
+                        );
+                    } elseif (str_contains($err_msg, 'bad sequence of commands')) {
                         $global->err->add(L('smtp_refuse'));
+                        throw new ECTouchException(
+                            message: 'SMTP命令序列错误',
+                            context: ['error' => $err_msg]
+                        );
                     } else {
                         $global->err->add($err_msg);
+                        throw new ECTouchException(
+                            message: 'SMTP邮件发送失败',
+                            context: ['error' => $err_msg]
+                        );
                     }
                 }
-
-                return false;
             }
         }
     }
@@ -348,7 +363,7 @@ if (!function_exists('floatval')) {
  *                          返回值在二进制计数法中，四位由高到低分别代表
  *                          可执行rename()函数权限、可对文件追加内容权限、可写入文件权限、可读取文件权限。
  */
-function file_mode_info($file_path)
+function file_mode_info(string $file_path): int|false
 {
     /* 如果不存在，则不可读、不可写、不可改 */
     if (!file_exists($file_path)) {
@@ -462,7 +477,7 @@ function log_write($arg, $file = '', $line = '')
  *
  * @return      bool
  */
-function make_dir($folder)
+function make_dir(string $folder): bool
 {
     $reval = false;
 
@@ -494,11 +509,15 @@ function make_dir($folder)
             $base .= '/';
 
             if (!file_exists($base)) {
-                /* 尝试创建目录，如果创建失败则继续循环 */
-                if (@mkdir(rtrim($base, '/'), 0777)) {
-                    @chmod($base, 0777);
-                    $reval = true;
+                /* 尝试创建目录，如果创建失败则抛出异常 */
+                if (!@mkdir(rtrim($base, '/'), 0777)) {
+                    throw new FileException(
+                        message: "无法创建目录: $base",
+                        context: ['path' => $base, 'folder' => $folder]
+                    );
                 }
+                @chmod($base, 0777);
+                $reval = true;
             }
         }
     } else {
@@ -740,7 +759,7 @@ function check_file_type($filename, $realname = '', $limit_ext_types = '')
  * @param       string      string  内容
  * @return      string
  */
-function mysql_like_quote($str)
+function mysql_like_quote(string $str): string
 {
     return strtr($str, array("\\\\" => "\\\\\\\\", '_' => '\_', '%' => '\%', "\'" => "\\\\\'"));
 }
@@ -752,7 +771,7 @@ function mysql_like_quote($str)
  *
  * @return string
  **/
-function real_server_ip()
+function real_server_ip(): string
 {
     static $serverip = null;
 
@@ -761,13 +780,9 @@ function real_server_ip()
     }
 
     if (isset($_SERVER)) {
-        if (isset($_SERVER['SERVER_ADDR'])) {
-            $serverip = $_SERVER['SERVER_ADDR'];
-        } else {
-            $serverip = '0.0.0.0';
-        }
+        $serverip = $_SERVER['SERVER_ADDR'] ?? '0.0.0.0';
     } else {
-        $serverip = getenv('SERVER_ADDR');
+        $serverip = getenv('SERVER_ADDR') ?: '0.0.0.0';
     }
 
     return $serverip;
@@ -800,7 +815,7 @@ function ecs_header($string, $replace = true, $http_response_code = 0)
     }
 }
 
-function ecs_iconv($source_lang, $target_lang, $source_string = '')
+function ecs_iconv(string $source_lang, string $target_lang, string $source_string = ''): string
 {
     static $chs = null;
 
@@ -899,9 +914,9 @@ function trim_right($str)
  *
  * @param string $file_name
  * @param string $target_name
- * @return blog
+ * @return bool
  */
-function move_upload_file($file_name, $target_name = '')
+function move_upload_file(string $file_name, string $target_name = ''): bool
 {
     if (function_exists("move_uploaded_file")) {
         if (move_uploaded_file($file_name, $target_name)) {
@@ -921,10 +936,10 @@ function move_upload_file($file_name, $target_name = '')
 /**
  * 将JSON传递的参数转码
  *
- * @param string $str
- * @return string
+ * @param string|array|object $str
+ * @return string|array|object
  */
-function json_str_iconv($str)
+function json_str_iconv(string|array|object $str): string|array|object
 {
     if (CHARSET != 'utf-8') {
         if (is_string($str)) {
@@ -949,10 +964,10 @@ function json_str_iconv($str)
 /**
  * 循环转码成utf8内容
  *
- * @param string $str
- * @return string
+ * @param string|array|object $str
+ * @return string|array|object
  */
-function to_utf8_iconv($str)
+function to_utf8_iconv(string|array|object $str): string|array|object
 {
     if (CHARSET != 'utf-8') {
         if (is_string($str)) {
