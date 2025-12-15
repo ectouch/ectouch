@@ -1,4 +1,39 @@
 <?php
+
+declare(strict_types=1);
+
+// 验证PHP 8.4环境
+if (version_compare(PHP_VERSION, '8.4.0', '<')) {
+    return array(
+        'status' => 0,
+        'info' => '错误：需要PHP 8.4.0或更高版本。当前版本：' . PHP_VERSION
+    );
+}
+
+// 验证mysqli扩展
+if (!extension_loaded('mysqli')) {
+    return array(
+        'status' => 0,
+        'info' => '错误：mysqli扩展未安装。请在php.ini中启用mysqli扩展。'
+    );
+}
+
+// 验证必需的PHP特性
+$required_extensions = ['json', 'mbstring', 'curl'];
+$missing_extensions = [];
+foreach ($required_extensions as $ext) {
+    if (!extension_loaded($ext)) {
+        $missing_extensions[] = $ext;
+    }
+}
+
+if (!empty($missing_extensions)) {
+    return array(
+        'status' => 0,
+        'info' => '警告：缺少推荐的PHP扩展：' . implode(', ', $missing_extensions) . '。系统可能无法正常运行。'
+    );
+}
+
 //网站域名
 $site_url = trim($_POST['siteurl']);
 if ($independent) {
@@ -46,7 +81,15 @@ $strConfig = str_replace('#DB_USER#', $dbUser, $strConfig);
 $strConfig = str_replace('#DB_PWD#', $dbPwd, $strConfig);
 $strConfig = str_replace('#DB_PORT#', $dbPort, $strConfig);
 $strConfig = str_replace('#DB_PREFIX#', $dbPrefix, $strConfig);
-@file_put_contents(ROOT_PATH . $config['dbConfig'], $strConfig);
+
+// 写入配置文件
+$config_written = @file_put_contents(ROOT_PATH . $config['dbConfig'], $strConfig);
+if ($config_written === false) {
+    return array(
+        'status' => 0,
+        'info' => '错误：无法写入配置文件。请检查目录权限。'
+    );
+}
 
 if ($independent) {
     //插入管理员
@@ -55,11 +98,38 @@ if ($independent) {
     $ip = get_client_ip();
     $password = md5(md5($password).$verify);
     $email = trim($_POST['manager_email']);
-    $query = "INSERT INTO `{$dbPrefix}admin_user` (user_name, password, ec_salt, email, add_time, last_ip, action_list, nav_list, agency_id) VALUES ('{$username}', '{$password}', '{$verify}', '{$email}', '{$time}', '{$ip}', 'all', '', 0)";
-    if (mysqli_query($conn, $query)) {
-        return array('status'=>2,'info'=>'成功添加管理员<br />成功写入配置文件<br>安装完成...');
+    
+    // 使用预处理语句防止SQL注入
+    $stmt = mysqli_prepare($conn, "INSERT INTO `{$dbPrefix}admin_user` (user_name, password, ec_salt, email, add_time, last_ip, action_list, nav_list, agency_id) VALUES (?, ?, ?, ?, ?, ?, 'all', '', 0)");
+    
+    if ($stmt === false) {
+        return array(
+            'status' => 0,
+            'info' => '错误：无法准备SQL语句。' . mysqli_error($conn)
+        );
+    }
+    
+    mysqli_stmt_bind_param($stmt, 'ssssis', $username, $password, $verify, $email, $time, $ip);
+    
+    if (mysqli_stmt_execute($stmt)) {
+        mysqli_stmt_close($stmt);
+        return array(
+            'status' => 2,
+            'info' => '✓ 成功添加管理员<br />✓ 成功写入配置文件<br />✓ PHP 8.4环境验证通过<br />✓ 安装完成'
+        );
+    } else {
+        $error = mysqli_stmt_error($stmt);
+        mysqli_stmt_close($stmt);
+        return array(
+            'status' => 0,
+            'info' => '错误：无法创建管理员账户。' . $error
+        );
     }
 } else {
-    return array('status'=>2,'info'=>'成功写入配置文件<br>安装完成...');
+    return array(
+        'status' => 2,
+        'info' => '✓ 成功写入配置文件<br />✓ PHP 8.4环境验证通过<br />✓ 安装完成'
+    );
 }
-return array('status'=>0,'info'=>'安装失败...');
+
+return array('status' => 0, 'info' => '安装失败：未知错误');

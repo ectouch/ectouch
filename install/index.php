@@ -22,9 +22,9 @@ require INSTALL_PATH . 'localhost.php';
 set_time_limit(1000);
 //php版本
 $phpversion = phpversion();
-//php版本过低提示
-if ($phpversion < '5.3.0') {
-    exit(get_tip_html('您当前php版本('.$phpversion.')，不能安装本软件，请切换到5.3至5.6版本再安装，谢谢！'));
+//php版本检查 - 要求PHP 8.4或更高
+if (version_compare($phpversion, '8.4.0', '<')) {
+    exit(get_tip_html('您当前PHP版本('.$phpversion.')不符合要求。本软件需要PHP 8.4.0或更高版本才能运行，请升级PHP版本后再安装！'));
 }
 //数据库文件
 foreach ($config['sqlFileName'] as $sqlFile) {
@@ -69,31 +69,50 @@ switch ($step) {
             'php' => $phpversion,
         );
         $error = 0;
-        //数据库
-        if (function_exists('mysqli_connect')) {
-            $server['mysql'] = '<span class="correct_span">&radic;</span> 已安装';
+        
+        //验证PHP版本
+        if (version_compare($phpversion, '8.4.0', '>=')) {
+            $server['phpVersion'] = '<span class="correct_span">&radic;</span> PHP ' . $phpversion . ' (符合要求)';
         } else {
-            $server['mysql'] = '<span class="correct_span error_span">&radic;</span> 出现错误';
+            $server['phpVersion'] = '<span class="correct_span error_span">&radic;</span> PHP ' . $phpversion . ' (需要8.4.0+)';
             $error++;
         }
+        
+        //mysqli扩展 (PHP 8.4必需)
+        if (extension_loaded('mysqli')) {
+            $server['mysql'] = '<span class="correct_span">&radic;</span> mysqli扩展已安装';
+        } else {
+            $server['mysql'] = '<span class="correct_span error_span">&radic;</span> mysqli扩展未安装';
+            $error++;
+        }
+        
+        //mbstring扩展 (推荐)
+        if (extension_loaded('mbstring')) {
+            $server['mbstring'] = '<span class="correct_span">&radic;</span> mbstring扩展已安装';
+        } else {
+            $server['mbstring'] = '<span class="correct_span error_span">&radic;</span> mbstring扩展未安装(推荐安装)';
+        }
+        
         //上传限制
         if (ini_get('file_uploads')) {
             $server['uploadSize'] = '<span class="correct_span">&radic;</span> ' . ini_get('upload_max_filesize');
         } else {
             $server['uploadSize'] = '<span class="correct_span error_span">&radic;</span>禁止上传';
         }
-        //session
-        if (function_exists('session_start')) {
-            $server['session'] = '<span class="correct_span">&radic;</span> 支持';
+        
+        //curl扩展
+        if (extension_loaded('curl')) {
+            $server['curl'] = '<span class="correct_span">&radic;</span> curl扩展已安装';
         } else {
-            $server['session'] = '<span class="correct_span error_span">&radic;</span> 不支持';
+            $server['curl'] = '<span class="correct_span error_span">&radic;</span> curl扩展未安装';
             $error++;
         }
-        //curl
-        if (function_exists('curl_init')) {
-            $server['curl'] = '<span class="correct_span">&radic;</span> 支持';
+        
+        //JSON扩展 (PHP 8.4内置)
+        if (extension_loaded('json')) {
+            $server['json'] = '<span class="correct_span">&radic;</span> JSON支持已启用';
         } else {
-            $server['curl'] = '<span class="correct_span error_span">&radic;</span> 不支持';
+            $server['json'] = '<span class="correct_span error_span">&radic;</span> JSON支持未启用';
             $error++;
         }
         //需要读写权限的目录
@@ -153,10 +172,6 @@ switch ($step) {
             //是否安装基础数据
             $independent = trim($_POST['independent']);
             dataVerify($independent);
-            //关闭特殊字符提交处理到数据库
-            if ($phpversion <= '5.3.0') {
-                set_magic_quotes_runtime(0);
-            }
             //设置时区
             date_default_timezone_set('PRC');
             //当前进行的数据库操作
@@ -183,8 +198,8 @@ switch ($step) {
             mysqli_query($conn, "SET NAMES 'utf8'"); //,character_set_client=binary,sql_mode='';
             //获取数据库版本信息
             $version = mysqli_get_server_info($conn);
-            if ($version < 5.0) {
-                alert(0, '数据库版本太低!');
+            if (version_compare($version, '5.5.0', '<')) {
+                alert(0, '数据库版本太低！需要MySQL 5.5或更高版本。当前版本：' . $version);
             }
             //选择数据库
             if (!mysqli_select_db($conn, $dbName)) {
