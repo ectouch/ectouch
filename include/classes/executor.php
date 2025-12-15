@@ -369,8 +369,7 @@ class executor
         $auto_incr = preg_match($pattern, $postfix, $matches) ? $matches[1] : '';
 
         /* 重新设置表属性声明串 */
-        $postfix = $this->db->version() > '4.1' ? " ENGINE=$type DEFAULT CHARACTER SET " . $this->db_charset
-                                                : " TYPE=$type";
+        $postfix = " ENGINE=$type DEFAULT CHARACTER SET " . $this->db_charset;
         $postfix .= ' ' . $auto_incr;
 
         /* 重新构造建表语句 */
@@ -573,10 +572,6 @@ class executor
             $sql = '';
             for ($i = 0; $i < $num; $i++) {
                 if (in_array($matches[$i][2], $fields)) {
-                    /* 如果为低版本MYSQL，则把非法关键字过滤掉 */
-                    if ($mysql_ver < '4.0.1') {
-                        $matches[$i][1] = preg_replace('/\s*(?:AFTER|FIRST)\s*.*$/i', '', $matches[$i][1]);
-                    }
                     $sql .= 'CHANGE ' . $matches[$i][2] . ' ' . $matches[$i][1] . ',';
                 } else {
                     $sql .= 'ADD ' . $matches[$i][1] . ',';
@@ -740,13 +735,11 @@ class executor
      */
     public function insert_charset($sql_string)
     {
-        if ($this->db->version() > '4.1') {
-            $sql_string = preg_replace(
-                '/(TEXT|CHAR\(.*?\)|VARCHAR\(.*?\))\s+/i',
-                    '\1 CHARACTER SET ' . $this->db_charset . ' ',
-                    $sql_string
-            );
-        }
+        $sql_string = preg_replace(
+            '/(TEXT|CHAR\(.*?\)|VARCHAR\(.*?\))\s+/i',
+                '\1 CHARACTER SET ' . $this->db_charset . ' ',
+                $sql_string
+        );
 
         return $sql_string;
     }

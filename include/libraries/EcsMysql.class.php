@@ -74,15 +74,11 @@ class EcsMysql
         $this->dbhash = md5($this->root_path . $dbhost . $dbuser . $dbpw . $dbname);
         $this->version = mysqli_get_server_info($this->link_id);
 
-        /* 如果mysql 版本是 4.1+ 以上，需要对字符集进行初始化 */
-        if ($this->version > '4.1') {
-            if ($charset != 'latin1') {
-                mysqli_query($this->link_id, "SET character_set_connection=$charset, character_set_results=$charset, character_set_client=binary");
-            }
-            if ($this->version > '5.0.1') {
-                mysqli_query($this->link_id, "SET sql_mode=''");
-            }
+        /* 设置字符集 */
+        if ($charset != 'latin1') {
+            mysqli_query($this->link_id, "SET character_set_connection=$charset, character_set_results=$charset, character_set_client=binary");
         }
+        mysqli_query($this->link_id, "SET sql_mode=''");
 
         $sqlcache_config_file = $this->root_path . $this->cache_data_dir . 'sqlcache_config_file_' . $this->dbhash . '.php';
 
@@ -150,14 +146,12 @@ class EcsMysql
 
     public function set_mysql_charset($charset)
     {
-        /* 如果mysql 版本是 4.1+ 以上，需要对字符集进行初始化 */
-        if ($this->version > '4.1') {
-            if (in_array(strtolower($charset), array('gbk', 'big5', 'utf-8', 'utf8'))) {
-                $charset = str_replace('-', '', $charset);
-            }
-            if ($charset != 'latin1') {
-                mysqli_query($this->link_id, "SET character_set_connection=$charset, character_set_results=$charset, character_set_client=binary");
-            }
+        /* 设置字符集 */
+        if (in_array(strtolower($charset), array('gbk', 'big5', 'utf-8', 'utf8'))) {
+            $charset = str_replace('-', '', $charset);
+        }
+        if ($charset != 'latin1') {
+            mysqli_query($this->link_id, "SET character_set_connection=$charset, character_set_results=$charset, character_set_client=binary");
         }
     }
 
@@ -525,36 +519,10 @@ class EcsMysql
                 $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
             }
         } else {
-            if ($this->version() >= '4.1') {
-                if (!empty($fields)) {
-                    $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
-                    if (!empty($sets)) {
-                        $sql .= 'ON DUPLICATE KEY UPDATE ' . implode(', ', $sets);
-                    }
-                }
-            } else {
-                if (empty($where)) {
-                    $where = array();
-                    foreach ($primary_keys as $value) {
-                        if (is_numeric($value)) {
-                            $where[] = $value . ' = ' . $field_values[$value];
-                        } else {
-                            $where[] = $value . " = '" . $field_values[$value] . "'";
-                        }
-                    }
-                    $where = implode(' AND ', $where);
-                }
-
-                if ($where && (!empty($sets) || !empty($fields))) {
-                    if (intval($this->getOne("SELECT COUNT(*) FROM $table WHERE $where")) > 0) {
-                        if (!empty($sets)) {
-                            $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $sets) . ' WHERE ' . $where;
-                        }
-                    } else {
-                        if (!empty($fields)) {
-                            $sql = 'REPLACE INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
-                        }
-                    }
+            if (!empty($fields)) {
+                $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
+                if (!empty($sets)) {
+                    $sql .= 'ON DUPLICATE KEY UPDATE ' . implode(', ', $sets);
                 }
             }
         }

@@ -473,36 +473,10 @@ class EcModel
                 $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
             }
         } else {
-            if (mysql_get_server_info() >= '4.1') {
-                if (!empty($fields)) {
-                    $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
-                    if (!empty($sets)) {
-                        $sql .= 'ON DUPLICATE KEY UPDATE ' . implode(', ', $sets);
-                    }
-                }
-            } else {
-                if (empty($where)) {
-                    $where = array();
-                    foreach ($primary_keys as $value) {
-                        if (is_numeric($value)) {
-                            $where[] = $value . ' = ' . $field_values[$value];
-                        } else {
-                            $where[] = $value . " = '" . $field_values[$value] . "'";
-                        }
-                    }
-                    $where = implode(' AND ', $where);
-                }
-    
-                if ($where && (!empty($sets) || !empty($fields))) {
-                    if (intval($this->getOne("SELECT COUNT(*) FROM $table WHERE $where")) > 0) {
-                        if (!empty($sets)) {
-                            $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $sets) . ' WHERE ' . $where;
-                        }
-                    } else {
-                        if (!empty($fields)) {
-                            $sql = 'REPLACE INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
-                        }
-                    }
+            if (!empty($fields)) {
+                $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
+                if (!empty($sets)) {
+                    $sql .= 'ON DUPLICATE KEY UPDATE ' . implode(', ', $sets);
                 }
             }
         }

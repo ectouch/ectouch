@@ -153,25 +153,23 @@ if ($_REQUEST['act'] == 'check_config') {
         }
     }
 
-    if ($cls_user->db->version >= '4.1') {
-        /* 检测数据表字符集 */
-        $sql = "SHOW TABLE STATUS FROM `" . $cls_user->db_name . "` LIKE '" . $cls_user->prefix . $cls_user->user_table . "'";
-        $row = $cls_user->db->getRow($sql);
-        if (isset($row['Collation'])) {
-            $db_charset = trim(substr($row['Collation'], 0, strpos($row['Collation'], '_')));
+    /* 检测数据表字符集 */
+    $sql = "SHOW TABLE STATUS FROM `" . $cls_user->db_name . "` LIKE '" . $cls_user->prefix . $cls_user->user_table . "'";
+    $row = $cls_user->db->getRow($sql);
+    if (isset($row['Collation'])) {
+        $db_charset = trim(substr($row['Collation'], 0, strpos($row['Collation'], '_')));
 
-            if ($db_charset == 'latin1') {
-                if (empty($_POST['cfg']['is_latin1'])) {
-                    sys_msg($_LANG['error_is_latin1'], null, null, false);
-                }
-            } else {
-                $user_db_charset = $_POST['cfg']['db_charset'] == 'GB2312' ? 'GBK' : $_POST['cfg']['db_charset'];
-                if (!empty($_POST['cfg']['is_latin1'])) {
-                    sys_msg($_LANG['error_not_latin1'], null, null, false);
-                }
-                if ($user_db_charset != strtoupper($db_charset)) {
-                    sys_msg(sprintf($_LANG['invalid_db_charset'], strtoupper($db_charset), $user_db_charset), null, null, false);
-                }
+        if ($db_charset == 'latin1') {
+            if (empty($_POST['cfg']['is_latin1'])) {
+                sys_msg($_LANG['error_is_latin1'], null, null, false);
+            }
+        } else {
+            $user_db_charset = $_POST['cfg']['db_charset'] == 'GB2312' ? 'GBK' : $_POST['cfg']['db_charset'];
+            if (!empty($_POST['cfg']['is_latin1'])) {
+                sys_msg($_LANG['error_not_latin1'], null, null, false);
+            }
+            if ($user_db_charset != strtoupper($db_charset)) {
+                sys_msg(sprintf($_LANG['invalid_db_charset'], strtoupper($db_charset), $user_db_charset), null, null, false);
             }
         }
     }
