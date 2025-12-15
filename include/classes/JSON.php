@@ -159,7 +159,7 @@ class JSON
      */
     public function next()
     {
-        $this->ch = !isset($this->text{$this->at}) ? '' : $this->text{$this->at};
+        $this->ch = !isset($this->text[$this->at]) ? '' : $this->text[$this->at];
         $this->at++;
 
         return $this->ch;

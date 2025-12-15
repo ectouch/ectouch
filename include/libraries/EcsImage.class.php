@@ -589,21 +589,20 @@ class EcsImage
                     $version = 2;
                 } elseif (function_exists('imagecreate')) {
                     $version = 1;
-                }
-            }
-        } else {
-                if (preg_match('/phpinfo/', ini_get('disable_functions'))) {
-                    /* 如果phpinfo被禁用，无法确定gd版本 */
-                    $version = 1;
                 } else {
-                    // 使用phpinfo函数
-                    ob_start();
-                    phpinfo(8);
-                    $info = ob_get_contents();
-                    ob_end_clean();
-                    $info = stristr($info, 'gd version');
-                    preg_match('/\d/', $info, $match);
-                    $version = $match[0];
+                    if (preg_match('/phpinfo/', ini_get('disable_functions'))) {
+                        /* 如果phpinfo被禁用，无法确定gd版本 */
+                        $version = 1;
+                    } else {
+                        // 使用phpinfo函数
+                        ob_start();
+                        phpinfo(8);
+                        $info = ob_get_contents();
+                        ob_end_clean();
+                        $info = stristr($info, 'gd version');
+                        preg_match('/\d/', $info, $match);
+                        $version = $match[0];
+                    }
                 }
             }
         }
