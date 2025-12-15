@@ -99,9 +99,6 @@ class EcMysql
         if (is_array($value)) {
             return array_map(array($this, 'escape'), $value);
         } else {
-            if (get_magic_quotes_gpc()) {
-                $value = stripslashes($value);
-            }
             return "'" . $mysqli->real_escape_string($value) . "'";
         }
     }

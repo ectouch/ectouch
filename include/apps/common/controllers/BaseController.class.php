@@ -71,16 +71,14 @@ class BaseController extends Controller
         require(BASE_PATH . 'config/constant.php');
         require(APP_PATH . 'common/helpers/function.php');
         //对用户传入的变量进行转义操作
-        if (!get_magic_quotes_gpc()) {
-            if (!empty($_GET)) {
-                $_GET = addslashes_deep($_GET);
-            }
-            if (!empty($_POST)) {
-                $_POST = addslashes_deep($_POST);
-            }
-            $_COOKIE = addslashes_deep($_COOKIE);
-            $_REQUEST = addslashes_deep($_REQUEST);
+        if (!empty($_GET)) {
+            $_GET = addslashes_deep($_GET);
         }
+        if (!empty($_POST)) {
+            $_POST = addslashes_deep($_POST);
+        }
+        $_COOKIE = addslashes_deep($_COOKIE);
+        $_REQUEST = addslashes_deep($_REQUEST);
         //创建 ECSHOP 对象
         self::$ecs = new EcsEcshop(C('DB_NAME'), C('DB_PREFIX'));
         //初始化数据库类

@@ -74,17 +74,15 @@ require(ROOT_PATH . ADMIN_PATH . '/includes/cls_exchange.php');
 
 
 /* 对用户传入的变量进行转义操作。*/
-if (!get_magic_quotes_gpc()) {
-    if (!empty($_GET)) {
-        $_GET  = addslashes_deep($_GET);
-    }
-    if (!empty($_POST)) {
-        $_POST = addslashes_deep($_POST);
-    }
-
-    $_COOKIE   = addslashes_deep($_COOKIE);
-    $_REQUEST  = addslashes_deep($_REQUEST);
+if (!empty($_GET)) {
+    $_GET  = addslashes_deep($_GET);
 }
+if (!empty($_POST)) {
+    $_POST = addslashes_deep($_POST);
+}
+
+$_COOKIE   = addslashes_deep($_COOKIE);
+$_REQUEST  = addslashes_deep($_REQUEST);
 
 /* 对路径进行安全处理 */
 if (strpos(PHP_SELF, '.php/') !== false) {

@@ -35,16 +35,14 @@ function debug($flag = 'system', $end = false)
 /**
  * 数据过滤函数
  * @param string|array $data 待过滤的字符串或字符串数组
- * @param boolean $force 为true时忽略get_magic_quotes_gpc
+ * @param boolean $force 为true时强制转义（保留参数以保持向后兼容）
  * @return mixed
  */
 function in($data, $force = false)
 {
     if (is_string($data)) {
         $data = trim(htmlspecialchars($data)); // 防止被挂马，跨站攻击
-        if (($force == true) || (!get_magic_quotes_gpc())) {
-            $data = addslashes($data); // 防止sql注入
-        }
+        $data = addslashes($data); // 防止sql注入
         return $data;
     } elseif (is_array($data)) {
         foreach ($data as $key => $value) {
@@ -85,9 +83,7 @@ function text_in($str)
     $str = strip_tags($str, '<br>');
     $str = str_replace(" ", "&nbsp;", $str);
     $str = str_replace("\n", "<br>", $str);
-    if (!get_magic_quotes_gpc()) {
-        $str = addslashes($str);
-    }
+    $str = addslashes($str);
     return $str;
 }
 
@@ -118,9 +114,7 @@ function html_in($str)
     $replace = array("", "");
     $str = @preg_replace($search, $replace, $str);
     $str = htmlspecialchars($str);
-    if (!get_magic_quotes_gpc()) {
-        $str = addslashes($str);
-    }
+    $str = addslashes($str);
     return $str;
 }
 

@@ -111,9 +111,6 @@ class EcMysqlPdo
             if (is_int($value)) {
                 return (int) $value;
             }
-            if (get_magic_quotes_gpc()) {
-                $value = stripslashes($value);
-            }
             return $link->quote($value);
         }
     }
