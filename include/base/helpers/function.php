@@ -1013,12 +1013,12 @@ function get_top_domain($url = '')
 
 /**
  * 获取和设置配置参数 支持批量定义
- * @param string|array $name 配置变量
+ * @param string|array|null $name 配置变量
  * @param mixed $value 配置值
  * @param mixed $default 默认值
  * @return mixed
  */
-function C($name=null, $value=null, $default=null)
+function C(string|array|null $name = null, mixed $value = null, mixed $default = null): mixed
 {
     static $_config = array();
     // 无参数时获取所有
@@ -1030,23 +1030,14 @@ function C($name=null, $value=null, $default=null)
         if (!strpos($name, '.')) {
             $name = strtoupper($name);
             if (is_null($value)) {
-                if (isset($_config[$name])) {
-                    return $_config[$name];
-                } elseif (isset($_config['APP'][$name])) {
-                    return $_config['APP'][$name];
-                } elseif (isset($_config['DB'][$name])) {
-                    return $_config['DB'][$name];
-                } elseif (isset($_config['TPL'][$name])) {
-                    return $_config['TPL'][$name];
-                } elseif (isset($_config['CFG'][$name])) {
-                    return $_config['CFG'][$name];
-                } elseif (isset($_config['SESSION'][$name])) {
-                    return $_config['SESSION'][$name];
-                } elseif (isset($_config['COOKIE'][$name])) {
-                    return $_config['COOKIE'][$name];
-                } else {
-                    return $default;
-                }
+                return $_config[$name]
+                    ?? $_config['APP'][$name]
+                    ?? $_config['DB'][$name]
+                    ?? $_config['TPL'][$name]
+                    ?? $_config['CFG'][$name]
+                    ?? $_config['SESSION'][$name]
+                    ?? $_config['COOKIE'][$name]
+                    ?? $default;
             }
             if (is_array($value) && isset($_config[$name])) {
                 $_config[$name] = array_merge($_config[$name], $value);
@@ -1059,23 +1050,14 @@ function C($name=null, $value=null, $default=null)
         $name = explode('.', $name);
         $name[0] = strtoupper($name[0]);
         if (is_null($value)) {
-            if (isset($_config[$name[0]][$name[1]])) {
-                return $_config[$name[0]][$name[1]];
-            } elseif (isset($_config['APP'][$name[0]][$name[1]])) {
-                return $_config['APP'][$name[0]][$name[1]];
-            } elseif (isset($_config['DB'][$name[0]][$name[1]])) {
-                return $_config['DB'][$name[0]][$name[1]];
-            } elseif (isset($_config['TPL'][$name[0]][$name[1]])) {
-                return $_config['TPL'][$name[0]][$name[1]];
-            } elseif (isset($_config['CFG'][$name[0]][$name[1]])) {
-                return $_config['CFG'][$name[0]][$name[1]];
-            } elseif (isset($_config['SESSION'][$name[0]][$name[1]])) {
-                return $_config['SESSION'][$name[0]][$name[1]];
-            } elseif (isset($_config['COOKIE'][$name[0]][$name[1]])) {
-                return $_config['COOKIE'][$name[0]][$name[1]];
-            } else {
-                return $default;
-            }
+            return $_config[$name[0]][$name[1]]
+                ?? $_config['APP'][$name[0]][$name[1]]
+                ?? $_config['DB'][$name[0]][$name[1]]
+                ?? $_config['TPL'][$name[0]][$name[1]]
+                ?? $_config['CFG'][$name[0]][$name[1]]
+                ?? $_config['SESSION'][$name[0]][$name[1]]
+                ?? $_config['COOKIE'][$name[0]][$name[1]]
+                ?? $default;
         }
         // return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
         $_config[$name[0]][$name[1]] = is_array($value) ? array_merge($_config[$name[0]][$name[1]], $value) : $value;
@@ -1092,14 +1074,14 @@ function C($name=null, $value=null, $default=null)
 /**
  * 加载配置文件 支持格式转换 仅支持一级配置
  * @param string $file 配置文件名
- * @param string $parse 配置解析方法 有些格式需要用户自己解析
- * @return void
+ * @return mixed|null
  */
-function load_file($file)
+function load_file(string $file): mixed
 {
     if (file_exists($file)) {
         return include $file;
     }
+    return null;
 }
 
 /**
