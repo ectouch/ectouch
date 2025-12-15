@@ -31,7 +31,7 @@ class mysql
         private readonly string $dbuser,
         private readonly string $dbpw,
         private readonly string $dbname = '',
-        private readonly string $charset = 'utf8',
+        private readonly string $charset = 'utf8mb4',
         private readonly bool $pconnect = false,
         private readonly bool $quiet = false
     ) {
@@ -58,7 +58,7 @@ class mysql
         string $dbuser,
         string $dbpw,
         string $dbname = '',
-        string $charset = 'utf8',
+        string $charset = 'utf8mb4',
         bool $pconnect = false,
         bool $quiet = false
     ): bool {
@@ -145,15 +145,10 @@ class mysql
         return mysqli_select_db($this->link_id, $dbname);
     }
 
-    public function set_mysql_charset(string $charset): void
+    public function set_mysql_charset(string $charset = 'utf8mb4'): void
     {
-        /* 设置字符集 */
-        if (in_array(strtolower($charset), ['gbk', 'big5', 'utf-8', 'utf8'])) {
-            $charset = str_replace('-', '', $charset);
-        }
-        if ($charset !== 'latin1') {
-            mysqli_query($this->link_id, "SET character_set_connection=$charset, character_set_results=$charset, character_set_client=binary");
-        }
+        /* 设置字符集 - 统一使用 utf8mb4 */
+        mysqli_query($this->link_id, "SET character_set_connection=$charset, character_set_results=$charset, character_set_client=binary");
     }
 
     public function fetch_array(mysqli_result $query, int $result_type = MYSQLI_ASSOC): array|null

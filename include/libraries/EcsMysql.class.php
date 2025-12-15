@@ -34,29 +34,23 @@ class EcsMysql
         private readonly string $dbuser,
         private readonly string $dbpw,
         private readonly string $dbname = '',
-        private readonly string $charset = 'utf8',
+        private readonly string $charset = 'utf8mb4',
         private readonly bool $pconnect = false,
         private readonly bool $quiet = false
     ) {
-        // Handle EC_CHARSET override
-        $effectiveCharset = $charset;
-        if (defined('EC_CHARSET')) {
-            $effectiveCharset = strtolower(str_replace('-', '', EC_CHARSET));
-        }
-
         if (defined('ROOT_PATH') && !$this->root_path) {
             $this->root_path = ROOT_PATH;
         }
 
         if (!$quiet) {
-            $this->connect($dbhost, $dbuser, $dbpw, $dbname, $effectiveCharset, $pconnect, $quiet);
+            $this->connect($dbhost, $dbuser, $dbpw, $dbname, $charset, $pconnect, $quiet);
         } else {
             $this->settings = [
                 'dbhost' => $dbhost,
                 'dbuser' => $dbuser,
                 'dbpw' => $dbpw,
                 'dbname' => $dbname,
-                'charset' => $effectiveCharset,
+                'charset' => $charset,
                 'pconnect' => $pconnect
             ];
         }
@@ -67,7 +61,7 @@ class EcsMysql
         string $dbuser,
         string $dbpw,
         string $dbname = '',
-        string $charset = 'utf8',
+        string $charset = 'utf8mb4',
         bool $pconnect = false,
         bool $quiet = false
     ): bool {
@@ -151,15 +145,10 @@ class EcsMysql
         return mysqli_select_db($this->link_id, $dbname);
     }
 
-    public function set_mysql_charset(string $charset): void
+    public function set_mysql_charset(string $charset = 'utf8mb4'): void
     {
-        /* 设置字符集 */
-        if (in_array(strtolower($charset), ['gbk', 'big5', 'utf-8', 'utf8'])) {
-            $charset = str_replace('-', '', $charset);
-        }
-        if ($charset !== 'latin1') {
-            mysqli_query($this->link_id, "SET character_set_connection=$charset, character_set_results=$charset, character_set_client=binary");
-        }
+        /* 设置字符集 - 统一使用 utf8mb4 */
+        mysqli_query($this->link_id, "SET character_set_connection=$charset, character_set_results=$charset, character_set_client=binary");
     }
 
     public function fetch_array(mysqli_result $query, int $result_type = MYSQLI_ASSOC): array|null
