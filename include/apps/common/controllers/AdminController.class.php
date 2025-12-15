@@ -13,12 +13,14 @@
  * ----------------------------------------------------------------------------
  */
 
+declare(strict_types=1);
+
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
 class AdminController extends BaseController
 {
-    protected $sess = null;
+    protected ?session $sess = null;
 
     public function __construct()
     {
@@ -31,9 +33,9 @@ class AdminController extends BaseController
         $this->assign('lang', L());
     }
 
-    protected function checkLogin()
+    protected function checkLogin(): void
     {
-        $access = array(
+        $access = [
             'crowd' => '*',
             'wechat' => '*',
             'extend' => '*',
@@ -41,8 +43,8 @@ class AdminController extends BaseController
             'authorization' => '*',
             'navigator' => '*',
             'upgrade' => '*',
-            'index' => array('license', 'uploader')
-        );
+            'index' => ['license', 'uploader']
+        ];
         $controller = strtolower(CONTROLLER_NAME);
         $action = strtolower(ACTION_NAME);
 
@@ -51,7 +53,7 @@ class AdminController extends BaseController
         }
 
         if (isset($access[$controller])) {
-            if ($access[$controller] != '*') {
+            if ($access[$controller] !== '*') {
                 if (!in_array($action, $access[$controller])) {
                     $this->redirect('./admin');
                 }
@@ -62,7 +64,7 @@ class AdminController extends BaseController
     }
 
     //$upload_dir上传的目录名
-    protected function ectouchUpload($key = '', $upload_dir = 'images', $thumb = false, $width = 220, $height = 220)
+    protected function ectouchUpload(string $key = '', string $upload_dir = 'images', bool $thumb = false, int $width = 220, int $height = 220): array
     {
         $upload = new UploadFile();
         //设置上传文件大小
@@ -80,10 +82,10 @@ class AdminController extends BaseController
 
         if (!$upload->upload($key)) {
             //捕获上传异常
-            return array('error' => 1, 'message' => $upload->getErrorMsg());
+            return ['error' => 1, 'message' => $upload->getErrorMsg()];
         } else {
             //取得成功上传的文件信息
-            return array('error' => 0, 'message' => $upload->getUploadFileInfo());
+            return ['error' => 0, 'message' => $upload->getUploadFileInfo()];
         }
     }
 }

@@ -13,16 +13,18 @@
  * ----------------------------------------------------------------------------
  */
 
+declare(strict_types=1);
+
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
 class BaseController extends Controller
 {
-    protected static $ecs = null;
-    protected static $db = null;
-    protected static $err = null;
-    protected $appConfig = array();
-    protected $load = null;
+    protected static ?EcsEcshop $ecs = null;
+    protected static ?EcsMysql $db = null;
+    protected static ?EcsError $err = null;
+    protected array $appConfig = [];
+    protected ?Loader $load = null;
 
     public function __construct()
     {
@@ -42,29 +44,29 @@ class BaseController extends Controller
         $this->_writeHtmlCache();
     }
 
-    public static function ecs()
+    public static function ecs(): ?EcsEcshop
     {
         return self::$ecs;
     }
 
-    public static function & db()
+    public static function db(): ?EcsMysql
     {
         return self::$db;
     }
 
-    public static function err()
+    public static function err(): ?EcsError
     {
         return self::$err;
     }
 
-    private function _initialize()
+    private function _initialize(): void
     {
         //初始化设置
         @ini_set('memory_limit', '512M');
-        @ini_set('session.cache_expire', 180);
-        @ini_set('session.use_cookies', 1);
-        @ini_set('session.auto_start', 0);
-        @ini_set('display_errors', 1);
+        @ini_set('session.cache_expire', '180');
+        @ini_set('session.use_cookies', '1');
+        @ini_set('session.auto_start', '0');
+        @ini_set('display_errors', '1');
         @ini_set("arg_separator.output", "&amp;");
         @ini_set('include_path', '.;' . BASE_PATH);
         //加载系统常量和函数库
@@ -96,7 +98,7 @@ class BaseController extends Controller
     }
 
     //载入函数、语言文件
-    private function _common()
+    private function _common(): void
     {
         //加载公共语言
         require(APP_PATH . C('_APP_NAME') . '/languages/' . C('LANG') . '/common.php');
@@ -113,7 +115,7 @@ class BaseController extends Controller
     }
 
     //读取静态缓存
-    private function _readHtmlCache()
+    private function _readHtmlCache(): bool
     {
         if (($this->appConfig['HTML_CACHE_ON'] == false) || empty($this->appConfig['HTML_CACHE_RULE'])) {
             $this->appConfig['HTML_CACHE_ON'] = false;
@@ -131,7 +133,7 @@ class BaseController extends Controller
     }
 
     //写入静态页面缓存
-    private function _writeHtmlCache()
+    private function _writeHtmlCache(): void
     {
         if ($this->appConfig['HTML_CACHE_ON']) {
             EcHtmlCache::write();

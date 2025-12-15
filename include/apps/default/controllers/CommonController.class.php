@@ -13,20 +13,22 @@
  * ----------------------------------------------------------------------------
  */
 
+declare(strict_types=1);
+
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
 class CommonController extends BaseController
 {
-    protected static $user = null;
+    protected static mixed $user = null;
 
-    protected static $sess = null;
+    protected static ?EcsSession $sess = null;
 
-    protected static $view = null;
+    protected static ?EcsTemplate $view = null;
 
-    protected $subscribe = 0;
-    protected $custom = 0;
-    protected $customs = 0;
+    protected int $subscribe = 0;
+    protected int $custom = 0;
+    protected int $customs = 0;
 
     public function __construct()
     {
@@ -56,37 +58,37 @@ class CommonController extends BaseController
         assign_template();
     }
 
-    public static function user()
+    public static function user(): mixed
     {
         return self::$user;
     }
 
-    public static function sess()
+    public static function sess(): ?EcsSession
     {
         return self::$sess;
     }
 
-    public static function view()
+    public static function view(): ?EcsTemplate
     {
         return self::$view;
     }
 
-    protected function fetch($filename, $cache_id = '')
+    protected function fetch(string $filename, string $cache_id = ''): string
     {
         return self::$view->fetch($filename, $cache_id);
     }
 
-    protected function assign($tpl_var, $value = '')
+    protected function assign(string|array $tpl_var, mixed $value = ''): void
     {
         self::$view->assign($tpl_var, $value);
     }
 
-    protected function display($tpl = '', $cache_id = '', $return = false)
+    protected function display(string $tpl = '', string $cache_id = '', bool $return = false): void
     {
         self::$view->display($tpl, $cache_id);
     }
 
-    protected function ecshop_init()
+    protected function ecshop_init(): void
     {
         header('Cache-control: private');
         header('Content-type: text/html; charset=utf-8');
@@ -194,14 +196,14 @@ class CommonController extends BaseController
         }
 
         // 设置parent_id
-        session('parent_id', $_SESSION['user_id'] ? 0 : $_GET['u'] ? $_GET['u'] : 0);
+        session('parent_id', $_SESSION['user_id'] ? 0 : ($_GET['u'] ?? 0));
     }
 
     /**
      * 初始化微信
-     * @return
+     * @return void
      */
-    protected function wechat_init()
+    protected function wechat_init(): void
     {
 
         //兼容session丢失用户
@@ -247,7 +249,7 @@ class CommonController extends BaseController
      * ecjia验证登录
      * &origin=app&openid=openid&token=token
      */
-    private function ecjia_login()
+    private function ecjia_login(): void
     {
         if (isset($_GET['origin']) && $_GET['origin'] == 'app') {
             $openid = I('get.openid');
@@ -273,21 +275,21 @@ class CommonController extends BaseController
      *     'img' => '', //分享图片 注意需要绝对路径 http://www.abc.com/mobile/public/img/wxsdk.png
      *     );
      * @param array $share_data 分享数据
-     * @return
+     * @return array
      */
-    public function get_wechat_share_content($share_data= array())
+    public function get_wechat_share_content(array $share_data = []): array
     {
         if (!empty($share_data['img'])) {
-            $share_img = (strtolower(substr($share_data['img'], 0, 4)) == 'http') ? $share_data['img'] : __HOST__ . $share_data['img'];
+            $share_img = (strtolower(substr($share_data['img'], 0, 4)) === 'http') ? $share_data['img'] : __HOST__ . $share_data['img'];
         } else {
             $share_img = elixir('images/wxsdk.png', true);
         }
-        $data = array(
+        $data = [
             'title' => !empty($share_data['title']) ? $share_data['title'] : C('shop_name'),
-            'desc' => !empty($share_data['desc']) ? str_replace(array(" ", "　", "\t", "\n", "\r"), '', html_in($share_data['desc'])) : C('shop_desc'),
+            'desc' => !empty($share_data['desc']) ? str_replace([" ", "　", "\t", "\n", "\r"], '', html_in($share_data['desc'])) : C('shop_desc'),
             'link' => !empty($share_data['link']) ? $share_data['link'] : $this->get_current_url(),
             'img' => $share_img,
-        );
+        ];
         return $data;
     }
 
@@ -296,7 +298,7 @@ class CommonController extends BaseController
      * 如果用户登录 当前地址则需要加上此用户的uid,用于分享出去的地址（非显示在浏览器中的地址）
      * @return string
      */
-    public function get_current_url()
+    public function get_current_url(): string
     {
         $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
         $u = I('get.u', 0, 'intval');
@@ -311,7 +313,7 @@ class CommonController extends BaseController
     /**
      * 自动授权跳转
      */
-    private function init_oauth()
+    private function init_oauth(): void
     {
         if (is_wechat_browser() && (empty($_SESSION['unionid']) && empty($_SESSION['user_id']) && empty($_COOKIE['unionid'])) && strtolower(CONTROLLER_NAME) != 'oauth') {
             $sql = "SELECT `auth_config` FROM " . $this->model->pre . "touch_auth WHERE `from` = 'weixin' ";
@@ -331,11 +333,11 @@ class CommonController extends BaseController
     /**
     * 已安装的登录插件（除微信登录插件）
     **/
-    public function ectouch_auth() {
+    public function ectouch_auth(): void {
         $sql = "SELECT `auth_config`, `from` FROM " . $this->model->pre . "touch_auth WHERE `from` != 'weixin' ";
         $auth_config = $this->model->query($sql);
         
-        $res = array();
+        $res = [];
         if(!empty($auth_config)) {
             foreach ($auth_config as $key=>$value) {
                 $res[$value['from']] = $value['from'];

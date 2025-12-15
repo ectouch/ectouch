@@ -13,15 +13,17 @@
  * ----------------------------------------------------------------------------
  */
 
+declare(strict_types=1);
+
 /* 访问控制 */
 defined('IN_ECTOUCH') or die('Deny Access');
 
 abstract class PluginWechatController
 {
-    protected $layout = 'wechat_layout';
-    protected $_data = array();
+    protected string $layout = 'wechat_layout';
+    protected array $_data = [];
 
-    protected function get_wechat_sdk()
+    protected function get_wechat_sdk(): string
     {
         $wxinfo   = model('Base')->model->table('wechat')->field('token, appid, appsecret')->find();
         $appid    = $wxinfo['appid'];
@@ -151,22 +153,22 @@ wx.error(function(res){
     /**
      * 数据显示返回
      */
-    abstract protected function show($fromusername, $info);
+    abstract protected function show(string $fromusername, array $info): mixed;
 
     /**
      * 积分赠送
      */
-    abstract protected function give_point($fromusername, $info);
+    abstract protected function give_point(string $fromusername, array $info): mixed;
 
     /**
      * 行为处理
      */
-    abstract protected function action();
+    abstract protected function action(): mixed;
 
     /**
      * 积分赠送处理
      */
-    public function do_point($fromusername, $info, $rank_points = 0, $pay_points = 0)
+    public function do_point(string $fromusername, array $info, int $rank_points = 0, int $pay_points = 0): void
     {
         $time = time();
         $user_id = model('Base')->model->table('wechat_user')
@@ -208,7 +210,7 @@ wx.error(function(res){
             ->insert();
     }
 
-    public function plugin_display($tpl = '', $config = array())
+    public function plugin_display(string $tpl = '', array $config = []): mixed
     {
         $view = new EcTemplate(C('TPL'));
         $this->_data['config'] = $config;
@@ -237,10 +239,10 @@ wx.error(function(res){
     /**
      * 中奖概率计算
      *
-     * @param unknown $proArr
-     * @return Ambigous <string, unknown>
+     * @param array $proArr
+     * @return string|int
      */
-    public function get_rand($proArr)
+    public function get_rand(array $proArr): string|int
     {
         $result = '';
         // 概率数组的总概率精度
@@ -259,13 +261,13 @@ wx.error(function(res){
         return $result;
     }
     
-    public function __get($name)
+    public function __get(string $name): mixed
     {
-        return isset($this->_data [$name]) ? $this->_data [$name] : null;
+        return $this->_data[$name] ?? null;
     }
     
-    public function __set($name, $value)
+    public function __set(string $name, mixed $value): void
     {
-        $this->_data [$name] = $value;
+        $this->_data[$name] = $value;
     }
 }
