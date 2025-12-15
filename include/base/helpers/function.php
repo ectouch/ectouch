@@ -596,10 +596,11 @@ function urlRoute()
 /**
  * 生成URL链接
  * @param string $route
- * @param unknown $params
- * @return Ambigous <string, mixed>|string
+ * @param array $params
+ * @param string $org_mode
+ * @return string
  */
-function url($route = 'index/index', $params = array(), $org_mode = '')
+function url(string $route = 'index/index', array $params = array(), string $org_mode = ''): string
 {
     return U($route, $params, true, false, $org_mode);
 }
@@ -608,11 +609,12 @@ function url($route = 'index/index', $params = array(), $org_mode = '')
  * URL组装 支持不同URL模式
  * @param string $url URL表达式，格式：'[模块/控制器/操作#锚点@域名]?参数1=值1&参数2=值2...'
  * @param string|array $vars 传入的参数，支持数组和字符串
- * @param string|boolean $suffix 伪静态后缀，默认为true表示获取配置值
- * @param boolean $domain 是否显示域名
+ * @param string|bool $suffix 伪静态后缀，默认为true表示获取配置值
+ * @param bool $domain 是否显示域名
+ * @param string $org_mode 原始模式
  * @return string
  */
-function U($url='', $vars='', $suffix=true, $domain=false, $org_mode='')
+function U(string $url = '', string|array $vars = '', string|bool $suffix = true, bool $domain = false, string $org_mode = ''): string
 {
     // 解析URL
     $info   =  parse_url($url);
@@ -761,10 +763,10 @@ function U($url='', $vars='', $suffix=true, $domain=false, $org_mode='')
  * 字符串命名风格转换
  * type 0 将Java风格转换为C的风格 1 将C风格转换为Java的风格
  * @param string $name 字符串
- * @param integer $type 转换类型
+ * @param int $type 转换类型
  * @return string
  */
-function parse_name($name, $type=0)
+function parse_name(string $name, int $type = 0): string
 {
     if ($type) {
         return ucfirst(preg_replace_callback('/_([a-zA-Z])/', function ($match) {
@@ -777,9 +779,9 @@ function parse_name($name, $type=0)
 
 /**
  * 判断是否SSL协议
- * @return boolean
+ * @return bool
  */
-function is_ssl()
+function is_ssl(): bool
 {
     if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
         return true;

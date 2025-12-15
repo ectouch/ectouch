@@ -366,11 +366,11 @@ function dump($var, $echo=true, $label=null, $strict=true)
 
 /**
  * 生成URL
- * @param  string $route  URL路径
+ * @param  string|null $route  URL路径
  * @param  array  $params URL参数
  * @return string
  */
-function url($route=null, $params=array())
+function url(?string $route = null, array $params = array()): string
 {
     $controller = defined('CONTROLLER_NAME') ? CONTROLLER_NAME : '';
     $action = defined('ACTION_NAME') ? ACTION_NAME : '';
