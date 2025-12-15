@@ -462,58 +462,127 @@ function ec_decode(string $string, string $key = ''): mixed
 
 /**
  * 复制文件夹
- * @param unknown $src
- * @param unknown $dst
- * @param string $del
+ * @param string $src 源路径
+ * @param string $dst 目标路径
+ * @param bool $del 是否删除目标路径(如果存在)
+ * @return void
+ * @throws FileException 当文件操作失败时
  */
-function copy_dir($src, $dst, $del = false)
+function copy_dir(string $src, string $dst, bool $del = false): void
 {
     if ($del && file_exists($dst)) {
-        return del_dir($dst);
+        del_dir($dst);
+        return;
     }
+    
     if (is_dir($src)) {
-        @mkdir($dst, 0777, true);
+        if (!mkdir($dst, 0777, true) && !is_dir($dst)) {
+            throw new FileException(
+                message: "无法创建目录: $dst",
+                code: 0,
+                previous: null,
+                filePath: $dst,
+                operation: 'mkdir'
+            );
+        }
+        
         $files = scandir($src);
+        if ($files === false) {
+            throw new FileException(
+                message: "无法读取目录: $src",
+                code: 0,
+                previous: null,
+                filePath: $src,
+                operation: 'scandir'
+            );
+        }
+        
         foreach ($files as $file) {
             if ($file != "." && $file != "..") {
                 copy_dir("$src/$file", "$dst/$file");
             }
         }
     } elseif (file_exists($src)) {
-        copy($src, $dst);
+        if (!copy($src, $dst)) {
+            throw new FileException(
+                message: "无法复制文件: $src 到 $dst",
+                code: 0,
+                previous: null,
+                filePath: $src,
+                operation: 'copy'
+            );
+        }
     }
 }
 
 /**
  * 遍历删除目录和目录下所有文件
- * @param unknown $dir
- * @return boolean
+ * @param string $dir 要删除的目录路径
+ * @return bool 成功返回true,失败返回false
+ * @throws FileException 当文件操作失败时
  */
-function del_dir($dir)
+function del_dir(string $dir): bool
 {
     if (!is_dir($dir)) {
         return false;
     }
+    
     $handle = opendir($dir);
+    if ($handle === false) {
+        throw new FileException(
+            message: "无法打开目录: $dir",
+            code: 0,
+            previous: null,
+            filePath: $dir,
+            operation: 'opendir'
+        );
+    }
+    
     while (($file = readdir($handle)) !== false) {
         if ($file != "." && $file != "..") {
-            is_dir("$dir/$file") ? del_dir("$dir/$file") : @unlink("$dir/$file");
+            $path = "$dir/$file";
+            if (is_dir($path)) {
+                del_dir($path);
+            } else {
+                if (!unlink($path)) {
+                    closedir($handle);
+                    throw new FileException(
+                        message: "无法删除文件: $path",
+                        code: 0,
+                        previous: null,
+                        filePath: $path,
+                        operation: 'unlink'
+                    );
+                }
+            }
         }
     }
-    if (readdir($handle) == false) {
-        closedir($handle);
-        @rmdir($dir);
+    
+    closedir($handle);
+    
+    if (!rmdir($dir)) {
+        throw new FileException(
+            message: "无法删除目录: $dir",
+            code: 0,
+            previous: null,
+            filePath: $dir,
+            operation: 'rmdir'
+        );
     }
+    
+    return true;
 }
 
 /**
  * 获取文件扩展名
- * @param unknown $file
- * @return mixed
+ * @param string $file 文件名或文件路径
+ * @return string 文件扩展名(小写)
  */
-function get_extension($file)
+function get_extension(string $file): string
 {
-    return end(explode('.', $file));
+    $parts = explode('.', $file);
+    $extension = end($parts);
+    return strtolower($extension);
 }
 
 /**
