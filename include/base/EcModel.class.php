@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ECTouch Open Source Project
  * ============================================================================
@@ -18,21 +20,21 @@ defined('IN_ECTOUCH') or die('Deny Access');
 
 class EcModel
 {
-    public $db = null; // 当前数据库操作对象
-    public $cache = null; //缓存对象
-    public $sql = ''; //sql语句，主要用于输出构造成的sql语句
-    public $pre = ''; //表前缀，主要用于在其他地方获取表前缀
-    public $config = array(); //配置
-    protected $options = array(); // 查询表达式参数
-    public $queryTime = ''; // sql运行时间
-    public $queryCount = 0; // sql运行次数
-    public $queryLog   = array();
+    public mixed $db = null; // 当前数据库操作对象
+    public mixed $cache = null; //缓存对象
+    public string $sql = ''; //sql语句，主要用于输出构造成的sql语句
+    public string $pre = ''; //表前缀，主要用于在其他地方获取表前缀
+    public array $config = []; //配置
+    protected array $options = []; // 查询表达式参数
+    public string|float $queryTime = ''; // sql运行时间
+    public int $queryCount = 0; // sql运行次数
+    public array $queryLog = [];
 
     /**
      * 构造函数
      * @param unknown $config
      */
-    public function __construct($config = array())
+    public function __construct(array|string $config = [])
     {
         $this->config = array_merge(C('DB'), $config); //参数配置
         $this->options['field'] = '*'; //默认查询字段
@@ -56,7 +58,7 @@ class EcModel
      * @param string $ignorePre
      * @return EcModel
      */
-    public function table($table, $ignorePre = false)
+    public function table(string $table, bool $ignorePre = false): self
     {
         if ($ignorePre) {
             $this->options['table'] = $table;
@@ -73,7 +75,7 @@ class EcModel
      * @throws Exception
      * @return EcModel
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args): self
     {
         $method = strtolower($method);
         if (in_array($method, array('field', 'data', 'where', 'group', 'having', 'order', 'limit', 'cache'))) {
@@ -94,7 +96,7 @@ class EcModel
      * @param string $is_query
      * @return boolean|unknown|Ambigous <multitype:, unknown>
      */
-    public function query($sql, $params = array(), $is_query = false)
+    public function query(string $sql, array $params = [], bool $is_query = false): array|bool
     {
         if (empty($sql)) {
             return false;
@@ -131,7 +133,7 @@ class EcModel
      * 统计行数
      * @return Ambigous <boolean, unknown>|unknown
      */
-    public function count()
+    public function count(): int
     {
         $table = $this->options['table']; //当前表
         $field = 'count(*)'; //查询的字段
@@ -153,7 +155,7 @@ class EcModel
      * 只查询一条信息，返回一维数组
      * @return boolean
      */
-    public function find()
+    public function find(): array|false
     {
         $this->options['limit'] = 1; //限制只查询一条数据
         $data = $this->select();
@@ -164,7 +166,7 @@ class EcModel
      * 返回一个字段
      * @return boolean
      */
-    public function getOne()
+    public function getOne(): mixed
     {
         $this->options['limit'] = 1; //限制只查询一条数据
         $field = $this->options['field'];
@@ -176,7 +178,7 @@ class EcModel
      * 返回指定列
      * @return Ambigous <boolean, unknown>
      */
-    public function getCol()
+    public function getCol(): array|false
     {
         $field = $this->options['field'];
         $data = $this->select();
@@ -189,7 +191,7 @@ class EcModel
     /**
      * 查询多条信息，返回数组
      */
-    public function select()
+    public function select(): array|bool
     {
         $table = $this->options['table']; //当前表
         $field = $this->options['field']; //查询的字段
@@ -201,7 +203,7 @@ class EcModel
      * 获取一张表的所有字段
      * @return Ambigous <boolean, unknown>|unknown
      */
-    public function getFields()
+    public function getFields(): array|false
     {
         $table = $this->options['table'];
         $this->sql = "SHOW FULL FIELDS FROM {$table}"; //这不是真正执行的sql，仅作缓存的key使用
@@ -222,7 +224,7 @@ class EcModel
      * @param string $replace
      * @return unknown|boolean
      */
-    public function insert($replace = false)
+    public function insert(bool $replace = false): int|bool
     {
         $table = $this->options['table']; //当前表
         $data = $this->_parseData('add'); //要插入的数据
@@ -240,7 +242,7 @@ class EcModel
      * 替换数据
      * @return Ambigous <unknown, boolean, unknown>
      */
-    public function replace()
+    public function replace(): int|bool
     {
         return $this->insert(true);
     }
@@ -249,7 +251,7 @@ class EcModel
      * 修改更新
      * @return boolean
      */
-    public function update()
+    public function update(): int|bool
     {
         $table = $this->options['table']; //当前表
         $data = $this->_parseData('save'); //要更新的数据
@@ -267,7 +269,7 @@ class EcModel
      * 删除
      * @return boolean
      */
-    public function delete()
+    public function delete(): int|bool
     {
         $table = $this->options['table']; //当前表
         $where = $this->_parseCondition(); //条件
@@ -284,7 +286,7 @@ class EcModel
      * 数据过滤
      * @param unknown $value
      */
-    public function escape($value)
+    public function escape(string $value): string
     {
         return $this->db->escape($value);
     }
@@ -293,7 +295,7 @@ class EcModel
      * 返回sql语句
      * @return string
      */
-    public function getSql()
+    public function getSql(): string
     {
         return $this->sql;
     }
@@ -302,7 +304,7 @@ class EcModel
      * 删除数据库缓存
      * @return boolean
      */
-    public function clear()
+    public function clear(): bool
     {
         if ($this->initCache()) {
             return $this->cache->clear();
@@ -314,7 +316,7 @@ class EcModel
      * 初始化缓存类，如果开启缓存，则加载缓存类并实例化
      * @return boolean
      */
-    public function initCache()
+    public function initCache(): bool
     {
         if (is_object($this->cache)) {
             return true;
@@ -331,7 +333,7 @@ class EcModel
      * 读取缓存
      * @return boolean|unknown
      */
-    private function _readCache()
+    private function _readCache(): mixed
     {
         isset($this->options['cache']) or $this->options['cache'] = $this->config['DB_CACHE_TIME'];
         //缓存时间为0，不读取缓存
@@ -353,7 +355,7 @@ class EcModel
      * @param unknown $data
      * @return boolean
      */
-    private function _writeCache($data)
+    private function _writeCache(mixed $data): bool
     {
         //缓存时间为0，不设置缓存
         if ($this->options['cache'] == 0) {
@@ -372,7 +374,7 @@ class EcModel
      * @param unknown $type
      * @return unknown
      */
-    private function _parseData($type)
+    private function _parseData(string $type): string
     {
         $data = $this->db->parseData($this->options, $type);
         $this->options['data'] = '';
@@ -383,7 +385,7 @@ class EcModel
      * 解析条件
      * @return unknown
      */
-    private function _parseCondition()
+    private function _parseCondition(): string
     {
         $condition = $this->db->parseCondition($this->options);
         $this->options['where'] = '';
@@ -398,25 +400,25 @@ class EcModel
     /*********************************************/
     
     // 返回最后一次插入数据库的ID号
-    public function insert_id()
+    public function insert_id(): int
     {
         return $this->db->lastId();
     }
     
     // 返回错误信息
-    public function error()
+    public function error(): string
     {
         return mysql_error();
     }
     
     // 返回错误代号
-    public function errno()
+    public function errno(): int
     {
         return $this->db->errno;
     }
     
     //输出错误信息
-    public function ErrorMsg($message = '')
+    public function ErrorMsg(string $message = ''): void
     {
         $error = $this->error();
         $errorno = $this->errno();
@@ -431,7 +433,7 @@ class EcModel
         throw new Exception($str);
     }
     
-    public function autoReplace($table, $field_values, $update_values, $where = '', $querymode = '')
+    public function autoReplace(string $table, array $field_values, array $update_values, string $where = '', string $querymode = ''): array|bool
     {
         $query = $this->db->query('DESC ' . $table);
         while ($row = $this->db->fetchArray($query)) {
@@ -488,7 +490,7 @@ class EcModel
     }
     
     // 返回一条数据
-    public function getRow($sql, $limited = false)
+    public function getRow(string $sql, bool $limited = false): array|false
     {
         if ($limited == true) {
             $sql = trim($sql . ' LIMIT 1');
@@ -502,52 +504,52 @@ class EcModel
     }
     
     //  函数返回结果集中一个字段的值
-    public function result($query, $row)
+    public function result(mixed $query, int $row): mixed
     {
         return @mysql_result($query, $row);
     }
     
     // 返回结果集的条数
-    public function num_rows($query)
+    public function num_rows(mixed $query): int
     {
         return mysql_num_rows($query);
     }
     
     // 返回结果集中的字段数
-    public function num_fields($query)
+    public function num_fields(mixed $query): int
     {
         return mysql_num_fields($query);
     }
     
-    public function free_result($query)
+    public function free_result(mixed $query): bool
     {
         return mysql_free_result($query);
     }
     
     // 返回根据从结果集取得的行生成的关联数组
-    public function fetchRow($query)
+    public function fetchRow(mixed $query): array|false
     {
         return mysql_fetch_assoc($query);
     }
     
-    public function fetch_fields($query)
+    public function fetch_fields(mixed $query): object|false
     {
         return mysql_fetch_field($query);
     }
     
     // 返回mysql版本号
-    public function version()
+    public function version(): string
     {
         return mysql_get_server_info();
     }
     
     // 如果存在连接，则返回 true。如果失败，则返回 false。
-    public function ping()
+    public function ping(): bool
     {
         return mysql_ping();
     }
     
-    public function escape_string($unescaped_string)
+    public function escape_string(string $unescaped_string): string
     {
         return mysql_real_escape_string($unescaped_string);
     }

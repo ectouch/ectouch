@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ECTouch Open Source Project
  * ============================================================================
@@ -23,7 +25,7 @@ class BaseModel extends Model
      * 查询全部分类列表
      * @param type $area_id
      */
-    public function get_all_cat_list()
+    public function get_all_cat_list(): array|false
     {
         $sql = "SELECT c.cat_id, c.cat_name, c.measure_unit, c.parent_id, c.is_show, c.show_in_nav, c.grade, c.sort_order, COUNT(s.cat_id) AS has_children " .
                 'FROM ' . $this->pre . "category AS c " .
@@ -63,7 +65,7 @@ class BaseModel extends Model
 
         return $res;
     }
-    public function get_all_cat_lists()
+    public function get_all_cat_lists(): array|false
     {
         $sql = "SELECT c.cat_id, c.cat_name, c.parent_id, c.is_show,c.sort_order, COUNT(s.cat_id) AS has_children " .
                 'FROM ' . $this->pre . "crowd_category AS c " .
@@ -109,7 +111,7 @@ class BaseModel extends Model
      * @access  public
      * @return  array
      */
-    public function load_config()
+    public function load_config(): array
     {
         $data = read_static_cache('shop_config');
         if ($data === false) {
@@ -190,7 +192,7 @@ class BaseModel extends Model
      * @param:  $tpl_name[string]       模板代码
      * @return array
      */
-    public function get_mail_template($tpl_name)
+    public function get_mail_template(string $tpl_name): array|false
     {
         $sql = 'SELECT template_subject, is_html, template_content FROM ' . $this->pre . "mail_templates WHERE template_code = '$tpl_name'";
         return $this->row($sql);
