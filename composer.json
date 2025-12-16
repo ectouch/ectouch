@@ -4,6 +4,7 @@
     "keywords": ["ectouch", "b2c", "o2o", "shop", "mall", "wechat"],
     "license": "GPL-3.0",
     "type": "project",
+    "version": "3.0.0",
     "require": {
         "php": "^8.4",
         "aliyuncs/oss-sdk-php": "^2.7",
