@@ -784,7 +784,12 @@ function get_user_prompt($user_id)
     }
 
     /* 排序 */
-    $cmp = create_function('$a, $b', 'if($a["add_time"] == $b["add_time"]){return 0;};return $a["add_time"] < $b["add_time"] ? 1 : -1;');
+    $cmp = function($a, $b) {
+        if($a["add_time"] == $b["add_time"]) {
+            return 0;
+        }
+        return $a["add_time"] < $b["add_time"] ? 1 : -1;
+    };
     usort($prompt, $cmp);
 
     /* 格式化时间 */

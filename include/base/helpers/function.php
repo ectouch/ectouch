@@ -1846,11 +1846,5 @@ function halt($error)
 
 /**
  * 创建类的别名
+ * Note: class_alias is a native PHP function since PHP 5.3, no polyfill needed for PHP 8.4
  */
-if (!function_exists('class_alias')) {
-    function class_alias($original, $alias)
-    {
-        $newclass = create_function('', 'class ' . $alias . ' extends ' . $original . ' {}');
-        $newclass();
-    }
-}

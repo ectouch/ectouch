@@ -52,7 +52,7 @@ class Image {
             imagesetpixel($im, mt_rand(0, $width), mt_rand(0, $height), $pointColor);
         }
         for ($i = 0; $i < $length; $i++) {
-            imagestring($im, 5, $i * 10 + 5, mt_rand(1, 8), $randval{$i}, $stringColor);
+            imagestring($im, 5, $i * 10 + 5, mt_rand(1, 8), $randval[$i], $stringColor);
         }
         self::output($im, 'png');
     }
