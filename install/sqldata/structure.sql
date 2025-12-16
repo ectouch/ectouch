@@ -1361,7 +1361,7 @@ CREATE TABLE IF NOT EXISTS `ecs_sessions` (
   `data` char(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`sesskey`),
   KEY `expiry` (`expiry`)
-) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
