@@ -204,7 +204,7 @@ switch ($step) {
             //选择数据库
             if (!mysqli_select_db($conn, $dbName)) {
                 //创建数据时同时设置编码
-                if (!mysqli_query($conn, "CREATE DATABASE IF NOT EXISTS `" . $dbName . "` DEFAULT CHARACTER SET utf8;")) {
+                if (!mysqli_query($conn, "CREATE DATABASE IF NOT EXISTS `" . $dbName . "` DEFAULT CHARACTER SET utf8mb4;")) {
                     alert(0, '<li><span class="correct_span error_span">&radic;</span>数据库 ' . $dbName . ' 不存在，也没权限创建新的数据库！<span style="float: right;">'.date('Y-m-d H:i:s').'</span></li>');
                 } else {
                     alert(1, "<li><span class='correct_span'>&radic;</span>成功创建数据库:{$dbName}<span style='float: right;''>".date('Y-m-d H:i:s')."</span></li>", 0);
@@ -402,7 +402,7 @@ function sql_split($sql, $newTablePre, $oldTablePre)
     if ($newTablePre != $oldTablePre) {
         $sql = str_replace($oldTablePre, $newTablePre, $sql);
     }
-    $sql = preg_replace("/TYPE=(InnoDB|MyISAM|MEMORY)( DEFAULT CHARSET=[^; ]+)?/", "ENGINE=\\1 DEFAULT CHARSET=utf8", $sql);
+    $sql = preg_replace("/TYPE=(InnoDB|MyISAM|MEMORY)( DEFAULT CHARSET=[^; ]+)?/", "ENGINE=\\1 DEFAULT CHARSET=utf8mb4", $sql);
 
     $sql = str_replace("\r", "\n", $sql);
     $ret = array();
@@ -505,7 +505,7 @@ function get_site_info($appid = EC_APPID)
 {
     $db_config = require ROOT_PATH . 'data/config.php';
     $conn = mysqli_connect($db_config['DB_HOST'], $db_config['DB_USER'], $db_config['DB_PWD']);
-    mysqli_query($conn, "SET NAMES 'utf8'");
+    mysqli_query($conn, "SET NAMES 'utf8mb4'");
     mysqli_select_db($conn, $db_config['DB_NAME']);
     $sql = 'SELECT `code`, `value` FROM ' . $db_config['DB_PREFIX'] . 'shop_config';
     $result = mysqli_query($conn, $sql);
