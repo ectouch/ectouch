@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat` (
   `status` int(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
   `default_wx` int(1) unsigned NOT NULL DEFAULT '1' COMMENT '1为默认使用，0为不默认',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_custom_message` (
   `iswechat` smallint(1) unsigned DEFAULT '0',
   `send_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '发送时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_extend` (
   `website` varchar(100) DEFAULT NULL,
   `wechat_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '公众号id',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_mass_history` (
   `sentcount` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送成功的粉丝数',
   `errorcount` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送失败的粉丝数',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_media` (
   `article_id` varchar(100) DEFAULT NULL,
   `sort` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_menu` (
   `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_point` (
   `openid` varchar(100) DEFAULT NULL,
   `keywords` varchar(100) NOT NULL DEFAULT '' COMMENT '关键词',
   `createtime` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_prize` (
   `prize_type` int(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否中奖，0未中奖，1中奖',
   `activity_type` varchar(20) NOT NULL DEFAULT '' COMMENT '活动类型',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_qrcode` (
   `status` int(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
   `sort` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_reply` (
   `add_time` int(11) unsigned NOT NULL DEFAULT '0',
   `reply_type` varchar(10) DEFAULT NULL COMMENT '关键词回复内容的类型',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_rule_keywords` (
   `rid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '规则id',
   `rule_keywords` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -228,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_template` (
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `wechat_id` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;
 
 
 CREATE TABLE IF NOT EXISTS `ecs_wechat_template_log` (
@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_template_log` (
 `url` varchar(255) NOT NULL DEFAULT '',
 `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
 PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `ecs_wechat_template_log` ADD COLUMN `msgid` bigint unsigned NOT NULL DEFAULT 0 COMMENT '微信消息ID' AFTER `id`;
 
@@ -279,7 +279,7 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_user` (
   `bein_kefu` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否处在多客服流程',
   `isbind` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否绑定过',
   PRIMARY KEY (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -295,4 +295,4 @@ CREATE TABLE IF NOT EXISTS `ecs_wechat_user_group` (
   `count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分组内用户数量',
   `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
