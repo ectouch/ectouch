@@ -255,7 +255,7 @@ switch ($step) {
                         preg_match('/CREATE TABLE IF NOT EXISTS `([^ ]*)`/', $sql, $matches);
                     }
                     if (!empty($matches[1])) {
-                        mysqli_query($conn, "DROP TABLE IF EXISTS `$matches[1]");
+                        mysqli_query($conn, "DROP TABLE IF EXISTS `{$matches[1]}`;");
                         $ret = mysqli_query($conn, $sql);
                         $i++;
                         if (mysqli_query($conn, $sql)) {
