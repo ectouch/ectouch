@@ -168,7 +168,7 @@ switch ($step) {
     //安装详细过程
     case '4':
         verify(4);
-        if (intval($_GET['install'])) {
+        if (isset($_GET['install']) && intval($_GET['install'])) {
             //是否安装基础数据
             $independent = trim($_POST['independent']);
             dataVerify($independent);
@@ -195,7 +195,7 @@ switch ($step) {
                 alert(0, '连接数据库失败!');
             }
             //设置数据库编码
-            mysqli_query($conn, "SET NAMES 'utf8'"); //,character_set_client=binary,sql_mode='';
+            mysqli_query($conn, "SET NAMES 'utf8mb4'"); //,character_set_client=binary,sql_mode='';
             //获取数据库版本信息
             $version = mysqli_get_server_info($conn);
             if (version_compare($version, '5.5.0', '<')) {
@@ -211,6 +211,7 @@ switch ($step) {
                 }
             }
             //读取数据文件
+            $sqldata = '';
             foreach ($config['sqlFileName'] as $sqlFile) {
                 $rest = array('structure.sql', 'data.sql');
                 if (!$independent && in_array($sqlFile, $rest)) {
