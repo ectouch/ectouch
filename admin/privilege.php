@@ -39,6 +39,7 @@ if ($_REQUEST['act'] == 'login') {
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
 
+    $smarty->assign('gd_version', 0);
     if ((intval($_CFG['captcha']) & CAPTCHA_ADMIN) && gd_version() > 0) {
         $smarty->assign('gd_version', gd_version());
         $smarty->assign('random', mt_rand());

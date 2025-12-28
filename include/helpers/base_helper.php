@@ -275,7 +275,7 @@ function send_mail(string $name, string $email, string $subject, string $content
  */
 function gd_version()
 {
-    //include_once(ROOT_PATH . 'includes/cls_image.php');
+    include_once(ROOT_PATH . 'include/classes/image.php');
 
     return image::gd_version();
 }
