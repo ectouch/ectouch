@@ -28,6 +28,7 @@ class template
 
     public $_temp_key      = array();  // 临时存放 foreach 里 key 的数组
     public $_temp_val      = array();  // 临时存放 foreach 里 item 的数组
+    public $_patchstack    = array();
 
     public function __construct()
     {
@@ -598,7 +599,7 @@ class template
             }
         }
 
-        return $p;
+        return '(' . $p . ' ?? \'\')';
     }
 
     /**
@@ -612,6 +613,7 @@ class template
      */
     public function get_para($val, $type = 1) // 处理insert外部函数/需要include运行的函数的调用数据
     {
+        $para = array();
         $pa = $this->str_trim($val);
         foreach ($pa as $value) {
             if (strrpos($value, '=')) {
@@ -769,7 +771,9 @@ class template
         }
 
         $output = '<?php ';
-        $output .= "\$_from = $from; if (!is_array(\$_from) && !is_object(\$_from)) { settype(\$_from, 'array'); }; \$this->push_vars('$attrs[key]', '$attrs[item]');";
+        $key_attr = isset($attrs['key']) ? $attrs['key'] : '';
+        $item_attr = isset($attrs['item']) ? $attrs['item'] : '';
+        $output .= "\$_from = $from; if (!is_array(\$_from) && !is_object(\$_from)) { settype(\$_from, 'array'); }; \$this->push_vars('$key_attr', '$item_attr');";
 
         if (!empty($name)) {
             $foreach_props = "\$this->_foreach['$name']";
@@ -795,10 +799,10 @@ class template
     public function push_vars($key, $val)
     {
         if (!empty($key)) {
-            array_push($this->_temp_key, "\$this->_vars['$key']='" .$this->_vars[$key] . "';");
+            array_push($this->_temp_key, array($key, isset($this->_var[$key]) ? $this->_var[$key] : null));
         }
         if (!empty($val)) {
-            array_push($this->_temp_val, "\$this->_vars['$val']='" .$this->_vars[$val] ."';");
+            array_push($this->_temp_val, array($val, isset($this->_var[$val]) ? $this->_var[$val] : null));
         }
     }
 
@@ -813,7 +817,10 @@ class template
         $val = array_pop($this->_temp_val);
 
         if (!empty($key)) {
-            eval($key);
+            $this->_var[$key[0]] = $key[1];
+        }
+        if (!empty($val)) {
+            $this->_var[$val[0]] = $val[1];
         }
     }
 
