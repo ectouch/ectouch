@@ -1122,7 +1122,6 @@ CREATE TABLE IF NOT EXISTS `ecs_order_info` (
   `card_message` varchar(255) NOT NULL DEFAULT '',
   `inv_payee` varchar(120) NOT NULL DEFAULT '',
   `inv_content` varchar(120) NOT NULL DEFAULT '',
-  `inv_text_id` varchar(120) NOT NULL DEFAULT '',
   `goods_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `shipping_fee` decimal(10,2) NOT NULL DEFAULT '0.00',
   `insure_fee` decimal(10,2) NOT NULL DEFAULT '0.00',

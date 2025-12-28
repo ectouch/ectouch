@@ -5,6 +5,7 @@ if (!defined('IN_ECTOUCH')) {
 }
 
 define('ECS_ADMIN', true);
+define('ROOT_PATH', str_replace('\\', '/', dirname(getcwd())) . '/');
 
 error_reporting(E_ALL);
 
@@ -25,9 +26,6 @@ if (DIRECTORY_SEPARATOR == '\\') {
 } else {
     @ini_set('include_path', '.:' . ROOT_PATH);
 }
-
-/* 取得当前ecshop所在的根目录 */
-define('ROOT_PATH', str_replace('\\', '/', dirname(getcwd())) . '/');
 
 $db_config = require(ROOT_PATH . 'data/config.php');
 

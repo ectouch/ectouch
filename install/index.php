@@ -294,8 +294,8 @@ switch ($step) {
         $appid = get_appid();
         $appkey_file = ROOT_PATH . 'data/certificate/appkey.php';
         if (!file_exists($appkey_file)) {
-            require ROOT_PATH . 'vendor/Http.class.php';
-            require ROOT_PATH . 'vendor/Cloud.class.php';
+            require ROOT_PATH . 'extend/Http.php';
+            require ROOT_PATH . 'extend/Cloud.php';
             $contents = "<?php define('EC_APPID', '".$appid."');";
             @file_put_contents($appkey_file, $contents);
             // 推送API
@@ -452,49 +452,50 @@ function genRandomString($len = 6)
  * @param integer $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
  * @return mixed
  */
- function get_client_ip($type = 0)
- {
-     $type	   =  $type ? 1 : 0;
-     static $ip  =   null;
-     if ($ip !== null) {
-         return $ip[$type];
-     }
-     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-         $arr	=   explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-         $pos	=   array_search('unknown', $arr);
-         if (false !== $pos) {
-             unset($arr[$pos]);
-         }
-         $ip	 =   trim($arr[0]);
-     } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-         $ip	 =   $_SERVER['HTTP_CLIENT_IP'];
-     } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-         $ip	 =   $_SERVER['REMOTE_ADDR'];
-     }
-     // IP地址合法验证
-     $long = sprintf("%u", ip2long($ip));
-     $ip   = $long ? array($ip, $long) : array('0.0.0.0', 0);
-     return $ip[$type];
- }
+function get_client_ip($type = 0)
+{
+    $type	   =  $type ? 1 : 0;
+    static $ip  =   null;
+    if ($ip !== null) {
+        return $ip[$type];
+    }
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $arr	=   explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $pos	=   array_search('unknown', $arr);
+        if (false !== $pos) {
+            unset($arr[$pos]);
+        }
+        $ip	 =   trim($arr[0]);
+    } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip	 =   $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+        $ip	 =   $_SERVER['REMOTE_ADDR'];
+    }
+    // IP地址合法验证
+    $long = sprintf("%u", ip2long($ip));
+    $ip   = $long ? array($ip, $long) : array('0.0.0.0', 0);
+    return $ip[$type];
+}
+
+function guidv4()
+{
+    if (function_exists('com_create_guid') === true)
+    {
+        return trim(com_create_guid(), '{}');
+    }
+
+    $data = openssl_random_pseudo_bytes(16);
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+}
 
 /**
  * 生成为一的appid
  */
 function get_appid()
 {
-    if (function_exists('com_create_guid')) {
-        $guid = com_create_guid();
-    } else {
-        mt_srand((double)microtime()*10000);
-        $charid = strtoupper(md5(uniqid(rand(), true)));
-        $hyphen = chr(45);// "-"
-        $guid = substr($charid, 0, 8).$hyphen
-                .substr($charid, 8, 4).$hyphen
-                .substr($charid, 12, 4).$hyphen
-                .substr($charid, 16, 4).$hyphen
-                .substr($charid, 20, 12);
-    }
-    return strtoupper(hash('ripemd128', $guid));
+    return strtoupper(hash('ripemd128', guidv4()));
 }
 
 /**

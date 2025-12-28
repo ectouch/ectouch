@@ -3,23 +3,23 @@
 --
 
 -- 
-INSERT INTO `ecs_admin_action` VALUES ('201', '0', 'ext_wechat', '');
+INSERT INTO `ecs_admin_action` VALUES (201, 0, 'ext_wechat', '');
 -- 
-INSERT INTO `ecs_admin_action` VALUES ('147', '201', 'wechat_config', '');
-INSERT INTO `ecs_admin_action` VALUES ('148', '201', 'wechat_masssend', '');
-INSERT INTO `ecs_admin_action` VALUES ('149', '201', 'wechat_autoreply', '');
-INSERT INTO `ecs_admin_action` VALUES ('150', '201', 'wechat_selfmenu', '');
-INSERT INTO `ecs_admin_action` VALUES ('151', '201', 'wechat_tmplmsg', '');
-INSERT INTO `ecs_admin_action` VALUES ('152', '201', 'wechat_contactmanage', '');
-INSERT INTO `ecs_admin_action` VALUES ('153', '201', 'wechat_appmsg', '');
-INSERT INTO `ecs_admin_action` VALUES ('154', '201', 'wechat_qrcode', '');
-INSERT INTO `ecs_admin_action` VALUES ('155', '201', 'wechat_extends', '');
-INSERT INTO `ecs_admin_action` VALUES ('157', '201', 'wechat_customer', '');
+INSERT INTO `ecs_admin_action` VALUES (147, 201, 'wechat_config', '');
+INSERT INTO `ecs_admin_action` VALUES (148, 201, 'wechat_masssend', '');
+INSERT INTO `ecs_admin_action` VALUES (149, 201, 'wechat_autoreply', '');
+INSERT INTO `ecs_admin_action` VALUES (150, 201, 'wechat_selfmenu', '');
+INSERT INTO `ecs_admin_action` VALUES (151, 201, 'wechat_tmplmsg', '');
+INSERT INTO `ecs_admin_action` VALUES (152, 201, 'wechat_contactmanage', '');
+INSERT INTO `ecs_admin_action` VALUES (153, 201, 'wechat_appmsg', '');
+INSERT INTO `ecs_admin_action` VALUES (154, 201, 'wechat_qrcode', '');
+INSERT INTO `ecs_admin_action` VALUES (155, 201, 'wechat_extends', '');
+INSERT INTO `ecs_admin_action` VALUES (157, 201, 'wechat_customer', '');
 INSERT INTO `ecs_admin_action` (`action_id`,`parent_id`, `action_code`, `relevance`) VALUES
-('158', '6', 'service_type', ''),
-('159', '6', 'back_cause_list', ''),
-('160', '6', 'aftermarket_list', ''),
-('161', '6', 'add_return_cause', '');
+(158, 6, 'service_type', ''),
+(159, 6, 'back_cause_list', ''),
+(160, 6, 'aftermarket_list', ''),
+(161, 6, 'add_return_cause', '');
 INSERT INTO `ecs_admin_action` (`action_id`, `parent_id`, `action_code`, `relevance`) VALUES
 (162, 0, 'menu_tools', ''),
 (163, 162, 'navigator', ''),
