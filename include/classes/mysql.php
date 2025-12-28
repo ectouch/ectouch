@@ -53,6 +53,16 @@ class mysql
         }
     }
 
+    public function getQueryCount(): int
+    {
+        return $this->queryCount;
+    }
+
+    public function getQueryTime(): float
+    {
+        return $this->queryTime;
+    }
+
     public function connect(
         string $dbhost,
         string $dbuser,

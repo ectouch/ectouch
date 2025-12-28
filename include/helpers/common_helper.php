@@ -108,12 +108,12 @@ function is_wechat_browser()
 function assign_query_info()
 {
     $global = getInstance();
-    if ($global->db->queryTime == '') {
+    if ($global->db->getQueryTime() == 0) {
         $query_time = 0;
     } else {
-        $query_time = number_format(microtime(true) - $global->db->queryTime, 6);
+        $query_time = number_format(microtime(true) - $global->db->getQueryTime(), 6);
     }
-    $global->tpl->assign('query_info', sprintf(L('query_info'), $global->db->queryCount, $query_time));
+    $global->tpl->assign('query_info', sprintf(L('query_info'), $global->db->getQueryCount(), $query_time));
 
     /* 内存占用情况 */
     if (L('memory_info') && function_exists('memory_get_usage')) {
