@@ -10,7 +10,7 @@
         "aliyuncs/oss-sdk-php": "^2.7",
         "filp/whoops": "^2.15",
         "phpoffice/phpspreadsheet": "^5.3",
-        "riverslei/payment": "^5.0"
+        "yansongda/pay": "^3.7"
     },
     "autoload": {
         "psr-0": {
