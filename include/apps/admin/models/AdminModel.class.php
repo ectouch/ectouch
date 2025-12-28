@@ -74,7 +74,7 @@ class AdminModel extends BaseModel
      * @param   string      $content    操作的内容
      * @return  void
      */
-    public function admin_log($sn = '', $action, $content)
+    public function admin_log($sn, $action, $content)
     {
         $log_info = L('log_action.' . $action) . L('log_action.' . $action) . ': ' . addslashes($sn);
 

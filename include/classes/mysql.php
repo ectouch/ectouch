@@ -179,7 +179,7 @@ class mysql
         }
 
         /* 当当前的时间大于类初始化时间的时候，自动执行 ping 这个自动重新连接操作 */
-        mysqli_ping($this->link_id);
+        // mysqli_ping($this->link_id); // Deprecated in 8.4
 
         $query = mysqli_query($this->link_id, $sql);
         
@@ -224,7 +224,11 @@ class mysql
 
     public function result(mysqli_result $query, int $row): mixed
     {
-        return @mysqli_result($query, $row);
+        if (mysqli_data_seek($query, $row)) {
+            $res = mysqli_fetch_row($query);
+            return $res[0] ?? null;
+        }
+        return null;
     }
 
     public function num_rows(mysqli_result $query): int
@@ -237,9 +241,9 @@ class mysql
         return mysqli_num_fields($query);
     }
 
-    public function free_result(mysqli_result $query): bool
+    public function free_result(mysqli_result $query): void
     {
-        return mysqli_free_result($query);
+        mysqli_free_result($query);
     }
 
     public function insert_id(): int
@@ -264,7 +268,7 @@ class mysql
 
     public function ping(): bool
     {
-        return mysqli_ping($this->link_id);
+        return $this->link_id !== null && mysqli_query($this->link_id, "SELECT 1") !== false;
     }
 
     public function escape_string(string $unescaped_string): string
@@ -311,7 +315,7 @@ class mysql
         if ($res !== false) {
             $row = mysqli_fetch_row($res);
 
-            if ($row !== false) {
+            if ($row !== null && $row !== false) {
                 return $row[0];
             } else {
                 return '';
@@ -388,7 +392,8 @@ class mysql
 
         $res = $this->query($sql);
         if ($res !== false) {
-            return mysqli_fetch_assoc($res);
+            $row = mysqli_fetch_assoc($res);
+            return $row !== null ? $row : false;
         } else {
             return false;
         }

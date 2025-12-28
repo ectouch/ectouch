@@ -79,7 +79,7 @@ function sys_msg($msg_detail, $msg_type = 0, $links = array(), $auto_redirect = 
  * @param   string      $content    操作的内容
  * @return  void
  */
-function admin_log($sn = '', $action, $content)
+function admin_log($sn, $action, $content)
 {
     $log_info = $GLOBALS['_LANG']['log_action'][$action] . $GLOBALS['_LANG']['log_action'][$content] .': '. addslashes($sn);
 

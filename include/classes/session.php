@@ -8,6 +8,7 @@ class session
 {
     public $db             = null;
     public $session_table  = '';
+    public $session_data_table = '';
 
     public $max_life_time  = 1800; // SESSION 杩囨湡鏃堕棿
 
